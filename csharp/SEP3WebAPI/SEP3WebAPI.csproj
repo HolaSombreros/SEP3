@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SEP3Library\SEP3Library.csproj" />
+      <ProjectReference Include="..\SEP3UI\SEP3UI.csproj" />
     </ItemGroup>
 
 </Project>
