@@ -62,6 +62,11 @@ a, .btn-link {
     .card {
         margin: 3vh auto
     }
+    .cart {
+        padding: 4vh;
+        border-bottom-left-radius: unset;
+        border-top-right-radius: 1rem
+    }
 }
 
 .cart {
@@ -69,14 +74,6 @@ a, .btn-link {
     padding: 4vh 5vh;
     border-bottom-left-radius: 1rem;
     border-top-left-radius: 1rem
-}
-
-@media(max-width:767px) {
-    .cart {
-        padding: 4vh;
-        border-bottom-left-radius: unset;
-        border-top-right-radius: 1rem
-    }
 }
 
 .summary {
@@ -114,7 +111,6 @@ a, .btn-link {
     margin: 0;
     padding: 2vh 0;
     width: 100%
+
 }
-.btn:hover {
-    color: white
-}
+
