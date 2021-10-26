@@ -29,13 +29,33 @@ public class ClientHandler implements Runnable {
     public void run() {
         while (running) {
             try {
-                String request = in.readLine();
-                // TODO
-
+                String received = in.readLine();
+                Request request = gson.fromJson(received, Request.class);
+                if (request != null) {
+                    switch (request.getType()) {
+                        case "items":
+                            Request reply = new Request("items");
+                            //reply.setItems(/*model stuff*/);
+                            sendReply(reply);
+                            break;
+                        case "purchase":
+                            //model.placeOrder
+                            break;
+                    }
+                }
             }
             catch (IOException e) {
+                sendReply(new Request("connection_error"));
                 running = false;
             }
+            catch (Exception e) {
+                sendReply(new Request("error"));
+            }
         }
+    }
+
+    private void sendReply(Request request) {
+        String replyGson = gson.toJson(request);
+        out.println(replyGson);
     }
 }
