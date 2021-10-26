@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="NetworkConnection" />
+      <ProjectReference Include="..\SEP3Library\SEP3Library.csproj" />
     </ItemGroup>
 
 </Project>
