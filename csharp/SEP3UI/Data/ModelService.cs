@@ -8,10 +8,13 @@ using SEP3UI.Model;
 
 namespace SEP3UI.Data {
     public class ModelService : IModelService {
+        public ShoppingCart ShoppingCart { get; init; }
+        
         private const string uri = "https://localhost:5003";
         private HttpClient client;
 
         public ModelService() {
+            ShoppingCart = new ShoppingCart();
             client = new HttpClient();
         }
 
