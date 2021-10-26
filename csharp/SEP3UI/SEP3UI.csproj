@@ -3,11 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\SEP3Library\SEP3Library.csproj" />
-    </ItemGroup>
-
+    
     <ItemGroup>
       <ProjectReference Include="..\SEP3Library\SEP3Library.csproj" />
     </ItemGroup>
