@@ -1,5 +1,8 @@
 package via.group2.SEP3.mediator;
 
+import database.model.Item;
+import database.model.Order;
+
 import java.util.List;
 
 public class Request {
