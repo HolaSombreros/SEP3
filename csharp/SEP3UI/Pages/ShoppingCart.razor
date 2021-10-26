@@ -1,5 +1,7 @@
 ﻿@page "/ShoppingCart"
 @using SEP3UI.Model
+@using SEP3UI.Data
+@inject IModelService modelService
 
 <div class="card">
     <div class="row">
@@ -69,17 +71,8 @@
 
     
     protected override async Task OnInitializedAsync() {
-    //Items = await ItemService.GetItems(); 
-        Items = new List<Item>() {
-            new Item() {
-                Name = "blabla",
-                Price = 25.25
-            },
-            new Item() {
-                Name = "blabla2",
-                Price = 20
-            }
-        };
+        Items = modelService.ShoppingCart.Items; 
+       
         foreach (Item item in Items) {
             Total += item.Price;
         }

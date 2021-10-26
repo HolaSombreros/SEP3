@@ -2,7 +2,7 @@
 @using SEP3UI.Model
 @using SEP3UI.Data
 @inject NavigationManager NavigationManager
-@inject IItemService ItemService
+@inject IModelService modelService
 
 Welcome to Under Covers  main paaaage
 
@@ -26,12 +26,12 @@ Welcome to Under Covers  main paaaage
 </div>
 <div id="productsWrapper" class="row">
     @foreach (Item item in Items) {
-        <div class="col-sm-3">
+        <div class="card col-sm-3">
             <a asp-page="/itemDetails" asp-route-id="@item.Id" title="Order @item.Name">
                 <div class="productInfo">
                     <h3>@item.Name</h3>
-                    <img class="product-image img-fluid img-thumbnail" src="Images/Products/Thumbnails/@item.ImageName" alt="Image of @item.Name"/>
-                    <p class="description">@item.Description</p>
+                    <img class="product-image img-fluid img-thumbnail" src="Images/Larman.jpg" alt="Image of @item.Name"/>
+                    <p class="card-text">@item.Description</p>
                 </div>
             </a>
             <div class="action">
