@@ -9,6 +9,13 @@ import database.model.enums.Language;
 import java.util.Date;
 
 public class BookDAOService implements BookDAO {
+
+    private DatabaseHelper<Item> databaseHelper;
+
+    public BookDAOService(String url, String username, String password) {
+        databaseHelper = new DatabaseHelper<>(url, username, password);
+    }
+
     @Override
     public Book create(Item item, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, Date publicationDate) {
         return null;
