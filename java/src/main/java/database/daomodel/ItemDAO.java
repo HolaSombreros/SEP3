@@ -1,5 +1,6 @@
 package database.daomodel;
 
+import database.daoservice.DataMapper;
 import database.model.Item;
 import database.model.enums.Category;
 

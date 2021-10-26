@@ -26,6 +26,17 @@ public class Item {
         this.discount = 0;
     }
 
+    public Item(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.category = category;
+        this.quantity = quantity;
+        this.status = status;
+        this.discount = discount;
+    }
+
     public int getId() {
         return id;
     }
