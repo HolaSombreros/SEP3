@@ -4,5 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface DataMapper<T> {
-    T create(ResultSet resultSet) throws SQLException;
+    T mapper(ResultSet resultSet) throws SQLException;
 }
+

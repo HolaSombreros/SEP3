@@ -56,10 +56,16 @@ public class DatabaseHelper<T> {
         }
     }
 
-    public void executeUpdateWithKeys(String query, Object... parameters) throws SQLException{
+    public List<Integer> executeUpdateWithKeys(String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             PreparedStatement statement = preparedStatementWithKeys(connection,query,parameters);
             statement.executeUpdate();
+            List<Integer> keys = new ArrayList<>();
+            ResultSet resultSet = statement.getGeneratedKeys();
+            while(resultSet.next()) {
+                keys.add(resultSet.getInt(1));
+            }
+            return keys;
         }
         catch (SQLException e){
             throw new IllegalStateException(e.getMessage());
@@ -70,7 +76,7 @@ public class DatabaseHelper<T> {
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             if(resultSet.next()){
-                mapper.create(resultSet);
+                mapper.mapper(resultSet);
             }
             else{
                 return null;
@@ -82,12 +88,12 @@ public class DatabaseHelper<T> {
     }
 
 
-    public T mapLists(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
+    public T mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             List<T> itemList = new ArrayList<>();
             while(resultSet.next()){
-                itemList.add(mapper.create(resultSet));
+                itemList.add(mapper.mapper(resultSet));
             }
         } catch (SQLException e){
             throw new IllegalStateException(e.getMessage());
