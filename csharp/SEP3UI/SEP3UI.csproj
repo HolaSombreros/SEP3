@@ -8,4 +8,8 @@
       <Folder Include="NetworkConnection" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SEP3Library\SEP3Library.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -48,3 +48,47 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+@media(max-width:767px) {
+    .cart {
+        padding: 4vh;
+        border-bottom-left-radius: unset;
+        border-top-right-radius: 1rem
+    }
+}
+
+.summary {
+    background-color: #ddd;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    padding: 4vh;
+    color: rgb(65, 65, 65)
+}
+
+@media(max-width:767px) {
+    .summary {
+        border-top-right-radius: unset;
+        border-bottom-left-radius: 1rem
+    }
+}
+
+.summary .col-2 {
+    padding: 0
+}
+
+.summary .col-10 {
+    padding: 0
+}
+
+.row {
+    margin: 0
+}
+
+.title b {
+    font-size: 1.5rem
+}
+
+.main {
+    margin: 0;
+    padding: 2vh 0;
+    width: 100%
+}
