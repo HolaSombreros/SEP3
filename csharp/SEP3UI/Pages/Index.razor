@@ -1,7 +1,70 @@
 @page "/"
+@using SEP3UI.Model
+@using SEP3UI.Data
+@inject NavigationManager NavigationManager
+@inject IItemService ItemService
 
-<h1>Hello, world!</h1>
+Welcome to Under Covers  main paaaage
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+<div id="featuredProduct" class="row">
+    <div class="col-sm-8">
+        <img alt="Featured Product" src="/Images/Larman.jpg" class="img-fluid rounded"/>
+    </div>
+    <div id="featuredProductInfo" class="col-sm-4">
+        <div id="productInfo">
+            <h2>@FeaturedItem.Name</h2>
+            <p class="price">$@string.Format("{0:f}", @FeaturedItem.Price)</p>
+            <p class="description">@FeaturedItem.Description</p>
+        </div>
+        <div id="callToAction">
+            <a href="order/@FeaturedItem.Id">
+                <button class="btn btn-sm btn-dark order-button float-left">Add to Shopping Cart</button>
+            </a>
+        
+        </div>
+    </div>
+</div>
+<div id="productsWrapper" class="row">
+    @foreach (Item item in Items) {
+        <div class="col-sm-3">
+            <a asp-page="/itemDetails" asp-route-id="@item.Id" title="Order @item.Name">
+                <div class="productInfo">
+                    <h3>@item.Name</h3>
+                    <img class="product-image img-fluid img-thumbnail" src="Images/Products/Thumbnails/@item.ImageName" alt="Image of @item.Name"/>
+                    <p class="description">@item.Description</p>
+                </div>
+            </a>
+            <div class="action">
+                <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
+                <button class="btn btn-sm btn-dark order-button float-right" @onclick="@(() => NavigateToComponent(item))">Order now</button>
+            </div>
+        </div>
+    }
+</div>
+ 
+ 
+@code {
+    public IList<Item> Items { get; set; }
+    public Item FeaturedItem { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+
+        //Items = await ItemService.GetItems(); 
+        Items = new List<Item>() {
+            new Item() {
+                Name = "blabla"
+            },
+            new Item() {
+                Name = "blabla2"
+            }
+        };
+        FeaturedItem = Items.ElementAt(new Random().Next(Items.Count)); 
+    }
+
+    private void NavigateToComponent(Item item) {
+        NavigationManager.NavigateTo("order/" + item.Id);
+    }
+    
+
+}
