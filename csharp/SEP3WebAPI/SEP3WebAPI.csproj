@@ -13,4 +13,8 @@
       <ProjectReference Include="..\SEP3UI\SEP3UI.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SEP3UI\SEP3UI.csproj" />
+    </ItemGroup>
+
 </Project>
