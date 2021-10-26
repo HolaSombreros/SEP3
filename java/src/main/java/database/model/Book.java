@@ -2,9 +2,10 @@ package database.model;
 
 import database.model.enums.Category;
 import database.model.enums.Genre;
+import database.model.enums.ItemStatus;
 import database.model.enums.Language;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Book extends Item{
 
@@ -13,9 +14,9 @@ public class Book extends Item{
     private String authorLastName;
     private Language language;
     private Genre genre;
-    private Date publicationDate;
+    private LocalDate publicationDate;
 
-    public Book(int id, String name, String description, double price, Category category, int quantity, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, Date publicationDate) {
+    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
         super(id, name, description, price, category, quantity);
         this.ISBN = ISBN;
         this.authorFirstName = authorFirstName;
@@ -45,7 +46,7 @@ public class Book extends Item{
         return genre;
     }
 
-    public Date getPublicationDate() {
+    public LocalDate getPublicationDate() {
         return publicationDate;
     }
 
