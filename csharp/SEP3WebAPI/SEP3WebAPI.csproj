@@ -9,7 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <ProjectReference Include="..\SEP3Library\SEP3Library.csproj" />
     </ItemGroup>
 
     <ItemGroup>

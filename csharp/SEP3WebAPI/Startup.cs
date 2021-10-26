@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SEP3WebAPI.Data;
+using SEP3WebAPI.Mediator;
 
 namespace SEP3WebAPI {
     public class Startup {
@@ -26,6 +28,7 @@ namespace SEP3WebAPI {
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "SEP3WebAPI", Version = "v1"});
             });
+            services.AddSingleton<IModelService, ModelService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
