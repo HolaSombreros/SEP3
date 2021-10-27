@@ -1,6 +1,7 @@
 package mediator;
 
 import com.google.gson.Gson;
+import database.DatabaseManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class ClientHandler implements Runnable {
     private PrintWriter out;
     private boolean running;
     private Gson gson;
+    private DatabaseManager databaseManager;
 
     public ClientHandler(Socket socket /*model*/) throws IOException {
         //model;
@@ -24,6 +26,7 @@ public class ClientHandler implements Runnable {
         out = new PrintWriter(socket.getOutputStream(), true);
         running = true;
         gson = new Gson();
+        this.databaseManager = new DatabaseManager();
     }
 
     public void run() {
