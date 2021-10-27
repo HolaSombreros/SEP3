@@ -7,6 +7,8 @@ import database.model.enums.Genre;
 import database.model.enums.Language;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
 
 
 public interface BookDAO {
@@ -14,4 +16,5 @@ public interface BookDAO {
     Book read(String ISBN, int id);
     void update(Book book);
     void delete(Book book);
+    Collection<Book> readAll();
 }

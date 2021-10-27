@@ -1,5 +1,7 @@
 package database;
 
+import database.daomodel.BookDAO;
+import database.daomodel.ItemDAO;
 import database.daoservice.BookDAOService;
 import database.daoservice.ItemDAOService;
 
@@ -8,19 +10,19 @@ public class DatabaseManager {
     private static String USERNAME = "sep3admin";
     private static String PASSWORD = "admin";
 
-    private ItemDAOService itemDAOService;
-    private BookDAOService bookDAOService;
+    private ItemDAO itemDAOService;
+    private BookDAO bookDAOService;
 
     public DatabaseManager() {
         itemDAOService = new ItemDAOService(URL, USERNAME, PASSWORD);
         bookDAOService = new BookDAOService(URL, USERNAME, PASSWORD);
     }
 
-    public ItemDAOService getItemDAOService() {
+    public ItemDAO getItemDAOService() {
         return itemDAOService;
     }
 
-    public BookDAOService getBookDAOService() {
+    public BookDAO getBookDAOService() {
         return bookDAOService;
     }
 }

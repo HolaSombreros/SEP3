@@ -2,9 +2,7 @@ package database.daoservice;
 
 import database.daomodel.BookDAO;
 import database.daoservice.mapper.BookMapper;
-import database.daoservice.mapper.ItemMapper;
 import database.model.Book;
-import database.model.Item;
 import database.model.enums.Category;
 import database.model.enums.Genre;
 import database.model.enums.ItemStatus;
@@ -13,6 +11,7 @@ import database.model.enums.Language;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 public class BookDAOService implements BookDAO {
@@ -64,5 +63,14 @@ public class BookDAOService implements BookDAO {
     @Override
     public void delete(Book book) {
 
+    }
+
+    @Override
+    public Collection<Book> readAll() {
+        try{
+            return databaseHelper.mapList(new BookMapper(), "SELECT * FROM book JOIN item USING (item_id);");
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 }

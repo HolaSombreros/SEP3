@@ -2,6 +2,7 @@ package database.daoservice;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class DatabaseHelper<T> {
@@ -88,17 +89,17 @@ public class DatabaseHelper<T> {
     }
 
 
-    public T mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
+    public Collection<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             List<T> itemList = new ArrayList<>();
             while(resultSet.next()){
                 itemList.add(mapper.mapper(resultSet));
             }
+            return itemList;
         } catch (SQLException e){
             throw new IllegalStateException(e.getMessage());
         }
-        return null;
     }
 
 }

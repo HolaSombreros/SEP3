@@ -54,5 +54,8 @@ public class ItemDAOService implements ItemDAO {
         //TODO think about this
     }
 
-
+    @Override
+    public List<Item> readByCategory(Category category) {
+        return null;
+    }
 }
