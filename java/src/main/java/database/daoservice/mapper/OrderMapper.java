@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class OrderMapper implements DataMapper<Order> {
     @Override
-    public Order mapper(ResultSet resultSet) throws SQLException {
+    public Order map(ResultSet resultSet) throws SQLException {
         return null;
     }
 }
