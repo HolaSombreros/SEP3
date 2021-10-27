@@ -11,7 +11,7 @@ import java.net.Socket;
 
 public class ClientHandler implements Runnable {
 
-    // MODEL
+
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -19,14 +19,14 @@ public class ClientHandler implements Runnable {
     private Gson gson;
     private DatabaseManager databaseManager;
 
-    public ClientHandler(Socket socket /*model*/) throws IOException {
+    public ClientHandler(Socket socket, DatabaseManager databaseManager) throws IOException {
         //model;
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
         running = true;
         gson = new Gson();
-        this.databaseManager = new DatabaseManager();
+        this.databaseManager = databaseManager;
     }
 
     public void run() {
@@ -38,7 +38,7 @@ public class ClientHandler implements Runnable {
                     switch (request.getType()) {
                         case "items":
                             Request reply = new Request("items");
-                            //reply.setItems(/*model stuff*/);
+//                            reply.setItems(/*model stuff*/);
                             sendReply(reply);
                             break;
                         case "purchase":

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Order {
     private List<Item> items;
-    //private User user;
+    private User user;
     private int id;
     private Address address;
     private LocalDateTime datetime;
