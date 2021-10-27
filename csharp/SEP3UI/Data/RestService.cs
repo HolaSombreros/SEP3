@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SEP3UI.Model;
 
 namespace SEP3UI.Data {
-    public class ModelService : IModelService {
+    public class RestService : IModelService {
         private const string uri = "https://localhost:5003";
         private enum HttpRequest {
             POST,
@@ -16,7 +16,7 @@ namespace SEP3UI.Data {
         
         public ShoppingCart ShoppingCart { get; init; }
         
-        public ModelService() {
+        public RestService() {
             ShoppingCart = new ShoppingCart();
         }
         
