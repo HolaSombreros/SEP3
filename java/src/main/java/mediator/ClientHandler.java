@@ -1,4 +1,4 @@
-package via.group2.SEP3.mediator;
+package mediator;
 
 import com.google.gson.Gson;
 
