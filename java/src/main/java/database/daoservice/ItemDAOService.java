@@ -8,6 +8,7 @@ import database.model.enums.ItemStatus;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 public class ItemDAOService implements ItemDAO {
@@ -56,6 +57,11 @@ public class ItemDAOService implements ItemDAO {
 
     @Override
     public List<Item> readByCategory(Category category) {
+        return null;
+    }
+
+    @Override
+    public Collection<Item> readAll() {
         return null;
     }
 }
