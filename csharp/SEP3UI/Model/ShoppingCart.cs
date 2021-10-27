@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SEP3UI.Model {
     public class ShoppingCart {
@@ -8,6 +9,13 @@ namespace SEP3UI.Model {
 
         public ShoppingCart() {
             Items = new List<Item>();
+        }
+        
+        public void AddToShoppingCart(Item item) {
+            item.Quantity++;
+            if (!Items.Contains(item)) 
+                Items.Add(item);
+            Console.WriteLine(Items.Count);
         }
     }
 }

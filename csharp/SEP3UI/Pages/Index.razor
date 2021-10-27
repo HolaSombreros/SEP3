@@ -36,7 +36,7 @@ Welcome to Under Covers  main paaaage
             </a>
             <div class="action">
                 <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
-                <button class="btn btn-sm btn-dark order-button float-right" @onclick="@(() => NavigateToComponent(item))">Order now</button>
+                <button class="btn btn-sm btn-dark order-button float-right" @onclick= "(() => AddToShoppingCart(item))">Add to Shopping cart</button>
             </div>
         </div>
     }
@@ -46,9 +46,11 @@ Welcome to Under Covers  main paaaage
 @code {
     public IList<Item> Items { get; set; }
     public Item FeaturedItem { get; set; }
+  
+    //private ShoppingCart ShoppingCart { get; set; }
 
     protected override async Task OnInitializedAsync() {
-
+        //ShoppingCart = new ShoppingCart();
         //Items = await ItemService.GetItems(); 
         Items = new List<Item>() {
             new Item() {
@@ -71,7 +73,11 @@ Welcome to Under Covers  main paaaage
     }
 
     private void NavigateToComponent(Item item) {
-        NavigationManager.NavigateTo("order/" + item.Id);
+        NavigationManager.NavigateTo("ShoppingBasket/" + item.Id);
+    }
+
+    private void AddToShoppingCart(Item item) {
+        modelService.ShoppingCart.AddToShoppingCart(item);
     }
     
 
