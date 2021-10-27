@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SEP3UI.Model {
     public class ShoppingCart {
@@ -12,10 +12,18 @@ namespace SEP3UI.Model {
         }
         
         public void AddToShoppingCart(Item item) {
-            item.Quantity++;
-            if (!Items.Contains(item)) 
-                Items.Add(item);
-            Console.WriteLine(Items.Count);
+            Item item1 = item.Copy();
+            Item test = Items.FirstOrDefault(i => i.Id == item.Id);
+            if (test == null) {
+                Items.Add(item1);
+                item1.Quantity = 1;
+            }
+            else {
+                test.Quantity++;
+            }
+        }
+        public void EmptyShoppingCart() {
+            Items.Clear();
         }
     }
 }
