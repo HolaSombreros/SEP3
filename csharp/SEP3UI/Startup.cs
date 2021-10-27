@@ -24,6 +24,7 @@ namespace SEP3UI {
         public void ConfigureServices(IServiceCollection services) {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            
             services.AddScoped<IModelService, RestService>();
         }
 

@@ -1,0 +1,131 @@
+﻿@page "/Payout"
+@using System.ComponentModel.DataAnnotations
+@inject NavigationManager NavigationManager
+
+
+<EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
+    <div class="container">
+        <form method="post">
+            <fieldset>
+                <DataAnnotationsValidator/>
+                     <ValidationSummary/>
+                <legend class="d-flex justify-content-center m-3">
+                    <h2>Payout Form</h2>
+                </legend>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label">First Name</label>
+                    <div class="col-md-4 input-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"></span>
+                            <InputText @bind-Value="orderModel.FirstName" class="form-control"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label">Last Name</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"></span>
+                            <InputText @bind-Value="orderModel.LastName" name="last_name" placeholder="Last Name" class="form-control" type="text"></InputText>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label">E-Mail</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"></span>
+                            <InputText @bind-Value="orderModel.Email" name="email" placeholder="E-Mail" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label">City</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"></span>
+                            <InputText @bind-Value="orderModel.City" name="email" placeholder="City" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label">Street</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon"></span>
+                            <InputText @bind-Value="orderModel.Street" name="email" placeholder="Street" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label">Number</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                            </span>
+                            <InputText @bind-Value="orderModel.Number" name="number" placeholder="Number" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label">Zip code</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                            </span>
+                            <InputNumber @bind-Value="orderModel.ZipCode" name="zipcode" placeholder="Zip code" class="form-control" type="text"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label"></label>
+                    <div class="col-md-4"><br>
+                        <button type="submit" class="btn btn-primary">SUBMIT</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</EditForm>
+
+@code {
+    
+    private OrderModel orderModel = new OrderModel();
+    
+    private string ErrorMessage { get; set; }
+
+    private class OrderModel {
+        [Required(ErrorMessage = "Please enter a first name")]
+        public  string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Please enter a last name")]
+        public  string LastName { get; set; }
+        
+        [Range(1000,9999,ErrorMessage="Value must be between 1000 and 9999")]
+        [Required(ErrorMessage = "Please enter a zipcode")]
+        public  int ZipCode { get; set; }
+        
+        [Required(ErrorMessage = "Please enter a number")]
+        public string Number { get; set; }
+
+        [Required(ErrorMessage = "Please enter a street")]
+        public  string Street { get; set; }
+
+        [Required(ErrorMessage = "Please enter a city")]
+        public  string City { get; set; }
+        
+        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "Please enter an email address")]
+        public  string Email { get; set; }
+    }
+
+    private void HandleInvalidSubmit() {
+        Console.WriteLine("Invalid");
+    }
+
+    private void HandleValidSubmit() {
+        Console.WriteLine("Valid");
+    }
+
+
+}

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using SEP3UI.Model;
 
+
 namespace SEP3UI.Authentication {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider {
         private readonly IJSRuntime jsRuntime;

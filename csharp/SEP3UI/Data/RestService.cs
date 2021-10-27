@@ -26,6 +26,8 @@ namespace SEP3UI.Data {
         }
         
         public async Task<Order> CreateOrderAsync(Order order) {
+            // convert from OrderModel to Order
+            
             Order newOrder = await MakeHttpRequestAsync(order, HttpRequest.POST, "/orders");
             return newOrder;
         }

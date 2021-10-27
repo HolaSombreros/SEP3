@@ -16,7 +16,7 @@ namespace SEP3WebAPI.Controllers {
         }
         
         [HttpPost]
-        public async Task<ActionResult> CreateOrder([FromBody] Order order) {
+        public async Task<ActionResult> CreateOrderAsync([FromBody] Order order) {
             try {
                 Order newOrder = await modelService.CreateOrderAsync(order);
                 return Created($"/{newOrder.Id}", newOrder);
