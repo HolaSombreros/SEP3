@@ -9,10 +9,6 @@ using SEP3UI.Model;
 namespace SEP3UI.Data {
     public class RestService : IModelService {
         private const string uri = "https://localhost:5003";
-        private enum HttpRequest {
-            POST,
-            PUT
-        }
         
         public ShoppingCart ShoppingCart { get; init; }
         
@@ -21,21 +17,19 @@ namespace SEP3UI.Data {
         }
         
         public async Task<IList<Item>> GetItemsAsync() {
-            IList<Item> items = await MakeHttpRequestAsync<List<Item>>("/items");
+            IList<Item> items = await GetRequest<List<Item>>("items");
             return items;
         }
         
         public async Task<Order> CreateOrderAsync(Order order) {
-            // convert from OrderModel to Order
-            
-            Order newOrder = await MakeHttpRequestAsync(order, HttpRequest.POST, "/orders");
+            Order newOrder = await PostRequest(order, "orders");
             return newOrder;
         }
         
-        // Method for a GET request
-        private async Task<T> MakeHttpRequestAsync<T>(string route) {
+        // Method to send a GET request to a specific endpoint
+        private async Task<T> GetRequest<T>(string endpoint) {
             using HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync($"{uri}{route}");
+            HttpResponseMessage response = await client.GetAsync($"{uri}/{endpoint}");
             if (!response.IsSuccessStatusCode) throw new Exception($"Error: {response.StatusCode}, {response.ReasonPhrase}");
             
             string json = await response.Content.ReadAsStringAsync();
@@ -46,38 +40,44 @@ namespace SEP3UI.Data {
             return obj;
         }
         
-        // Method for a POST or a PUT request
-        private async Task<T> MakeHttpRequestAsync<T>(T bodyObject, HttpRequest type, string route) {
-            string json = JsonSerializer.Serialize(bodyObject);
+        // Method to send a POST request to a specific endpoint
+        private async Task<T> PostRequest<T>(T body, string endpoint) {
+            string json = JsonSerializer.Serialize(body);
+            
             using HttpClient client = new HttpClient();
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response;
-            
-            switch (type) {
-                case HttpRequest.POST:
-                    response = await client.PostAsync($"{uri}{route}", content);
-                    break;
-                case HttpRequest.PUT:
-                    response = await client.PutAsync($"{uri}{route}", content);
-                    break;
-                default:
-                    throw new Exception("Illegal HTTP request type detected. Allowed types: POST, PUT");
-            }
-
+            HttpResponseMessage response = await client.PostAsync($"{uri}/{endpoint}", content);
             if (!response.IsSuccessStatusCode) throw new Exception($"Error: {response.StatusCode}, {response.ReasonPhrase}");
             
             json = await response.Content.ReadAsStringAsync();
-            T newObject = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions() {
+            T obj = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions() {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
             
-            return newObject;
+            return obj;
         }
         
-        // Method for a DELETE request
-        private async Task MakeHttpRequestAsync(string route) {
+        // Method to send a PUT request to a specific endpoint
+        private async Task<T> PutRequest<T>(T body, string endpoint) {
+            string json = JsonSerializer.Serialize(body);
+            
             using HttpClient client = new HttpClient();
-            HttpResponseMessage response = await client.GetAsync($"{uri}{route}");
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PutAsync($"{uri}/{endpoint}", content);
+            if (!response.IsSuccessStatusCode) throw new Exception($"Error: {response.StatusCode}, {response.ReasonPhrase}");
+            
+            json = await response.Content.ReadAsStringAsync();
+            T obj = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            
+            return obj;
+        }
+        
+        // Method to send a DELETE request to a specific endpoint
+        private async Task DeleteRequest(string endpoint) {
+            using HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync($"{uri}/{endpoint}");
             if (!response.IsSuccessStatusCode) throw new Exception($"Error: {response.StatusCode}, {response.ReasonPhrase}");
         }
     }

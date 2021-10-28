@@ -10,16 +10,17 @@ namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class ItemsController : ControllerBase {
-        private IModelService modelService;
+        private IRestService service;
 
-        public ItemsController(IModelService modelService) {
-            this.modelService = modelService;
+        public ItemsController(IRestService service) {
+            this.service = service;
         }
         
         [HttpGet]
+        // Endpoint = /items
         public async Task<ActionResult<IList<Item>>> GetItemsAsync() {
             try {
-                IList<Item> items = await modelService.GetItemsAsync();
+                IList<Item> items = await service.GetItemsAsync();
                 return Ok(items);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);

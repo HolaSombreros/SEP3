@@ -10,7 +10,7 @@ using SEP3UI.Model;
 using SEP3WebAPI.Data;
 
 namespace SEP3WebAPI.Mediator {
-    public class Client : IModelService {
+    public class Client : IRestService {
         private TcpClient tcpClient;
         private int port = 1234;
         private NetworkStream networkStream;
@@ -59,7 +59,9 @@ namespace SEP3WebAPI.Mediator {
                 }
             }
         }
-
+        
+        // TODO - Could we do a Request<T> to avoid all the different variables in the "Request" class?
+        // So for here T would be IList<Item> and for the method below, it would be Order. This way there would only be 1 variable in the "Request" class
         public async Task<IList<Item>> GetItemsAsync() {
             Request req = new Request();
             req.Type = "items";
