@@ -18,24 +18,19 @@ namespace SEP3WebAPI.Mediator {
         private IList<Item> items;
         private Order order;
         private Object lock1;
-        private Object lock2;
 
         public Client() {
-            tcpClient = new TcpClient("10.154.206.142", port);
+            tcpClient = new TcpClient("127.0.0.1", port);
             networkStream = tcpClient.GetStream();
             ClientReceiver clientReceiver = new ClientReceiver(this, networkStream);
             lock1 = new Object();
-            lock2 = new Object();
         }
 
-        // This method is called by the ClientReceiver class which listens continuously to the server
-        // lock1 and lock2 are just simple objects to use for synchronization
-        // The method saves the information in a local variable depending on the request type
         public async Task ReceiveAsync(string result) {
             lock (lock1) {
-                Request request = JsonSerializer.Deserialize<Request>(result,
-                    new JsonSerializerOptions {WriteIndented = true, PropertyNameCaseInsensitive = false});
+                Request request = JsonSerializer.Deserialize<Request>(result, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
                 if (request != null) {
+                    Console.WriteLine(request.Type);
                     switch (request.Type) {
                         case "items":
                             items = request.Items;
@@ -51,17 +46,15 @@ namespace SEP3WebAPI.Mediator {
                             throw new ConnectionAbortedException();
                     }
                 }
-                Monitor.Exit(lock2);
+                Monitor.Pulse(lock1);
             }
         }
 
-        // This method uses lock1 for synchronization
-        // This method is called when a request is waiting for a reply
         public void Waiting() {
             lock (lock1) {
                 waiting = true;
                 while (waiting) {
-                    Monitor.Enter(lock2);
+                    Monitor.Wait(lock1);
                     waiting = false;
                 }
             }
@@ -69,10 +62,6 @@ namespace SEP3WebAPI.Mediator {
         
         // TODO - Could we do a Request<T> to avoid all the different variables in the "Request" class?
         // So for here T would be IList<Item> and for the method below, it would be Order. This way there would only be 1 variable in the "Request" class
-
-        // This method sends a request for the list of items
-        // The method waits for the reply (which will come through the ClientReceiver and ReceiveAsync method)
-        // The method returns the list saved as a variable in this class
         public async Task<IList<Item>> GetItemsAsync() {
             Request req = new Request();
             req.Type = "items";
@@ -96,8 +85,8 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public void Send(Request req) {
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {WriteIndented = true});
-            byte[] data = Encoding.ASCII.GetBytes(send);
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            byte[] data = Encoding.ASCII.GetBytes(send + "\n");
             networkStream.Write(data, 0, data.Length);
         }
     }

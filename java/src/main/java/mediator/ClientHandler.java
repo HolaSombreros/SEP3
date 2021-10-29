@@ -40,7 +40,7 @@ public class ClientHandler implements Runnable {
                 if (request != null) {
                     switch (request.getType()) {
                         case "items":
-                            Request reply = new Request("items");
+                            Request reply = new Request(request.getType());
                             ArrayList<Item> items = new ArrayList<>();
                             items.add(new Item(1,"name", "description", 100, Category.BOOK, 13));
                             reply.setItems(items);
@@ -53,10 +53,12 @@ public class ClientHandler implements Runnable {
                 }
             }
             catch (IOException e) {
+                e.printStackTrace();
                 sendReply(new Request("connection_error"));
                 running = false;
             }
             catch (Exception e) {
+                e.printStackTrace();
                 sendReply(new Request("error"));
             }
         }
@@ -64,6 +66,7 @@ public class ClientHandler implements Runnable {
 
     private void sendReply(Request request) {
         String replyGson = gson.toJson(request);
+        System.out.println(replyGson);
         out.println(replyGson);
     }
 }

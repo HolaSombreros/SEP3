@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using SEP3UI.Model;
@@ -13,7 +16,6 @@ namespace SEP3WebAPI.Data {
         public RestService() {
             client = new Client();
         }
-        
         public async Task<IList<Item>> GetItemsAsync() {
             return await client.GetItemsAsync();
         }

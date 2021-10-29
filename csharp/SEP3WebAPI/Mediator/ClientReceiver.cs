@@ -24,6 +24,7 @@ namespace SEP3WebAPI.Mediator {
                         byte[] response = new byte[1024];
                         int bytesRead = stream.Read(response, 0, response.Length);
                         string result = Encoding.ASCII.GetString(response, 0, bytesRead);
+                        result = result.Replace("\n", "");
                         client.ReceiveAsync(result);
                     }
                     catch (ConnectionAbortedException e) {
