@@ -2,15 +2,12 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.DatabaseManager;
-import database.model.Item;
-import database.model.enums.Category;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class ClientHandler implements Runnable {
 
@@ -41,9 +38,7 @@ public class ClientHandler implements Runnable {
                     switch (request.getType()) {
                         case "items":
                             Request reply = new Request(request.getType());
-                            ArrayList<Item> items = new ArrayList<>();
-                            items.add(new Item(1,"name", "description", 100, Category.BOOK, 13));
-                            reply.setItems(items);
+                            //reply.setItems(/*model.getItems*/);
                             sendReply(reply);
                             break;
                         case "purchase":
