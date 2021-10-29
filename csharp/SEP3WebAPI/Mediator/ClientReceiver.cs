@@ -1,9 +1,7 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Microsoft.AspNetCore.Connections;
-using SEP3UI.Data;
 
 namespace SEP3WebAPI.Mediator {
     public class ClientReceiver {
