@@ -17,11 +17,11 @@ namespace SEP3WebAPI.Controllers {
         
         [HttpPost]
         // Endpoint = /orders
-        public async Task<ActionResult> CreateOrderAsync([FromBody] Order order) {
+        public async Task<ActionResult> CreateOrderAsync([FromBody] OrderModel orderModel) {
             try {
-                Order newOrder = await service.CreateOrderAsync(order);
+                Order newOrder = await service.CreateOrderAsync(orderModel);
                 return Created($"/{newOrder.Id}", newOrder);
-            } catch (InvalidDataException e) {
+            } catch (ArgumentNullException e) {
                 return BadRequest(e.Message);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
