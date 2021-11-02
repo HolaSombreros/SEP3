@@ -91,7 +91,7 @@ public class DatabaseHelper<T> {
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             if(resultSet.next()){
-                mapper.map(resultSet);
+                return mapper.map(resultSet);
             }
             else{
                 return null;
@@ -99,7 +99,6 @@ public class DatabaseHelper<T> {
         } catch (SQLException e){
             throw new IllegalStateException(e.getMessage());
         }
-        return null;
     }
 
 

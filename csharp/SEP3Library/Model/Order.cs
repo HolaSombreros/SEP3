@@ -13,6 +13,9 @@ namespace SEP3Library.Model {
         [Required(ErrorMessage = "Please specify the customer of the order")]
         public Customer User { get; set; }
 
+        public Address Address { get; set; }
+
+
         [Required(ErrorMessage = "Please specify the items the order consists of")]
         public IList<Item> Items { get; set; }
         

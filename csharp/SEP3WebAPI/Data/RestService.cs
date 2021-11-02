@@ -27,12 +27,12 @@ namespace SEP3WebAPI.Data {
                     FirstName = orderModel.FirstName,
                     LastName = orderModel.LastName,
                     Email = orderModel.Email,
-                    Address = new Address() {
-                        Street = orderModel.Street,
-                        Number = orderModel.Number,
-                        City = orderModel.City,
-                        ZipCode = orderModel.ZipCode
-                    }
+                },
+                Address = new Address() {
+                    Street = orderModel.Street,
+                    Number = orderModel.Number,
+                    City = orderModel.City,
+                    ZipCode = orderModel.ZipCode
                 },
                 DateTime = new MyDateTime() {
                     Year = DateTime.Now.Year,
