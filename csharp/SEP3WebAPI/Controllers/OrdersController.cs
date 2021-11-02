@@ -9,16 +9,17 @@ namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class OrdersController : ControllerBase {
-        private IModelService modelService;
+        private IRestService service;
 
-        public OrdersController(IModelService modelService) {
-            this.modelService = modelService;
+        public OrdersController(IRestService service) {
+            this.service = service;
         }
         
         [HttpPost]
-        public async Task<ActionResult> CreateOrder([FromBody] Order order) {
+        // Endpoint = /orders
+        public async Task<ActionResult> CreateOrderAsync([FromBody] Order order) {
             try {
-                Order newOrder = await modelService.CreateOrderAsync(order);
+                Order newOrder = await service.CreateOrderAsync(order);
                 return Created($"/{newOrder.Id}", newOrder);
             } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
