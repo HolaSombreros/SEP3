@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SEP3UI.Model;
+using SEP3Library.Model;
 
 namespace SEP3WebAPI.Data {
     public interface IItemService {

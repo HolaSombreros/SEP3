@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SEP3UI.Model {
+namespace SEP3Library.Model {
     public class Order {
         public IList<Item> Items { get; set; }
         public User User { get; set; }

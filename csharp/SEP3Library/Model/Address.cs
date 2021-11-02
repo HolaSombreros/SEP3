@@ -1,4 +1,4 @@
-﻿namespace SEP3UI.Model {
+﻿namespace SEP3Library.Model {
     public class Address {
         public string City { get; set; }
         public string Street { get; set; }

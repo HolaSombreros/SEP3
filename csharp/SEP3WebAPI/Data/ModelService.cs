@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SEP3UI.Model;
+using SEP3Library.Model;
 using SEP3WebAPI.Mediator;
 
 namespace SEP3WebAPI.Data {
