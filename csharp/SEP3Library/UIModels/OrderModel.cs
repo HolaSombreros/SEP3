@@ -10,8 +10,6 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please enter an email address")]
         public string Email { get; set; }
 
-        public Customer Customer { get; set; } = new Customer();
-        
         [Required(ErrorMessage = "Please enter a first name")]
         [MaxLength(100, ErrorMessage = "The first name cannot exceed 100 characters")]
         [MinLength(2, ErrorMessage = "The first name has to be longer than 2 characters")]
