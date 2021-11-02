@@ -91,7 +91,7 @@ public class DatabaseHelper<T> {
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             if(resultSet.next()){
-                mapper.map(resultSet);
+                return mapper.map(resultSet);
             }
             else{
                 return null;
@@ -99,11 +99,10 @@ public class DatabaseHelper<T> {
         } catch (SQLException e){
             throw new IllegalStateException(e.getMessage());
         }
-        return null;
     }
 
 
-    public Collection<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
+    public List<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             List<T> itemList = new ArrayList<>();
