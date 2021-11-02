@@ -16,16 +16,20 @@ import java.util.List;
 public class OrderDAOService implements OrderDAO {
 
     private DatabaseHelper<Order> databaseHelper;
+    private AddressDAOService addressDAOService;
 
     public OrderDAOService(String url, String username, String password) {
         this.databaseHelper = new DatabaseHelper<>(url, username, password);
+        addressDAOService = new AddressDAOService(url, username,password);
     }
 
     @Override
     public Order create(List<Item> items, Address address, MyDateTime dateTime, OrderStatus status, User user) {
         try {
+            if(addressDAOService.read(address.getId()) != null)
+                addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipcode(), address.getCity());
             List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO purchase (address_id, date_time, status, first_name, middle_name, last_name, email, customer_id) " +
-                            "VALUES (?,?,?,?,?,?,?,?", address.getId(),dateTime.getLocalDateTime(),status.toString(), user.getFirstName(), user.getMiddleName(),
+                            "VALUES (?,?,?,?,?,?,?,?)", address.getId(),dateTime.getLocalDateTime(),status.toString(), user.getFirstName(), user.getMiddleName(),
                     user.getLastName(), user.getEmail(), null);
 
             for(Item item: items){
