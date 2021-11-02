@@ -8,6 +8,7 @@ import database.model.enums.ItemStatus;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 public class ItemDAOService implements ItemDAO {
@@ -21,8 +22,8 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item create(String name, String description, double price, Category category, int quantity){
         try {
-            List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status) VALUES (?,?,?,?,?,?,?",
-                    name, description,price,category.toString(),0,quantity, ItemStatus.INSTOCK);
+            List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status) VALUES (?,?,?,?::item_category,?,?,?::item_status)",
+                    name, description,price,category.toString(),0,quantity, ItemStatus.INSTOCK.toString());
             return read(keys.get(0));
 
         } catch (SQLException e) {
@@ -33,7 +34,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item read(int id) {
         try {
-            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item WHERE id = ?", id);
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item WHERE item_id = ?", id);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -54,5 +55,13 @@ public class ItemDAOService implements ItemDAO {
         //TODO think about this
     }
 
+    @Override
+    public List<Item> readByCategory(Category category) {
+        return null;
+    }
 
+    @Override
+    public Collection<Item> readAll() {
+        return null;
+    }
 }

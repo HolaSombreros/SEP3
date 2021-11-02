@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SEP3UI.Model {
+namespace SEP3Library.Model {
     public class ShoppingCart {
         public User User { get; set; }
         public double Total { get; set; }

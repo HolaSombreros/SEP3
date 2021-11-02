@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using SEP3UI.Model;
+using Microsoft.AspNetCore.Mvc;
+using SEP3Library.Model;
 using SEP3WebAPI.Mediator;
 
 namespace SEP3WebAPI.Data {
@@ -18,14 +20,18 @@ namespace SEP3WebAPI.Data {
             return await client.GetItemsAsync();
         }
         
-        public async Task<Order> CreateOrderAsync(Order order) {
-            if (order == null) throw new InvalidDataException();
-            if (order.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
-            
-            // TODO - I guess we should validate here using the same validation model as we did in the UI to follow the standard principles
-            // Same with the 3rd tier. Technically we should probably validate it there too before putting it into the database, or is this
-            // just overdoing it?
-            
+        public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
+            if (orderModel == null) throw new ArgumentNullException("Please specify an order of the proper format");
+            // if (orderModel.Items.Count < 1) throw new ArgumentNullException("Your order must contain at least 1 item");
+
+            Order order = new Order() {
+                DateTime = DateTime.Now,
+                User = orderModel.User,
+                Address = orderModel.Address,
+                Items = orderModel.Items,
+                OrderStatus = OrderStatus.PENDING
+            };
+
             return await client.CreateOrderAsync(order);
         }
     }

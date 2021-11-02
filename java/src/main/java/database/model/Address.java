@@ -1,17 +1,24 @@
 package database.model;
 
 public class Address {
+    private int id;
     private String street;
     private String number;
     private int zipcode;
     private String city;
 
-    public Address(String street, String number, int zipcode, String city) {
+    public Address(String street, String number, int zipcode, String city, int id) {
         setStreet(street);
         setNumber(number);
         setZipcode(zipcode);
         setCity(city);
+        this.id = id;
     }
+
+    public int getId() {
+        return id;
+    }
+
     public String getStreet() {
         return street;
     }
@@ -45,7 +52,7 @@ public class Address {
     }
 
     public Address copy() {
-        return new Address(street, number, zipcode, city);
+        return new Address(street, number, zipcode, city, id);
     }
 
     public boolean equals(Object obj) {
@@ -53,7 +60,7 @@ public class Address {
             return false;
 
         Address other = (Address) obj;
-        return street.equals(other.street) && city.equals(other.city) && number.equals(other.number) && zipcode == other.zipcode;
+        return street.equals(other.street) && city.equals(other.city) && number.equals(other.number) && zipcode == other.zipcode && id == other.id;
     }
 
     public String toString() {

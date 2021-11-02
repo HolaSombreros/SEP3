@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using SEP3UI.Model;
+using SEP3Library.Model;
+
 
 
 namespace SEP3UI.Authentication {

@@ -1,4 +1,4 @@
-﻿namespace SEP3UI.Model {
+﻿namespace SEP3Library.Model {
     public class Customer : User {
         public int Id { get; set; }
         public string Email { get; set; }
