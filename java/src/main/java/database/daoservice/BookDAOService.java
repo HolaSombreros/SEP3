@@ -66,7 +66,7 @@ public class BookDAOService implements BookDAO {
     }
 
     @Override
-    public Collection<Book> readAll() {
+    public List<Book> readAll() {
         try{
             return databaseHelper.mapList(new BookMapper(), "SELECT * FROM book JOIN item USING (item_id);");
         } catch (SQLException e) {
