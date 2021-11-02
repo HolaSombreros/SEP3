@@ -12,7 +12,7 @@ using SEP3Library.Model;
 using SEP3WebAPI.Data;
 
 namespace SEP3WebAPI.Mediator {
-    public class Client : IRestService {
+    public class Client : IClient {
         private TcpClient tcpClient;
         private int port = 1234;
         private NetworkStream networkStream;
