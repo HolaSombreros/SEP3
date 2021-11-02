@@ -2,6 +2,7 @@ package database.daoservice;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class DatabaseHelper<T> {
@@ -25,11 +26,11 @@ public class DatabaseHelper<T> {
     }
 
     private static PreparedStatement preparedStatement(Connection connection, String query, Object... parameters) throws SQLException {
-        PreparedStatement stat = connection.prepareStatement(query);
+        PreparedStatement statement = connection.prepareStatement(query);
         for(int i = 0; i < parameters.length; i++) {
-            stat.setObject(i + 1, parameters[i]);
+            statement.setObject(i + 1, parameters[i]);
         }
-        return stat;
+        return statement;
     }
 
     private static PreparedStatement preparedStatementWithKeys(Connection connection, String query, Object... parameters) throws SQLException {
@@ -47,19 +48,29 @@ public class DatabaseHelper<T> {
     }
 
     public void executeUpdate(String query, Object... parameters) throws SQLException{
-        try(Connection connection = getConnection()){
+        Connection connection = getConnection();
+        try{
+            connection.setAutoCommit(false);
             PreparedStatement statement = preparedStatement(connection,query,parameters);
             statement.executeUpdate();
+            connection.commit();
         }
         catch (SQLException e){
-            throw new IllegalStateException(e.getMessage());
+            connection.rollback();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        finally {
+            connection.close();
         }
     }
 
     public List<Integer> executeUpdateWithKeys(String query, Object... parameters) throws SQLException{
-        try(Connection connection = getConnection()){
+        Connection connection = getConnection();
+        try{
+            connection.setAutoCommit(false);
             PreparedStatement statement = preparedStatementWithKeys(connection,query,parameters);
             statement.executeUpdate();
+            connection.commit();
             List<Integer> keys = new ArrayList<>();
             ResultSet resultSet = statement.getGeneratedKeys();
             while(resultSet.next()) {
@@ -68,7 +79,11 @@ public class DatabaseHelper<T> {
             return keys;
         }
         catch (SQLException e){
-            throw new IllegalStateException(e.getMessage());
+            connection.rollback();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+        finally {
+            connection.close();
         }
     }
 
@@ -76,7 +91,7 @@ public class DatabaseHelper<T> {
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             if(resultSet.next()){
-                mapper.mapper(resultSet);
+                mapper.map(resultSet);
             }
             else{
                 return null;
@@ -88,17 +103,17 @@ public class DatabaseHelper<T> {
     }
 
 
-    public T mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
+    public Collection<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             List<T> itemList = new ArrayList<>();
             while(resultSet.next()){
-                itemList.add(mapper.mapper(resultSet));
+                itemList.add(mapper.map(resultSet));
             }
+            return itemList;
         } catch (SQLException e){
             throw new IllegalStateException(e.getMessage());
         }
-        return null;
     }
 
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SEP3UI.Model {
+namespace SEP3Library.Model {
     public class Order {
         public int Id { get; set; }
         
