@@ -2,6 +2,7 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.DatabaseManager;
+import database.model.Order;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,12 +38,13 @@ public class ClientHandler implements Runnable {
                 if (request != null) {
                     switch (request.getType()) {
                         case "items":
-                            Request reply = new Request(request.getType());
-                            //reply.setItems(/*model.getItems*/);
+                            Request reply = new Request("items");
+//                            reply.setItems(databaseManager.getItemDAOService().readAll());
                             sendReply(reply);
                             break;
                         case "purchase":
-                            //model.placeOrder
+//                            Order order = request.getOrder();;
+//                            databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDatetime(),order.getOrderStatus(),order.getUser());
                             break;
                     }
                 }

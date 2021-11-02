@@ -14,5 +14,5 @@ public interface ItemDAO {
     void update(Item item);
     void delete(Item item);
     List<Item> readByCategory(Category category);
-    Collection<Item> readAll();
+    List<Item> readAll();
 }

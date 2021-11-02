@@ -61,7 +61,7 @@ public class ItemDAOService implements ItemDAO {
     }
 
     @Override
-    public Collection<Item> readAll() {
+    public List<Item> readAll() {
         return null;
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Xsl;
 using Microsoft.AspNetCore.Connections;
 using SEP3Library.Model;
 using SEP3WebAPI.Data;
@@ -59,7 +61,7 @@ namespace SEP3WebAPI.Mediator {
                 }
             }
         }
-        
+
         // TODO - Could we do a Request<T> to avoid all the different variables in the "Request" class?
         // So for here T would be IList<Item> and for the method below, it would be Order. This way there would only be 1 variable in the "Request" class
         public async Task<IList<Item>> GetItemsAsync() {
@@ -86,6 +88,7 @@ namespace SEP3WebAPI.Mediator {
 
         public void Send(Request req) {
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Console.WriteLine(send);
             byte[] data = Encoding.ASCII.GetBytes(send + "\n");
             networkStream.Write(data, 0, data.Length);
         }
