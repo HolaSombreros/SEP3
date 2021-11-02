@@ -2,7 +2,6 @@ package database.model;
 
 import database.model.enums.OrderStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class Order {
@@ -10,10 +9,10 @@ public class Order {
     private User user;
     private int id;
     private Address address;
-    private LocalDateTime datetime;
+    private MyDateTime datetime;
     private OrderStatus orderStatus;
 
-    public Order(List<Item> items, User user, int id, Address address, LocalDateTime datetime, OrderStatus orderStatus) {
+    public Order(List<Item> items, User user, int id, Address address, MyDateTime datetime, OrderStatus orderStatus) {
         this.items = items;
         this.user = user;
         this.id = id;
@@ -38,7 +37,7 @@ public class Order {
         return address;
     }
 
-    public LocalDateTime getDatetime() {
+    public MyDateTime getDatetime() {
         return datetime;
     }
 
