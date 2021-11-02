@@ -1,5 +1,9 @@
 package database.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 public class MyDateTime {
     private int year;
     private int month;
@@ -63,5 +67,9 @@ public class MyDateTime {
 
     public void setSecond(int second) {
         this.second = second;
+    }
+
+    public LocalDateTime getLocalDateTime(){
+        return LocalDateTime.of(year, month, day, hour, minute, second);
     }
 }
