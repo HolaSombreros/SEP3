@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace SEP3UI.Model {
+namespace SEP3Library.Model {
     public class Order {
         public IList<Item> Items { get; set; }
         

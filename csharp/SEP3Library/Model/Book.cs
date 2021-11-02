@@ -1,4 +1,4 @@
-﻿namespace SEP3UI.Model {
+﻿namespace SEP3Library.Model {
     public class Book : Item {
         public string Isbn { get; set; }
         public string Author { get; set; }
