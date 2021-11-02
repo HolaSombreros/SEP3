@@ -22,11 +22,9 @@ namespace SEP3WebAPI.Data {
             if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
             
             Order order = new Order() {
-                User = new Customer() {
-                    FirstName = orderModel.FirstName,
-                    LastName = orderModel.LastName,
-                    Email = orderModel.Email,
-                },
+                FirstName = orderModel.FirstName,
+                LastName = orderModel.LastName,
+                Email = orderModel.Email,
                 Address = new Address() {
                     Street = orderModel.Street,
                     Number = orderModel.Number,
