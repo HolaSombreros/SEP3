@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using SEP3Library.Model;
 using SEP3Library.UIModels;
-
 using SEP3WebAPI.Mediator;
 
 namespace SEP3WebAPI.Data {
@@ -13,6 +11,7 @@ namespace SEP3WebAPI.Data {
         public RestService() {
             client = new Client();
         }
+        
         public async Task<IList<Item>> GetItemsAsync() {
             return await client.GetItemsAsync();
         }
@@ -24,7 +23,6 @@ namespace SEP3WebAPI.Data {
                 throw new ArgumentNullException("Items", "Your order must contain at least 1 item");
 
             Order order = new Order() {
-                DateTime = MyDateTime.,
                 User = new Customer() {
                     FirstName = orderModel.FirstName,
                     LastName = orderModel.LastName,
@@ -36,9 +34,18 @@ namespace SEP3WebAPI.Data {
                         ZipCode = orderModel.ZipCode
                     }
                 },
+                DateTime = new MyDateTime() {
+                    Year = DateTime.Now.Year,
+                    Month = DateTime.Now.Month,
+                    Day = DateTime.Now.Day,
+                    Hour = DateTime.Now.Hour,
+                    Minute = DateTime.Now.Minute,
+                    Second = DateTime.Now.Second
+                },
                 Items = orderModel.Items,
                 OrderStatus = OrderStatus.PENDING
             };
+            
             return await client.CreateOrderAsync(order);
         }
     }
