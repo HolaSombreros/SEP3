@@ -95,20 +95,25 @@
     private string ErrorMessage { get; set; }
 
     public class OrderModel {
+        
         [Required(ErrorMessage = "Please enter a first name")]
+        [MaxLength(100, ErrorMessage = "The first name cannot exceed 100 characters")]
+        [MinLength(2, ErrorMessage = "The first name has to be longer than 2 characters")]
         public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Please enter a last name")]
+        [MaxLength(100, ErrorMessage = "The last name cannot exceed 100 characters")]
+        [MinLength(2, ErrorMessage = "The last name has to be longer than 2 characters")]
         public string LastName { get; set; }
         
-        [Range(1000,9999,ErrorMessage="Value must be between 1000 and 9999")]
+        [Range(1000,9999,ErrorMessage="Zipcode must be between 1000 and 9999")]
         [Required(ErrorMessage = "Please enter a zipcode")]
         public int ZipCode { get; set; }
         
         [Required(ErrorMessage = "Please enter a number")]
         public string Number { get; set; }
 
-        [Required(ErrorMessage = "Please enter a street")]
+        [Required(ErrorMessage = "Please enter a street name")]
         public string Street { get; set; }
 
         [Required(ErrorMessage = "Please enter a city")]
@@ -117,6 +122,10 @@
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please enter an email address")]
         public string Email { get; set; }
+
+        public IList<Item> Items { get; set; }
+        
+        public User User { get; set; }
     }
 
     private void HandleInvalidSubmit() {
@@ -124,24 +133,28 @@
     }
 
     private void HandleValidSubmit() {
-        Order order = new Order() {
-            Items = modelService.ShoppingCart.Items,
-            Address = new Address() {
-                Number = orderModel.Number,
-                City = orderModel.City,
-                Street = orderModel.Street,
-                ZipCode = orderModel.ZipCode
-            },
-            DateTime = DateTime.Now,
-            OrderStatus = OrderStatus.PENDING,
-            User = new Customer() {
-                FirstName = orderModel.FirstName,
-                LastName = orderModel.LastName,
-                Email = orderModel.Email
-            }
-        };
-        modelService.CreateOrderAsync(order);
-        modelService.ShoppingCart.EmptyShoppingCart();
+        try {
+            OrderModel order = new OrderModel() {
+                Items = modelService.ShoppingCart.Items,
+                User = new Customer() {
+                    FirstName = orderModel.FirstName,
+                    LastName = orderModel.LastName,
+                    Email = orderModel.Email,
+                    Address = new Address() {
+                        City = orderModel.City,
+                        ZipCode = orderModel.ZipCode,
+                        Number = orderModel.Number,
+                        Street = orderModel.Street
+                    }
+                },
+            };
+            modelService.CreateOrderAsync(order);
+            modelService.ShoppingCart.EmptyShoppingCart();
+            ErrorMessage = "Successful purchase";
+        }
+        catch (Exception e) {
+            ErrorMessage = e.Message;
+        }
     }
 
 
