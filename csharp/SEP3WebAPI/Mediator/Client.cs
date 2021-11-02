@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Xsl;
 using Microsoft.AspNetCore.Connections;
 using SEP3Library.Model;
 using SEP3WebAPI.Data;
@@ -17,49 +19,48 @@ namespace SEP3WebAPI.Mediator {
         private bool waiting;
         private IList<Item> items;
         private Order order;
-        private Object wait;
+        private Object lock1;
 
         public Client() {
-            tcpClient = new TcpClient("10.154.206.142", port);
+            tcpClient = new TcpClient("127.0.0.1", port);
             networkStream = tcpClient.GetStream();
             ClientReceiver clientReceiver = new ClientReceiver(this, networkStream);
-            wait = new Object();
+            lock1 = new Object();
         }
 
         public async Task ReceiveAsync(string result) {
-            Object obj = new Object();
-            lock (obj) {
-                Request request = JsonSerializer.Deserialize<Request>(result,
-                    new JsonSerializerOptions {WriteIndented = true, PropertyNameCaseInsensitive = false});
-                switch (request.Type) {
-                    case "items":
-                        items = request.Items;
-                        break;
-                    case "purchase":
-                        order = request.Order;
-                        break;
-                    case "error":
-                        items = null;
-                        order = null;
-                        break;
-                    case "connection_error":
-                        throw new ConnectionAbortedException();
+            lock (lock1) {
+                Request request = JsonSerializer.Deserialize<Request>(result, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
+                if (request != null) {
+                    Console.WriteLine(request.Type);
+                    switch (request.Type) {
+                        case "items":
+                            items = request.Items;
+                            break;
+                        case "purchase":
+                            order = request.Order;
+                            break;
+                        case "error":
+                            items = null;
+                            order = null;
+                            break;
+                        case "connection_error":
+                            throw new ConnectionAbortedException();
+                    }
                 }
-                Monitor.Exit(wait);
+                Monitor.Pulse(lock1);
             }
         }
 
         public void Waiting() {
-            Object obj = new Object();
-            lock (obj) {
+            lock (lock1) {
                 waiting = true;
                 while (waiting) {
-                    Monitor.Enter(wait);
+                    Monitor.Wait(lock1);
                     waiting = false;
                 }
             }
         }
-        
         // TODO - Could we do a Request<T> to avoid all the different variables in the "Request" class?
         // So for here T would be IList<Item> and for the method below, it would be Order. This way there would only be 1 variable in the "Request" class
         public async Task<IList<Item>> GetItemsAsync() {
@@ -85,8 +86,9 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public void Send(Request req) {
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {WriteIndented = true});
-            byte[] data = Encoding.ASCII.GetBytes(send);
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Console.WriteLine(send);
+            byte[] data = Encoding.ASCII.GetBytes(send + "\n");
             networkStream.Write(data, 0, data.Length);
         }
     }

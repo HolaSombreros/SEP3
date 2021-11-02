@@ -2,6 +2,7 @@ package via.group2.SEP3.mediator;
 
 import com.google.gson.Gson;
 import database.DatabaseManager;
+import database.model.Order;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,11 +39,12 @@ public class ClientHandler implements Runnable {
                     switch (request.getType()) {
                         case "items":
                             Request reply = new Request("items");
-//                            reply.setItems(/*model stuff*/);
+//                            reply.setItems(databaseManager.getItemDAOService().readAll());
                             sendReply(reply);
                             break;
                         case "purchase":
-                            //model.placeOrder
+//                            Order order = request.getOrder();;
+//                            databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDatetime(),order.getOrderStatus(),order.getUser());
                             break;
                     }
                 }

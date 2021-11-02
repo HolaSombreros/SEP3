@@ -2,16 +2,15 @@ package database.daoservice;
 
 import database.daomodel.OrderDAO;
 import database.daoservice.mapper.OrderMapper;
-import database.model.Address;
-import database.model.Item;
-import database.model.Order;
-import database.model.User;
+import database.model.*;
 import database.model.enums.ItemStatus;
 import database.model.enums.OrderStatus;
 
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.time.LocalDate;
 import java.util.List;
 
 public class OrderDAOService implements OrderDAO {
@@ -23,10 +22,10 @@ public class OrderDAOService implements OrderDAO {
     }
 
     @Override
-    public Order create(List<Item> items, Address address, LocalDateTime dateTime, OrderStatus status, User user) {
+    public Order create(List<Item> items, Address address, MyDateTime dateTime, OrderStatus status, User user) {
         try {
             List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO purchase (address_id, date_time, status, first_name, middle_name, last_name, email, customer_id) " +
-                            "VALUES (?,?,?,?,?,?,?,?", address.getId(),LocalDateTime.now(),status.toString(), user.getFirstName(), user.getMiddleName(),
+                            "VALUES (?,?,?,?,?,?,?,?", address.getId(),dateTime.getLocalDateTime(),status.toString(), user.getFirstName(), user.getMiddleName(),
                     user.getLastName(), user.getEmail(), null);
 
             for(Item item: items){
