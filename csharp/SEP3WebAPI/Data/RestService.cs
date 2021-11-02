@@ -7,7 +7,7 @@ using SEP3WebAPI.Mediator;
 
 namespace SEP3WebAPI.Data {
     public class RestService : IRestService {
-        private Client client;
+        private IClient client;
         public RestService() {
             client = new Client();
         }

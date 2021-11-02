@@ -103,7 +103,7 @@ public class DatabaseHelper<T> {
     }
 
 
-    public Collection<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
+    public List<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
             List<T> itemList = new ArrayList<>();
