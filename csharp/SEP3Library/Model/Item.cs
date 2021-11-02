@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SEP3UI.Model {
+namespace SEP3Library.Model {
     public class Item {
         public int Id { get; set; }
         public string Name { get; set; }
