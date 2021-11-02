@@ -9,7 +9,7 @@ namespace SEP3Library.Model {
         
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Category Category { get; set; }
-        public double Discount { get; set; }
+        public int Discount { get; set; }
         public int Quantity { get; set; }
         
         [JsonConverter(typeof(JsonStringEnumConverter))]

@@ -21,7 +21,6 @@ public class ClientHandler implements Runnable {
     private DatabaseManager databaseManager;
 
     public ClientHandler(Socket socket, DatabaseManager databaseManager) throws IOException {
-        //model;
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -34,17 +33,22 @@ public class ClientHandler implements Runnable {
         while (running) {
             try {
                 String received = in.readLine();
+                System.out.println(received);
                 Request request = gson.fromJson(received, Request.class);
+                Request reply;
                 if (request != null) {
                     switch (request.getType()) {
                         case "items":
-                            Request reply = new Request("items");
-//                            reply.setItems(databaseManager.getItemDAOService().readAll());
+                            reply = new Request(request.getType());
+                            reply.setItems(databaseManager.getItemDAOService().readAll());
                             sendReply(reply);
                             break;
                         case "purchase":
-//                            Order order = request.getOrder();;
-//                            databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDatetime(),order.getOrderStatus(),order.getUser());
+                            reply = new Request(request.getType());
+                            Order order = request.getOrder();
+                            reply.setOrder(order);
+                            sendReply(reply);
+         //                   databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDatetime(),order.getOrderStatus(),order.getUser());
                             break;
                     }
                 }
@@ -61,8 +65,8 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void sendReply(Request request) {
-        String replyGson = gson.toJson(request);
+    private void sendReply(Request reply) {
+        String replyGson = gson.toJson(reply);
         System.out.println(replyGson);
         out.println(replyGson);
     }

@@ -11,7 +11,7 @@ namespace SEP3Library.Model {
         
         public Address Address { get; set; }
         
-        public DateTime DateTime { get; set; }
+        public MyDateTime DateTime { get; set; }
         
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public OrderStatus OrderStatus { get; set; }

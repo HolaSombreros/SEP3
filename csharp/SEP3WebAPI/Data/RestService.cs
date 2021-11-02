@@ -23,7 +23,15 @@ namespace SEP3WebAPI.Data {
         public async Task<Order> CreateOrderAsync(Order order) {
             if (order == null) throw new InvalidDataException();
             if (order.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
-            
+            order.DateTime = new MyDateTime() {
+                Year = DateTime.Now.Year,
+                Month = DateTime.Now.Month,
+                Day = DateTime.Now.Day,
+                Hour = DateTime.Now.Hour,
+                Minute = DateTime.Now.Minute,
+                Second = DateTime.Now.Second
+            };
+                
             // TODO - I guess we should validate here using the same validation model as we did in the UI to follow the standard principles
             // Same with the 3rd tier. Technically we should probably validate it there too before putting it into the database, or is this
             // just overdoing it?
