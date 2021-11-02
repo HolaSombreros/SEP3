@@ -2,6 +2,7 @@ package database.model;
 
 import database.model.enums.OrderStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -9,15 +10,19 @@ public class Order {
     private User user;
     private int id;
     private Address address;
-    private MyDateTime datetime;
+    private MyDateTime dateTime;
     private OrderStatus orderStatus;
 
-    public Order(List<Item> items, User user, int id, Address address, MyDateTime datetime, OrderStatus orderStatus) {
+    public Order() {
+        items = new ArrayList<>();
+    }
+
+    public Order(List<Item> items, User user, int id, Address address, MyDateTime dateTime, OrderStatus orderStatus) {
         this.items = items;
         this.user = user;
         this.id = id;
         this.address = address;
-        this.datetime = datetime;
+        this.dateTime = dateTime;
         this.orderStatus = orderStatus;
     }
 
@@ -38,7 +43,7 @@ public class Order {
     }
 
     public MyDateTime getDatetime() {
-        return datetime;
+        return dateTime;
     }
 
     public OrderStatus getOrderStatus() {

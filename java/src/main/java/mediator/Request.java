@@ -1,8 +1,9 @@
-package via.group2.SEP3.mediator;
+package mediator;
 
 import database.model.Item;
 import database.model.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Request {
@@ -12,6 +13,8 @@ public class Request {
 
     public Request(String type) {
         this.type = type;
+        items = new ArrayList<>();
+        order = new Order();
     }
 
     public String getType() {

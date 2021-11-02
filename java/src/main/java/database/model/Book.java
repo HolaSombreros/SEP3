@@ -17,7 +17,7 @@ public class Book extends Item{
     private LocalDate publicationDate;
 
     public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
-        super(id, name, description, price, category, quantity);
+        super(id, name, description, price, category, quantity, status, discount);
         this.ISBN = ISBN;
         this.authorFirstName = authorFirstName;
         this.authorLastName = authorLastName;
