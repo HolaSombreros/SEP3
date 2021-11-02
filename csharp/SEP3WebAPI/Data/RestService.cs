@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using SEP3Library.Model;
 using SEP3Library.UIModels;
@@ -17,11 +18,9 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
-            if (orderModel == null)
-                throw new ArgumentNullException("OrderModel", "Please specify an order of the proper format");
-            if (orderModel.Items == null || orderModel.Items.Count < 1)
-                throw new ArgumentNullException("Items", "Your order must contain at least 1 item");
-
+            if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
+            if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
+            
             Order order = new Order() {
                 User = new Customer() {
                     FirstName = orderModel.FirstName,
@@ -45,7 +44,7 @@ namespace SEP3WebAPI.Data {
                 Items = orderModel.Items,
                 OrderStatus = OrderStatus.PENDING
             };
-            
+
             return await client.CreateOrderAsync(order);
         }
     }

@@ -1,12 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 
 namespace SEP3Library.Model {
     public class Customer {
         public int Id { get; set; }
-         
+
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please enter an email address")]
-        public string Email { get; set; }
+        public string Email {
+            get => email;
+            set {
+                if (!new EmailAddressAttribute().IsValid(value)) throw new InvalidDataException("Please enter a valid email address");
+                email = value;
+            }
+        }
+        private string email;
         
         public string Password { get; set; }
         
