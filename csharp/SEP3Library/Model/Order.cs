@@ -11,11 +11,8 @@ namespace SEP3Library.Model {
         public DateTime DateTime { get; set; }
         
         [Required(ErrorMessage = "Please specify the customer")]
-        public User User { get; set; }
-        
-        [Required(ErrorMessage = "Please specify an address to where the order is to be shipped to")]
-        public Address Address { get; set; }
-        
+        public Customer User { get; set; }
+
         [Required]
         [MinLength(1, ErrorMessage = "Your order must contain at least 1 item")]
         public IList<Item> Items { get; set; }

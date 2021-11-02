@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Model;
+using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
 
 namespace SEP3WebAPI.Data {
@@ -26,8 +27,7 @@ namespace SEP3WebAPI.Data {
 
             Order order = new Order() {
                 DateTime = DateTime.Now,
-                User = orderModel.User,
-                Address = orderModel.Address,
+                User = orderModel.Customer,
                 Items = orderModel.Items,
                 OrderStatus = OrderStatus.PENDING
             };

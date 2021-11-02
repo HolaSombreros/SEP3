@@ -4,7 +4,6 @@
 @inject IModelService modelService
 @inject NavigationManager NavigationManager
 
-
 <div class="card">
     <div class="row">
         <div class="col-md-8 cart">
@@ -18,7 +17,7 @@
                     </div>
                 </div>
             </div>
-            @foreach (Item item in Items) {
+            @foreach (Item item in items) {
                     <div class="row border-top border-bottom">
                         <div class="row main align-items-center">
                             <div class="col-2">
@@ -43,11 +42,11 @@
             <hr>
             <div class="row mt-3">
                 <div class="col" style="padding-left:0;">Items: @GetItemsBasedOnQuantity()</div>
-                <div class="col text-right">@Total DKK</div>
+                <div class="col text-right">@total DKK</div>
             </div>
             <div class="row mt-3">
                 <div class="row">Shipping</div>
-                <div class="col text-right">@ShippingPrice DKK</div>
+                <div class="col text-right">@shippingPrice DKK</div>
             </div>
             <div class="row mt-3">
                   <div>Discount code</div> 
@@ -56,39 +55,46 @@
            
             <div class="row mt-3">
                 <div class="col" style="padding-left:0;">Total price</div>
-                <div class="col text-right">@FinalPrice DKK</div>
+                <div class="col text-right">@finalPrice DKK</div>
             </div>
             <div class="d-flex justify-content-center mt-3">
-                <button class="btn btn-dark" @onclick="@NavigateToComponent">Go to payout</button>
+                <button class="btn btn-dark" disabled="@isDisabled" @onclick="@NavigateToComponent">Go to payout</button>
             </div>
 
         </div>
     </div>
 </div>
 @code {
-    private IList<Item> Items;
-    private double Total;
-    private const double ShippingPrice = 25.00;
-    private double FinalPrice;
-    private int FinalQuantity;
+    private IList<Item> items;
+    private double total;
+    private const double shippingPrice = 25.00;
+    private double finalPrice;
+    private int finalQuantity;
+    private bool isDisabled { get; set; }
 
     
     protected override async Task OnInitializedAsync() {
-        Items = modelService.ShoppingCart.Items; 
-       
-        foreach (Item item in Items) {
-            Total += item.Price;
+        items = modelService.ShoppingCart.Items;
+        foreach (Item item in items) {
+            total += item.Price;
         }
-        FinalPrice = Total + ShippingPrice;
+        finalPrice = total + shippingPrice;
+        GetDisabledState();
+    }
+
+    public bool GetDisabledState() {
+        if (items.Count == 0)
+            isDisabled = true;
+        return isDisabled;
     }
 
     private int GetItemsBasedOnQuantity() {
         int number = 0;
-        foreach (Item item in Items) {
+        foreach (Item item in items) {
             number = item.Quantity;
-            FinalQuantity += number;
+            finalQuantity += number;
         }
-        return FinalQuantity;
+        return finalQuantity;
     }
     private void NavigateToComponent() {
         NavigationManager.NavigateTo("Payout/");

@@ -9,7 +9,7 @@ namespace SEP3UI.Authentication {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider {
         private readonly IJSRuntime jsRuntime;
         private readonly IUserService userService;
-        private User cachedUser;
+        //private User cachedUser;
 
         public CustomAuthenticationStateProvider(IJSRuntime jsRuntime, IUserService userService) {
             this.jsRuntime = jsRuntime;
