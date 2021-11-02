@@ -62,6 +62,10 @@ public class ItemDAOService implements ItemDAO {
 
     @Override
     public List<Item> readAll() {
-        return null;
+        try{
+            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM item;");
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 }
