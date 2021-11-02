@@ -1,32 +1,33 @@
 ﻿@page "/Payout"
 @using System.ComponentModel.DataAnnotations
+@using SEP3UI.Data
+@using SEP3UI.Model
 @inject NavigationManager NavigationManager
-
+@inject IModelService modelService
 
 <EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmit" OnInvalidSubmit="@HandleInvalidSubmit">
     <div class="container">
-        <form method="post">
-            <fieldset>
-                <DataAnnotationsValidator/>
-                     <ValidationSummary/>
+        <fieldset>
                 <legend class="d-flex justify-content-center m-3">
                     <h2>Payout Form</h2>
                 </legend>
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
                 <div class="form-group d-flex justify-content-center">
-                    <label class="col-md-4 control-label">First Name</label>
+                    <label class="col-md-4 control-label">First name</label>
                     <div class="col-md-4 input-group">
                         <div class="input-group">
                             <span class="input-group-addon"></span>
-                            <InputText @bind-Value="orderModel.FirstName" class="form-control"/>
+                            <InputText @bind-Value="orderModel.FirstName" placeholder="First name" class="form-control"/>
                         </div>
                     </div>
                 </div>
                 <div class="form-group d-flex justify-content-center">
-                    <label class="col-md-4 control-label">Last Name</label>
+                    <label class="col-md-4 control-label">Last name</label>
                     <div class="col-md-4">
                         <div class="input-group">
                             <span class="input-group-addon"></span>
-                            <InputText @bind-Value="orderModel.LastName" name="last_name" placeholder="Last Name" class="form-control" type="text"></InputText>
+                            <InputText @bind-Value="orderModel.LastName" name="last_name" placeholder="Last name" class="form-control" type="text"></InputText>
                         </div>
                     </div>
                 </div>
@@ -84,7 +85,6 @@
                     </div>
                 </div>
             </fieldset>
-        </form>
     </div>
 </EditForm>
 
@@ -94,29 +94,38 @@
     
     private string ErrorMessage { get; set; }
 
-    private class OrderModel {
+    public class OrderModel {
+        
         [Required(ErrorMessage = "Please enter a first name")]
-        public  string FirstName { get; set; }
+        [MaxLength(100, ErrorMessage = "The first name cannot exceed 100 characters")]
+        [MinLength(2, ErrorMessage = "The first name has to be longer than 2 characters")]
+        public string FirstName { get; set; }
 
         [Required(ErrorMessage = "Please enter a last name")]
-        public  string LastName { get; set; }
+        [MaxLength(100, ErrorMessage = "The last name cannot exceed 100 characters")]
+        [MinLength(2, ErrorMessage = "The last name has to be longer than 2 characters")]
+        public string LastName { get; set; }
         
-        [Range(1000,9999,ErrorMessage="Value must be between 1000 and 9999")]
+        [Range(1000,9999,ErrorMessage="Zipcode must be between 1000 and 9999")]
         [Required(ErrorMessage = "Please enter a zipcode")]
-        public  int ZipCode { get; set; }
+        public int ZipCode { get; set; }
         
         [Required(ErrorMessage = "Please enter a number")]
         public string Number { get; set; }
 
-        [Required(ErrorMessage = "Please enter a street")]
-        public  string Street { get; set; }
+        [Required(ErrorMessage = "Please enter a street name")]
+        public string Street { get; set; }
 
         [Required(ErrorMessage = "Please enter a city")]
-        public  string City { get; set; }
+        public string City { get; set; }
         
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please enter an email address")]
-        public  string Email { get; set; }
+        public string Email { get; set; }
+
+        public IList<Item> Items { get; set; }
+        
+        public User User { get; set; }
     }
 
     private void HandleInvalidSubmit() {
@@ -124,7 +133,28 @@
     }
 
     private void HandleValidSubmit() {
-        Console.WriteLine("Valid");
+        try {
+            OrderModel order = new OrderModel() {
+                Items = modelService.ShoppingCart.Items,
+                User = new Customer() {
+                    FirstName = orderModel.FirstName,
+                    LastName = orderModel.LastName,
+                    Email = orderModel.Email,
+                    Address = new Address() {
+                        City = orderModel.City,
+                        ZipCode = orderModel.ZipCode,
+                        Number = orderModel.Number,
+                        Street = orderModel.Street
+                    }
+                },
+            };
+            modelService.CreateOrderAsync(order);
+            modelService.ShoppingCart.EmptyShoppingCart();
+            ErrorMessage = "Successful purchase";
+        }
+        catch (Exception e) {
+            ErrorMessage = e.Message;
+        }
     }
 
 

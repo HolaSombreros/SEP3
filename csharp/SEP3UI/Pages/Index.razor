@@ -46,27 +46,29 @@ Welcome to Under Covers  main paaaage
 @code {
     public IList<Item> Items { get; set; }
     public Item FeaturedItem { get; set; }
-  
-    //private ShoppingCart ShoppingCart { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        //ShoppingCart = new ShoppingCart();
-        //Items = await ItemService.GetItems(); 
+    //Items = await ItemService.GetItems(); 
         Items = new List<Item>() {
             new Item() {
-                Name = "blabla"
+                Name = "blabla",
+                Id = 1
             },
             new Item() {
-                Name = "blabla2"
+                Name = "blabla2",
+                Id= 2
             },
             new Item() {
-                Name = "blabla2"
+                Name = "blabla2",
+                Id = 3
             },
             new Item() {
-                Name = "blabla2"
+                Name = "blabla2",
+                Id =4
             },
             new Item() {
-                Name = "blabla2"
+                Name = "blabla2",
+                Id = 5
             }
         };
         FeaturedItem = Items.ElementAt(new Random().Next(Items.Count)); 

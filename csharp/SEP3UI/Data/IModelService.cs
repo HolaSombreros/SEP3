@@ -1,5 +1,3 @@
-﻿
-
 using SEP3Library.Model;
 
 namespace SEP3UI.Data {
