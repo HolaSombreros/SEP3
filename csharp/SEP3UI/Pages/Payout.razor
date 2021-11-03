@@ -1,5 +1,6 @@
 ﻿@page "/Payout"
 @using Microsoft.AspNetCore.Components
+@using SEP3Library.Model
 @using SEP3Library.UIModels
 @using SEP3UI.Data
 @inject NavigationManager NavigationManager
@@ -75,19 +76,20 @@
                 </div>
             </div>
             <div class="form-group d-flex justify-content-center">
-                <label class="col-md-4 control-label"></label>
-                <div class="col-md-4"><br>
-                    <button type="submit" class="btn btn-primary">SUBMIT</button>
-                </div>
-            </div>
-             <div class="form-group d-flex justify-content-center">
                 <label class="col-md-4 control-label">City</label>
                 <div class="col-md-4">
                     <div class="input-group">
                         <span class="input-group-addon"></span>
                         <InputText @bind-Value="orderModel.City" name="email" placeholder="City" class="form-control" type="text"/>
                     </div>
-                     <ValidationMessage For="@(()=> orderModel.City)"/>
+                    <ValidationMessage For="@(()=> orderModel.City)"/>
+                </div>
+            </div>
+            
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label"></label>
+                <div class="col-md-4"><br>
+                    <button type="submit" class="btn btn-primary">SUBMIT</button>
                 </div>
             </div>
         </fieldset>
@@ -96,7 +98,6 @@
 </EditForm>
 
 @code {
-
     private OrderModel orderModel = new OrderModel();
     private string errorMessage { get; set; }
 
@@ -104,16 +105,15 @@
         orderModel.Items = modelService.ShoppingCart.Items;
     }
 
-    private void HandleValidSubmit() {
+    private async Task HandleValidSubmit() {
         try {
-            modelService.CreateOrderAsync(orderModel);
+            Order order = await modelService.CreateOrderAsync(orderModel);
             modelService.ShoppingCart.EmptyShoppingCart();
-            errorMessage = "Successful purchase";
+            errorMessage = "Successful purchase!";
+            Console.WriteLine(order.ToString());
         }
         catch (Exception e) {
             errorMessage = e.Message;
         }
     }
-    
 }
-    
