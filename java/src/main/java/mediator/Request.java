@@ -10,11 +10,13 @@ public class Request {
     private String type;
     private List<Item> items;
     private Order order;
+    private Item item;
 
     public Request(String type) {
         this.type = type;
         items = new ArrayList<>();
         order = new Order();
+        item = new Item();
     }
 
     public String getType() {
@@ -23,6 +25,14 @@ public class Request {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item){
+        this.item = item;
     }
 
     public List<Item> getItems() {

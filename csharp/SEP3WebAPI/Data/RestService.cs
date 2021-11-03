@@ -18,6 +18,10 @@ namespace SEP3WebAPI.Data {
             return await client.GetItemsAsync();
         }
 
+        public async Task<Item> GetItemAsync(int id) {
+            return await client.GetItemAsync(id);
+        }
+
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");

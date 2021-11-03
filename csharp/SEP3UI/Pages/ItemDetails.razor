@@ -1,6 +1,66 @@
 ﻿@page "/ItemDetails/{id:int}"
+@using SEP3Library.Model
+@using SEP3UI.Data
+@inject IModelService itemService
 <h3>ItemDetails</h3>
 
-@code {
+@if (item == null) {
+    <h2> No such item found </h2>
     
+}
+else {
+    <div class="container">
+    <div class="card col-md-12">
+        <div class="panel-body">
+            <div class="pro-img-details">
+                <img src="Images/Larman.jpg"/>
+            </div>
+        </div>
+        <div class="col-md-6 float-right">
+            <h4 class="pro-d-title">
+                <div>@item.Name</div>
+            </h4>
+            <div>@item.Description</div>
+            <div class="product_meta">
+                <span class="posted_in">
+                    <strong>Category:</strong>
+                    <a rel="tag" href="#">@item.Category.ToString()</a>
+                </span>
+            </div>
+            <div class="m-bot15"> <strong>Price: </strong> <span class="amount-old">@item.Price</span>
+                <div class="form-group">
+                    <label>Quantity: @item.Quantity </label>
+                    <input type="quantity" placeholder="1" class="form-control quantity">
+                </div>
+                <p>
+                    <button class="btn btn-round btn-dark" @onclick="(() => AddToShoppingCart(item))"type="button">
+                        <i class="fa fa-shopping-cart"></i> Add to Shopping Cart
+                    </button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public string ErrorMessage { get; set; }
+
+    private Item item;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            item = await itemService.GetItemAsync(Id);
+        }
+        catch (Exception e) {
+            ErrorMessage = e.Message;
+        }
+    }
+    private void AddToShoppingCart(Item item) {
+        itemService.ShoppingCart.AddToShoppingCart(item);
+    }
 }
