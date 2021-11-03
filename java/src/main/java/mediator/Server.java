@@ -1,6 +1,6 @@
 package mediator;
 
-import database.DatabaseManager;
+import database.daomodel.DatabaseManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;

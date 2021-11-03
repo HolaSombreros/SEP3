@@ -1,13 +1,15 @@
-package database.model;
+package model;
 
-import database.model.enums.OrderStatus;
+import model.enums.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
     private List<Item> items;
-    private User user;
+    private String firstName;
+    private String lastName;
+    private String email;
     private int id;
     private Address address;
     private MyDateTime dateTime;
@@ -17,9 +19,11 @@ public class Order {
         items = new ArrayList<>();
     }
 
-    public Order(List<Item> items, User user, int id, Address address, MyDateTime dateTime, OrderStatus orderStatus) {
+    public Order(List<Item> items, String firstName, String lastName, String email, int id, Address address, MyDateTime dateTime, OrderStatus orderStatus) {
         this.items = items;
-        this.user = user;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
         this.id = id;
         this.address = address;
         this.dateTime = dateTime;
@@ -33,8 +37,16 @@ public class Order {
         return items;
     }
 
-    public User getUser() {
-        return user;
+    public String getEmail() {
+        return email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public int getId() {
@@ -45,7 +57,7 @@ public class Order {
         return address;
     }
 
-    public MyDateTime getDatetime() {
+    public MyDateTime getDateTime() {
         return dateTime;
     }
 

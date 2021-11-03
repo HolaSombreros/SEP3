@@ -1,8 +1,5 @@
-package database;
+package database.daomodel;
 
-import database.daomodel.BookDAO;
-import database.daomodel.ItemDAO;
-import database.daomodel.OrderDAO;
 import database.daoservice.BookDAOService;
 import database.daoservice.ItemDAOService;
 import database.daoservice.OrderDAOService;

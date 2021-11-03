@@ -1,4 +1,4 @@
-package database.model.enums;
+package model.enums;
 
 public enum OrderStatus {
     PENDING("Pending"),

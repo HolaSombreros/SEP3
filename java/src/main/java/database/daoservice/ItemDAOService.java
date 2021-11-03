@@ -2,13 +2,11 @@ package database.daoservice;
 
 import database.daomodel.ItemDAO;
 import database.daoservice.mapper.ItemMapper;
-import database.model.Item;
-import database.model.enums.Category;
-import database.model.enums.ItemStatus;
+import model.Item;
+import model.enums.Category;
+import model.enums.ItemStatus;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 public class ItemDAOService implements ItemDAO {

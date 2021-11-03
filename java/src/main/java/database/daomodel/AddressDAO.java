@@ -1,6 +1,6 @@
 package database.daomodel;
 
-import database.model.Address;
+import model.Address;
 
 public interface AddressDAO {
     Address create(String street, String number, int zipcode, String city);

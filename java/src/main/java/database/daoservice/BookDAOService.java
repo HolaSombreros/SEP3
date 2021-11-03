@@ -2,16 +2,15 @@ package database.daoservice;
 
 import database.daomodel.BookDAO;
 import database.daoservice.mapper.BookMapper;
-import database.model.Book;
-import database.model.enums.Category;
-import database.model.enums.Genre;
-import database.model.enums.ItemStatus;
-import database.model.enums.Language;
+import model.Book;
+import model.enums.Category;
+import model.enums.Genre;
+import model.enums.ItemStatus;
+import model.enums.Language;
 
 import java.sql.SQLException;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 
 public class BookDAOService implements BookDAO {

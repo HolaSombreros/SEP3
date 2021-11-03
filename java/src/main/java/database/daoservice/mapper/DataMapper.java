@@ -1,4 +1,4 @@
-package database.daoservice;
+package database.daoservice.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
