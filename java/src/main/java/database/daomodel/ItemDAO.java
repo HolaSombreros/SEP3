@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ItemDAO {
     //CRUD metods
-    Item create(String name, String description, double price, Category category, int quantity);
+    Item create(String name, String description, double price, Category category, int quantity, String imgFilepath);
     Item read(int id);
     void update(Item item);
     void delete(Item item);

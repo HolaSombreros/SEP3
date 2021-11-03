@@ -22,11 +22,11 @@ public class BookDAOService implements BookDAO {
     }
 
     @Override
-    public Book create(String name, String description, double price, Category category, int quantity, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
+    public Book create(String name, String description, double price, Category category, int quantity,String imgFilePath, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
         try {
             if(!isBook(ISBN)) {
-                List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status) VALUES (?,?,?,?::item_category,?,?,?::item_status)",
-                        name, description, price, category.toString(), 0, quantity, ItemStatus.INSTOCK.toString());
+                List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status, image_filepath) VALUES (?,?,?,?::item_category,?,?,?::item_status,?)",
+                        name, description, price, category.toString(), 0, quantity, ItemStatus.INSTOCK.toString(),imgFilePath);
                 databaseHelper.executeUpdate("INSERT INTO book (ISBN, item_id, author_first_name, author_last_name, language, genre, publication_date) VALUES (?,?,?,?,?,?::genre,?)",
                         ISBN, keys.get(0), authorFirstName, authorLastName, language.toString(), genre.toString(), publicationDate);
                 return read(ISBN, keys.get(0));
@@ -60,9 +60,9 @@ public class BookDAOService implements BookDAO {
     @Override
     public void update(Book book) {
         try {
-            databaseHelper.executeUpdate("UPDATE item SET name = ?, description = ?, price = ?, category = ?, quantity = ?, status = ?, discount =? WHERE item_id = ?",
+            databaseHelper.executeUpdate("UPDATE item SET name = ?, description = ?, price = ?, category = ?, quantity = ?, status = ?, discount =?, image_filepath = ? WHERE item_id = ?",
                     book.getName(), book.getDescription(), book.getPrice(), book.getCategory().toString(), book.getQuantity(), book.getStatus().toString(),
-                    book.getDiscount(), book.getId());
+                    book.getDiscount(),book.getImageName(), book.getId());
             databaseHelper.executeUpdate("UPDATE book SET author_first_name = ?, author_last_name = ?, language = ?, genre = ?, publication_date = ? WHERE isbn = ?",
                     book.getAuthorFirstName(), book.getAuthorLastName(), book.getLanguage().toString(), book.getGenre().toString(), Date.valueOf(book.getPublicationDate().getLocalDate()),
                     book.getISBN());
