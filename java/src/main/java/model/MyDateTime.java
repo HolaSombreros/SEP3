@@ -1,4 +1,4 @@
-package database.model;
+package model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +19,14 @@ public class MyDateTime {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
+    }
+    public MyDateTime(LocalDateTime localDateTime){
+        this.year = localDateTime.getYear();
+        this.month = localDateTime.getMonth().getValue();
+        this.day = localDateTime.getDayOfYear();
+        this.hour = localDateTime.getHour();
+        this.minute = localDateTime.getMinute();
+        this.second = localDateTime.getSecond();
     }
 
     public LocalDate getLocalDate() {

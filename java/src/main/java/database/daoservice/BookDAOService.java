@@ -54,7 +54,7 @@ public class BookDAOService implements BookDAO {
                     book.getName(), book.getDescription(), book.getPrice(), book.getCategory().toString(), book.getQuantity(), book.getStatus().toString(),
                     book.getDiscount(), book.getId());
             databaseHelper.executeUpdate("UPDATE book SET author_first_name = ?, author_last_name = ?, language = ?, genre = ?, publication_date = ? WHERE isbn = ?",
-                    book.getAuthorFirstName(), book.getAuthorLastName(), book.getLanguage().toString(), book.getGenre().toString(), Date.valueOf(book.getPublicationDate()),
+                    book.getAuthorFirstName(), book.getAuthorLastName(), book.getLanguage().toString(), book.getGenre().toString(), Date.valueOf(book.getPublicationDate().getLocalDate()),
                     book.getISBN());
 
         } catch (SQLException e) {
