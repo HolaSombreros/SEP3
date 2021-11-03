@@ -14,7 +14,17 @@ public class Book extends Item{
     private String authorLastName;
     private Language language;
     private Genre genre;
-    private LocalDate publicationDate;
+    private MyDateTime publicationDate;
+
+    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, MyDateTime publicationDate) {
+        super(id, name, description, price, category, quantity, status, discount);
+        this.ISBN = ISBN;
+        this.authorFirstName = authorFirstName;
+        this.authorLastName = authorLastName;
+        this.language = language;
+        this.genre = genre;
+        this.publicationDate = publicationDate;
+    }
 
     public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
         super(id, name, description, price, category, quantity, status, discount);
@@ -23,7 +33,7 @@ public class Book extends Item{
         this.authorLastName = authorLastName;
         this.language = language;
         this.genre = genre;
-        this.publicationDate = publicationDate;
+        this.publicationDate = new MyDateTime(publicationDate.getYear(), publicationDate.getMonthValue(), publicationDate.getDayOfMonth(), 0, 0, 0);
     }
 
     public String getISBN() {
@@ -46,7 +56,7 @@ public class Book extends Item{
         return genre;
     }
 
-    public LocalDate getPublicationDate() {
+    public MyDateTime getPublicationDate() {
         return publicationDate;
     }
 

@@ -1,6 +1,7 @@
 package database.daoservice;
 
 import database.daomodel.OrderDAO;
+import database.daoservice.mapper.OrderMapper;
 import database.model.*;
 import database.model.enums.OrderStatus;
 
@@ -29,8 +30,8 @@ public class OrderDAOService implements OrderDAO {
             for(Item item: items){
                 databaseHelper.executeUpdate("INSERT INTO order_item (order_id, item_id, item_quantity, item_price) VALUES (?,?,?,?)",keys.get(0) ,item.getId(), item.getQuantity(), item.getPrice());
             }
-            return read(keys.get(0));
-
+            return new Order(items, firstName, lastName, email, keys.get(0), address, dateTime, status);
+//            return read(keys.get(0));
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -39,6 +40,11 @@ public class OrderDAOService implements OrderDAO {
     @Override
     public Order read(int id) {
         return null;
+//        try {
+//            return databaseHelper.mapObject(new OrderMapper(), "SELECT * FROM purchase WHERE ")
+//        } catch (SQLException e) {
+//            throw new IllegalStateException(e.getMessage());
+//        }
     }
 
     @Override

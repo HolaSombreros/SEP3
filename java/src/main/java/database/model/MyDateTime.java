@@ -21,6 +21,14 @@ public class MyDateTime {
         this.second = second;
     }
 
+    public LocalDate getLocalDate() {
+        return LocalDate.of(year, month, day);
+    }
+
+    public LocalDateTime getLocalDateTime(){
+        return LocalDateTime.of(year, month, day, hour, minute, second);
+    }
+
     public int getYear() {
         return year;
     }
@@ -67,9 +75,5 @@ public class MyDateTime {
 
     public void setSecond(int second) {
         this.second = second;
-    }
-
-    public LocalDateTime getLocalDateTime(){
-        return LocalDateTime.of(year, month, day, hour, minute, second);
     }
 }

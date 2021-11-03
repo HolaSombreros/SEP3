@@ -3,6 +3,7 @@ package database.daoservice;
 import database.daomodel.BookDAO;
 import database.daoservice.mapper.BookMapper;
 import database.model.Book;
+import database.model.MyDateTime;
 import database.model.enums.Category;
 import database.model.enums.Genre;
 import database.model.enums.ItemStatus;
@@ -23,12 +24,12 @@ public class BookDAOService implements BookDAO {
     }
 
     @Override
-    public Book create(String name, String description, double price, Category category, int quantity, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
+    public Book create(String name, String description, double price, Category category, int quantity, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, MyDateTime publicationDate) {
         try {
             List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status) VALUES (?,?,?,?::item_category,?,?,?::item_status)",
                     name, description,price,category.toString(),0,quantity, ItemStatus.INSTOCK.toString());
             databaseHelper.executeUpdate("INSERT INTO book (ISBN, item_id, author_first_name, author_last_name, language, genre, publication_date) VALUES (?,?,?,?,?,?::genre,?)",
-                    ISBN,keys.get(0),authorFirstName,authorLastName,language.toString(),genre.toString(),publicationDate );
+                    ISBN,keys.get(0),authorFirstName,authorLastName,language.toString(),genre.toString(),publicationDate.getLocalDateTime());
             return read(ISBN,keys.get(0));
 
         } catch (SQLException e) {
@@ -52,7 +53,7 @@ public class BookDAOService implements BookDAO {
                     book.getName(), book.getDescription(), book.getPrice(), book.getCategory().toString(), book.getQuantity(), book.getStatus().toString(),
                     book.getDiscount(), book.getId());
             databaseHelper.executeUpdate("UPDATE book SET author_first_name = ?, author_last_name = ?, language = ?, genre = ?, publication_date = ? WHERE isbn = ?",
-                    book.getAuthorFirstName(), book.getAuthorLastName(), book.getLanguage().toString(), book.getGenre().toString(), Date.valueOf(book.getPublicationDate()),
+                    book.getAuthorFirstName(), book.getAuthorLastName(), book.getLanguage().toString(), book.getGenre().toString(), Date.valueOf(book.getPublicationDate().getLocalDate()),
                     book.getISBN());
 
         } catch (SQLException e) {
