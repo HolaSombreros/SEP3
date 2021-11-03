@@ -1,7 +1,6 @@
 package database.daoservice.mapper;
 
-import database.daoservice.DataMapper;
-import database.model.Address;
+import model.Address;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

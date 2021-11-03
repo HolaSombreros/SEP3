@@ -1,10 +1,8 @@
 package database.daomodel;
 
-import database.daoservice.DataMapper;
-import database.model.Item;
-import database.model.enums.Category;
+import model.Item;
+import model.enums.Category;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface ItemDAO {

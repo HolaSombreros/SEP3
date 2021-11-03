@@ -1,8 +1,8 @@
 package database.daoservice;
 
 import database.daomodel.OrderDAO;
-import database.model.*;
-import database.model.enums.OrderStatus;
+import model.*;
+import model.enums.OrderStatus;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -23,7 +23,7 @@ public class OrderDAOService implements OrderDAO {
         try {
            // if(addressDAOService.read(address.getId()) != null)
             Address address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
-            List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO purchase (address_id, date_time, status, first_name, middle_name, last_name, email, customer_id) " +
+            List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO purchase (address_id, date_time, status, first_name, last_name, email, customer_id) " +
                             "VALUES (?,?,?::order_status,?,?,?,?)", address1.getId(),dateTime.getLocalDateTime(),status.toString(), firstName, lastName, email, null);
 
             for(Item item: items){
@@ -52,7 +52,7 @@ public class OrderDAOService implements OrderDAO {
     }
 
     @Override
-    public Collection<Order> readAll() {
+    public List<Order> readAll() {
         return null;
     }
 }

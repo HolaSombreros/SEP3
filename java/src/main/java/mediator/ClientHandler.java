@@ -1,8 +1,8 @@
 package mediator;
 
 import com.google.gson.Gson;
-import database.DatabaseManager;
-import database.model.Order;
+import database.daomodel.DatabaseManager;
+import model.Order;
 
 import java.io.BufferedReader;
 import java.io.IOException;

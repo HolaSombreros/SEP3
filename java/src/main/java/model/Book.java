@@ -1,9 +1,9 @@
-package database.model;
+package model;
 
-import database.model.enums.Category;
-import database.model.enums.Genre;
-import database.model.enums.ItemStatus;
-import database.model.enums.Language;
+import model.enums.Category;
+import model.enums.Genre;
+import model.enums.ItemStatus;
+import model.enums.Language;
 
 import java.time.LocalDate;
 

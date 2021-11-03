@@ -1,7 +1,7 @@
 package mediator;
 
-import database.model.Item;
-import database.model.Order;
+import model.Item;
+import model.Order;
 
 import java.util.ArrayList;
 import java.util.List;

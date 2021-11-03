@@ -1,6 +1,6 @@
-package database.model;
+package model;
 
-import database.model.enums.OrderStatus;
+import model.enums.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.List;

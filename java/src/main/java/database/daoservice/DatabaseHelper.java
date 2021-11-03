@@ -1,8 +1,9 @@
 package database.daoservice;
 
+import database.daoservice.mapper.DataMapper;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class DatabaseHelper<T> {

@@ -1,11 +1,8 @@
 package database.daoservice;
 
-import database.DatabaseManager;
 import database.daomodel.AddressDAO;
 import database.daoservice.mapper.AddressMapper;
-import database.daoservice.mapper.BookMapper;
-import database.model.Address;
-import database.model.Item;
+import model.Address;
 
 import java.sql.SQLException;
 import java.util.List;

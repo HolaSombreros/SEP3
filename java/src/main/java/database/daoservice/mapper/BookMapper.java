@@ -1,15 +1,13 @@
 package database.daoservice.mapper;
 
-import database.daoservice.DataMapper;
-import database.model.Book;
-import database.model.enums.Category;
-import database.model.enums.Genre;
-import database.model.enums.ItemStatus;
-import database.model.enums.Language;
+import model.Book;
+import model.enums.Category;
+import model.enums.Genre;
+import model.enums.ItemStatus;
+import model.enums.Language;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 
 public class BookMapper implements DataMapper<Book> {
     @Override
