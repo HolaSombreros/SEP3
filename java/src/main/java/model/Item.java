@@ -40,6 +40,10 @@ public class Item {
         this.imageName = imgFilepath;
     }
 
+    public Item() {
+
+    }
+
     public String getImageName() {
         return imageName;
     }
