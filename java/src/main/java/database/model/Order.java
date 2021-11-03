@@ -26,6 +26,9 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public void setItems(List<Item> items){
+        this.items = items;
+    }
     public List<Item> getItems() {
         return items;
     }

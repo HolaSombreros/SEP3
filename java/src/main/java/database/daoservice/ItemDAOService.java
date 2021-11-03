@@ -68,4 +68,13 @@ public class ItemDAOService implements ItemDAO {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+    @Override
+    public List<Item> readAllFromOrder(int orderId) {
+        try{
+            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM order_item JOIN item USING (item_id) WHERE order_id = ?",orderId);
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 }

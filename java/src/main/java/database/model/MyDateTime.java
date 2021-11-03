@@ -21,6 +21,15 @@ public class MyDateTime {
         this.second = second;
     }
 
+    public MyDateTime(LocalDateTime localDateTime){
+        this.year = localDateTime.getYear();
+        this.month = localDateTime.getMonth().getValue();
+        this.day = localDateTime.getDayOfYear();
+        this.hour = localDateTime.getHour();
+        this.minute = localDateTime.getMinute();
+        this.second = localDateTime.getSecond();
+    }
+
     public int getYear() {
         return year;
     }

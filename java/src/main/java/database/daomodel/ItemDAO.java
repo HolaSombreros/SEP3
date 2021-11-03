@@ -15,4 +15,5 @@ public interface ItemDAO {
     void delete(Item item);
     List<Item> readByCategory(Category category);
     List<Item> readAll();
+    List<Item> readAllFromOrder(int orderId);
 }
