@@ -21,7 +21,11 @@ namespace SEP3UI.Data {
             IList<Item> items = await GetAsync<IList<Item>>("items");
             return items;
         }
-        
+
+        public async Task<Item> GetItemAsync(int id) {
+            return await GetAsync<Item>($"items/{id}");
+        }
+
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
             Order newOrder = await PostAsync<OrderModel, Order>(orderModel, "orders");
             return newOrder;

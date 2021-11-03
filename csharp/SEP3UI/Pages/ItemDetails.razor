@@ -1,6 +1,20 @@
 ﻿@page "/ItemDetails/{id:int}"
+@using SEP3Library.Model
+@using SEP3UI.Data
+@inject IItemService itemService
 <h3>ItemDetails</h3>
 
+
+
 @code {
-    
+    [Parameter]
+    public int Id { get; set; }
+
+    private Item item;
+
+    protected override async Task OnInitializedAsync() {
+        item = await itemService.GetItemAsync(Id);
+    }
+
+
 }
