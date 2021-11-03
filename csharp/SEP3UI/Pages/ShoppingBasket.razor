@@ -1,0 +1,101 @@
+﻿@page "/ShoppingBasket"
+@using SEP3Library.Model
+@using SEP3UI.Data
+@inject IModelService modelService
+@inject NavigationManager NavigationManager
+
+<div class="card">
+    <div class="row">
+        <div class="col-md-8 cart">
+            <div class="title">
+                <div class="row">
+                    <div class="col d-flex align-items-center">
+                        <h4>Shopping Cart</h4>
+                    </div>
+                    <div class="col align-self-center text-right text-muted">
+                    </div>
+                </div>
+            </div>
+            @foreach (Item item in items) {
+                    <div class="row border-top border-bottom">
+                        <div class="row main align-items-center">
+                            <div class="col-2">
+                                <img class="img-fluid" src="Images/Larman.jpg">
+                            </div>
+                            <div class="col">
+                                <div class="row text-muted"></div>
+                                <div class="row">@item.Name</div>
+                            </div>
+                            <div class="col"> <a href="#"> - </a><a href="#" class="border">@item.Quantity</a><a href="#"> + </a> </div>
+                            <div class="col"> @item.Price DKK 
+                                <span class="close">&#10005;</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+        </div>
+        <div class="col-md-4 summary">
+            <div>
+                <h5><b>Summary</b></h5>
+            </div>
+            <hr>
+            <div class="row mt-3">
+                <div class="col" style="padding-left:0;">Items: @GetItemsBasedOnQuantity()</div>
+                <div class="col text-right">@total DKK</div>
+            </div>
+            <div class="row mt-3">
+                <div class="row">Shipping</div>
+                <div class="col text-right">@shippingPrice DKK</div>
+            </div>
+            <div class="row mt-3">
+                  <div>Discount code</div> 
+            </div>
+            <input id="code" placeholder="Enter your code">
+           
+            <div class="row mt-3">
+                <div class="col" style="padding-left:0;">Total price</div>
+                <div class="col text-right">@finalPrice DKK</div>
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+                <button class="btn btn-dark" disabled="@isDisabled" @onclick="@NavigateToComponent">Go to payout</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@code {
+    private IList<Item> items;
+    private double total;
+    private const double shippingPrice = 25.00;
+    private double finalPrice;
+    private int finalQuantity;
+    private bool isDisabled { get; set; }
+
+    
+    protected override async Task OnInitializedAsync() {
+        items = modelService.ShoppingCart.Items;
+        foreach (Item item in items) {
+            total += item.Price;
+        }
+        finalPrice = total + shippingPrice;
+        GetDisabledState();
+    }
+
+    public bool GetDisabledState() {
+        if (items.Count == 0)
+            isDisabled = true;
+        return isDisabled;
+    }
+
+    private int GetItemsBasedOnQuantity() {
+        int number = 0;
+        foreach (Item item in items) {
+            number = item.Quantity;
+            finalQuantity += number;
+        }
+        return finalQuantity;
+    }
+    private void NavigateToComponent() {
+        NavigationManager.NavigateTo("Payout/");
+    }
+}

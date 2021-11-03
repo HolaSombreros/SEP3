@@ -1,0 +1,124 @@
+﻿@page "/Payout"
+@using Microsoft.AspNetCore.Components
+@using SEP3Library.Model
+@using SEP3Library.UIModels
+@using SEP3UI.Data
+@inject NavigationManager NavigationManager
+@inject IModelService modelService
+
+<EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmit">
+    <div class="container">
+        <fieldset>
+            <legend class="d-flex justify-content-center m-3">
+                <h2>Payout Form</h2>
+            </legend>
+            <DataAnnotationsValidator/>
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label">First name</label>
+                <div class="col-md-4 input-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"></span>
+                        <InputText @bind-Value="orderModel.FirstName" placeholder="First name" class="form-control"/>
+                    </div>
+                    <ValidationMessage For="@(()=> orderModel.FirstName)"/>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label">Last name</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"></span>
+                        <InputText @bind-Value="orderModel.LastName" name="last_name" placeholder="Last name" class="form-control" type="text"></InputText>
+                    </div>
+                     <ValidationMessage For="@(()=> orderModel.LastName)"/>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label">E-Mail</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"></span>
+                        <InputText @bind-Value="orderModel.Email" name="email" placeholder="E-Mail" class="form-control" type="text"/>
+                    </div>
+                     <ValidationMessage For="@(()=> orderModel.Email)"/>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label">Street</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"></span>
+                        <InputText @bind-Value="orderModel.Street" name="email" placeholder="Street" class="form-control" type="text"/>
+                    </div>
+                     <ValidationMessage For="@(()=> orderModel.Street)"/>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label">Number</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        </span>
+                        <InputText @bind-Value="orderModel.Number" name="number" placeholder="Number" class="form-control" type="text"/>
+                    </div>
+                     <ValidationMessage For="@(()=> orderModel.Number)"/>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label">Zip code</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                        </span>
+                        <InputNumber @bind-Value="orderModel.ZipCode" name="zipcode" placeholder="Zip code" class="form-control" type="text"/>
+                    </div>
+                    <ValidationMessage For="@(()=> orderModel.ZipCode)"/>
+                </div>
+            </div>
+             <div class="form-group d-flex justify-content-center">
+
+                <label class="col-md-4 control-label">City</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"></span>
+                        <InputText @bind-Value="orderModel.City" name="email" placeholder="City" class="form-control" type="text"/>
+                    </div>
+                    <ValidationMessage For="@(()=> orderModel.City)"/>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <label class="col-md-4 control-label"></label>
+                <div class="col-md-4"><br>
+                    <button type="submit" class="btn btn-primary">SUBMIT</button>
+                </div>
+            </div>
+            <div class="card d-flex align-items-center text-danger">
+                <div>@errorMessage</div>
+            </div>
+        </fieldset>
+        <div>@errorMessage</div>
+    </div>
+</EditForm>
+
+@code {
+    private OrderModel orderModel = new OrderModel();
+    private string errorMessage { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        orderModel.Items = modelService.ShoppingCart.Items;
+    }
+
+
+    private async Task HandleValidSubmit() {
+        try {
+            Order order = await modelService.CreateOrderAsync(orderModel);
+            modelService.ShoppingCart.EmptyShoppingCart();
+            errorMessage = "Successful purchase!";
+            Console.WriteLine(order.ToString());
+        }
+        catch (Exception e) {
+            Console.WriteLine(e.Message);
+            errorMessage = e.Message;
+        }
+    }
+}
