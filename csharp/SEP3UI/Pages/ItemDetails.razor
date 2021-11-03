@@ -10,24 +10,23 @@
 }
 else {
     <div class="container">
-    <div class="card col-md-12">
+    <div class="card col-md-12 d-flex justify-content-center">
         <div class="panel-body">
             <div class="pro-img-details">
-                <img src="Images/Larman.jpg"/>
+                <img src="@item.ImageName"/>
             </div>
         </div>
-        <div class="col-md-6 float-right">
+        <div class="col-md-6">
             <h4 class="pro-d-title">
                 <div>@item.Name</div>
             </h4>
             <div>@item.Description</div>
-            <div class="product_meta">
-                <span class="posted_in">
-                    <strong>Category:</strong>
+            <div class="product_meta font-weight-bold">
+                <span class="posted_in"> Category:
                     <a rel="tag" href="#">@item.Category.ToString()</a>
                 </span>
             </div>
-            <div class="m-bot15"> <strong>Price: </strong> <span class="amount-old">@item.Price</span>
+            <div class="m-bot15 font-weight-bold">Price: <span class="amount-old">@item.Price</span>
                 <div class="form-group">
                     <label>Quantity: @item.Quantity </label>
                     <input type="quantity" placeholder="1" class="form-control quantity">
