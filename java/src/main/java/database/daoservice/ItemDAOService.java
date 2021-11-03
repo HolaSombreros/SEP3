@@ -70,9 +70,10 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readAllFromOrder(int orderId) {
         try{
-            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM order_item JOIN item USING (item_id) WHERE order_id = ?",orderId);
+            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id,name,description,category,discount,status, order_id, order_item.quantity, item_price FROM item JOIN order_item USING (item_id) WHERE order_id = ?;",orderId);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
 }

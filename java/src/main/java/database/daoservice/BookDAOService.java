@@ -24,11 +24,14 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book create(String name, String description, double price, Category category, int quantity, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
         try {
-            List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status) VALUES (?,?,?,?::item_category,?,?,?::item_status)",
-                    name, description,price,category.toString(),0,quantity, ItemStatus.INSTOCK.toString());
-            databaseHelper.executeUpdate("INSERT INTO book (ISBN, item_id, author_first_name, author_last_name, language, genre, publication_date) VALUES (?,?,?,?,?,?::genre,?)",
-                    ISBN,keys.get(0),authorFirstName,authorLastName,language.toString(),genre.toString(),publicationDate );
-            return read(ISBN,keys.get(0));
+            if(!isBook(ISBN)) {
+                List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status) VALUES (?,?,?,?::item_category,?,?,?::item_status)",
+                        name, description, price, category.toString(), 0, quantity, ItemStatus.INSTOCK.toString());
+                databaseHelper.executeUpdate("INSERT INTO book (ISBN, item_id, author_first_name, author_last_name, language, genre, publication_date) VALUES (?,?,?,?,?,?::genre,?)",
+                        ISBN, keys.get(0), authorFirstName, authorLastName, language.toString(), genre.toString(), publicationDate);
+                return read(ISBN, keys.get(0));
+            }
+            return readByISBN(ISBN);
 
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -68,6 +71,22 @@ public class BookDAOService implements BookDAO {
     public List<Book> readAll() {
         try{
             return databaseHelper.mapList(new BookMapper(), "SELECT * FROM book JOIN item USING (item_id);");
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    private boolean isBook(String ISBN){
+        try{
+            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM book WHERE isbn = ?", ISBN).next();
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    private Book readByISBN(String ISBN){
+        try {
+            return databaseHelper.mapObject(new BookMapper(),"SELECT * FROM book JOIN item USING (item_id) WHERE ISBN = ?;", ISBN);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

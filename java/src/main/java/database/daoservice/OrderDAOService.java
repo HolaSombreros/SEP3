@@ -1,21 +1,23 @@
 package database.daoservice;
 
 import database.daomodel.OrderDAO;
+import database.daoservice.mapper.OrderMapper;
 import model.*;
 import model.enums.OrderStatus;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 public class OrderDAOService implements OrderDAO {
 
     private DatabaseHelper<Order> databaseHelper;
     private AddressDAOService addressDAOService;
+    private ItemDAOService itemDAOService;
 
     public OrderDAOService(String url, String username, String password) {
         this.databaseHelper = new DatabaseHelper<>(url, username, password);
         addressDAOService = new AddressDAOService(url, username,password);
+        itemDAOService = new ItemDAOService(url, username, password);
     }
 
     @Override
@@ -38,7 +40,13 @@ public class OrderDAOService implements OrderDAO {
 
     @Override
     public Order read(int id) {
-        return null;
+        try {
+            Order order =  databaseHelper.mapObject(new OrderMapper(), "SELECT * FROM purchase JOIN (SELECT * from address JOIN city USING (zip_code))a USING (address_id) WHERE order_id = ?", id);
+            order.setItems(itemDAOService.readAllFromOrder(id));
+            return order;
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     @Override
