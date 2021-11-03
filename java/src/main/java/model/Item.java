@@ -21,6 +21,7 @@ public class Item {
 
     }
 
+
     public Item(int id, String name, String description, double price, Category category, int quantity, String imgFilepath) {
         this.id = id;
         this.name = name;
