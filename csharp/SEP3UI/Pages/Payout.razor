@@ -91,12 +91,12 @@
 @code {
 
     private OrderModel orderModel = new OrderModel();
+    private string errorMessage { get; set; }
 
     protected override async Task OnInitializedAsync() {
         orderModel.Items = modelService.ShoppingCart.Items;
     }
-
-    private string errorMessage { get; set; }
+    
     
     private void HandleInvalidSubmit() {
         Console.WriteLine("Invalid");

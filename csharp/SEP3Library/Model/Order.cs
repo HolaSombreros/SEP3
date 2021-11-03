@@ -9,10 +9,6 @@ namespace SEP3Library.Model {
         [Required(ErrorMessage = "Please specify the date and time this order was created")]
         //[DataType(DataType.DateTime, ErrorMessage = "Please specify a valid date and time of the order")]
         public MyDateTime DateTime { get; set; }
-
-        [Required(ErrorMessage = "Please specify the customer of the order")]
-        public Customer User { get; set; }
-
         public Address Address { get; set; }
 
 

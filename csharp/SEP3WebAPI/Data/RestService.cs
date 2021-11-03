@@ -23,11 +23,6 @@ namespace SEP3WebAPI.Data {
                 throw new ArgumentNullException("Items", "Your order must contain at least 1 item");
 
             Order order = new Order() {
-                User = new Customer() {
-                    FirstName = orderModel.FirstName,
-                    LastName = orderModel.LastName,
-                    Email = orderModel.Email,
-                },
                 Address = new Address() {
                     Street = orderModel.Street,
                     Number = orderModel.Number,

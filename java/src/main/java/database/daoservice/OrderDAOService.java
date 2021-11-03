@@ -5,7 +5,6 @@ import model.*;
 import model.enums.OrderStatus;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 public class OrderDAOService implements OrderDAO {
