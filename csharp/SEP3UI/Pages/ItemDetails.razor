@@ -54,7 +54,6 @@ else {
 
     protected override async Task OnInitializedAsync() {
         try {
-            Console.WriteLine("SAnity check in the item details");
             item = await itemService.GetItemAsync(Id);
         }
         catch (Exception e) {

@@ -74,11 +74,9 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Item> GetItemAsync(int id) {
-            Console.WriteLine("Sanity check hehe " + id);
             Request req = new Request();
             req.Type = "item";
             req.Item.Id = id;
-            Console.WriteLine("Sanity check" +req.Item);
             Send(req);
             Waiting();
             return item;

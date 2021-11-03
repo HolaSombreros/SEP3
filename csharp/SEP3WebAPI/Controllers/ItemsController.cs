@@ -30,7 +30,6 @@ namespace SEP3WebAPI.Controllers {
         [Route("{id:int}")]
         public async Task<ActionResult<Item>> GetItemAsync([FromRoute] int id) {
             try {
-                Console.WriteLine("hello" + id);
                 Item item = await service.GetItemAsync(id);
                 return Ok(item);
             }
@@ -38,7 +37,6 @@ namespace SEP3WebAPI.Controllers {
                 return NotFound(e.Message);
             }
             catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }

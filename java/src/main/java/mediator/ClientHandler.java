@@ -61,7 +61,6 @@ public class ClientHandler implements Runnable {
                             else
                                 reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getId()));
                             sendReply(reply);
-                            System.out.println("Sanity check " + reply);
                             break;
                     }
                 }

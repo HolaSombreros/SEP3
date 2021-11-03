@@ -19,7 +19,6 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<Item> GetItemAsync(int id) {
-            Console.WriteLine("Sanity check in the rest service " + id);
             return await client.GetItemAsync(id);
         }
 
