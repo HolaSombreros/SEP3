@@ -108,6 +108,7 @@
         orderModel.Items = modelService.ShoppingCart.Items;
     }
 
+
     private async Task HandleValidSubmit() {
         try {
             Order order = await modelService.CreateOrderAsync(orderModel);
