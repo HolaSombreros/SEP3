@@ -16,6 +16,7 @@ namespace SEP3WebAPI.Mediator {
         private NetworkStream networkStream;
         private bool waiting;
         private IList<Item> items;
+        private Item item;
         private Order order;
         private Object lock1;
 
@@ -44,6 +45,9 @@ namespace SEP3WebAPI.Mediator {
                             break;
                         case "connection_error":
                             throw new ConnectionAbortedException();
+                        case "item":
+                            item = request.Item;
+                            break;
                     }
                 }
                 Monitor.Pulse(lock1);
@@ -67,6 +71,17 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             Waiting();
             return items;
+        }
+
+        public async Task<Item> GetItemAsync(int id) {
+            Console.WriteLine("Sanity check hehe " + id);
+            Request req = new Request();
+            req.Type = "item";
+            req.Item.Id = id;
+            Console.WriteLine("Sanity check" +req.Item);
+            Send(req);
+            Waiting();
+            return item;
         }
 
         public async Task<Order> CreateOrderAsync(Order order) {

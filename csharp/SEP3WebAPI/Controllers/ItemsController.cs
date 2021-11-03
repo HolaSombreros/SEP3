@@ -25,5 +25,22 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Item>> GetItemAsync([FromRoute] int id) {
+            try {
+                Console.WriteLine("hello" + id);
+                Item item = await service.GetItemAsync(id);
+                return Ok(item);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

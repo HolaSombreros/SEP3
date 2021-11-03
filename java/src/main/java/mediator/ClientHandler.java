@@ -2,7 +2,9 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.DatabaseManager;
+import database.model.Item;
 import database.model.Order;
+import database.model.enums.Category;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,6 +51,16 @@ public class ClientHandler implements Runnable {
                             System.out.println(order.getAddress().toString());
                             reply.setOrder(databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDateTime(),order.getOrderStatus(),order.getFirstName(), order.getLastName(), order.getEmail()));
                             sendReply(reply);
+                            break;
+                        case "item":
+                            reply = new Request(request.getType());
+                            Item item = databaseManager.getItemDAOService().read(request.getItem().getId());
+                            if(item.getCategory() == Category.BOOK)
+                                reply.setItem(databaseManager.getBookDAOService().read(request.getItem().getId()));
+                            else
+                                reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getId()));
+                            sendReply(reply);
+                            System.out.println("Sanity check " + reply);
                             break;
                     }
                 }

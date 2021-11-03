@@ -15,6 +15,10 @@ public class Item {
     //TODO discuss discount
     private int discount;
 
+    public Item() {
+
+    }
+
     public Item(int id, String name, String description, double price, Category category, int quantity) {
         this.id = id;
         this.name = name;

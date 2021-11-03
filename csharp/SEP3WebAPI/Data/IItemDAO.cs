@@ -5,5 +5,6 @@ using SEP3Library.Model;
 namespace SEP3WebAPI.Data {
     public interface IItemDAO {
         Task<IList<Item>> GetItemsAsync();
+        Task<Item> GetItemAsync(int id);
     }
 }

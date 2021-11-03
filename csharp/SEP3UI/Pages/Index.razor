@@ -31,7 +31,6 @@ Welcome to Under Covers  main paaaage
  
 @code {
     public IList<Item> Items { get; set; }
-    public Item FeaturedItem { get; set; }
 
     protected override async Task OnInitializedAsync() {
         Items = await modelService.GetItemsAsync();

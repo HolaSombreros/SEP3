@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Model;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
@@ -16,6 +18,11 @@ namespace SEP3WebAPI.Data {
         
         public async Task<IList<Item>> GetItemsAsync() {
             return await client.GetItemsAsync();
+        }
+
+        public async Task<Item> GetItemAsync(int id) {
+            Console.WriteLine("Sanity check in the rest service " + id);
+            return await client.GetItemAsync(id);
         }
 
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {

@@ -115,6 +115,7 @@
             Console.WriteLine(order.ToString());
         }
         catch (Exception e) {
+            Console.WriteLine(e.Message);
             errorMessage = e.Message;
         }
     }
