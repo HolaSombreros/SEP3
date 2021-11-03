@@ -16,8 +16,8 @@ public class Book extends Item{
     private Genre genre;
     private MyDateTime publicationDate;
 
-    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, MyDateTime publicationDate) {
-        super(id, name, description, price, category, quantity, status, discount);
+    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String filePath, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, MyDateTime publicationDate) {
+        super(id, name, description, price, category, quantity, status, discount,filePath);
         this.ISBN = ISBN;
         this.authorFirstName = authorFirstName;
         this.authorLastName = authorLastName;
@@ -26,8 +26,8 @@ public class Book extends Item{
         this.publicationDate = publicationDate;
     }
 
-    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
-        super(id, name, description, price, category, quantity, status, discount);
+    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount,String filePath, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
+        super(id, name, description, price, category, quantity, status, discount,filePath);
         this.ISBN = ISBN;
         this.authorFirstName = authorFirstName;
         this.authorLastName = authorLastName;
