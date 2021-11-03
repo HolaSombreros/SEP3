@@ -18,14 +18,7 @@ namespace SEP3Library.Model {
 
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please specify an email address")]
-        public string Email {
-            get => email;
-            set {
-                if (!new EmailAddressAttribute().IsValid(value)) throw new InvalidDataException("Please enter a valid email address");
-                email = value;
-            }
-        }
-        private string email;
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Please specify the address where the order is to be sent to")]
         public Address Address { get; set; }
