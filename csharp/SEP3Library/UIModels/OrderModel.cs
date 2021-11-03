@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using SEP3Library.Model;
 
 namespace SEP3Library.UIModels {
@@ -8,7 +9,14 @@ namespace SEP3Library.UIModels {
 
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please enter an email address")]
-        public string Email { get; set; }
+        public string Email {
+            get => email;
+            set {
+                if (!new EmailAddressAttribute().IsValid(value)) throw new InvalidDataException("Please enter a valid email address");
+                email = value;
+            }
+        }
+        private string email;
 
         [Required(ErrorMessage = "Please enter a first name")]
         [MaxLength(100, ErrorMessage = "The first name cannot exceed 100 characters")]
@@ -32,6 +40,5 @@ namespace SEP3Library.UIModels {
         [Range(1000,9999,ErrorMessage="Zipcode must be between 1000 and 9999")]
         [Required(ErrorMessage = "Please enter a zipcode")]
         public int ZipCode { get; set; }
-
     }
 }

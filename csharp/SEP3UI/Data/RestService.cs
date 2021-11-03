@@ -55,7 +55,10 @@ namespace SEP3UI.Data {
 
             HttpResponseMessage response = await client.PostAsync($"{uri}/{endpoint}", content);
             string responseContent = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode) throw new Exception($"{responseContent}");
+            if (!response.IsSuccessStatusCode) {
+                Console.WriteLine("-----------" + responseContent);
+                throw new Exception($"{responseContent}");
+            }
 
             TOutput created = JsonSerializer.Deserialize<TOutput>(responseContent, new JsonSerializerOptions() {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
