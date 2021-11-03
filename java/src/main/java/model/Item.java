@@ -1,7 +1,7 @@
-package database.model;
+package model;
 
-import database.model.enums.Category;
-import database.model.enums.ItemStatus;
+import model.enums.Category;
+import model.enums.ItemStatus;
 
 public class Item {
 

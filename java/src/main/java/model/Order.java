@@ -1,6 +1,6 @@
-package database.model;
+package model;
 
-import database.model.enums.OrderStatus;
+import model.enums.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,9 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public void setItems(List<Item> items){
+        this.items = items;
+    }
     public List<Item> getItems() {
         return items;
     }

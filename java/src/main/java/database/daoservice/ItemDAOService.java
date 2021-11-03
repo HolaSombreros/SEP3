@@ -2,13 +2,11 @@ package database.daoservice;
 
 import database.daomodel.ItemDAO;
 import database.daoservice.mapper.ItemMapper;
-import database.model.Item;
-import database.model.enums.Category;
-import database.model.enums.ItemStatus;
+import model.Item;
+import model.enums.Category;
+import model.enums.ItemStatus;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 
 public class ItemDAOService implements ItemDAO {
@@ -68,4 +66,14 @@ public class ItemDAOService implements ItemDAO {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+    @Override
+    public List<Item> readAllFromOrder(int orderId) {
+        try{
+            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id,name,description,category,discount,status, order_id, order_item.quantity, order_item.price FROM item JOIN order_item USING (item_id) WHERE order_id = ?;",orderId);
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
 }

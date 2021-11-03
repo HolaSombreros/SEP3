@@ -1,10 +1,11 @@
 package mediator;
 
 import com.google.gson.Gson;
-import database.DatabaseManager;
-import database.model.Item;
-import database.model.Order;
-import database.model.enums.Category;
+import database.daomodel.DatabaseManager;
+import model.Item;
+import model.Order;
+import model.enums.Category;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
