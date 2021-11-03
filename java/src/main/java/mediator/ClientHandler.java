@@ -47,7 +47,7 @@ public class ClientHandler implements Runnable {
                             reply = new Request(request.getType());
                             Order order = request.getOrder();
                             System.out.println(order.getAddress().toString());
-                            reply.setOrder(databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDatetime(),order.getOrderStatus(),order.getUser()));
+                            reply.setOrder(databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDateTime(),order.getOrderStatus(),order.getFirstName(), order.getLastName(), order.getEmail()));
                             sendReply(reply);
                             break;
                     }

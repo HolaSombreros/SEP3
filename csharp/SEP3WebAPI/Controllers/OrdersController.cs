@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Model;
@@ -22,7 +23,7 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Order newOrder = await service.CreateOrderAsync(orderModel);
                 return Created($"/{newOrder.Id}", newOrder);
-            } catch (ArgumentNullException e) {
+            } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
