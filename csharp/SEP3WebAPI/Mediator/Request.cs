@@ -7,5 +7,7 @@ namespace SEP3WebAPI.Mediator {
         public Item Item { get; set; } = new Item();
         public IList<Item> Items { get; set; }
         public Order Order { get; set; }
+        
+        public Customer Customer { get; set; }
     }
 }
