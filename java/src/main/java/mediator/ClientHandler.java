@@ -2,6 +2,11 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.daomodel.DatabaseManager;
+import mediator.Command.Command;
+import mediator.Command.CustomerCommand;
+import mediator.Command.ItemCommand;
+import mediator.Command.OrderCommand;
+import mediator.Request.*;
 import model.Item;
 import model.Order;
 import model.enums.Category;
@@ -12,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class ClientHandler implements Runnable {
 
@@ -19,6 +25,7 @@ public class ClientHandler implements Runnable {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
+    private Command command;
     private boolean running;
     private Gson gson;
     private DatabaseManager databaseManager;
@@ -36,51 +43,42 @@ public class ClientHandler implements Runnable {
         while (running) {
             try {
                 String received = in.readLine();
-                System.out.println(received);
                 Request request = gson.fromJson(received, Request.class);
-                Request reply;
                 if (request != null) {
-                    switch (request.getType()) {
-                        case "items":
-                            reply = new Request(request.getType());
-                            reply.setItems(databaseManager.getItemDAOService().readAll());
-                            sendReply(reply);
-                            break;
-                        case "purchase":
-                            reply = new Request(request.getType());
-                            Order order = request.getOrder();
-                            System.out.println(order.getAddress().toString());
-                            reply.setOrder(databaseManager.getOrderDAOService().create(order.getItems(), order.getAddress(),order.getDateTime(),order.getOrderStatus(),order.getFirstName(), order.getLastName(), order.getEmail()));
-                            sendReply(reply);
-                            break;
+                    switch (request.getService()) {
                         case "item":
-                            reply = new Request(request.getType());
-                            Item item = databaseManager.getItemDAOService().read(request.getItem().getId());
-                            if(item.getCategory() == Category.BOOK)
-                                reply.setItem(databaseManager.getBookDAOService().read(request.getItem().getId()));
-                            else
-                                reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getId()));
-                            sendReply(reply);
-                            System.out.println("Sanity check " + reply);
+                            ItemRequest itemRequest = gson.fromJson(received, ItemRequest.class);
+                            command = new ItemCommand(databaseManager);
+                            sendReply(command.execute(itemRequest));
+                            break;
+                        case "order":
+                            OrderRequest orderRequest = gson.fromJson(received, OrderRequest.class);
+                            command = new OrderCommand(databaseManager);
+                            sendReply(command.execute(orderRequest));
+                            break;
+                        case "customer":
+                            CustomerRequest customerRequest = gson.fromJson(received, CustomerRequest.class);
+                            command = new CustomerCommand(databaseManager);
+                            sendReply(command.execute(customerRequest));
                             break;
                     }
                 }
             }
             catch (IOException e) {
-                e.printStackTrace();
-                sendReply(new Request("connection_error"));
+                ErrorRequest errorRequest = new ErrorRequest("connection_error", "connection_error");
+                sendReply(errorRequest);
                 running = false;
             }
             catch (Exception e) {
-                e.printStackTrace();
-                sendReply(new Request("error"));
+                ErrorRequest errorRequest = new ErrorRequest("error", "error");
+                errorRequest.setMessage(e.getMessage());
+                sendReply(errorRequest);
             }
         }
     }
 
     private void sendReply(Request reply) {
         String replyGson = gson.toJson(reply);
-        System.out.println(replyGson);
         out.println(replyGson);
     }
 }

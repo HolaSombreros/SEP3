@@ -12,8 +12,8 @@ public class Tier3Main {
         DatabaseManager databaseManager = new DatabaseManager();
         System.out.println("Database Started  ^-^ ");
 //        databaseManager.getBookDAOService().create("Solo Leveling", "A light Novel", 12.50, Category.BOOK, 15,"9781975319274","Chu", "Gong",
-//              Language.ENGLISH, Genre.LIGHTNOVEL, LocalDate.of(2019,9,26));
-//        databaseManager.getItemDAOService().create("Ceramic Tea Pot", "a red ceramic tea pot", 50.25,Category.HOME, 25);
+  //            Language.ENGLISH, Genre.LIGHTNOVEL, LocalDate.of(2019,9,26));
+    //    databaseManager.getItemDAOService().create("Ceramic Tea Pot", "a red ceramic tea pot", 50.25,Category.HOME, 25);
 
         try {
             Server server = new Server(databaseManager);

@@ -19,8 +19,11 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<Item> GetItemAsync(int id) {
-            Console.WriteLine("Sanity check in the rest service " + id);
             return await client.GetItemAsync(id);
+        }
+
+        public async Task<Book> GetBookAsync(int id) {
+            return await client.GetBookAsync(id);
         }
 
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
@@ -47,7 +50,7 @@ namespace SEP3WebAPI.Data {
                     Second = DateTime.Now.Second
                 },
                 Items = orderModel.Items,
-                OrderStatus = OrderStatus.PENDING
+                OrderStatus = OrderStatus.Pending
             };
 
             return await client.CreateOrderAsync(order);

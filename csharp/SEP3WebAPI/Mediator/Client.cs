@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using SEP3Library.Model;
-using SEP3WebAPI.Data;
+using SEP3WebAPI.Mediator.Requests;
 
 namespace SEP3WebAPI.Mediator {
     public class Client : IClient {
@@ -15,10 +15,8 @@ namespace SEP3WebAPI.Mediator {
         private int port = 1234;
         private NetworkStream networkStream;
         private bool waiting;
-        private IList<Item> items;
-        private Item item;
-        private Order order;
         private Object lock1;
+        private Request request;
 
         public Client() {
             tcpClient = new TcpClient("127.0.0.1", port);
@@ -27,27 +25,30 @@ namespace SEP3WebAPI.Mediator {
             lock1 = new Object();
         }
 
-        public async Task ReceiveAsync(string result) {
+        public void Receive(string result) {
             lock (lock1) {
-                Request request = JsonSerializer.Deserialize<Request>(result, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
+                request = JsonSerializer.Deserialize<Request>(result, 
+                    new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
                 if (request != null) {
-                    Console.WriteLine(request.Type);
-                    switch (request.Type) {
-                        case "items":
-                            items = request.Items;
+                    switch (request.Service) {
+                        case "item":
+                            request = JsonSerializer.Deserialize<ItemRequest>(result, 
+                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
-                        case "purchase":
-                            order = request.Order;
+                        case "order":
+                            request = JsonSerializer.Deserialize<OrderRequest>(result,
+                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+                            break;
+                        case "customer":
+                            request = JsonSerializer.Deserialize<CustomerRequest>(result,
+                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "error":
-                            items = null;
-                            order = null;
-                            break;
+                            request = JsonSerializer.Deserialize<ErrorRequest>(result,
+                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+                            throw new Exception(((ErrorRequest)request)?.Message);
                         case "connection_error":
                             throw new ConnectionAbortedException();
-                        case "item":
-                            item = request.Item;
-                            break;
                     }
                 }
                 Monitor.Pulse(lock1);
@@ -63,34 +64,56 @@ namespace SEP3WebAPI.Mediator {
                 }
             }
         }
-        // TODO - Could we do a Request<T> to avoid all the different variables in the "Request" class?
-        // So for here T would be IList<Item> and for the method below, it would be Order. This way there would only be 1 variable in the "Request" class
+
         public async Task<IList<Item>> GetItemsAsync() {
-            Request req = new Request();
-            req.Type = "items";
-            Send(req);
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getAll"
+            };
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
             Waiting();
-            return items;
+            return ((ItemRequest)request).Items;
         }
 
         public async Task<Item> GetItemAsync(int id) {
-            Console.WriteLine("Sanity check hehe " + id);
-            Request req = new Request();
-            req.Type = "item";
-            req.Item.Id = id;
-            Console.WriteLine("Sanity check" +req.Item);
-            Send(req);
+            ItemRequest req = new ItemRequest() {
+                Type = "get",
+                Service = "item",
+                Item = new Item() {
+                    Id = id
+                }
+            };
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
             Waiting();
-            return item;
+            return ((ItemRequest) request).Item;
         }
 
-        public async Task<Order> CreateOrderAsync(Order order) {
-            Request req = new Request();
-            req.Type = "purchase";
-            req.Order = order;
-            Send(req);
+        public async Task<Book> GetBookAsync(int id) {
+            ItemRequest req = new ItemRequest() {
+                Type = "get",
+                Service = "item",
+                Item = new Item() {
+                    Id = id
+                }
+            };
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
             Waiting();
-            return this.order;
+            return ((ItemRequest) request).Book;
+        }
+        
+        public async Task<Order> CreateOrderAsync(Order order) {
+            OrderRequest req = new OrderRequest() {
+                Service = "order", 
+                Type = "purchase", 
+                Order = order
+            };
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
+            Waiting();
+            return ((OrderRequest)request).Order;
         }
 
         public void Disconnect() {
@@ -98,9 +121,7 @@ namespace SEP3WebAPI.Mediator {
             tcpClient.Close();
         }
 
-        public void Send(Request req) {
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Console.WriteLine(send);
+        private void Send(String send) {
             byte[] data = Encoding.ASCII.GetBytes(send + "\n");
             networkStream.Write(data, 0, data.Length);
         }
