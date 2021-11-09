@@ -1,7 +1,7 @@
 ﻿@page "/ShoppingBasket"
 @using SEP3Library.Model
 @using SEP3UI.Data
-@inject IModelService modelService
+@inject IOrderService orderService
 @inject NavigationManager NavigationManager
 
 <div class="card">
@@ -73,7 +73,7 @@
 
     
     protected override async Task OnInitializedAsync() {
-        items = modelService.ShoppingCart.Items;
+        items = orderService.ShoppingCart.Items;
         foreach (Item item in items) {
             total += item.Price;
         }

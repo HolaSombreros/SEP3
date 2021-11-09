@@ -2,7 +2,8 @@
 @using SEP3Library.Model
 @using SEP3UI.Data
 @inject NavigationManager NavigationManager
-@inject IModelService modelService
+@inject IItemService itemService
+@inject IOrderService orderService
 
 Welcome to Under Covers  main paaaage
 
@@ -33,7 +34,7 @@ Welcome to Under Covers  main paaaage
     public IList<Item> Items { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        Items = await modelService.GetItemsAsync();
+        Items = await itemService.GetItemsAsync();
     }
 
     private void NavigateToComponent(Item item) {
@@ -45,8 +46,6 @@ Welcome to Under Covers  main paaaage
     }
 
     private void AddToShoppingCart(Item item) {
-        modelService.ShoppingCart.AddToShoppingCart(item);
+        orderService.ShoppingCart.AddToShoppingCart(item);
     }
-    
-
 }

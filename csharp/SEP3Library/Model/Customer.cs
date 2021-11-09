@@ -17,6 +17,7 @@ namespace SEP3Library.Model {
         }
         private string email;
         
+        [DataType(DataType.Password)]
         public string Password { get; set; }
         
         [Required(ErrorMessage = "Please enter a first name")]
