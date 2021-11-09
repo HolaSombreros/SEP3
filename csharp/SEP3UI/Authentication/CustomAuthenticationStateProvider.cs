@@ -12,12 +12,12 @@ using SEP3UI.Data;
 namespace SEP3UI.Authentication {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider {
         private readonly IJSRuntime jsRuntime;
-        private readonly ICustomerService service;
+        private readonly ICustomerService customerService;
         private Customer cached;
 
-        public CustomAuthenticationStateProvider(IJSRuntime jsRuntime, ICustomerService service) {
+        public CustomAuthenticationStateProvider(IJSRuntime jsRuntime, ICustomerService customerService) {
             this.jsRuntime = jsRuntime;
-            this.service = service;
+            this.customerService = customerService;
         }
         
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() {
@@ -45,7 +45,7 @@ namespace SEP3UI.Authentication {
             ClaimsIdentity identity = new ClaimsIdentity();
             
             try {
-                Customer customer = await service.GetCustomerAsync(email, password);
+                Customer customer = await customerService.GetCustomerAsync(email, password);
                 identity = SetupClaims(customer);
                 string data = JsonSerializer.Serialize(customer);
                 await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", data);

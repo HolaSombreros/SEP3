@@ -4,7 +4,7 @@ using SEP3Library.UIModels;
 
 namespace SEP3UI.Data {
     public interface IOrderService {
-        public ShoppingCart ShoppingCart { get; init; }
+        ShoppingCart ShoppingCart { get; init; }
         Task<Order> CreateOrderAsync(OrderModel order);
     }
 }
