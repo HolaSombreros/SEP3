@@ -18,6 +18,7 @@ namespace SEP3WebAPI.Mediator {
         private IList<Item> items;
         private Item item;
         private Order order;
+        private Customer customer;
         private Object lock1;
 
         public Client() {
@@ -47,6 +48,9 @@ namespace SEP3WebAPI.Mediator {
                             throw new ConnectionAbortedException();
                         case "item":
                             item = request.Item;
+                            break;
+                        case "customer":
+                            customer = request.Customer;
                             break;
                     }
                 }
@@ -89,6 +93,29 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             Waiting();
             return this.order;
+        }
+        
+        public async Task<Customer> GetCustomerAsync(string email, string password) {
+            Request req = new Request();
+            req.Type = "login";
+            req.Customer.Email = email;
+            req.Customer.Password = password;
+            Send(req);
+            Waiting();
+            return customer;
+        }
+
+        public async Task<Customer> AddCustomerAsync(Customer customer) {
+            Request req = new Request();
+            req.Type = "register";
+            req.Customer.FirstName = customer.FirstName;
+            req.Customer.LastName = customer.LastName;
+            req.Customer.Password = customer.Password;
+            req.Customer.Address = customer.Address;
+            req.Customer.Email = customer.Email;
+            Send(req);
+            Waiting();
+            return this.customer;
         }
 
         public void Disconnect() {
