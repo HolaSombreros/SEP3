@@ -4,7 +4,7 @@
 @using SEP3Library.UIModels
 @using SEP3UI.Data
 @inject NavigationManager NavigationManager
-@inject IModelService modelService
+@inject IOrderService orderService
 
 <EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmit">
     <div class="container">
@@ -105,14 +105,14 @@
     private string errorMessage { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        orderModel.Items = modelService.ShoppingCart.Items;
+        orderModel.Items = orderService.ShoppingCart.Items;
     }
 
 
     private async Task HandleValidSubmit() {
         try {
-            Order order = await modelService.CreateOrderAsync(orderModel);
-            modelService.ShoppingCart.EmptyShoppingCart();
+            Order order = await orderService.CreateOrderAsync(orderModel);
+            orderService.ShoppingCart.EmptyShoppingCart();
             errorMessage = "Successful purchase!";
             Console.WriteLine(order.ToString());
         }
