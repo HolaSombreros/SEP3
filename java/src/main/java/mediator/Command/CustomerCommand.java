@@ -13,7 +13,7 @@ public class CustomerCommand implements Command {
     }
 
     @Override public Request execute(Request request) {
-        CustomerRequest reply;
+        CustomerRequest reply = new CustomerRequest(request.getService(), request.getType());;
         switch (request.getType()) {
             case "login":
             case "register":

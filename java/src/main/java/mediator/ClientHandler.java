@@ -44,7 +44,6 @@ public class ClientHandler implements Runnable {
             try {
                 String received = in.readLine();
                 Request request = gson.fromJson(received, Request.class);
-                Request reply;
                 if (request != null) {
                     switch (request.getService()) {
                         case "item":

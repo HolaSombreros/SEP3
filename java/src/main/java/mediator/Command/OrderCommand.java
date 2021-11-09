@@ -14,10 +14,9 @@ public class OrderCommand implements Command {
     }
 
     @Override public Request execute(Request request) {
-        OrderRequest reply;
+        OrderRequest reply = new OrderRequest(request.getService(), request.getType());;
         switch (request.getType()) {
             case "purchase":
-                reply = new OrderRequest(request.getService(), request.getType());
                 Order order = ((OrderRequest) request).getOrder();
                 reply.setOrder(databaseManager.getOrderDAOService()
                     .create(order.getItems(), order.getAddress(), order.getDateTime(), order.getOrderStatus(), order.getFirstName(), order.getLastName(), order.getEmail()));

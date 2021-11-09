@@ -15,14 +15,12 @@ public class ItemCommand implements Command {
     }
 
     @Override public Request execute(Request request) {
-        ItemRequest reply;
+        ItemRequest reply = new ItemRequest(request.getService(), request.getType());;
         switch (request.getType()) {
             case "getAll":
-                reply = new ItemRequest(request.getService(), request.getType());
                 reply.setItems(databaseManager.getItemDAOService().readAll());
                 return reply;
             case "get":
-                reply = new ItemRequest(request.getService(), request.getType());
                 Item item = databaseManager.getItemDAOService().read(((ItemRequest)request).getItem().getId());
                 if (item.getCategory() == Category.BOOK)
                     reply.setBook(databaseManager.getBookDAOService().read(((ItemRequest) request).getItem().getId()));
