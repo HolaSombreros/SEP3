@@ -6,5 +6,6 @@ namespace SEP3WebAPI.Data {
     public interface IItemDAO {
         Task<IList<Item>> GetItemsAsync();
         Task<Item> GetItemAsync(int id);
+        Task<Book> GetBookAsync(int id);
     }
 }

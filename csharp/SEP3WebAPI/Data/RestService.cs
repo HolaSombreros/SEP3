@@ -30,6 +30,10 @@ namespace SEP3WebAPI.Data {
             return await client.AddCustomerAsync(customer);
         }
 
+        public async Task<Book> GetBookAsync(int id) {
+            return await client.GetBookAsync(id);
+        }
+
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
@@ -54,7 +58,7 @@ namespace SEP3WebAPI.Data {
                     Second = DateTime.Now.Second
                 },
                 Items = orderModel.Items,
-                OrderStatus = OrderStatus.PENDING
+                OrderStatus = OrderStatus.Pending
             };
 
             return await client.CreateOrderAsync(order);

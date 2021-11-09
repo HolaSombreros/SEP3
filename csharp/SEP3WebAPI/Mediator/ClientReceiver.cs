@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Microsoft.AspNetCore.Connections;
@@ -25,9 +26,10 @@ namespace SEP3WebAPI.Mediator {
                         int bytesRead = stream.Read(response, 0, response.Length);
                         string result = Encoding.ASCII.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
-                        client.ReceiveAsync(result);
+                        client.Receive(result);
                     }
                     catch (ConnectionAbortedException e) {
+                        Console.WriteLine(e.Message);
                         Disconnect();
                     }
                 }
