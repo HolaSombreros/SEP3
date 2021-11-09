@@ -2,21 +2,19 @@
 @using SEP3Library.Model
 @using SEP3UI.Data
 @inject IModelService itemService
-<h3>ItemDetails</h3>
 
 @if (item == null) {
     <h2> No such item found </h2>
     
 }
 else {
-    <div class="container">
-    <div class="card col-md-12 d-flex justify-content-center">
-        <div class="panel-body">
-            <div class="pro-img-details">
+    <div class="card">
+        <div class="row col-md-3">
+            <div class="pro-img-details img-fluid img-thumbnail">
                 <img src="@item.ImageName"/>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="card col-md-3">
             <h4 class="pro-d-title">
                 <div>@item.Name</div>
             </h4>
@@ -26,9 +24,9 @@ else {
                     <a rel="tag" href="#">@item.Category.ToString()</a>
                 </span>
             </div>
-            <div class="m-bot15 font-weight-bold">Price: <span class="amount-old">@item.Price</span>
-                <div class="form-group">
-                    <label>Quantity: @item.Quantity </label>
+            <div class="font-weight-bold">Price: <span class="amount-old">@item.Price</span>
+                <div class="form-group font-weight-bold">
+                    <div>Quantity: @item.Quantity </div>
                     <input type="quantity" placeholder="1" class="form-control quantity">
                 </div>
                 <p>
@@ -39,7 +37,6 @@ else {
             </div>
         </div>
     </div>
-</div>
 }
 
 
