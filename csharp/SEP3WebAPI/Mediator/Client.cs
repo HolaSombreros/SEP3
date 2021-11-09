@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using SEP3Library.Model;
-using SEP3WebAPI.Data;
+using SEP3WebAPI.Mediator.Requests;
 
 namespace SEP3WebAPI.Mediator {
     public class Client : IClient {
@@ -117,26 +117,36 @@ namespace SEP3WebAPI.Mediator {
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
-            Request req = new Request();
-            req.Type = "login";
-            req.Customer.Email = email;
-            req.Customer.Password = password;
-            Send(req);
+            CustomerRequest req = new CustomerRequest() {
+                Type = "login",
+                Service = "customer",
+                Customer = new Customer() {
+                    Email = email,
+                    Password = password
+                }
+            };
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
             Waiting();
-            return customer;
+            return ((CustomerRequest)request).Customer;
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
-            Request req = new Request();
-            req.Type = "register";
-            req.Customer.FirstName = customer.FirstName;
-            req.Customer.LastName = customer.LastName;
-            req.Customer.Password = customer.Password;
-            req.Customer.Address = customer.Address;
-            req.Customer.Email = customer.Email;
-            Send(req);
+            CustomerRequest req = new CustomerRequest() {
+                Type = "register",
+                Service = "customer",
+                Customer = new Customer() {
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Password = customer.Password,
+                    Address = customer.Address,
+                    Email = customer.Email
+                }
+            };
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
             Waiting();
-            return this.customer;
+            return ((CustomerRequest)request).Customer;
         }
 
         public void Disconnect() {

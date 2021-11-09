@@ -15,7 +15,8 @@ public class CustomerCommand implements Command {
     @Override public Request execute(Request request) {
         CustomerRequest reply;
         switch (request.getType()) {
-
+            case "login":
+            case "register":
         }
         throw new IllegalArgumentException("The request could not be fulfilled");
     }
