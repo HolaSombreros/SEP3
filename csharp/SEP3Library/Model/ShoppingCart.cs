@@ -1,10 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SEP3Library.Model {
     public class ShoppingCart {
         public Customer User { get; set; }
-        public double Total { get; set; }
+
+        public double Total {
+            get {
+                double p = 0;
+                foreach (var i in Items) {
+                    p += i.Price * i.Quantity;
+                }
+                return p;
+            } 
+        }
+
+        public int FinalQuantity {
+            get {
+                int q = 0;
+                foreach (var i in Items) {
+                    q += i.Quantity;
+                }
+                return q;
+            }
+        }
+
         public IList<Item> Items  { get; set; }
 
         public ShoppingCart() {
@@ -22,6 +43,13 @@ namespace SEP3Library.Model {
                 test.Quantity++;
             }
         }
+
+        public void RemoveFromShoppingCart(Item item) {
+            Item i = item.Copy();
+            Item test = Items.First(it => it.Id == item.Id);
+            test.Quantity--;
+        }
+        
         public void EmptyShoppingCart() {
             Items.Clear();
         }
