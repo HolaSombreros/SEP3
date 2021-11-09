@@ -43,7 +43,9 @@ public class ClientHandler implements Runnable {
         while (running) {
             try {
                 String received = in.readLine();
+                System.out.println(received);
                 Request request = gson.fromJson(received, Request.class);
+                Request reply;
                 if (request != null) {
                     switch (request.getService()) {
                         case "item":
@@ -79,6 +81,7 @@ public class ClientHandler implements Runnable {
 
     private void sendReply(Request reply) {
         String replyGson = gson.toJson(reply);
+        System.out.println(replyGson);
         out.println(replyGson);
     }
 }

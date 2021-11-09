@@ -21,6 +21,14 @@ namespace SEP3WebAPI.Data {
         public async Task<Item> GetItemAsync(int id) {
             return await client.GetItemAsync(id);
         }
+        
+        public async Task<Customer> GetCustomerAsync(string email, string password) {
+            return await client.GetCustomerAsync(email, password);
+        }
+
+        public async Task<Customer> AddCustomerAsync(Customer customer) {
+            return await client.AddCustomerAsync(customer);
+        }
 
         public async Task<Book> GetBookAsync(int id) {
             return await client.GetBookAsync(id);

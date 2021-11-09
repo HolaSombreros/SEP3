@@ -2,7 +2,8 @@
 @using SEP3Library.Model
 @using SEP3UI.Data
 @inject NavigationManager NavigationManager
-@inject IModelService modelService
+@inject IItemService itemService
+@inject IOrderService orderService
 
 Welcome to Under Covers  main paaaage
 
@@ -14,7 +15,7 @@ Welcome to Under Covers  main paaaage
                 <a asp-page="/itemDetails" asp-route-id="@item.Id" title="Order @item.Name">
                     <div class="productInfo">
                         <h3>@item.Name</h3>
-                        <img class="product-image img-fluid img-thumbnail" src="Images/Larman.jpg" alt="Image of @item.Name"/>
+                        <img class="product-image img-fluid img-thumbnail" src="@item.ImageName" alt="Image of @item.Name"/>
                         <p class="card-text">@item.Description</p>
                     </div>
                 </a>
@@ -33,7 +34,7 @@ Welcome to Under Covers  main paaaage
     public IList<Item> Items { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        Items = await modelService.GetItemsAsync();
+        Items = await itemService.GetItemsAsync();
     }
 
     private void NavigateToComponent(Item item) {
@@ -45,8 +46,6 @@ Welcome to Under Covers  main paaaage
     }
 
     private void AddToShoppingCart(Item item) {
-        modelService.ShoppingCart.AddToShoppingCart(item);
+        orderService.ShoppingCart.AddToShoppingCart(item);
     }
-    
-
 }

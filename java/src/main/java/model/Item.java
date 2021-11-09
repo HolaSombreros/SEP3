@@ -14,12 +14,15 @@ public class Item {
     private ItemStatus status;
     //TODO discuss discount
     private int discount;
+    private String imageName;
+
 
     public Item() {
 
     }
 
-    public Item(int id, String name, String description, double price, Category category, int quantity) {
+
+    public Item(int id, String name, String description, double price, Category category, int quantity, String imgFilepath) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,9 +31,10 @@ public class Item {
         this.quantity = quantity;
         this.status = ItemStatus.INSTOCK;
         this.discount = 0;
+        this.imageName = imgFilepath;
     }
 
-    public Item(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount) {
+    public Item(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String imgFilepath) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -39,6 +43,15 @@ public class Item {
         this.quantity = quantity;
         this.status = status;
         this.discount = discount;
+        this.imageName = imgFilepath;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public int getId() {
@@ -110,6 +123,6 @@ public class Item {
             return false;
         Item other = (Item) obj;
         return other.id == id  && name.equals(other.name) && description.equals(other.description) && price == other.price &&
-                category.equals(other.category) && quantity == other.quantity && status.equals(other.status) && discount == other.discount;
+                category.equals(other.category) && quantity == other.quantity && status.equals(other.status) && discount == other.discount && imageName.equals(other.imageName);
     }
 }
