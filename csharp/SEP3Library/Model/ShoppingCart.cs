@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Xml.Schema;
 
 namespace SEP3Library.Model {
     public class ShoppingCart {
         public Customer User { get; set; }
+        public readonly double ShippingPrice = 25.00;
+        public IList<Item> Items  { get; set; }
+        
+        public ShoppingCart() {
+            Items = new List<Item>();
+        }
 
         public double Total {
             get {
@@ -26,12 +34,6 @@ namespace SEP3Library.Model {
             }
         }
 
-        public IList<Item> Items  { get; set; }
-
-        public ShoppingCart() {
-            Items = new List<Item>();
-        }
-        
         public void AddToShoppingCart(Item item) {
             Item item1 = item.Copy();
             Item test = Items.FirstOrDefault(i => i.Id == item.Id);
@@ -52,6 +54,10 @@ namespace SEP3Library.Model {
         
         public void EmptyShoppingCart() {
             Items.Clear();
+        }
+        
+        public double TotalOrderPrice() {
+            return Total + ShippingPrice;
         }
     }
 }
