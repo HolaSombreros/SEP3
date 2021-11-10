@@ -12,8 +12,8 @@ Welcome to Under Covers  main paaaage
     @foreach (Item item in Items) {
         <div class="card col-sm-3 m-3">
             <div @onclick="@(()=> NavigateToItemDetails(item))">
-                <a asp-page="/itemDetails" asp-route-id="@item.Id" title="Order @item.Name">
-                    <div class="productInfo">
+                <a asp-route-id="@item.Id" title="Order @item.Name">
+                    <div>
                         <h3>@item.Name</h3>
                         <img class="product-image img-fluid img-thumbnail" src="@item.ImageName" alt="Image of @item.Name"/>
                         <p class="card-text">@item.Description</p>

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Xml.Schema;
 
 namespace SEP3Library.Model {
     public class ShoppingCart {
@@ -46,11 +43,16 @@ namespace SEP3Library.Model {
             }
         }
 
-        public void RemoveFromShoppingCart(Item item) {
+        public void RemoveQuantityFromShoppingCart(Item item) {
             Item i = item.Copy();
             Item test = Items.First(it => it.Id == item.Id);
             test.Quantity--;
         }
+
+        public void RemoveItemFromShoppingCart(Item item) {
+            Items.Remove(item);
+        }
+        
         
         public void EmptyShoppingCart() {
             Items.Clear();

@@ -32,7 +32,7 @@
                                 <a @onclick="(() => IncreaseQuantity(item))"> + </a>
                             </div>
                             <div class="col"> @(item.Price * item.Quantity) DKK 
-                                <span class="close">&#10005;</span>
+                                <span class="close" @onclick="(() => RemoveItemFromShoppingCart(item))">&#10005;</span>
                             </div>
                         </div>
                     </div>
@@ -80,12 +80,16 @@
     }
 
     private void DecreaseQuantity(Item item) {
-        if(orderService.ShoppingCart.Items.Count > 1)
-            orderService.ShoppingCart.RemoveFromShoppingCart(item);
+        if (orderService.ShoppingCart.Items.Count > 1)
+            orderService.ShoppingCart.RemoveQuantityFromShoppingCart(item);
     }
     
     private void IncreaseQuantity(Item item) {
         orderService.ShoppingCart.AddToShoppingCart(item);
+    }
+
+    private void RemoveItemFromShoppingCart(Item item) {
+        orderService.ShoppingCart.RemoveItemFromShoppingCart(item);
     }
 
     private int GetItemsBasedOnQuantity() {
