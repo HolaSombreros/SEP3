@@ -1,14 +1,15 @@
 ﻿@page "/Login"
 @using SEP3Library.UIModels
+@using SEP3UI.Authentication
 @using SEP3UI.Data
 @inject NavigationManager navigationManager
 @inject ICustomerService customerService;
+@inject AuthenticationStateProvider authenticationStateProvider
+
 <!-- main box -->
 <div class="card">
     <div class="row border-top border-bottom">
-        @* <div class="row main align-items-center"> *@
         <!-- logo box -->
-
         <div class="col-4">
             <img src="Images/Under Covers.png" class="img-fluid"alt="Under Covers Logo"/>
         </div>
@@ -48,11 +49,11 @@
             <div class="form-group d-flex justify-content-center">
                 <button @onclick="LoginAsync" class="btn btn-primary">Log in</button>
             </div>
+            <div style="color:red">@errorMessage</div>
             <div class="form-group d-flex justify-content-center">
-                <a @onclick="GoToRegister">Don't have an account? Register here!</a>
+                <a rel="tag" @onclick="GoToRegister">Don't have an account? Register now!</a>
             </div>
         </div>
-        @* </div> *@
 
     </div>
 </div>
@@ -69,7 +70,13 @@
     }
 
     public async Task LoginAsync() {
-        await customerService.GetCustomerAsync(customerModel.Email, customerModel.Password);
+        errorMessage = "";
+        try {
+             await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
+        }catch (Exception e) {
+            errorMessage = e.Message;
+        }
+        
     }
 
 }
