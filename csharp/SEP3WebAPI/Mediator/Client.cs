@@ -92,7 +92,7 @@ namespace SEP3WebAPI.Mediator {
 
         public async Task<Book> GetBookAsync(int id) {
             ItemRequest req = new ItemRequest() {
-                Type = "get",
+                Type = "book",
                 Service = "item",
                 Item = new Item() {
                     Id = id

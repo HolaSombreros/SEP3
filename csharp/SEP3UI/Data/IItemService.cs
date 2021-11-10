@@ -6,5 +6,6 @@ namespace SEP3UI.Data {
     public interface IItemService {
         Task<IList<Item>> GetItemsAsync();
         Task<Item> GetItemAsync(int id);
+        Task<Book> GetBookAsync(int id);
     }
 }
