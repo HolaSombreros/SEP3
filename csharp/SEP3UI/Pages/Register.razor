@@ -4,9 +4,9 @@
 @using SEP3Library.Model
 @inject NavigationManager navigationManager
 @inject ICustomerService customerService
+
 <div class="card" style="max-width:100% !important ">
     <div class="row border-top border-bottom align-items-center">
-        @* <div class="row main align-items-center"> *@
         <!-- logo box -->
 
         <div class="col-4">
@@ -134,9 +134,8 @@
             <div class="form-group d-flex justify-content-center">
                 <button @onclick="RegisterAsync" class="btn btn-primary">Register</button>
             </div>
+            <div style="color:red">@errorMessage</div>
         </div>
-        @* </div> *@
-
     </div>
 </div>
 
@@ -148,7 +147,15 @@
     }
 
     public async Task RegisterAsync() {
-        await customerService.AddCustomerAsync(customerModel);
+        errorMessage = "";
+        try {
+            await customerService.AddCustomerAsync(customerModel);
+            navigationManager.NavigateTo("/Login");
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+        
     }
 
 
