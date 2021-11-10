@@ -1,7 +1,7 @@
 ﻿@page "/ShoppingBasket"
 @using SEP3Library.Model
 @using SEP3UI.Data
-@inject IModelService modelService
+@inject IOrderService orderService
 @inject NavigationManager NavigationManager
 
 <div class="card">
@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            @foreach (Item item in modelService.ShoppingCart.Items) {
+            @foreach (Item item in orderService.ShoppingCart.Items) {
                     <div class="row border-top border-bottom">
                         <div class="row main align-items-center">
                             <div class="col-2">
@@ -78,26 +78,26 @@
     }
 
     public bool GetDisabledState() {
-        if (modelService.ShoppingCart.Items.Count == 0)
+        if (orderService.ShoppingCart.Items.Count == 0)
             isDisabled = true;
         return isDisabled;
     }
 
     private void DecreaseQuantity(Item item) {
-        if(modelService.ShoppingCart.Items.Count > 1)
-        modelService.ShoppingCart.RemoveFromShoppingCart(item);
+        if(orderService.ShoppingCart.Items.Count > 1)
+            orderService.ShoppingCart.RemoveFromShoppingCart(item);
     }
     
     private void IncreaseQuantity(Item item) {
-        modelService.ShoppingCart.AddToShoppingCart(item);
+        orderService.ShoppingCart.AddToShoppingCart(item);
     }
 
     private int GetItemsBasedOnQuantity() {
-        return modelService.ShoppingCart.FinalQuantity;
+        return orderService.ShoppingCart.FinalQuantity;
     }
 
     private double GetFinalPrice() {
-        return modelService.ShoppingCart.Total;
+        return orderService.ShoppingCart.Total;
     }
     
     private void NavigateToComponent() {

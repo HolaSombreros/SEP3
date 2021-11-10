@@ -15,9 +15,11 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        [Route("{email}/{password}")]
-        public async Task<ActionResult<Customer>> GetCustomerAsync([FromRoute] string email, [FromRoute] string password) {
+        public async Task<ActionResult<Customer>> GetCustomerAsync([FromQuery] string? email, [FromQuery] string? password) {
             try {
+                if (email == null || password == null) {
+                    return BadRequest("Input both email and password!");
+                }
                 Customer customer = await service.GetCustomerAsync(email, password);
                 return Ok(customer);
             }
