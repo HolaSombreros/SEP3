@@ -24,7 +24,7 @@ public class CustomerDAOService implements CustomerDAO {
         try {
             Address address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
             List<Integer> keys = databaseHelper.executeUpdateWithKeys(
-                "INSERT INTO customer(first_name, last_name, email, password, role, address_id, phone_number) VALUES (?,?,?,?,?,?,?);", firstName, lastName, email, password, role,
+                "INSERT INTO customer(first_name, last_name, email, password, role, address_id, phone_number) VALUES (?,?,?,?,?::user_role,?,?);", firstName, lastName, email, password, role,
                 address1.getId(), phoneNumber);
             return read(keys.get(0));
         }
@@ -35,7 +35,7 @@ public class CustomerDAOService implements CustomerDAO {
 
     @Override public Customer read(int id) {
         try {
-            return databaseHelper.mapObject(new CustomerMapper(), "SELECT * FROM customer WHERE customer_id = ?;", id);
+            return databaseHelper.mapObject(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) WHERE customer_id = ?;", id);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -43,7 +43,7 @@ public class CustomerDAOService implements CustomerDAO {
 
     @Override public Customer read(String email) {
         try {
-            return databaseHelper.mapObject(new CustomerMapper(), "SELECT * FROM customer WHERE email = ?;", email);
+            return databaseHelper.mapObject(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) WHERE email = ?;", email);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

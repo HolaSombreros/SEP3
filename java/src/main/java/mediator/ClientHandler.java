@@ -70,6 +70,7 @@ public class ClientHandler implements Runnable {
                 running = false;
             }
             catch (Exception e) {
+                e.printStackTrace();
                 ErrorRequest errorRequest = new ErrorRequest("error", "error");
                 errorRequest.setMessage(e.getMessage());
                 sendReply(errorRequest);
