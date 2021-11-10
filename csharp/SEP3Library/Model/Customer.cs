@@ -30,5 +30,8 @@ namespace SEP3Library.Model {
         [MinLength(2, ErrorMessage = "The last name has to be longer than 2 characters")]
         public string LastName { get; set; }
         public Address Address { get; set; } = new Address();
+        public string Role { get; set; }
+        public string PhoneNumber { get; set; }
+        
     }
 }
