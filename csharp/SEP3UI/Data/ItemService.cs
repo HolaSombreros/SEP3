@@ -18,5 +18,9 @@ namespace SEP3UI.Data {
         public async Task<Item> GetItemAsync(int id) {
             return await restService.GetAsync<Item>($"items/{id}");
         }
+
+        public async Task<Book> GetBookAsync(int id) {
+            return await restService.GetAsync<Book>($"items/books/{id}");
+        }
     }
 }
