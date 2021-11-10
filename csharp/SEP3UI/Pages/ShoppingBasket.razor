@@ -27,9 +27,9 @@
                                 <div class="row">@item.Name</div>
                             </div>
                             <div class="col">
-                                <a @onclick="(() => DecreaseQuantity(item))"> - </a> 
-                                <a class="border">@item.Quantity</a> 
-                                <a @onclick="(() => IncreaseQuantity(item))"> + </a>
+                                <a class ="btn-outline-secondary" @onclick="(() => DecreaseQuantity(item))"> - </a> 
+                                <a class="border">@item.Quantity</a>
+                                <a class = "btn-outline-secondary" @onclick="(() => IncreaseQuantity(item))"> + </a>
                             </div>
                             <div class="col"> @(item.Price * item.Quantity) DKK 
                                 <span class="close" @onclick="(() => RemoveItemFromShoppingCart(item))">&#10005;</span>

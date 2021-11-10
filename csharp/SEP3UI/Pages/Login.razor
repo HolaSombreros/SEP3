@@ -27,7 +27,7 @@
                         <div class="col-md-4 input-group">
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <InputText @bind-Value="@customerModel.Email" placeholder="E-mail" class="form-control"/>
+                                <InputText @bind-Value="customerModel.Email" placeholder="E-mail" class="form-control"/>
                             </div>
                             <ValidationMessage For="@(() => customerModel.Email)"/>
                         </div>
@@ -38,7 +38,7 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <InputText @bind-Value="@customerModel.Password" name="email" placeholder="Password" class="form-control" type="text"/>
+                                <InputText @bind-Value="customerModel.Password" name="email" placeholder="Password" class="form-control" type="text"/>
                             </div>
                             <ValidationMessage For="@(() => customerModel.Password)"/>
                         </div>
