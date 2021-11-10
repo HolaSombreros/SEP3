@@ -140,7 +140,9 @@ namespace SEP3WebAPI.Mediator {
                     LastName = customer.LastName,
                     Password = customer.Password,
                     Address = customer.Address,
-                    Email = customer.Email
+                    Email = customer.Email,
+                    PhoneNumber = customer.PhoneNumber,
+                    Role = customer.Role,
                 }
             };
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});

@@ -44,7 +44,6 @@ public class ClientHandler implements Runnable {
             try {
                 String received = in.readLine();
                 Request request = gson.fromJson(received, Request.class);
-                Request reply;
                 if (request != null) {
                     switch (request.getService()) {
                         case "item":
@@ -71,6 +70,7 @@ public class ClientHandler implements Runnable {
                 running = false;
             }
             catch (Exception e) {
+                e.printStackTrace();
                 ErrorRequest errorRequest = new ErrorRequest("error", "error");
                 errorRequest.setMessage(e.getMessage());
                 sendReply(errorRequest);

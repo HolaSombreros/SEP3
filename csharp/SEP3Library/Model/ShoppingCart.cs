@@ -4,13 +4,33 @@ using System.Linq;
 namespace SEP3Library.Model {
     public class ShoppingCart {
         public Customer User { get; set; }
-        public double Total { get; set; }
+        public readonly double ShippingPrice = 25.00;
         public IList<Item> Items  { get; set; }
-
+        
         public ShoppingCart() {
             Items = new List<Item>();
         }
-        
+
+        public double Total {
+            get {
+                double p = 0;
+                foreach (var i in Items) {
+                    p += i.Price * i.Quantity;
+                }
+                return p;
+            } 
+        }
+
+        public int FinalQuantity {
+            get {
+                int q = 0;
+                foreach (var i in Items) {
+                    q += i.Quantity;
+                }
+                return q;
+            }
+        }
+
         public void AddToShoppingCart(Item item) {
             Item item1 = item.Copy();
             Item test = Items.FirstOrDefault(i => i.Id == item.Id);
@@ -22,8 +42,24 @@ namespace SEP3Library.Model {
                 test.Quantity++;
             }
         }
+
+        public void RemoveQuantityFromShoppingCart(Item item) {
+            Item i = item.Copy();
+            Item test = Items.First(it => it.Id == item.Id);
+            test.Quantity--;
+        }
+
+        public void RemoveItemFromShoppingCart(Item item) {
+            Items.Remove(item);
+        }
+        
+        
         public void EmptyShoppingCart() {
             Items.Clear();
+        }
+        
+        public double TotalOrderPrice() {
+            return Total + ShippingPrice;
         }
     }
 }

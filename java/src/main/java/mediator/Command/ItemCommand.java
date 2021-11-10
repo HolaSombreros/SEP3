@@ -16,14 +16,12 @@ public class ItemCommand implements Command {
     }
 
     @Override public Request execute(Request request) {
-        ItemRequest reply;
+        ItemRequest reply = new ItemRequest(request.getService(), request.getType());;
         switch (request.getType()) {
             case "getAll":
-                reply = new ItemRequest(request.getService(), request.getType());
                 reply.setItems(databaseManager.getItemDAOService().readAll());
                 return reply;
             case "get":
-                reply = new ItemRequest(request.getService(), request.getType());
                 Item item = databaseManager.getItemDAOService().read(((ItemRequest)request).getItem().getId());
                 reply.setItem(databaseManager.getItemDAOService().read(((ItemRequest) request).getItem().getId()));
                 return reply;

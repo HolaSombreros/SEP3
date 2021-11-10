@@ -16,19 +16,23 @@
                     </div>
                 </div>
             </div>
-            @foreach (Item item in items) {
+            @foreach (Item item in orderService.ShoppingCart.Items) {
                     <div class="row border-top border-bottom">
                         <div class="row main align-items-center">
                             <div class="col-2">
-                                <img class="img-fluid" src="Images/Larman.jpg">
+                                <img class="img-fluid" src="@item.ImageName">
                             </div>
                             <div class="col">
                                 <div class="row text-muted"></div>
                                 <div class="row">@item.Name</div>
                             </div>
-                            <div class="col"> <a href="#"> - </a><a href="#" class="border">@item.Quantity</a><a href="#"> + </a> </div>
-                            <div class="col"> @item.Price DKK 
-                                <span class="close">&#10005;</span>
+                            <div class="col">
+                                <a @onclick="(() => DecreaseQuantity(item))"> - </a> 
+                                <a class="border">@item.Quantity</a> 
+                                <a @onclick="(() => IncreaseQuantity(item))"> + </a>
+                            </div>
+                            <div class="col"> @(item.Price * item.Quantity) DKK 
+                                <span class="close" @onclick="(() => RemoveItemFromShoppingCart(item))">&#10005;</span>
                             </div>
                         </div>
                     </div>
@@ -40,61 +44,71 @@
             </div>
             <hr>
             <div class="row mt-3">
-                <div class="col" style="padding-left:0;">Items: @GetItemsBasedOnQuantity()</div>
-                <div class="col text-right">@total DKK</div>
+                <div>Items: @GetItemsBasedOnQuantity()</div>
+                <div class="col text-right">@GetFinalPrice()DKK</div>
             </div>
             <div class="row mt-3">
-                <div class="row">Shipping</div>
-                <div class="col text-right">@shippingPrice DKK</div>
+                <div>Shipping</div>
+                <div class="col text-right">@orderService.ShoppingCart.ShippingPrice DKK</div>
             </div>
             <div class="row mt-3">
                   <div>Discount code</div> 
             </div>
-            <input id="code" placeholder="Enter your code">
-           
+            <input class="mt-3" placeholder="Enter your code">
             <div class="row mt-3">
-                <div class="col" style="padding-left:0;">Total price</div>
-                <div class="col text-right">@finalPrice DKK</div>
+                <div>Total price</div>
+                <div class="col text-right">@GetTotalOrderPrice() DKK</div>
             </div>
             <div class="d-flex justify-content-center mt-3">
                 <button class="btn btn-dark" disabled="@isDisabled" @onclick="@NavigateToComponent">Go to payout</button>
             </div>
-
         </div>
     </div>
 </div>
 @code {
-    private IList<Item> items;
-    private double total;
-    private const double shippingPrice = 25.00;
-    private double finalPrice;
-    private int finalQuantity;
+    
     private bool isDisabled { get; set; }
-
     
     protected override async Task OnInitializedAsync() {
-        items = orderService.ShoppingCart.Items;
-        foreach (Item item in items) {
-            total += item.Price;
-        }
-        finalPrice = total + shippingPrice;
         GetDisabledState();
     }
 
     public bool GetDisabledState() {
-        if (items.Count == 0)
+        if (orderService.ShoppingCart.Items.Count == 0)
             isDisabled = true;
         return isDisabled;
     }
 
-    private int GetItemsBasedOnQuantity() {
-        int number = 0;
-        foreach (Item item in items) {
-            number = item.Quantity;
-            finalQuantity += number;
-        }
-        return finalQuantity;
+    private void DecreaseQuantity(Item item) {
+        if (orderService.ShoppingCart.Items.Count > 1)
+            orderService.ShoppingCart.RemoveQuantityFromShoppingCart(item);
     }
+    
+    private void IncreaseQuantity(Item item) {
+        orderService.ShoppingCart.AddToShoppingCart(item);
+    }
+
+    private void RemoveItemFromShoppingCart(Item item) {
+        orderService.ShoppingCart.RemoveItemFromShoppingCart(item);
+    }
+
+    private int GetItemsBasedOnQuantity() {
+        return orderService.ShoppingCart.FinalQuantity;
+    }
+    /*
+     * Method returns the total of the shopping cart, but not the shipping rate
+     * Yes, we need 2 methods :)
+     */
+    private double GetFinalPrice() {
+        return orderService.ShoppingCart.Total;
+    }
+    /*
+     * Method returns the total of the shopping cart plus the shipping rate
+     */
+    private double GetTotalOrderPrice() {
+        return orderService.ShoppingCart.TotalOrderPrice();
+    }
+    
     private void NavigateToComponent() {
         NavigationManager.NavigateTo("Payout/");
     }
