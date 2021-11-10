@@ -1,14 +1,21 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SEP3Library.Model {
     public class Item {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public double Price { get; set; }
         
+        public double Price {
+            get => price - price * ((double) Discount / 100);
+            set => price = value;
+        }
+        private double price;
+
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Category Category { get; set; }
+        [Range(0, 100)]
         public int Discount { get; set; }
         public int Quantity { get; set; }
         
