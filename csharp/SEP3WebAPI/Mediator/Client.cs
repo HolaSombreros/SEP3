@@ -46,6 +46,7 @@ namespace SEP3WebAPI.Mediator {
                         case "error":
                             request = JsonSerializer.Deserialize<ErrorRequest>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+                            
                             throw new Exception(((ErrorRequest)request)?.Message);
                         case "connection_error":
                             throw new ConnectionAbortedException();
@@ -132,6 +133,7 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
+            
             CustomerRequest req = new CustomerRequest() {
                 Type = "register",
                 Service = "customer",
@@ -142,7 +144,7 @@ namespace SEP3WebAPI.Mediator {
                     Address = customer.Address,
                     Email = customer.Email,
                     PhoneNumber = customer.PhoneNumber,
-                    Role = customer.Role,
+                    Role = customer.Role
                 }
             };
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
