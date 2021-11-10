@@ -46,7 +46,7 @@ namespace SEP3WebAPI.Mediator {
                         case "error":
                             request = JsonSerializer.Deserialize<ErrorRequest>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
-                            throw new Exception(((ErrorRequest)request)?.Message);
+                            break;
                         case "connection_error":
                             throw new ConnectionAbortedException();
                     }
@@ -73,6 +73,8 @@ namespace SEP3WebAPI.Mediator {
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
             Waiting();
+            if (request is ErrorRequest errorRequest)
+                throw new Exception(errorRequest.Message);
             return ((ItemRequest)request).Items;
         }
 
@@ -87,6 +89,8 @@ namespace SEP3WebAPI.Mediator {
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
             Waiting();
+            if (request is ErrorRequest errorRequest)
+                throw new Exception(errorRequest.Message);
             return ((ItemRequest) request).Item;
         }
 
@@ -101,6 +105,8 @@ namespace SEP3WebAPI.Mediator {
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
             Waiting();
+            if (request is ErrorRequest errorRequest)
+                throw new Exception(errorRequest.Message);
             return ((ItemRequest) request).Book;
         }
         
@@ -113,6 +119,8 @@ namespace SEP3WebAPI.Mediator {
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
             Waiting();
+            if (request is ErrorRequest errorRequest)
+                throw new Exception(errorRequest.Message);
             return ((OrderRequest)request).Order;
         }
         
@@ -128,10 +136,13 @@ namespace SEP3WebAPI.Mediator {
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
             Waiting();
+            if (request is ErrorRequest errorRequest)
+                throw new Exception(errorRequest.Message);
             return ((CustomerRequest)request).Customer;
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
+            
             CustomerRequest req = new CustomerRequest() {
                 Type = "register",
                 Service = "customer",
@@ -142,12 +153,14 @@ namespace SEP3WebAPI.Mediator {
                     Address = customer.Address,
                     Email = customer.Email,
                     PhoneNumber = customer.PhoneNumber,
-                    Role = customer.Role,
+                    Role = customer.Role
                 }
             };
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
             Waiting();
+            if (request is ErrorRequest errorRequest)
+                throw new Exception(errorRequest.Message);
             return ((CustomerRequest)request).Customer;
         }
 

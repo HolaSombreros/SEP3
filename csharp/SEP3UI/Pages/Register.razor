@@ -27,7 +27,7 @@
                             <div class="col-md-8 input-group">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.FirstName" placeholder="FirstName" class="form-control"/>
+                                    <InputText @bind-Value="customerModel.FirstName" placeholder="FirstName" class="form-control"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.FirstName)"/>
                             </div>
@@ -37,7 +37,7 @@
                             <div class="col-md-8 input-group">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.LastName" placeholder="LastName" class="form-control"/>
+                                    <InputText @bind-Value="customerModel.LastName" placeholder="LastName" class="form-control"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.LastName)"/>
                             </div>
@@ -47,7 +47,7 @@
                             <div class="col-md-8 input-group">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.Email" name="email" placeholder="E-mail" class="form-control"/>
+                                    <InputText @bind-Value="customerModel.Email" name="email" placeholder="E-mail" class="form-control"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.Email)"/>
                             </div>
@@ -58,7 +58,7 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.Password" name="password" placeholder="Password" class="form-control" type="text"/>
+                                    <InputText @bind-Value="customerModel.Password" name="password" placeholder="Password" class="form-control" type="text"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.Password)"/>
                             </div>
@@ -68,7 +68,7 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.ConfirmPassword" name="ConfirmPassword" placeholder="ConfirmPassword" class="form-control" type="text"/>
+                                    <InputText @bind-Value="customerModel.ConfirmPassword" name="ConfirmPassword" placeholder="ConfirmPassword" class="form-control" type="text"/>
                                 </div>
                                 @* <ValidationMessage For="@(() => )"/> *@
                                 <ValidationMessage For="@(() => customerModel.ConfirmPassword)"/>
@@ -82,7 +82,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.Street" name="streetName" placeholder="Street" class="form-control" type="text"/>
+                                    <InputText @bind-Value="customerModel.Street" name="streetName" placeholder="Street" class="form-control" type="text"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.Street)"/>
                             </div>
@@ -92,7 +92,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.Number" name="number" placeholder="Number" class="form-control" type="text"/>
+                                    <InputText @bind-Value="customerModel.Number" name="number" placeholder="Number" class="form-control" type="text"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.Number)"/>
                             </div>
@@ -102,7 +102,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.City" name="city" placeholder="City" class="form-control" type="text"/>
+                                    <InputText @bind-Value="customerModel.City" name="city" placeholder="City" class="form-control" type="text"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.City)"/>
                             </div>
@@ -112,7 +112,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputNumber @bind-Value="@customerModel.ZipCode" name="zipcode" placeholder="Zipcode" class="form-control" type="text"/>
+                                    <InputNumber @bind-Value="customerModel.ZipCode" name="zipcode" placeholder="Zipcode" class="form-control" type="text"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.ZipCode)"/>
                             </div>
@@ -122,7 +122,7 @@
                             <div class="col-md-4">
                                 <div class="input-group">
                                     <span class="input-group-addon"></span>
-                                    <InputText @bind-Value="@customerModel.PhoneNumber" name="phoneNumber" placeholder="PhoneNumber" class="form-control" type="text"/>
+                                    <InputText @bind-Value="customerModel.PhoneNumber" name="phoneNumber" placeholder="PhoneNumber" class="form-control" type="text"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.PhoneNumber)"/>
                             </div>
@@ -149,6 +149,7 @@
     public async Task RegisterAsync() {
         errorMessage = "";
         try {
+            customerModel.Role = "Customer";
             await customerService.AddCustomerAsync(customerModel);
             navigationManager.NavigateTo("/Login");
         }

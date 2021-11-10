@@ -46,10 +46,20 @@ public class AddressDAOService implements AddressDAO {
         }
     }
 
-    private boolean isAddress(String street, String number, int zipcode){
+    public boolean isAddress(String street, String number, int zipcode){
         try{
             return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM address WHERE zip_code = ? AND street = ? AND number = ?", zipcode, street, number).next();
         }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Address read(String street, String number, int zipcode) {
+        try{
+            return databaseHelper.mapObject(new AddressMapper(),"SELECT * FROM address JOIN city USING(zip_code) WHERE street = ? AND number = ? AND zip_code = ?;", street,number, zipcode);
+        }
+        catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

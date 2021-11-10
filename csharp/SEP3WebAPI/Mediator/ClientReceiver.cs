@@ -22,7 +22,7 @@ namespace SEP3WebAPI.Mediator {
             thread = new Thread(() => {
                 while (running) {
                     try {
-                        byte[] response = new byte[1024];
+                        byte[] response = new byte[10240];
                         int bytesRead = stream.Read(response, 0, response.Length);
                         string result = Encoding.ASCII.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
@@ -31,6 +31,9 @@ namespace SEP3WebAPI.Mediator {
                     catch (ConnectionAbortedException e) {
                         Console.WriteLine(e.Message);
                         Disconnect();
+                    }
+                    catch (Exception e) {
+                        Console.WriteLine(e.Message);
                     }
                 }
             });
