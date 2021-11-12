@@ -1,36 +1,46 @@
 package mediator.Command;
 
 import database.daomodel.DatabaseManager;
-import mediator.Request.CustomerRequest;
-import mediator.Request.ErrorRequest;
-import mediator.Request.Request;
+import mediator.Request.*;
 import model.Customer;
+
+import java.util.HashMap;
 
 public class CustomerCommand implements Command {
 
+    private CustomerRequest request;
+    private CustomerRequest reply;
     private DatabaseManager databaseManager;
+    private HashMap<String, Runnable> methods;
 
     public CustomerCommand(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
+        methods = new HashMap<>();
+        methods.put("login", this::login);
+        methods.put("register", this::register);
     }
 
     @Override public Request execute(Request request) {
-        CustomerRequest reply = new CustomerRequest(request.getService(), request.getType());
-        switch (request.getType()) {
-            case "login":
-                reply.setCustomer(databaseManager.getCustomerDAOService().read(((CustomerRequest) request).getCustomer().getEmail()));
-                if (!((CustomerRequest)request).getCustomer().getPassword().equals(reply.getCustomer().getPassword())) {
-                    ErrorRequest error = new ErrorRequest("error", "error");
-                    error.setMessage("Incorrect password");
-                    return error;
-                }
-                return reply;
-            case "register":
-                Customer customer = ((CustomerRequest)request).getCustomer();
-                reply.setCustomer(databaseManager.getCustomerDAOService().create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
-                    customer.getRole(), customer.getAddress(), customer.getPhoneNumber()));
-                return reply;
+        try {
+            this.request = (CustomerRequest) request;
+            reply = new CustomerRequest(request.getService(), request.getType());
+            methods.get(request.getType()).run();
+            return reply;
         }
-        throw new IllegalArgumentException("The request could not be fulfilled");
+        catch (Exception e) {
+            throw new IllegalArgumentException("The request could not be fulfilled");
+        }
+    }
+
+    private void login() {
+        reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getEmail()));
+        if (!request.getCustomer().getPassword().equals(reply.getCustomer().getPassword()))
+            throw new IllegalArgumentException("Invalid password");
+    }
+
+    private void register() {
+        Customer customer = request.getCustomer();
+        reply.setCustomer(databaseManager.getCustomerDAOService().create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
+            customer.getRole(), customer.getAddress(), customer.getPhoneNumber()));
     }
 }
