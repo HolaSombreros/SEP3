@@ -61,7 +61,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByIndex(int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM item ORDER BY item_id DESC LIMIT 9 OFFSET 9 * ?",index);
+            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM item ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
