@@ -1,6 +1,7 @@
-@page "/"
+@page "/{itemindex:int}"
 @using SEP3Library.Model
 @using SEP3UI.Data
+@using System.Collections
 @inject NavigationManager NavigationManager
 @inject IItemService itemService
 @inject IOrderService orderService
@@ -26,15 +27,29 @@ Welcome to Under Covers  main paaaage
             </div>
         </div>
     }
+    <button class="btn btn-sm btn-dark order-button" @onclick="LoadMore">Load more</button>
 </div>
 }
  
  
 @code {
+
+    [Parameter]
+    public int ItemIndex { get; set; }
+
     public IList<Item> Items { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        Items = await itemService.GetItemsAsync();
+        ItemIndex = 0;
+        Items = await itemService.GetItemsAsync(ItemIndex);
+    }
+
+    private async void LoadMore() {
+        ItemIndex++;
+        IList<Item> newList = await itemService.GetItemsAsync(ItemIndex);
+        foreach (Item item in newList) {
+            Items.Add(item);
+        }
     }
 
     private void NavigateToComponent(Item item) {

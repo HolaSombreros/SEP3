@@ -10,8 +10,8 @@ namespace SEP3UI.Data {
             this.restService = restService;
         }
         
-        public async Task<IList<Item>> GetItemsAsync() {
-            IList<Item> items = await restService.GetAsync<IList<Item>>("items");
+        public async Task<IList<Item>> GetItemsAsync(int index) {
+            IList<Item> items = await restService.GetAsync<IList<Item>>($"items/{index}");
             return items;
         }
         

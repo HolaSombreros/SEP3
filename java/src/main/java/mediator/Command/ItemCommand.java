@@ -35,7 +35,7 @@ public class ItemCommand implements Command {
     }
 
     private void getAll() {
-        reply.setItems(databaseManager.getItemDAOService().readAll());
+        reply.setItems(databaseManager.getItemDAOService().readByIndex(index));
     }
 
     private void getItem() {

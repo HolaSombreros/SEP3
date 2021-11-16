@@ -65,10 +65,11 @@ namespace SEP3WebAPI.Mediator {
             }
         }
 
-        public async Task<IList<Item>> GetItemsAsync() {
+        public async Task<IList<Item>> GetItemsAsync(int index) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
-                Type = "getAll"
+                Type = "getAll",
+                Index = index
             };
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
