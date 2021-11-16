@@ -178,6 +178,20 @@ namespace SEP3WebAPI.Mediator {
                 throw new Exception(errorRequest.Message);
             return ((CustomerRequest)request).Customer;
         }
+        
+        public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
+            ItemRequest req = new ItemRequest() {
+                Type = "getWishlist",
+                Service = "item",
+                CustomerId = customerId
+            };
+            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            Send(json);
+            Waiting();
+            return ((ItemRequest) request).Items;
+        }
 
         public void Disconnect() {
             networkStream.Close();

@@ -15,4 +15,5 @@ public interface ItemDAO {
     List<Item> readAll();
     List<Item> readAllFromOrder(int orderId);
     List<Item> readAllByIds(int[] itemIds);
+    List<Item> readCustomerWishlist(int customerId);
 }

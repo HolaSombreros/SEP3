@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SEP3Library.Model;
 using SEP3Library.UIModels;
 
@@ -22,6 +23,11 @@ namespace SEP3UI.Data {
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
             Customer added = await restService.PostAsync<CustomerModel, Customer>(customer, "customers");
             return added;
+        }
+
+        public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
+            IList<Item> wishlist = await restService.GetAsync<List<Item>>($"customers/{customerId}/wishlist");
+            return wishlist;
         }
     }
 }
