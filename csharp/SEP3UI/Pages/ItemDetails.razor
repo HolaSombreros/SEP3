@@ -63,7 +63,6 @@ else {
                             <label>
                                 <strong>Quantity: </strong> @item.Quantity
                             </label>
-                            <input type="quantity" placeholder="1" class="form-control quantity">
                         </div>
                         <div class="mt-5">
                             <button class="btn btn-round btn-dark" @onclick="(() => AddToShoppingCart(item))"type="button">
@@ -87,9 +86,11 @@ else {
 
     private Item item;
     private Book book;
+    private int ShoppingCartQuantity { get; set; }
 
     protected override async Task OnInitializedAsync() {
         try {
+            ShoppingCartQuantity = 1;
             item = await itemService.GetItemAsync(Id);
             if (item.Category == Category.Book) {
                 book = await itemService.GetBookAsync(Id);

@@ -50,6 +50,7 @@ public class ClientHandler implements Runnable {
                             ItemRequest itemRequest = gson.fromJson(received, ItemRequest.class);
                             command = new ItemCommand(databaseManager);
                             sendReply(command.execute(itemRequest));
+                            System.out.println("did it send?");
                             break;
                         case "order":
                             OrderRequest orderRequest = gson.fromJson(received, OrderRequest.class);
@@ -65,6 +66,7 @@ public class ClientHandler implements Runnable {
                 }
             }
             catch (IOException e) {
+                e.printStackTrace();
                 ErrorRequest errorRequest = new ErrorRequest("connection_error", "connection_error");
                 sendReply(errorRequest);
                 running = false;
@@ -80,6 +82,8 @@ public class ClientHandler implements Runnable {
 
     private void sendReply(Request reply) {
         String replyGson = gson.toJson(reply);
+        System.out.println(replyGson);
         out.println(replyGson);
+        System.out.println("did it print");
     }
 }

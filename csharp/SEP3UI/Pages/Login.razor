@@ -74,8 +74,10 @@
         try {
              await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
         }catch (Exception e) {
+            Console.WriteLine(e.StackTrace);
             errorMessage = e.Message;
         }
+        navigationManager.NavigateTo("/");
         
     }
 
