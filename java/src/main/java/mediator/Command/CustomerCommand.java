@@ -28,14 +28,13 @@ public class CustomerCommand implements Command {
             return reply;
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }
 
     private void login() {
         reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getEmail()));
-        if (!request.getCustomer().getPassword().equals(reply.getCustomer().getPassword()))
-            throw new IllegalArgumentException("Invalid password");
     }
 
     private void register() {
