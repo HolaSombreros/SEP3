@@ -1,6 +1,7 @@
 @page "/"
 @using SEP3Library.Model
 @using SEP3UI.Data
+@using System.Collections
 @inject NavigationManager NavigationManager
 @inject IItemService itemService
 @inject IOrderService orderService
@@ -8,10 +9,10 @@
 Welcome to Under Covers  main paaaage
 
 @if (Items != null) {
-<div id="productsWrapper" class="row">
+<div id="productsWrapper" class="row ">
     @foreach (Item item in Items) {
         <div class="card col-sm-3 m-3">
-            <div @onclick="@(()=> NavigateToItemDetails(item))">
+            <div @onclick="@(() => NavigateToItemDetails(item))">
                 <a asp-route-id="@item.Id" title="Order @item.Name">
                     <div>
                         <h3>@item.Name</h3>
@@ -28,13 +29,33 @@ Welcome to Under Covers  main paaaage
     }
 </div>
 }
- 
- 
+<div class="text-center">
+    <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMore">Load more</button>
+</div>
+
 @code {
+
+    public int ItemIndex { get; set; }
     public IList<Item> Items { get; set; }
+    private string hidden;
 
     protected override async Task OnInitializedAsync() {
-        Items = await itemService.GetItemsAsync();
+        ItemIndex = 0;
+        Items = await itemService.GetItemsAsync(ItemIndex);
+        hidden = "";
+    }
+
+    private async Task LoadMore() {
+        ItemIndex++;
+        Console.WriteLine(ItemIndex);
+        IList<Item> newList = await itemService.GetItemsAsync(ItemIndex);
+        if (newList.Count == 0) {
+            hidden = "display: none";
+            ItemIndex--;
+        }
+        foreach (Item item in newList) {
+            Items.Add(item);
+        }
     }
 
     private void NavigateToComponent(Item item) {

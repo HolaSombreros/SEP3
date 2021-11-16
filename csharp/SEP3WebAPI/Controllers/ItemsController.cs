@@ -14,11 +14,11 @@ namespace SEP3WebAPI.Controllers {
         public ItemsController(IRestService service) {
             this.service = service;
         }
-        
-        [HttpGet] 
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync() {
-            try {
-                IList<Item> items = await service.GetItemsAsync();
+
+        [HttpGet]
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery]int index) {
+            try { 
+                IList<Item> items = await service.GetItemsAsync(index);
                 
                 return Ok(items);
                 
