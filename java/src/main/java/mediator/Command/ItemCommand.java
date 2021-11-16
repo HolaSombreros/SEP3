@@ -21,6 +21,7 @@ public class ItemCommand implements Command {
         methods.put("get",this::getItem);
         methods.put("book",this::getBook);
         methods.put("getWishlist", this::getWishlist);
+        methods.put("getAllById", this::getAllById);
     }
 
     @Override public Request execute(Request request) {
@@ -50,5 +51,8 @@ public class ItemCommand implements Command {
 
     private void getWishlist() {
         reply.setItems(databaseManager.getItemDAOService().readCustomerWishlist(request.getCustomerId()));
+    }
+    private void getAllById(){
+        reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
     }
 }

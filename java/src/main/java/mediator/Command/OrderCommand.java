@@ -29,6 +29,7 @@ public class OrderCommand implements Command {
             return reply;
         }
         catch (Exception e) {
+             e.printStackTrace();
             throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }

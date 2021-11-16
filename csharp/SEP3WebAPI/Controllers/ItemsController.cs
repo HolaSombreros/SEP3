@@ -16,31 +16,13 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery]int index) {
-            try { 
-                IList<Item> items = await service.GetItemsAsync(index);
-                
-                return Ok(items);
-                
-            } 
-            catch (NullReferenceException e) {
-                return NotFound(e.Message);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.Message);
-                return StatusCode(500, e.Message);
-            }
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsById([FromQuery] int[] itemIds) {
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] int[]? itemIds) {
             try {
-                foreach (var i in itemIds) {
-                    Console.WriteLine(i);
-                }
-
-                IList<Item> items = await service.GetItemsByIdAsync(itemIds);
-                
+                IList<Item> items;
+                if (itemIds != null) 
+                     items = await service.GetItemsByIdAsync(itemIds);
+                else 
+                    items = await service.GetItemsAsync(index);
                 return Ok(items);
                 
             } 
@@ -52,7 +34,6 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
-        
 
         [HttpGet]
         [Route("{id:int}")]

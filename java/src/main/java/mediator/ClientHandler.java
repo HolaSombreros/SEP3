@@ -44,6 +44,7 @@ public class ClientHandler implements Runnable {
         while (running) {
             try {
                 received = in.readLine();
+                System.out.println(received);
                 Request request = gson.fromJson(received, Request.class);
                 if (request != null) {
                     service.get(request.getService()).run();

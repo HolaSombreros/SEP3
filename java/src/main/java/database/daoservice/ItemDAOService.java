@@ -7,6 +7,7 @@ import model.enums.Category;
 import model.enums.ItemStatus;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemDAOService implements ItemDAO {
@@ -76,13 +77,12 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
-
     @Override
     public List<Item> readAllByIds(int[] itemIds) {
         try {
-            List<Item> items = null;
-            for(int i =0; i < itemIds.length; i++) {
-               items.add( databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item WHERE item_id=?", i));
+            List<Item> items = new ArrayList<>();
+            for(int i =1; i <= itemIds.length; i++) {
+               items.add(databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item WHERE item_id=?", i));
             }
             return items;
         }
