@@ -33,6 +33,28 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
+        public async Task<ActionResult<IList<Item>>> GetItemsById([FromQuery] int[] itemIds) {
+            try {
+                foreach (var i in itemIds) {
+                    Console.WriteLine(i);
+                }
+
+                IList<Item> items = await service.GetItemsByIdAsync(itemIds);
+                
+                return Ok(items);
+                
+            } 
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+
+        [HttpGet]
         [Route("{id:int}")]
         public async Task<ActionResult<Item>> GetItemAsync([FromRoute] int id) {
             try {

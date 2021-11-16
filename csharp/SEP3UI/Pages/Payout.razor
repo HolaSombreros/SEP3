@@ -109,6 +109,7 @@
     
     private async Task HandleValidSubmit() {
         try {
+            await orderService.CheckStock(orderModel);
             Order order = await orderService.CreateOrderAsync(orderModel);
             orderService.ShoppingCart.EmptyShoppingCart();
             errorMessage = "Successful purchase!";

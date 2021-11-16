@@ -4,9 +4,10 @@ using SEP3Library.Model;
 
 namespace SEP3WebAPI.Mediator {
     public interface IItemClient {
-        public Task<Item> GetItemAsync(int id);
-        public Task<IList<Item>> GetItemsAsync();
-        public Task<Book> GetBookAsync(int id);
+        Task<Item> GetItemAsync(int id);
+        Task<IList<Item>> GetItemsAsync();
+        Task<IList<Item>> GetItemsByIdAsync(int[] itemsId);
+        Task<Book> GetBookAsync(int id);
 
     }
 }

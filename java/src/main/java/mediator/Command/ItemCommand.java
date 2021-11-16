@@ -21,6 +21,9 @@ public class ItemCommand implements Command {
             case "getAll":
                 reply.setItems(databaseManager.getItemDAOService().readAll());
                 return reply;
+            case "getAllById":
+                reply.setItems(databaseManager.getItemDAOService().readAllByIds(((ItemRequest)request).getItemsIds()));
+                return reply;
             case "get":
                 Item item = databaseManager.getItemDAOService().read(((ItemRequest)request).getItem().getId());
                 reply.setItem(databaseManager.getItemDAOService().read(((ItemRequest) request).getItem().getId()));

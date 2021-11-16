@@ -10,10 +10,17 @@ public class ItemRequest extends Request{
     private List<Item> items;
     private Item item;
     private Book book;
+    private int[] itemsIds;
 
     public ItemRequest(String service, String type) {
         super(service, type);
         items = new ArrayList<>();
+    }
+    public int[] getItemsIds() {
+        return itemsIds;
+    }
+    public void setItemsIds(int[] itemsIds) {
+        this.itemsIds = itemsIds;
     }
 
     public List<Item> getItems() {

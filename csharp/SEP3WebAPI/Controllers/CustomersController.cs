@@ -18,7 +18,6 @@ namespace SEP3WebAPI.Controllers {
         [HttpGet]
         public async Task<ActionResult<Customer>> GetCustomerAsync([FromQuery] string? email, [FromQuery] string? password) {
             try {
-                Console.WriteLine(email);
                 if (email == null || password == null) {
                     return BadRequest("Input both email and password!");
                 }
@@ -37,7 +36,10 @@ namespace SEP3WebAPI.Controllers {
         public async Task<ActionResult<Customer>>
             AddCustomerAsync([FromBody] CustomerModel customer) {
             try {
-                Customer cust = await service.AddCustomerAsync(customer);
+                Customer cust = await service.GetCustomerAsync(customer.Email, customer.Password);
+                if (cust != null)
+                    return Conflict("The email and password are already used");
+                cust = await service.AddCustomerAsync(customer);
                 return Created($"{cust.Email}", cust);
             }
             catch (Exception e) {

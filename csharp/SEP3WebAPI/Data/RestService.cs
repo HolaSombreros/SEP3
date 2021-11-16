@@ -18,6 +18,10 @@ namespace SEP3WebAPI.Data {
             return await client.GetItemsAsync();
         }
 
+        public async Task<IList<Item>> GetItemsByIdAsync(int[] itemsId) {
+            return await client.GetItemsByIdAsync(itemsId);
+        }
+
         public async Task<Item> GetItemAsync(int id) {
             return await client.GetItemAsync(id);
         }
