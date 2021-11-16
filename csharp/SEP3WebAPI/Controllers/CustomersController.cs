@@ -19,6 +19,7 @@ namespace SEP3WebAPI.Controllers {
         [HttpGet]
         public async Task<ActionResult<Customer>> GetCustomerAsync([FromQuery] string email, [FromQuery] string password) {
             try {
+                Console.WriteLine(email);
                 if (email == null || password == null) {
                     return BadRequest("Input both email and password!");
                 }

@@ -27,7 +27,7 @@
                         <div class="col-md-4 input-group">
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <InputText @bind-Value="@customerModel.Email" name="email" placeholder="E-mail" class="form-control"/>
+                                <InputText @bind-Value="@customerModel.Email" placeholder="E-mail" class="form-control"/>
                             </div>
                             <ValidationMessage For="@(() => customerModel.Email)"/>
                         </div>
@@ -74,11 +74,8 @@
         try {
              await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
         }catch (Exception e) {
-            Console.WriteLine(e.StackTrace);
             errorMessage = e.Message;
         }
         navigationManager.NavigateTo("/");
-        
     }
-
 }

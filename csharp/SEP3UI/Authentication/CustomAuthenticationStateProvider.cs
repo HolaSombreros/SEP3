@@ -45,7 +45,6 @@ namespace SEP3UI.Authentication {
             ClaimsIdentity identity = new ClaimsIdentity();
             
             try {
-                Console.WriteLine(email);
                 Customer customer = await customerService.GetCustomerAsync(email, password);
                 identity = SetupClaims(customer);
                 string data = JsonSerializer.Serialize(customer);
