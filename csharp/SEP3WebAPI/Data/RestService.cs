@@ -86,10 +86,14 @@ namespace SEP3WebAPI.Data {
             IList<Item> items = (await client.GetItemsByIdAsync(ids)).OrderBy(i => i.Id).ToList();
             orderModel.Items = orderModel.Items.OrderBy(o => o.Id).ToList();
             for(int j=0; j< orderModel.Items.Count; j++) {
-                if (orderModel.Items[j].Quantity > items[j].Quantity)
-                    throw new InvalidDataException("Item out of stock" + orderModel.Items[j].Name +
-                                                   " only this amount is available " + items[j].Quantity);
-
+                if (orderModel.Items[j].Quantity > items[j].Quantity) {
+                    if (items[j].Quantity == 0) 
+                        throw new InvalidDataException("Item " + orderModel.Items[j].Name +
+                                                       " is out of stock. The stock will be updated later");
+                    throw new InvalidDataException("Item " + orderModel.Items[j].Name +
+                                                   " is out of stock. Only this amount is available " + items[j].Quantity);
+                }
+                    
             }
             
             Order order = new Order() {

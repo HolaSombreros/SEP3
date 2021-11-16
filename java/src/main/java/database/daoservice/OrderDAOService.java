@@ -37,6 +37,7 @@ public class OrderDAOService implements OrderDAO {
             return read(keys.get(0));
 
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
