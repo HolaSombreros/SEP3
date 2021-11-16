@@ -47,7 +47,6 @@ Welcome to Under Covers  main paaaage
 
     private async Task LoadMore() {
         ItemIndex++;
-        Console.WriteLine(ItemIndex);
         IList<Item> newList = await itemService.GetItemsAsync(ItemIndex);
         if (newList.Count == 0) {
             hidden = "display: none";
