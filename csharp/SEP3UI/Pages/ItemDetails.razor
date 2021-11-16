@@ -3,65 +3,106 @@
 @using SEP3UI.Data
 @inject IItemService itemService
 @inject IOrderService orderService
-<h3>ItemDetails</h3>
+
 
 @if (item == null) {
-    <h2> No such item found </h2>
-    
+    <h2> Loading </h2>
 }
 else {
     <div class="container">
-    <div class="card col-md-12">
-        <div class="panel-body">
-            <div class="pro-img-details">
-                <img src="Images/Larman.jpg"/>
-            </div>
-        </div>
-        <div class="col-md-6 float-right">
-            <h4 class="pro-d-title">
-                <div>@item.Name</div>
-            </h4>
-            <div>@item.Description</div>
-            <div class="product_meta">
-                <span class="posted_in">
-                    <strong>Category:</strong>
-                    <a rel="tag" href="#">@item.Category.ToString()</a>
-                </span>
-            </div>
-            <div class="m-bot15"> <strong>Price: </strong> <span class="amount-old">@item.Price</span>
-                <div class="form-group">
-                    <label>Quantity: @item.Quantity </label>
-                    <input type="quantity" placeholder="1" class="form-control quantity">
+        <div class="card row ">
+            <div class="row border-top border-bottom">
+                <div class="col-md-6">
+                    <div class="img-responsive m-3">
+                        <img src="@item.ImageName"/>
+                    </div>
                 </div>
-                <p>
-                    <button class="btn btn-round btn-dark" @onclick="(() => AddToShoppingCart(item))"type="button">
-                        <i class="fa fa-shopping-cart"></i> Add to Shopping Cart
-                    </button>
-                </p>
+                <div class="col-md-6">
+                    <div class="pt-5 pl-5">
+                        <h2 class="mb-4">
+                            <div class="retroshd">@item.Name</div>
+                        </h2>
+                        <div>
+                            <b>About:</b> @item.Description
+                        </div>
+                        <div class="mt-2">
+                            <span>
+                                <strong>Category:</strong>
+                                <a rel="tag" href="#">@item.Category.ToString()</a>
+                            </span>
+                        </div>
+                        @if (item.Category == Category.Book && book != null) {
+                            <div class="mt-2">
+                                <span>
+                                    <strong>AuthorName:</strong>
+                                    <a rel="tag" href="#">@book.AuthorFirstName @book.AuthorLastName</a>
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <span>
+                                    <strong>Publication Date: </strong>@book.PublicationDate.DateToString()
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <span>
+                                    <strong>Language: </strong>
+                                    <a rel="tag" href="#">@book.Language.ToString()</a>
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <span>
+                                    <strong>Genre: </strong>
+                                    <a rel="tag" href="#">@book.Genre.ToString()</a>
+                                </span>
+                            </div>
+                        }
+                        <div class="mt-2">
+                            <strong>Price: </strong> <span class="amount-old">@item.Price</span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label>
+                                <strong>Quantity: </strong> @item.Quantity
+                            </label>
+                            <input type="quantity" placeholder="1" class="form-control quantity">
+                        </div>
+                        <div class="mt-5">
+                            <button class="btn btn-round btn-dark" @onclick="(() => AddToShoppingCart(item))"type="button">
+                                <i class="fa fa-shopping-cart"></i> Add to Shopping Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 }
 
 
 @code {
+
     [Parameter]
     public int Id { get; set; }
 
     public string ErrorMessage { get; set; }
 
     private Item item;
+    private Book book;
 
     protected override async Task OnInitializedAsync() {
         try {
             item = await itemService.GetItemAsync(Id);
+            if (item.Category == Category.Book) {
+                book = await itemService.GetBookAsync(Id);
+            }
         }
         catch (Exception e) {
             ErrorMessage = e.Message;
         }
     }
+
     private void AddToShoppingCart(Item item) {
         orderService.ShoppingCart.AddToShoppingCart(item);
     }
+
 }
+

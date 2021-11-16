@@ -27,6 +27,7 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
+            customer.Role = "Customer";
             return await client.AddCustomerAsync(customer);
         }
 

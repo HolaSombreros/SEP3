@@ -4,30 +4,45 @@ import database.daomodel.DatabaseManager;
 import mediator.Request.ItemRequest;
 import mediator.Request.Request;
 import model.Item;
-import model.enums.Category;
+
+import java.util.HashMap;
 
 public class ItemCommand implements Command {
 
+    private ItemRequest request;
+    private ItemRequest reply;
     private DatabaseManager databaseManager;
+    private HashMap<String, Runnable> methods;
 
     public ItemCommand(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
+        methods = new HashMap<>();
+        methods.put("getAll",this::getAll);
+        methods.put("get",this::getItem);
+        methods.put("book",this::getBook);
     }
 
     @Override public Request execute(Request request) {
-        ItemRequest reply = new ItemRequest(request.getService(), request.getType());;
-        switch (request.getType()) {
-            case "getAll":
-                reply.setItems(databaseManager.getItemDAOService().readAll());
-                return reply;
-            case "get":
-                Item item = databaseManager.getItemDAOService().read(((ItemRequest)request).getItem().getId());
-                if (item.getCategory() == Category.BOOK)
-                    reply.setBook(databaseManager.getBookDAOService().read(((ItemRequest) request).getItem().getId()));
-                else
-                    reply.setItem(databaseManager.getItemDAOService().read(((ItemRequest) request).getItem().getId()));
-                return reply;
+        try {
+            this.request = (ItemRequest) request;
+            reply = new ItemRequest(request.getService(), request.getType());
+            methods.get(request.getType()).run();
+            return reply;
         }
-        throw new IllegalArgumentException("The request could not be fulfilled");
+        catch (Exception e) {
+            throw new IllegalArgumentException("The request could not be fulfilled");
+        }
+    }
+
+    private void getAll() {
+        reply.setItems(databaseManager.getItemDAOService().readAll());
+    }
+
+    private void getItem() {
+        reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getId()));
+    }
+
+    private void getBook() {
+        reply.setBook(databaseManager.getBookDAOService().read(request.getItem().getId()));
     }
 }

@@ -6,5 +6,12 @@ namespace SEP3Library.Model {
         public int Hour { get; set; }
         public int Minute { get; set; }
         public int Second { get; set; }
+       
+        public string DateToString(){
+            return $"{Day}/{Month}{Year}";
+        }
     }
+
+    
+
 }

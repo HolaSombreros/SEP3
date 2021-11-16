@@ -64,7 +64,7 @@ public class AddressDAOService implements AddressDAO {
 
     private Address read(String street, String number, int zipcode, String city){
         try{
-            return databaseHelper.mapObject(new AddressMapper(),"SELECT * FROM address JOIN city USING (zip_code) WHERE zip_code = ? AND street = ? AND number = AND city = ?",zipcode, street, number, city );
+            return databaseHelper.mapObject(new AddressMapper(),"SELECT * FROM address JOIN city USING (zip_code) WHERE zip_code = ? AND street = ? AND number = ? AND city = ?",zipcode, street, number, city );
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

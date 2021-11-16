@@ -19,6 +19,7 @@ namespace SEP3WebAPI.Controllers {
         public async Task<ActionResult<IList<Item>>> GetItemsAsync() {
             try {
                 IList<Item> items = await service.GetItemsAsync();
+                
                 return Ok(items);
                 
             } 

@@ -7,10 +7,6 @@ import mediator.Command.CustomerCommand;
 import mediator.Command.ItemCommand;
 import mediator.Command.OrderCommand;
 import mediator.Request.*;
-import model.Item;
-import model.Order;
-import model.enums.Category;
-
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +25,9 @@ public class ClientHandler implements Runnable {
     private boolean running;
     private Gson gson;
     private DatabaseManager databaseManager;
+    private HashMap<String, Runnable> service;
+    private String received;
+    private Request reply;
 
     public ClientHandler(Socket socket, DatabaseManager databaseManager) throws IOException {
         this.socket = socket;
@@ -37,31 +36,20 @@ public class ClientHandler implements Runnable {
         running = true;
         gson = new Gson();
         this.databaseManager = databaseManager;
+        service = new HashMap<>();
+        service.put("item", this::itemServiceRun);
+        service.put("order", this::orderServiceRun);
+        service.put("customer", this::customerServiceRun);
     }
 
     public void run() {
         while (running) {
             try {
-                String received = in.readLine();
+                received = in.readLine();
                 Request request = gson.fromJson(received, Request.class);
                 if (request != null) {
-                    switch (request.getService()) {
-                        case "item":
-                            ItemRequest itemRequest = gson.fromJson(received, ItemRequest.class);
-                            command = new ItemCommand(databaseManager);
-                            sendReply(command.execute(itemRequest));
-                            break;
-                        case "order":
-                            OrderRequest orderRequest = gson.fromJson(received, OrderRequest.class);
-                            command = new OrderCommand(databaseManager);
-                            sendReply(command.execute(orderRequest));
-                            break;
-                        case "customer":
-                            CustomerRequest customerRequest = gson.fromJson(received, CustomerRequest.class);
-                            command = new CustomerCommand(databaseManager);
-                            sendReply(command.execute(customerRequest));
-                            break;
-                    }
+                    service.get(request.getService()).run();
+                    sendReply(command.execute(reply));
                 }
             }
             catch (IOException e) {
@@ -70,11 +58,27 @@ public class ClientHandler implements Runnable {
                 running = false;
             }
             catch (Exception e) {
+                e.printStackTrace();
                 ErrorRequest errorRequest = new ErrorRequest("error", "error");
                 errorRequest.setMessage(e.getMessage());
                 sendReply(errorRequest);
             }
         }
+    }
+
+    private void itemServiceRun() {
+        reply = gson.fromJson(received, ItemRequest.class);
+        command = new ItemCommand(databaseManager);
+    }
+
+    private void orderServiceRun() {
+        reply = gson.fromJson(received, OrderRequest.class);
+        command = new OrderCommand(databaseManager);
+    }
+
+    private void customerServiceRun() {
+        reply = gson.fromJson(received,CustomerRequest.class);
+        command = new CustomerCommand(databaseManager);
     }
 
     private void sendReply(Request reply) {

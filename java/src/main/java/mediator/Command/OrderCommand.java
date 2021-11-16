@@ -1,27 +1,41 @@
 package mediator.Command;
 
 import database.daomodel.DatabaseManager;
+import mediator.Request.ItemRequest;
 import mediator.Request.OrderRequest;
 import mediator.Request.Request;
 import model.Order;
 
+import java.util.HashMap;
+
 public class OrderCommand implements Command {
 
+    private OrderRequest request;
+    private OrderRequest reply;
     private DatabaseManager databaseManager;
+    private HashMap<String, Runnable> methods;
 
     public OrderCommand(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
+        methods = new HashMap<>();
+        methods.put("purchase",this::purchase);
     }
 
     @Override public Request execute(Request request) {
-        OrderRequest reply = new OrderRequest(request.getService(), request.getType());;
-        switch (request.getType()) {
-            case "purchase":
-                Order order = ((OrderRequest) request).getOrder();
-                reply.setOrder(databaseManager.getOrderDAOService()
-                    .create(order.getItems(), order.getAddress(), order.getDateTime(), order.getOrderStatus(), order.getFirstName(), order.getLastName(), order.getEmail()));
-                return reply;
+        try {
+            this.request = (OrderRequest) request;
+            reply = new OrderRequest(request.getService(), request.getType());
+            methods.get(request.getType()).run();
+            return reply;
         }
-        throw new IllegalArgumentException("The request could not be fulfilled");
+        catch (Exception e) {
+            throw new IllegalArgumentException("The request could not be fulfilled");
+        }
+    }
+
+    private void purchase() {
+        Order order = request.getOrder();
+        reply.setOrder(databaseManager.getOrderDAOService()
+            .create(order.getItems(), order.getAddress(), order.getDateTime(), order.getOrderStatus(), order.getFirstName(), order.getLastName(), order.getEmail()));
     }
 }
