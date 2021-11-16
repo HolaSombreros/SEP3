@@ -141,6 +141,22 @@ namespace SEP3WebAPI.Mediator {
                 throw new Exception(errorRequest.Message);
             return ((CustomerRequest)request).Customer;
         }
+        
+        public async Task<Customer> GetCustomerAsync(int customerId) {
+            CustomerRequest req = new CustomerRequest() {
+                Type = "get",
+                Service = "customer",
+                Customer = new Customer() {
+                    Id = customerId
+                }
+            };
+            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            Send(json);
+            Waiting();
+            return ((CustomerRequest) request).Customer;
+        }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
             
@@ -164,12 +180,12 @@ namespace SEP3WebAPI.Mediator {
                 throw new Exception(errorRequest.Message);
             return ((CustomerRequest)request).Customer;
         }
-        
-        public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
+
+        public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
             ItemRequest req = new ItemRequest() {
                 Type = "getWishlist",
                 Service = "item",
-                CustomerId = customerId
+                Customer = customer
             };
             string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -177,6 +193,20 @@ namespace SEP3WebAPI.Mediator {
             Send(json);
             Waiting();
             return ((ItemRequest) request).Items;
+        }
+
+        public async Task RemoveWishlistedItem(Customer customer, Item item) {
+            ItemRequest req = new ItemRequest() {
+                Type = "removeWishlist",
+                Service = "item",
+                Customer = customer,
+                Item = item
+            };
+            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            Send(json);
+            Waiting();
         }
 
         public void Disconnect() {

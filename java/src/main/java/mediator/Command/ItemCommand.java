@@ -21,6 +21,7 @@ public class ItemCommand implements Command {
         methods.put("get",this::getItem);
         methods.put("book",this::getBook);
         methods.put("getWishlist", this::getWishlist);
+        methods.put("removeWishlist", this::removeItemFromWishlist);
     }
 
     @Override public Request execute(Request request) {
@@ -49,6 +50,10 @@ public class ItemCommand implements Command {
     }
 
     private void getWishlist() {
-        reply.setItems(databaseManager.getItemDAOService().readCustomerWishlist(request.getCustomerId()));
+        reply.setItems(databaseManager.getItemDAOService().readCustomerWishlist(request.getCustomer().getId()));
+    }
+
+    private void removeItemFromWishlist() {
+        databaseManager.getItemDAOService().removeItemFromWishlist(request.getCustomer().getId(), request.getItem().getId());
     }
 }

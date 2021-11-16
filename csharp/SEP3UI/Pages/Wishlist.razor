@@ -1,8 +1,11 @@
 ﻿@page "/wishlist"
 @using SEP3Library.Model
 @using SEP3UI.Data
+@using System.Security.Claims
 @inject IItemService itemService
 @inject IOrderService orderService
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 
 @if (items == null) {
     <em>Loading...</em>
@@ -62,21 +65,18 @@
 </style>
 
 @code {
+    private int customerId;
     private IList<Item> items;
     // TODO add card class to each item and fetch customer's wishlist from server
     
     protected override async Task OnInitializedAsync() {
-        items = await itemService.GetItemsAsync();
-        // items[1].Quantity = 0;
-        // items[1].Price = 50;
-        // items[1].Name = "This is some really long item name that will take up quite a bit of the screen, but this is done to see how the text will look on the screen when it is this LONG";
-        // items[1].Description = "Same with the description, this description is sorta long - not as long as the title but still fairly long. Basically done to see how this looks like too";
-        // items[1].Discount = 25;
+        customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        items = await customerService.GetCustomerWishlistAsync(customerId);
     }
 
     private async Task PerformUnfavoriteAsync(Item item) {
+        await customerService.RemoveWishlistedItem(customerId, item.Id);
         items.Remove(item);
-        // TODO - remove item from customer's wishlist server side.
     }
 
     private void PerformAddItemToCart(Item item) {

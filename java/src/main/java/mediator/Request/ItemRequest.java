@@ -1,6 +1,7 @@
 package mediator.Request;
 
 import model.Book;
+import model.Customer;
 import model.Item;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ public class ItemRequest extends Request{
     private List<Item> items;
     private Item item;
     private Book book;
-    private int customerId;
+    private Customer customer;
 
     public ItemRequest(String service, String type) {
         super(service, type);
@@ -50,11 +51,11 @@ public class ItemRequest extends Request{
         this.book = book;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

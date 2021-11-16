@@ -86,4 +86,12 @@ public class ItemDAOService implements ItemDAO {
             throw new IllegalStateException(e.getMessage());
         }
     }
+
+    @Override public void removeItemFromWishlist(int customerId, int itemId) {
+        try {
+            databaseHelper.executeUpdate("DELETE FROM wishlist_item WHERE customer_id = ? AND item_id = ?;", customerId, itemId);
+        } catch (SQLException e) {
+            throw new IllegalStateException(e.getMessage());
+        }
+    }
 }
