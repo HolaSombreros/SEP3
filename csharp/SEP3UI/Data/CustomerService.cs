@@ -29,5 +29,9 @@ namespace SEP3UI.Data {
             IList<Item> wishlist = await restService.GetAsync<List<Item>>($"customers/{customerId}/wishlist");
             return wishlist;
         }
+
+        public async Task RemoveWishlistedItem(int customerId, int itemId) {
+            await restService.DeleteAsync($"customers/{customerId}/wishlist/{itemId}");
+        }
     }
 }

@@ -51,7 +51,20 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
-            return await client.GetCustomerWishlistAsync(customerId);
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            return await client.GetCustomerWishlistAsync(customer);
+        }
+
+        public async Task RemoveWishlistedItem(int customerId, int itemId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item = await client.GetItemAsync(itemId);
+            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+            
+            await client.RemoveWishlistedItem(customer, item);
         }
 
         public async Task<Book> GetBookAsync(int id) {

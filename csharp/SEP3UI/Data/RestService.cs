@@ -43,5 +43,16 @@ namespace SEP3UI.Data {
             
             return created;
         }
+
+        /**
+         * <summary>Method to send an asynchronous DELETE request to a specific endpoint</summary>
+         */
+        public async Task DeleteAsync(string endpoint) {
+            using HttpClient client = new HttpClient();
+            HttpResponseMessage response = await client.DeleteAsync($"{uri}/{endpoint}");
+            
+            string responseContent = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) throw new Exception($"{responseContent}");
+        }
     }
 }
