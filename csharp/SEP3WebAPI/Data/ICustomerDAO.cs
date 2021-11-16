@@ -10,6 +10,5 @@ namespace SEP3WebAPI.Data {
         Task<Customer> AddCustomerAsync(CustomerModel customer);
 
         Task<IList<Item>> GetCustomerWishlistAsync(int customerId);
-
     }
 }

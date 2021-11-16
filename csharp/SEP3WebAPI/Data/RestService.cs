@@ -14,8 +14,8 @@ namespace SEP3WebAPI.Data {
             client = new Client();
         }
         
-        public async Task<IList<Item>> GetItemsAsync() {
-            return await client.GetItemsAsync();
+        public async Task<IList<Item>> GetItemsAsync(int index) {
+            return await client.GetItemsAsync(index);
         }
 
         public async Task<IList<Item>> GetItemsByIdAsync(int[] itemsId) {

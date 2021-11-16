@@ -34,9 +34,7 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpPost]
-        public async Task<ActionResult<Customer>>
-            AddCustomerAsync([FromBody] CustomerModel customer) {
-
+        public async Task<ActionResult<Customer>> AddCustomerAsync([FromBody] CustomerModel customer) {
             try {
                 Customer cust = await service.GetCustomerAsync(customer.Email, customer.Password);
                 if (cust != null)

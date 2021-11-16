@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRequest extends Request{
+    private int index;
     private List<Item> items;
     private Item item;
     private Book book;
@@ -23,6 +24,14 @@ public class ItemRequest extends Request{
     }
     public void setItemsIds(int[] itemsIds) {
         this.itemsIds = itemsIds;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public List<Item> getItems() {
