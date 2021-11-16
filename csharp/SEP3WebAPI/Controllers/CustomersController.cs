@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Model;
@@ -15,7 +16,7 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<Customer>> GetCustomerAsync([FromQuery] string? email, [FromQuery] string? password) {
+        public async Task<ActionResult<Customer>> GetCustomerAsync([FromQuery] string email, [FromQuery] string password) {
             try {
                 if (email == null || password == null) {
                     return BadRequest("Input both email and password!");
@@ -32,13 +33,26 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpPost]
-        public async Task<ActionResult<Customer>>
+        public async Task<ActionResult<Customer>> 
             AddCustomerAsync([FromBody] Customer customer) {
             try {
                 Customer cust = await service.AddCustomerAsync(customer);
                 return Created($"{cust.Email}", cust);
             }
             catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("{customerId:int}/wishlist")]
+        public async Task<ActionResult<IList<Item>>> GetCustomerWishlistAsync([FromRoute] int customerId) {
+            try {
+                IList<Item> wishlist = await service.GetCustomerWishlistAsync(customerId);
+                return Ok(wishlist);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }

@@ -30,6 +30,10 @@ namespace SEP3WebAPI.Data {
             return await client.AddCustomerAsync(customer);
         }
 
+        public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
+            return await client.GetCustomerWishlistAsync(customerId);
+        }
+
         public async Task<Book> GetBookAsync(int id) {
             return await client.GetBookAsync(id);
         }
