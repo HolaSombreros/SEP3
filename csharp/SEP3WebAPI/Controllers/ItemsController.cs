@@ -16,9 +16,8 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        [Route("{index:int}")]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromRoute] int index) {
-            try {
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery]int index) {
+            try { 
                 IList<Item> items = await service.GetItemsAsync(index);
                 
                 return Ok(items);
