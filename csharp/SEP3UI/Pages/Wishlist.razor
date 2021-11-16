@@ -77,6 +77,7 @@
     private async Task PerformUnfavoriteAsync(Item item) {
         await customerService.RemoveWishlistedItem(customerId, item.Id);
         items.Remove(item);
+        // TODO - remove item from customer's wishlist server side.
     }
 
     private void PerformAddItemToCart(Item item) {

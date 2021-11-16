@@ -20,7 +20,7 @@ namespace SEP3UI.Data {
 
         public async Task<Order> CheckStock(OrderModel order) {
             string endpoint = "items?";
-            for(int i = 0; i < order.Items.Count-1; i++) {
+            for(int i = 0; i < order.Items.Count; i++) {
                 if (i == order.Items.Count) 
                     endpoint += "itemIds=" + order.Items[i];
                 else

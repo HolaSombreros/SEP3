@@ -2,6 +2,6 @@
     public enum OrderStatus {
         Pending,
         Finished,
-        Canceled
+        Cancelled
     }
 }

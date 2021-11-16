@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using SEP3Library.Model;
 using SEP3Library.UIModels;
@@ -75,7 +77,21 @@ namespace SEP3WebAPI.Data {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
             if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
+            int[] ids = new int[orderModel.Items.Count];
+            int i = 0;
+            foreach (var item in orderModel.Items) {
+                ids[i] = item.Id;
+                i++;
+            }
+            IList<Item> items = (await client.GetItemsByIdAsync(ids)).OrderBy(i => i.Id).ToList();
+            orderModel.Items = orderModel.Items.OrderBy(o => o.Id).ToList();
+            for(int j=0; j< orderModel.Items.Count; j++) {
+                if (orderModel.Items[j].Quantity > items[j].Quantity)
+                    throw new InvalidDataException("Item out of stock" + orderModel.Items[j].Name +
+                                                   " only this amount is available " + items[j].Quantity);
 
+            }
+            
             Order order = new Order() {
                 FirstName = orderModel.FirstName,
                 LastName = orderModel.LastName,
