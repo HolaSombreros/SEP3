@@ -1,0 +1,13 @@
+﻿@page "/Logout"
+@using SEP3UI.Authentication
+@inject NavigationManager navigationManager;
+@inject AuthenticationStateProvider authenticationStateProvider
+
+
+@code {
+
+    protected override async Task OnInitializedAsync() {
+        await ((CustomAuthenticationStateProvider)authenticationStateProvider).LogoutAsync();
+        navigationManager.NavigateTo("/Login");
+    }
+}

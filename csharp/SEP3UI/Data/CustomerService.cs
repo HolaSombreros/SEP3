@@ -11,7 +11,7 @@ namespace SEP3UI.Data {
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
-            Customer customer = await restService.GetAsync<Customer>("customers");
+            Customer customer = await restService.GetAsync<Customer>($"customers?email={email}&password={password}");
             return customer;
         }
 

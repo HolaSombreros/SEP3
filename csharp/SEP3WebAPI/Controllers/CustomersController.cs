@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Model;
+using SEP3Library.UIModels;
 using SEP3WebAPI.Data;
 
 namespace SEP3WebAPI.Controllers {
@@ -33,7 +34,7 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpPost]
         public async Task<ActionResult<Customer>>
-            AddCustomerAsync([FromBody] Customer customer) {
+            AddCustomerAsync([FromBody] CustomerModel customer) {
             try {
                 Customer cust = await service.AddCustomerAsync(customer);
                 return Created($"{cust.Email}", cust);
