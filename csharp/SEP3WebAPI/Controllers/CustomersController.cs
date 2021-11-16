@@ -59,5 +59,18 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpDelete]
+        [Route("{customerId:int}/wishlist/{itemId:int}")]
+        public async Task<ActionResult> RemoveWishlistedItem([FromRoute] int customerId, [FromRoute] int itemId) {
+            try {
+                await service.RemoveWishlistedItem(customerId, itemId);
+                return Ok();
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }
