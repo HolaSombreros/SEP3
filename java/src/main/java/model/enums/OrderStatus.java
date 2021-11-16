@@ -1,8 +1,13 @@
 package model.enums;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum OrderStatus {
+    @SerializedName("Pending")
     PENDING("Pending"),
+    @SerializedName("Finished")
     FINISHED("Finished"),
+    @SerializedName("Cancelled")
     CANCELLED("Cancelled");
 
     private String status;
