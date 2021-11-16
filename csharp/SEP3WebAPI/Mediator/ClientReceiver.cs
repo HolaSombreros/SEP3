@@ -32,6 +32,9 @@ namespace SEP3WebAPI.Mediator {
                         Console.WriteLine(e.Message);
                         Disconnect();
                     }
+                    catch (Exception e) {
+                        Console.WriteLine(e.Message);
+                    }
                 }
             });
             thread.Start();

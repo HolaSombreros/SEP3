@@ -12,7 +12,7 @@ public interface ItemDAO {
     void update(Item item);
     void delete(Item item);
     List<Item> readByCategory(Category category);
-    List<Item> readAll();
+    List<Item> readByIndex(int index);
     List<Item> readAllFromOrder(int orderId);
     List<Item> readCustomerWishlist(int customerId);
 }

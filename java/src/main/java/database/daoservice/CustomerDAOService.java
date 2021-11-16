@@ -22,10 +22,14 @@ public class CustomerDAOService implements CustomerDAO {
 
     @Override public Customer create(String firstName, String lastName, String email, String password, String role, Address address, String phoneNumber) {
         try {
-            Address address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
+            Address address1;
+            if(!addressDAOService.isAddress(address.getStreet(), address.getNumber(), address.getZipCode()))
+                address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
+            else
+                address1 = addressDAOService.read(address.getStreet(), address.getNumber(), address.getZipCode());
             List<Integer> keys = databaseHelper.executeUpdateWithKeys(
-                "INSERT INTO customer(first_name, last_name, email, password, role, address_id, phone_number) VALUES (?,?,?,?,?::user_role,?,?);", firstName, lastName, email, password, role,
-                address1.getId(), phoneNumber);
+                    "INSERT INTO customer(first_name, last_name, email, password, role, address_id, phone_number) VALUES (?,?,?,?,?::user_role,?,?);", firstName, lastName, email, password, role,
+                    address1.getId(), phoneNumber);
             return read(keys.get(0));
         }
         catch (SQLException e) {

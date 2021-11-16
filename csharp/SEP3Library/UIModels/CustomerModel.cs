@@ -49,5 +49,7 @@ namespace SEP3Library.UIModels {
         
         [Compare("Password", ErrorMessage = "Passwords must match")]
         public string ConfirmPassword { get; set; }
+
+        public string Role { get; set; }
     }
 }

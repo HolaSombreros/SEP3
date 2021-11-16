@@ -26,9 +26,24 @@ namespace SEP3WebAPI.Data {
             return await client.GetCustomerAsync(email, password);
         }
 
-        public async Task<Customer> AddCustomerAsync(Customer customer) {
-            customer.Role = "Customer";
-            return await client.AddCustomerAsync(customer);
+        public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
+            if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
+            if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");
+            Customer c = new Customer() {
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email,
+                Address = new Address() {
+                    Street = customer.Street,
+                    Number = customer.Number,
+                    City = customer.City,
+                    ZipCode = customer.ZipCode
+                },
+                PhoneNumber = customer.PhoneNumber,
+                Password = customer.Password,
+                Role = customer.Role 
+            };
+            return await client.AddCustomerAsync(c);
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
