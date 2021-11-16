@@ -10,6 +10,7 @@ public class ItemRequest extends Request{
     private List<Item> items;
     private Item item;
     private Book book;
+    private int customerId;
 
     public ItemRequest(String service, String type) {
         super(service, type);
@@ -38,5 +39,13 @@ public class ItemRequest extends Request{
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 }

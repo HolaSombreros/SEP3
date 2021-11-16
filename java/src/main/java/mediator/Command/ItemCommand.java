@@ -20,6 +20,7 @@ public class ItemCommand implements Command {
         methods.put("getAll",this::getAll);
         methods.put("get",this::getItem);
         methods.put("book",this::getBook);
+        methods.put("getWishlist", this::getWishlist);
     }
 
     @Override public Request execute(Request request) {
@@ -30,6 +31,7 @@ public class ItemCommand implements Command {
             return reply;
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }
@@ -44,5 +46,9 @@ public class ItemCommand implements Command {
 
     private void getBook() {
         reply.setBook(databaseManager.getBookDAOService().read(request.getItem().getId()));
+    }
+
+    private void getWishlist() {
+        reply.setItems(databaseManager.getItemDAOService().readCustomerWishlist(request.getCustomerId()));
     }
 }
