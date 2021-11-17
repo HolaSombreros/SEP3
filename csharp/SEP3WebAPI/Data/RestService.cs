@@ -13,16 +13,13 @@ using SEP3WebAPI.Mediator.Requests;
 namespace SEP3WebAPI.Data {
     public class RestService : IRestService {
         private IClient client;
+        
         public RestService() {
             client = new Client();
         }
         
         public async Task<IList<Item>> GetItemsAsync(int index) {
             return await client.GetItemsAsync(index);
-        }
-
-        public async Task<IList<Item>> GetItemsByIdAsync(int[] itemsId) {
-            return await client.GetItemsByIdAsync(itemsId);
         }
 
         public async Task<Item> GetItemAsync(int id) {
@@ -65,14 +62,14 @@ namespace SEP3WebAPI.Data {
             return await client.GetCustomerWishlistAsync(customer);
         }
 
-        public async Task RemoveWishlistedItem(int customerId, int itemId) {
+        public async Task RemoveWishlistedItemAsync(int customerId, int itemId) {
             Customer customer = await client.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
             
             Item item = await client.GetItemAsync(itemId);
             if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
             
-            await client.RemoveWishlistedItem(customer, item);
+            await client.RemoveWishlistedItemAsync(customer, item);
         }
 
         public async Task<Book> GetBookAsync(int id) {

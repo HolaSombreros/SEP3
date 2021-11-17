@@ -20,7 +20,8 @@
                 <h2 class="retroshd">Welcome Back</h2>
             </div>
             <!-- email box -->
-            <EditForm Model="@customerModel">
+            <EditForm Model="@customerModel" OnValidSubmit="@LoginAsync">
+                <DataAnnotationsValidator/>
                 <fieldset>
                     <div class="form-group d-flex justify-content-center">
                         <label class="col-md-4 control-label">Email</label>
@@ -38,20 +39,20 @@
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-addon"></span>
-                                <InputText @bind-Value="@customerModel.Password" type="password"  placeholder="Password" class="form-control" />
+                                <InputText @bind-Value="@customerModel.Password" type="password" placeholder="Password" class="form-control"/>
                             </div>
                             <ValidationMessage For="@(() => customerModel.Password)"/>
                         </div>
                     </div>
                 </fieldset>
+                <div class="form-group d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary">Log in</button>
+                </div>
+                <div style="color:red">@errorMessage</div>
             </EditForm>
             <!-- register link -->
             <div class="form-group d-flex justify-content-center">
-                <button @onclick="LoginAsync" class="btn btn-primary">Log in</button>
-            </div>
-            <div style="color:red">@errorMessage</div>
-            <div class="form-group d-flex justify-content-center">
-                <a rel="tag" @onclick="GoToRegister">Don't have an account? Register now!</a>
+                <a rel="tag" @onclick="GoToRegister" style="color:blue; cursor: pointer">Don't have an account? Register now!</a>
             </div>
         </div>
 
@@ -60,22 +61,25 @@
 
 @code {
     private string errorMessage { get; set; }
-    private CustomerModel customerModel = new CustomerModel();
+    private CustomerModel customerModel;
 
     protected override async Task OnInitializedAsync() {
+        customerModel = new CustomerModel();
     }
 
-    public void GoToRegister() {
+    private void GoToRegister() {
         navigationManager.NavigateTo("/Register");
     }
 
-    public async Task LoginAsync() {
-        errorMessage = "";
+    private async Task LoginAsync() {
         try {
             await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
             navigationManager.NavigateTo("/");
-        }catch (Exception e) {
+        }
+        catch (Exception e) {
+            Console.WriteLine(e.StackTrace);
             errorMessage = e.Message;
         }
     }
+
 }
