@@ -27,6 +27,9 @@ public class CustomerDAOService implements CustomerDAO {
                 address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
             else
                 address1 = addressDAOService.read(address.getStreet(), address.getNumber(), address.getZipCode());
+            if(isEmail(email)){
+                throw new IllegalArgumentException("This email is already registered");
+            }
             List<Integer> keys = databaseHelper.executeUpdateWithKeys(
                     "INSERT INTO customer(first_name, last_name, email, password, role, address_id, phone_number) VALUES (?,?,?,?,?::user_role,?,?);", firstName, lastName, email, password, role,
                     address1.getId(), phoneNumber);
@@ -59,5 +62,13 @@ public class CustomerDAOService implements CustomerDAO {
 
     @Override public void delete(Customer customer) {
 
+    }
+
+    private boolean isEmail(String email){
+        try{
+            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM customer WHERE email = ?", email).next();
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 }
