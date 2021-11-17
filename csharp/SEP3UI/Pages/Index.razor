@@ -23,7 +23,7 @@ Welcome to Under Covers  main paaaage
             </div>
             <div class="action">
                 <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
-                <button class="btn btn-sm btn-dark order-button float-right" @onclick="(() => AddToShoppingCart(item))">Add to Shopping cart</button>
+                <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))">Add to Shopping cart</button>
             </div>
         </div>
     }
@@ -43,6 +43,12 @@ Welcome to Under Covers  main paaaage
         ItemIndex = 0;
         Items = await itemService.GetItemsAsync(ItemIndex);
         hidden = "";
+    }
+    
+    private bool GetDisabledState(Item item) {
+        if (item.Quantity < 1) 
+            return true;
+        return false;
     }
 
     private async Task LoadMore() {
