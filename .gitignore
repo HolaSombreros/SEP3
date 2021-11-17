@@ -112,3 +112,6 @@ node_modules
 *package-lock.json
 *NuGet.Config
 **/wwwroot/lib
+astah/ActivityDiagrams/Manage Shopping Cart.asta.lock
+astah/ActivityDiagrams/ManagePurchase.asta.lock
+astah/ActivityDiagrams/Manage Shopping Cart.asta.lock
