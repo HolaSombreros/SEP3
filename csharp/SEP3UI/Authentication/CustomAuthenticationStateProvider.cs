@@ -5,9 +5,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3UI.Data;
-
 
 namespace SEP3UI.Authentication {
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider {

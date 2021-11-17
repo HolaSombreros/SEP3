@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public class Address {
         
         [Required(ErrorMessage = "Please enter a city")]

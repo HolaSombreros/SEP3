@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SEP3Library.Model;
+using SEP3Library.Models;
 
 namespace SEP3WebAPI.Mediator.Requests {
     public class ItemRequest : Request {

@@ -1,14 +1,12 @@
 ﻿@page "/ItemDetails/{id:int}"
-@using SEP3Library.Model
 @using SEP3UI.Data
 @using System.Runtime.InteropServices.ComTypes
+@using SEP3Library.Models
 @inject IItemService itemService
 @inject IOrderService orderService
-@inject EnumHelper enumHelper
-
 
 @if (item == null) {
-    <h2> Loading </h2>
+    <h2>Loading</h2>
 }
 else {
     <div class="container">
@@ -83,52 +81,33 @@ else {
     </div>
 }
 
-
 @code {
-
     [Parameter]
     public int Id { get; set; }
 
-    public string ErrorMessage { get; set; }
-
     private Item item;
     private Book book;
-    private int ShoppingCartQuantity { get; set; }
-    private string status { get; set; }
-    
-    private bool isDisabled { get; set; }
+    private string status;
+    private bool isDisabled;
 
     protected override async Task OnInitializedAsync() {
-        try {
-            ShoppingCartQuantity = 1;
-            item = await itemService.GetItemAsync(Id);
-            if (item.Category == Category.Book) {
-                book = await itemService.GetBookAsync(Id);
-            }
-            if(item.Status == ItemStatus.InStock)
-                status = enumHelper.GetDescription(ItemStatus.InStock);
-            else {
-                status = enumHelper.GetDescription(ItemStatus.OutOfStock);
-            }
-            GetDisabledState();
+        item = await itemService.GetItemAsync(Id);
+        if (item.Category == Category.Book) {
+            book = await itemService.GetBookAsync(Id);
         }
-        catch (Exception e) {
-            ErrorMessage = e.Message;
-        }
+        
+        status = EnumHelper.GetDescription(item.Status == ItemStatus.InStock ? ItemStatus.InStock : ItemStatus.OutOfStock);
+        SetDisabledState();
     }
     
-    private bool GetDisabledState() {
+    private void SetDisabledState() {
         if (item.Quantity < 1) {
             item.Status = ItemStatus.OutOfStock;
             isDisabled = true;
-         
         }
-        return isDisabled;
     }
 
-    private void AddToShoppingCart(Item item) {
-        orderService.ShoppingCart.AddToShoppingCart(item);
+    private void AddToShoppingCart(Item itemToAdd) {
+        orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
     }
-
 }
-

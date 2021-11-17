@@ -1,9 +1,6 @@
-﻿using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
+﻿using System.ComponentModel;
 
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public enum ItemStatus {
         [Description("Out of stock")] OutOfStock,
         [Description("In stock")] InStock

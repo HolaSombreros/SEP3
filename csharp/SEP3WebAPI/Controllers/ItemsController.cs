@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3WebAPI.Data;
 
 namespace SEP3WebAPI.Controllers {

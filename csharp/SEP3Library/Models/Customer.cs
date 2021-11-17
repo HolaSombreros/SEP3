@@ -1,8 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.IO;
 
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public class Customer {
         public int Id { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public class Book : Item {
         public string Isbn { get; set; }
         public string AuthorFirstName { get; set; }

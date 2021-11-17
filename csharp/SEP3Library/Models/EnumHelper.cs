@@ -1,11 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace SEP3Library.Model {
-    
-    public class EnumHelper {
-        
-        public string GetDescription<T>(T enumValue) 
+namespace SEP3Library.Models {
+    public static class EnumHelper {
+        public static string GetDescription<T>(T enumValue) 
             where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum)

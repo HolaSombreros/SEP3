@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public class ShoppingCart {
         public Customer User { get; set; }
         public readonly double ShippingPrice = 25.00;

@@ -1,6 +1,6 @@
 ﻿@page "/ShoppingBasket"
-@using SEP3Library.Model
 @using SEP3UI.Data
+@using SEP3Library.Models
 @inject IOrderService orderService
 @inject NavigationManager NavigationManager
 
@@ -45,7 +45,7 @@
             <hr>
             <div class="row mt-3">
                 <div>Items: @GetItemsBasedOnQuantity()</div>
-                <div class="col text-right">@GetFinalPrice()DKK</div>
+                <div class="col text-right">@GetFinalPrice() DKK</div>
             </div>
             <div class="row mt-3">
                 <div>Shipping</div>
@@ -66,17 +66,15 @@
     </div>
 </div>
 @code {
-    
-    private bool isDisabled { get; set; }
+    private bool isDisabled;
     
     protected override async Task OnInitializedAsync() {
-        GetDisabledState();
+        SetDisabledState();
     }
 
-    public bool GetDisabledState() {
+    private void SetDisabledState() {
         if (orderService.ShoppingCart.Items.Count == 0)
             isDisabled = true;
-        return isDisabled;
     }
 
     private void DecreaseQuantity(Item item) {
