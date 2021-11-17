@@ -29,8 +29,8 @@ public class CustomerCommand implements Command {
             return reply;
         }
         catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-//            throw new IllegalArgumentException("The request could not be fulfilled");
+            e.printStackTrace();
+            throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }
 

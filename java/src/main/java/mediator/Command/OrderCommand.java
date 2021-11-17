@@ -24,7 +24,6 @@ public class OrderCommand implements Command {
     @Override public Request execute(Request request) {
         try {
             this.request = (OrderRequest) request;
-            System.out.println(this.request.getOrder().getOrderStatus());
             reply = new OrderRequest(request.getService(), request.getType());
             methods.get(request.getType()).run();
             return reply;

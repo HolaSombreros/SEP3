@@ -45,12 +45,11 @@
                         </div>
                     </div>
                 </fieldset>
-                <div class="form-group d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary">Log in</button>
-                </div>
-                <div style="color:red">@errorMessage</div>
             </EditForm>
-            <!-- register link -->
+            <div class="form-group d-flex justify-content-center">
+                <button @onclick="LoginAsync" class="btn btn-primary">Log in</button>
+            </div>
+            <div style="color:red">@errorMessage</div>
             <div class="form-group d-flex justify-content-center">
                 <a rel="tag" @onclick="GoToRegister" style="color:blue; cursor: pointer">Don't have an account? Register now!</a>
             </div>
@@ -71,9 +70,7 @@
         try {
             await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
             navigationManager.NavigateTo("/");
-        }
-        catch (Exception e) {
-            Console.WriteLine(e.StackTrace);
+        }catch (Exception e) {
             errorMessage = e.Message;
         }
     }

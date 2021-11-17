@@ -138,6 +138,7 @@ namespace SEP3WebAPI.Mediator {
         }
         
         public async Task<Order> CreateOrderAsync(Order order) {
+            // TODO json too long problem
             OrderRequest req = new OrderRequest() {
                 Service = "order", 
                 Type = "purchase", 
@@ -208,6 +209,7 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
+            // TODO json too long problem
             ItemRequest req = new ItemRequest() {
                 Type = "getWishlist",
                 Service = "item",

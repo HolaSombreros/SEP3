@@ -42,7 +42,7 @@ namespace SEP3Library.UIModels {
         [MinLength(6, ErrorMessage = "The password has to be longer than 6 characters")]
         public string Password { get; set; }
         
-        [MaxLength(11, ErrorMessage = "The phone number has to be maximum 11 characters")]
+        [MaxLength(30, ErrorMessage = "The phone number has to be maximum 30 characters")]
         [MinLength(8, ErrorMessage = "The phone number has to be minimum 8 characters")]
         public string PhoneNumber { get; set; }
         
