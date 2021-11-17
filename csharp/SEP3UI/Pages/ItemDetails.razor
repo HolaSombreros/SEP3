@@ -1,8 +1,10 @@
 ﻿@page "/ItemDetails/{id:int}"
 @using SEP3Library.Model
 @using SEP3UI.Data
+@using System.Runtime.InteropServices.ComTypes
 @inject IItemService itemService
 @inject IOrderService orderService
+@inject EnumHelper enumHelper
 
 
 @if (item == null) {
@@ -64,8 +66,13 @@ else {
                                 <strong>Quantity: </strong> @item.Quantity
                             </label>
                         </div>
+                          <div class="form-group mt-2">
+                            <label>
+                                <strong>Status: </strong> @status
+                            </label>
+                        </div>
                         <div class="mt-5">
-                            <button class="btn btn-round btn-dark" @onclick="(() => AddToShoppingCart(item))"type="button">
+                            <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">
                                 <i class="fa fa-shopping-cart"></i> Add to Shopping Cart
                             </button>
                         </div>
@@ -87,6 +94,9 @@ else {
     private Item item;
     private Book book;
     private int ShoppingCartQuantity { get; set; }
+    private string status { get; set; }
+    
+    private bool isDisabled { get; set; }
 
     protected override async Task OnInitializedAsync() {
         try {
@@ -95,10 +105,25 @@ else {
             if (item.Category == Category.Book) {
                 book = await itemService.GetBookAsync(Id);
             }
+            if(item.Status == ItemStatus.InStock)
+                status = enumHelper.GetDescription(ItemStatus.InStock);
+            else {
+                status = enumHelper.GetDescription(ItemStatus.OutOfStock);
+            }
+            GetDisabledState();
         }
         catch (Exception e) {
             ErrorMessage = e.Message;
         }
+    }
+    
+    private bool GetDisabledState() {
+        if (item.Quantity < 1) {
+            item.Status = ItemStatus.OutOfStock;
+            isDisabled = true;
+         
+        }
+        return isDisabled;
     }
 
     private void AddToShoppingCart(Item item) {
