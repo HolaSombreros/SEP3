@@ -1,6 +1,5 @@
 ﻿@page "/Payout"
 @using Microsoft.AspNetCore.Components
-@using SEP3Library.Model
 @using SEP3Library.UIModels
 @using SEP3UI.Data
 @inject NavigationManager NavigationManager
@@ -109,13 +108,11 @@
     
     private async Task HandleValidSubmit() {
         try {
-            Order order = await orderService.CreateOrderAsync(orderModel);
+            await orderService.CreateOrderAsync(orderModel);
             orderService.ShoppingCart.EmptyShoppingCart();
             errorMessage = "Successful purchase!";
-            Console.WriteLine(order.ToString());
         }
         catch (Exception e) {
-            Console.WriteLine(e.Message);
             errorMessage = e.Message;
         }
     }
