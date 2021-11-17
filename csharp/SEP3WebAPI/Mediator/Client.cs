@@ -83,7 +83,7 @@ namespace SEP3WebAPI.Mediator {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getAllById",
-                ItemsIds = itemsId
+                // ItemsIds = itemsId
             };
             String send = JsonSerializer.Serialize(req,
                 new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});

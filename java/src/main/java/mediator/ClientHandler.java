@@ -8,6 +8,7 @@ import mediator.Command.ItemCommand;
 import mediator.Command.OrderCommand;
 import mediator.Request.*;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -57,7 +58,6 @@ public class ClientHandler implements Runnable {
                 running = false;
             }
             catch (Exception e) {
-                e.printStackTrace();
                 ErrorRequest errorRequest = new ErrorRequest("error", "error");
                 errorRequest.setMessage(e.getMessage());
                 sendReply(errorRequest);

@@ -58,6 +58,6 @@ public class ItemCommand implements Command {
         databaseManager.getItemDAOService().removeItemFromWishlist(request.getCustomer().getId(), request.getItem().getId());
     }
     private void getAllById(){
-        reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
+//        reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
     }
 }
