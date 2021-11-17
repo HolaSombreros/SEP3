@@ -8,9 +8,9 @@
 
 Welcome to Under Covers  main paaaage
 
-@if (Items != null) {
+@if (items != null) {
 <div id="productsWrapper" class="row ">
-    @foreach (Item item in Items) {
+    @foreach (Item item in items) {
         <div class="card col-sm-3 m-3">
             <div @onclick="@(() => NavigateToItemDetails(item))">
                 <a asp-route-id="@item.Id" title="Order @item.Name">
@@ -34,31 +34,26 @@ Welcome to Under Covers  main paaaage
 </div>
 
 @code {
-
-    public int ItemIndex { get; set; }
-    public IList<Item> Items { get; set; }
+    private int itemIndex;
+    private IList<Item> items;
     private string hidden;
 
     protected override async Task OnInitializedAsync() {
-        ItemIndex = 0;
-        Items = await itemService.GetItemsAsync(ItemIndex);
+        itemIndex = 0;
+        items = await itemService.GetItemsAsync(itemIndex);
         hidden = "";
     }
 
     private async Task LoadMore() {
-        ItemIndex++;
-        IList<Item> newList = await itemService.GetItemsAsync(ItemIndex);
+        itemIndex++;
+        IList<Item> newList = await itemService.GetItemsAsync(itemIndex);
         if (newList.Count == 0) {
             hidden = "display: none";
-            ItemIndex--;
+            itemIndex--;
         }
         foreach (Item item in newList) {
-            Items.Add(item);
+            items.Add(item);
         }
-    }
-
-    private void NavigateToComponent(Item item) {
-        NavigationManager.NavigateTo("ShoppingBasket/" + item.Id);
     }
 
     private void NavigateToItemDetails(Item item) {

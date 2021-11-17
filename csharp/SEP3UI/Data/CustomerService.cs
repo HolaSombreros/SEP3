@@ -16,10 +16,6 @@ namespace SEP3UI.Data {
             return customer;
         }
 
-        public async Task<Customer> GetCustomerAsync(int customerId) {
-            throw new System.NotImplementedException();
-        }
-
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
             Customer added = await restService.PostAsync<CustomerModel, Customer>(customer, "customers");
             return added;
