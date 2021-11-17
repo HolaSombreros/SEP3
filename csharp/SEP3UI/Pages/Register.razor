@@ -1,7 +1,6 @@
 ﻿@page "/Register"
 @using SEP3Library.UIModels
 @using SEP3UI.Data
-@using SEP3Library.Model
 @inject NavigationManager navigationManager
 @inject ICustomerService customerService
 
@@ -137,11 +136,8 @@
 </div>
 
 @code {
-    private string errorMessage { get; set; }
+    private string errorMessage;
     private CustomerModel customerModel = new CustomerModel();
-
-    protected override async Task OnInitializedAsync() {
-    }
 
     private async Task RegisterAsync() {
         try {
@@ -154,6 +150,4 @@
             errorMessage = e.Message;
         }
     }
-
-
 }

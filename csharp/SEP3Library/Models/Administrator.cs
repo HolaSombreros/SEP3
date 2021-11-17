@@ -1,5 +1,5 @@
 ﻿
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public class Administrator : Customer {
     }
 }

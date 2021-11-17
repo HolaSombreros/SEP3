@@ -1,12 +1,12 @@
 @page "/"
-@using SEP3Library.Model
 @using SEP3UI.Data
 @using System.Collections
+@using SEP3Library.Models
 @inject NavigationManager NavigationManager
 @inject IItemService itemService
 @inject IOrderService orderService
 
-Welcome to Under Covers  main paaaage
+<h3>Under Covers</h3>
 
 @if (items != null) {
 <div id="productsWrapper" class="row ">

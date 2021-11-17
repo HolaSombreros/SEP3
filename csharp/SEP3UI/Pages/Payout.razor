@@ -5,7 +5,7 @@
 @inject NavigationManager NavigationManager
 @inject IOrderService orderService
 
-<EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmitAsync">
     <div class="container">
         <fieldset>
             <legend class="d-flex justify-content-center m-3">
@@ -100,13 +100,13 @@
 
 @code {
     private OrderModel orderModel = new OrderModel();
-    private string errorMessage { get; set; }
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync() {
         orderModel.Items = orderService.ShoppingCart.Items;
     }
     
-    private async Task HandleValidSubmit() {
+    private async Task HandleValidSubmitAsync() {
         try {
             await orderService.CreateOrderAsync(orderModel);
             orderService.ShoppingCart.EmptyShoppingCart();

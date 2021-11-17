@@ -1,4 +1,4 @@
-﻿namespace SEP3Library.Model {
+﻿namespace SEP3Library.Models {
     public class Review {
         public Customer Customer { get; set; }
         public Rating Rating { get; set; }

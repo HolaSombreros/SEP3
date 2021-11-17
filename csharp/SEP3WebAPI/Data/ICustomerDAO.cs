@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3UI.Data;
 

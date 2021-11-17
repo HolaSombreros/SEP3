@@ -3,7 +3,6 @@ using System.IO;
 
 namespace SEP3Library.UIModels {
     public class CustomerModel {
-        
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please enter an email address")]
         public string Email {

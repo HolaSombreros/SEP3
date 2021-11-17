@@ -5,7 +5,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
 using SEP3WebAPI.Mediator.Requests;
