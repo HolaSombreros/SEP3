@@ -55,7 +55,7 @@ namespace SEP3WebAPI.Mediator {
             }
         }
 
-        public void Waiting() {
+        private void Waiting() {
             lock (lock1) {
                 waiting = true;
                 while (waiting) {
@@ -63,6 +63,16 @@ namespace SEP3WebAPI.Mediator {
                     waiting = false;
                 }
             }
+        }
+
+        public void Disconnect() {
+            networkStream.Close();
+            tcpClient.Close();
+        }
+
+        private void Send(String send) {
+            byte[] data = Encoding.ASCII.GetBytes(send + "\n");
+            networkStream.Write(data, 0, data.Length);
         }
 
         public async Task<IList<Item>> GetItemsAsync(int index) {
@@ -207,16 +217,6 @@ namespace SEP3WebAPI.Mediator {
             });
             Send(json);
             Waiting();
-        }
-
-        public void Disconnect() {
-            networkStream.Close();
-            tcpClient.Close();
-        }
-
-        private void Send(String send) {
-            byte[] data = Encoding.ASCII.GetBytes(send + "\n");
-            networkStream.Write(data, 0, data.Length);
         }
     }
 }
