@@ -72,10 +72,10 @@
     public async Task LoginAsync() {
         errorMessage = "";
         try {
-             await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
+            await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
+            navigationManager.NavigateTo("/");
         }catch (Exception e) {
             errorMessage = e.Message;
         }
-        navigationManager.NavigateTo("/");
     }
 }

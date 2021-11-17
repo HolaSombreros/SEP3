@@ -21,7 +21,6 @@ public class ItemCommand implements Command {
         methods.put("get",this::getItem);
         methods.put("book",this::getBook);
         methods.put("getWishlist", this::getWishlist);
-<<<<<<<<< Temporary merge branch 1
         methods.put("removeWishlist", this::removeItemFromWishlist);
         methods.put("getAllById", this::getAllById);
     }
