@@ -16,6 +16,7 @@ public class CustomerCommand implements Command {
     public CustomerCommand(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
         methods = new HashMap<>();
+        methods.put("get", this::get);
         methods.put("login", this::login);
         methods.put("register", this::register);
     }
@@ -28,8 +29,13 @@ public class CustomerCommand implements Command {
             return reply;
         }
         catch (Exception e) {
-            throw new IllegalArgumentException("The request could not be fulfilled");
+            throw new IllegalArgumentException(e.getMessage());
+//            throw new IllegalArgumentException("The request could not be fulfilled");
         }
+    }
+
+    private void get() {
+        reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getId()));
     }
 
     private void login() {
