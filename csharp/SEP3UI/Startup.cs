@@ -33,6 +33,7 @@ namespace SEP3UI {
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+            services.AddScoped<EnumHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
