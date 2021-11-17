@@ -13,10 +13,21 @@ public class ItemRequest extends Request{
     private Item item;
     private Book book;
     private Customer customer;
+    private int[] itemsIds;
+    private int customerId;
+
 
     public ItemRequest(String service, String type) {
         super(service, type);
         items = new ArrayList<>();
+    }
+
+    public int[] getItemsIds() {
+        return itemsIds;
+    }
+    
+    public void setItemsIds(int[] itemsIds) {
+        this.itemsIds = itemsIds;
     }
 
     public int getIndex() {

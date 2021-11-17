@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SEP3Library.Model;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
+using SEP3WebAPI.Mediator.Requests;
 
 namespace SEP3WebAPI.Data {
     public class RestService : IRestService {
@@ -29,7 +30,12 @@ namespace SEP3WebAPI.Data {
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
-            return await client.GetCustomerAsync(email, password);
+            Customer customer = await client.GetCustomerAsync(email, password);
+            if (customer == null)
+                throw new Exception("Email not registered");
+            if (customer.Password.Equals(password))
+                return customer;
+            throw new Exception("Wrong password");
         }
 
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {

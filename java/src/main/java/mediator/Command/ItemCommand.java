@@ -23,6 +23,7 @@ public class ItemCommand implements Command {
         methods.put("getWishlist", this::getWishlist);
         methods.put("getAllById", this::getAllById);
         methods.put("removeWishlist", this::removeItemFromWishlist);
+
     }
 
     @Override public Request execute(Request request) {
