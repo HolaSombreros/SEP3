@@ -21,8 +21,8 @@ public class ItemCommand implements Command {
         methods.put("get",this::getItem);
         methods.put("book",this::getBook);
         methods.put("getWishlist", this::getWishlist);
-        methods.put("removeWishlist", this::removeItemFromWishlist);
         methods.put("getAllById", this::getAllById);
+        methods.put("removeWishlist", this::removeItemFromWishlist);
     }
 
     @Override public Request execute(Request request) {
