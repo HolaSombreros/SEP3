@@ -1,4 +1,6 @@
-﻿namespace SEP3Library.Model {
+﻿using System.ComponentModel;
+
+namespace SEP3Library.Model {
     public enum Genre {
         Action,
         Romance,
@@ -8,6 +10,7 @@
         Horror,
         Classic,
         Manga,
+        [Description("Light novel")]
         Lightnovel
     }
 }

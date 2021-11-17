@@ -91,7 +91,7 @@ namespace SEP3WebAPI.Data {
                         throw new InvalidDataException("Item " + orderModel.Items[j].Name +
                                                        " is out of stock. The stock will be updated later");
                     throw new InvalidDataException("Item " + orderModel.Items[j].Name +
-                                                   " is out of stock. Only this amount is available " + items[j].Quantity);
+                                                   " amount exceeds the amount available. Only this amount is available " + items[j].Quantity);
                 }
                     
             }
