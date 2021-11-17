@@ -89,11 +89,11 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest)request).Items;
         }
 
-        public async Task<IList<Item>> GetItemsByIdAsync(int[] itemsId) {
+        public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getAllById",
-                // ItemsIds = itemsId
+                ItemsIds = itemIds
             };
             String send = JsonSerializer.Serialize(req,
                 new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
@@ -101,6 +101,7 @@ namespace SEP3WebAPI.Mediator {
             Waiting();
             if (request is ErrorRequest errorRequest)
                 throw new Exception(errorRequest.Message);
+            
             return ((ItemRequest)request).Items;
         }
 
@@ -222,7 +223,7 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest) request).Items;
         }
 
-        public async Task RemoveWishlistedItem(Customer customer, Item item) {
+        public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {
             ItemRequest req = new ItemRequest() {
                 Type = "removeWishlist",
                 Service = "item",

@@ -16,12 +16,11 @@ public class ItemRequest extends Request{
     private int[] itemsIds;
     private int customerId;
 
-
     public ItemRequest(String service, String type) {
         super(service, type);
         items = new ArrayList<>();
     }
-
+    
     public int[] getItemsIds() {
         return itemsIds;
     }
