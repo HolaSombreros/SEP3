@@ -40,8 +40,6 @@ public class CustomerCommand implements Command {
 
     private void login() {
         reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getEmail()));
-        if (!request.getCustomer().getPassword().equals(reply.getCustomer().getPassword()))
-            throw new IllegalArgumentException("Invalid password");
     }
 
     private void register() {

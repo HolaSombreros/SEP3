@@ -17,26 +17,26 @@
                 </div>
             </div>
             @foreach (Item item in orderService.ShoppingCart.Items) {
-                    <div class="row border-top border-bottom">
-                        <div class="row main align-items-center">
-                            <div class="col-2">
-                                <img class="img-fluid" src="@item.ImageName">
-                            </div>
-                            <div class="col">
-                                <div class="row text-muted"></div>
-                                <div class="row">@item.Name</div>
-                            </div>
-                            <div class="col">
-                                <a class ="btn-outline-secondary" @onclick="(() => DecreaseQuantity(item))"> - </a> 
-                                <a class="border">@item.Quantity</a>
-                                <a class = "btn-outline-secondary" @onclick="(() => IncreaseQuantity(item))"> + </a>
-                            </div>
-                            <div class="col"> @(item.Price * item.Quantity) DKK 
-                                <span class="close" @onclick="(() => RemoveItemFromShoppingCart(item))">&#10005;</span>
-                            </div>
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center">
+                        <div class="col-2">
+                            <img class="img-fluid" src="@item.ImageName">
+                        </div>
+                        <div class="col">
+                            <div class="row text-muted"></div>
+                            <div class="row">@item.Name</div>
+                        </div>
+                        <div class="col">
+                            <a @onclick="(() => DecreaseQuantity(item))"> - </a> 
+                            <span class="border">@item.Quantity</span>
+                            <a @onclick="(() => IncreaseQuantity(item))"> + </a>
+                        </div>
+                        <div class="col"> @(item.Price * item.Quantity) DKK 
+                            <a class="close" @onclick="(() => RemoveItemFromShoppingCart(item))">&#10005;</a>
                         </div>
                     </div>
-                }
+                </div>
+            }
         </div>
         <div class="col-md-4 summary">
             <div>
@@ -44,19 +44,19 @@
             </div>
             <hr>
             <div class="row mt-3">
-                <div>Items: @GetItemsBasedOnQuantity()</div>
+                <div>Total items: @GetItemsBasedOnQuantity()</div>
                 <div class="col text-right">@GetFinalPrice() DKK</div>
             </div>
             <div class="row mt-3">
-                <div>Shipping</div>
+                <div>Shipping:</div>
                 <div class="col text-right">@orderService.ShoppingCart.ShippingPrice DKK</div>
             </div>
             <div class="row mt-3">
-                  <div>Discount code</div> 
+                <div>Discount code:</div> 
             </div>
             <input class="mt-3" placeholder="Enter your code">
             <div class="row mt-3">
-                <div>Total price</div>
+                <div>Total price:</div>
                 <div class="col text-right">@GetTotalOrderPrice() DKK</div>
             </div>
             <div class="d-flex justify-content-center mt-3">
@@ -65,6 +65,13 @@
         </div>
     </div>
 </div>
+
+<style>
+    a:hover {
+        cursor: pointer;
+    }
+</style>
+
 @code {
     private bool isDisabled;
     
