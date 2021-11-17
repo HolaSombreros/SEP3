@@ -1,7 +1,11 @@
 package model.enums;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum Language {
+    @SerializedName("English")
     ENGLISH("English"),
+    @SerializedName("Danish")
     DANISH("Danish");
 
     private String language;

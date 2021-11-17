@@ -7,6 +7,7 @@ import model.enums.Category;
 import model.enums.ItemStatus;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemDAOService implements ItemDAO {
@@ -69,13 +70,26 @@ public class ItemDAOService implements ItemDAO {
 
     @Override
     public List<Item> readAllFromOrder(int orderId) {
-        try{
-            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id,name,description,category,discount,status, purchase_id, order_item.quantity, purchase_item.price,image_filepath FROM item JOIN purchase_item USING (item_id) WHERE purchase_id = ?;",orderId);
+        try {
+            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id,name,description,category,discount,status, purchase_id, purchase_item.quantity, purchase_item.price,image_filepath FROM item JOIN purchase_item USING (item_id) WHERE purchase_id = ?;",orderId);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
+    @Override
+    public List<Item> readAllByIds(int[] itemIds) {
+        try {
+            List<Item> items = new ArrayList<>();
+            for(int i =1; i <= itemIds.length; i++) {
+               items.add(databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item WHERE item_id=?", i));
+            }
+            return items;
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
     @Override public List<Item> readCustomerWishlist(int customerId) {
         try {
             return databaseHelper.mapList(new ItemMapper(), "SELECT item_id, name, description, price, category, discount, quantity, status, image_filepath "
@@ -84,6 +98,7 @@ public class ItemDAOService implements ItemDAO {
                     + "WHERE customer_id = ?;", customerId);
         } catch (SQLException e) {
             throw new IllegalStateException(e.getMessage());
+
         }
     }
 

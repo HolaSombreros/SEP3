@@ -1,10 +1,17 @@
 package model.enums;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum Category {
+    @SerializedName("Book")
     BOOK("Book"),
+    @SerializedName("Music")
     MUSIC("Music"),
+    @SerializedName("Home")
     HOME("Home"),
+    @SerializedName("Food")
     FOOD("Food"),
+    @SerializedName("Games")
     GAMES("Games");
 
     private String category;

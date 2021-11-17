@@ -16,8 +16,6 @@ import java.net.Socket;
 import java.util.HashMap;
 
 public class ClientHandler implements Runnable {
-
-
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
@@ -46,6 +44,7 @@ public class ClientHandler implements Runnable {
         while (running) {
             try {
                 received = in.readLine();
+                System.out.println(received);
                 Request request = gson.fromJson(received, Request.class);
                 if (request != null) {
                     service.get(request.getService()).run();

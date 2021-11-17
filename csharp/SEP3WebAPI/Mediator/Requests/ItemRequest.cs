@@ -8,5 +8,6 @@ namespace SEP3WebAPI.Mediator.Requests {
         public Book Book { get; set; }
         public IList<Item> Items { get; set; }
         public Customer Customer { get; set; }
+        public int[] ItemsIds { get; set; }
     }
 }

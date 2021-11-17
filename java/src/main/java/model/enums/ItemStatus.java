@@ -1,7 +1,11 @@
 package model.enums;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum ItemStatus {
+    @SerializedName("OutOfStock")
     OUTOFSTOCK ("Out of Stock"),
+    @SerializedName("InStock")
     INSTOCK ("In Stock");
 
     private String  status;

@@ -16,10 +16,13 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery]int index) {
-            try { 
-                IList<Item> items = await service.GetItemsAsync(index);
-                
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] int[]? itemIds) {
+            try {
+                IList<Item> items;
+                if (itemIds != null) 
+                     items = await service.GetItemsByIdAsync(itemIds);
+                else 
+                    items = await service.GetItemsAsync(index);
                 return Ok(items);
                 
             } 

@@ -14,6 +14,7 @@ public interface ItemDAO {
     List<Item> readByCategory(Category category);
     List<Item> readByIndex(int index);
     List<Item> readAllFromOrder(int orderId);
+    List<Item> readAllByIds(int[] itemIds);
     List<Item> readCustomerWishlist(int customerId);
     void removeItemFromWishlist(int customerId, int itemId);
 }
