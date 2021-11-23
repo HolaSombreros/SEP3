@@ -119,4 +119,14 @@ public class ItemDAOService implements ItemDAO {
             throw new IllegalStateException(e.getMessage());
         }
     }
+
+    @Override
+    public List<Item> readByItemName(String itemName, int index) {
+        try{
+            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM item WHERE lower(name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
+        }
+        catch (SQLException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 }

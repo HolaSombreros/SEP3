@@ -17,4 +17,5 @@ public interface ItemDAO {
     List<Item> readAllByIds(int[] itemIds);
     List<Item> readCustomerWishlist(int customerId);
     void removeItemFromWishlist(int customerId, int itemId);
+    List<Item> readByItemName(String itemName, int index);
 }

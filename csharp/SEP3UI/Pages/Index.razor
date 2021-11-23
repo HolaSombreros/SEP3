@@ -1,33 +1,36 @@
 @page "/"
 @using SEP3UI.Data
-@using System.Collections
 @using SEP3Library.Models
 @inject NavigationManager NavigationManager
 @inject IItemService itemService
 @inject IOrderService orderService
 
 <h3>Under Covers</h3>
-
-@if (items != null) {
-<div id="productsWrapper" class="row ">
-    @foreach (Item item in items) {
-        <div class="card col-sm-3 m-3">
-            <div @onclick="@(() => NavigateToItemDetails(item))">
-                <a asp-route-id="@item.Id" title="Order @item.Name">
-                    <div>
-                        <h3>@item.Name</h3>
-                        <img class="product-image img-fluid img-thumbnail image" src="@item.ImageName" alt="Image of @item.Name"/>
-                        <p class="card-text">@item.Description</p>
-                    </div>
-                </a>
-            </div>
-            <div class="action">
-                <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
-                <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))">Add to Shopping cart</button>
-            </div>
-        </div>
-    }
+<div class="row justify-content-center "  id="searchBar">
+    <input class="col-md-4 border border-dark rounded"  @bind-value="searchItem" @onkeyup="@SearchItemsAsync" placeholder="Search..."/>
+    <span class="oi oi-magnifying-glass" aria-hidden="true" ></span>
 </div>
+
+@if (filteredItems != null) {
+    <div id="productsWrapper" class="row ">
+        @foreach (Item item in filteredItems) {
+            <div class="card col-sm-3 m-3">
+                <div @onclick="@(() => NavigateToItemDetails(item))">
+                    <a asp-route-id="@item.Id" title="Order @item.Name">
+                        <div>
+                            <h3>@item.Name</h3>
+                            <img class="product-image img-fluid img-thumbnail image" src="@item.ImageName" alt="Image of @item.Name"/>
+                            <p class="card-text">@item.Description</p>
+                        </div>
+                    </a>
+                </div>
+                <div class="action">
+                    <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
+                    <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))">Add to Shopping cart</button>
+                </div>
+            </div>
+        }
+    </div>
 }
 <div class="text-center">
     <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMore">Load more</button>
@@ -36,16 +39,19 @@
 @code {
     private int itemIndex;
     private IList<Item> items;
+    private IList<Item> filteredItems;
     private string hidden;
+    private string searchItem;
 
     protected override async Task OnInitializedAsync() {
         itemIndex = 0;
         items = await itemService.GetItemsAsync(itemIndex);
+        filteredItems = items;
         hidden = "";
     }
-    
+
     private bool GetDisabledState(Item item) {
-        if (item.Quantity < 1) 
+        if (item.Quantity < 1)
             return true;
         return false;
     }
@@ -69,4 +75,11 @@
     private void AddToShoppingCart(Item item) {
         orderService.ShoppingCart.AddToShoppingCart(item);
     }
+
+    private async Task SearchItemsAsync(KeyboardEventArgs e) {
+        if (e.Key == "Enter") {
+            filteredItems = await itemService.GetItemsBySearchAsync(searchItem, itemIndex);
+        }
+    }
+
 }

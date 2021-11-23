@@ -23,6 +23,7 @@ public class ItemCommand implements Command {
         methods.put("getWishlist", this::getWishlist);
         methods.put("getAllById", this::getAllById);
         methods.put("removeWishlist", this::removeItemFromWishlist);
+        methods.put("searchByName",this::getItemsBySearchName);
     }
 
     @Override public Request execute(Request request) {
@@ -59,5 +60,9 @@ public class ItemCommand implements Command {
     }
     private void getAllById(){
         reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
+    }
+
+    private void getItemsBySearchName(){
+        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
     }
 }

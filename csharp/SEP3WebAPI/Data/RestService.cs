@@ -55,6 +55,10 @@ namespace SEP3WebAPI.Data {
             return await client.AddCustomerAsync(c);
         }
 
+        public Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
+            return client.GetItemsBySearchAsync(searchName, index);
+        }
+
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
             Customer customer = await client.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
