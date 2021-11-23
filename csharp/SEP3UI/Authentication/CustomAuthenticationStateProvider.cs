@@ -67,6 +67,7 @@ namespace SEP3UI.Authentication {
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim("Id", customer.Id.ToString()));
             claims.Add(new Claim(ClaimTypes.Email, customer.Email));
+            claims.Add(new Claim(ClaimTypes.Role, customer.Role));
             
             ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth_type");
             return identity;

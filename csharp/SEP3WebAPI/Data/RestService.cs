@@ -35,6 +35,12 @@ namespace SEP3WebAPI.Data {
             throw new Exception("Wrong password");
         }
 
+        public async Task<Customer> GetCustomerAsync(int customerId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            return customer;
+        }
+
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
             if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
             if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");

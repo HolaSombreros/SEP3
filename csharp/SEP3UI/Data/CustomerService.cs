@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
+using SEP3UI.Authentication;
 
 namespace SEP3UI.Data {
     public class CustomerService : ICustomerService {
@@ -13,6 +14,11 @@ namespace SEP3UI.Data {
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             Customer customer = await restService.GetAsync<Customer>($"customers?email={email}&password={password}");
+            return customer;
+        }
+
+        public async Task<Customer> GetCustomerAsync(int customerId) {
+            Customer customer = await restService.GetAsync<Customer>($"customers/{customerId}");
             return customer;
         }
 
