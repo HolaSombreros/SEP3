@@ -95,14 +95,15 @@ namespace SEP3WebAPI.Mediator {
                 Type = "getAllById",
                 ItemsIds = itemIds
             };
-            String send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
             Send(send);
             Waiting();
             if (request is ErrorRequest errorRequest)
                 throw new Exception(errorRequest.Message);
             
-            return ((ItemRequest)request).Items;
+            return ((ItemRequest) request).Items;
         }
 
         public async Task<Item> GetItemAsync(int id) {

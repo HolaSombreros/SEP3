@@ -77,24 +77,25 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
-    /*
-    //TODO: convert int[] to optional parameter, ask OLE
-    String query = "SELECT * FROM item WHERE ";
-            for(int i =0; i < itemIds.length; i++) {
-                if(i ==0)
-                    query += "item_id=?";
-                else
-                    query += " OR item_id=?";
-            }
-     */
     @Override
     public List<Item> readAllByIds(int[] itemIds) {
         try {
-            List<Item> items = new ArrayList<>();
-            for(int i = 0; i < itemIds.length; i++) {
-               items.add(databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item WHERE item_id=?", itemIds[i]));
+            String query = "SELECT * FROM item WHERE item_id IN (";
+            for (int i = 0; i < itemIds.length; i++) {
+                if (i == 0) {
+                    query += "?";
+                } else {
+                    query += ", ?";
+                }
             }
-            return items;
+            query += ") ORDER BY item_id ASC;";
+
+            Object[] ids = new Object[itemIds.length];
+            for (int i = 0; i < ids.length; i++) {
+                ids[i] = itemIds[i];
+            }
+
+            return databaseHelper.mapList(new ItemMapper(), query, ids);
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
