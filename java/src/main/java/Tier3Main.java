@@ -1,11 +1,7 @@
 import database.daomodel.DatabaseManager;
 import mediator.Server;
-import model.enums.Category;
-import model.enums.Genre;
-import model.enums.Language;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 public class Tier3Main {
     public static void main(String[] args) {
