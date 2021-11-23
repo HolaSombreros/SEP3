@@ -27,6 +27,11 @@ namespace SEP3UI.Data {
             return added;
         }
 
+        public async Task<Customer> UpdateCustomerAsync(int customerId, CustomerModel customer) {
+            Customer updated = await restService.PutAsync<CustomerModel, Customer>(customer, $"customers/{customerId}");
+            return updated;
+        }
+
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
             IList<Item> wishlist = await restService.GetAsync<List<Item>>($"customers/{customerId}/wishlist");
             return wishlist;

@@ -61,6 +61,29 @@ namespace SEP3WebAPI.Data {
             return await client.AddCustomerAsync(c);
         }
 
+        public async Task<Customer> UpdateCustomerAsync(int customerId, CustomerModel customer) {
+            if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
+            if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");
+            
+            Customer updated = await client.GetCustomerAsync(customerId);
+            if (updated == null) throw new NullReferenceException($"No such customer found with id: {customer}");
+
+            updated.Id = customerId;
+            updated.FirstName = customer.FirstName;
+            updated.LastName = customer.LastName;
+            updated.Email = customer.Email;
+            updated.Address.Street = customer.Street;
+            updated.Address.Number = customer.Number;
+            updated.Address.ZipCode = customer.ZipCode;
+            updated.Address.City = customer.City;
+            updated.PhoneNumber = customer.PhoneNumber;
+            updated.Password = customer.Password;
+            updated.Role = customer.Role;
+
+            await client.UpdateCustomerAsync(updated);
+            return updated;
+        }
+
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
             Customer customer = await client.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");

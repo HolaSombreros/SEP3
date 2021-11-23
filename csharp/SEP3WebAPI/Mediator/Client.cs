@@ -187,19 +187,19 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
-            
             CustomerRequest req = new CustomerRequest() {
                 Type = "register",
                 Service = "customer",
-                Customer = new Customer() {
-                    FirstName = customer.FirstName,
-                    LastName = customer.LastName,
-                    Password = customer.Password,
-                    Address = customer.Address,
-                    Email = customer.Email,
-                    PhoneNumber = customer.PhoneNumber,
-                    Role = customer.Role
-                }
+                Customer = customer
+                // Customer = new Customer() {
+                //     FirstName = customer.FirstName,
+                //     LastName = customer.LastName,
+                //     Password = customer.Password,
+                //     Address = customer.Address,
+                //     Email = customer.Email,
+                //     PhoneNumber = customer.PhoneNumber,
+                //     Role = customer.Role
+                // }
             };
             String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             Send(send);
@@ -207,6 +207,21 @@ namespace SEP3WebAPI.Mediator {
             if (request is ErrorRequest errorRequest)
                 throw new Exception(errorRequest.Message);
             return ((CustomerRequest)request).Customer;
+        }
+
+        public async Task UpdateCustomerAsync(Customer customer) {
+            CustomerRequest req = new CustomerRequest() {
+                Type = "update",
+                Service = "customer",
+                Customer = customer
+            };
+            String json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            Send(json);
+            Waiting();
+            // TODO - Rename "request" to "reply" ???
+            if (request is ErrorRequest errorRequest) throw new Exception(errorRequest.Message);
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
