@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SEP3Library.Model;
+using SEP3Library.Models;
 
 namespace SEP3WebAPI.Mediator {
     public interface ICustomerClient { 
@@ -8,6 +8,6 @@ namespace SEP3WebAPI.Mediator {
         Task<Customer> GetCustomerAsync(int customerId);
         Task<Customer> AddCustomerAsync(Customer customer);
         Task<IList<Item>> GetCustomerWishlistAsync(Customer customer);
-        Task RemoveWishlistedItem(Customer customer, Item item);
+        Task RemoveWishlistedItemAsync(Customer customer, Item item);
     }
 }

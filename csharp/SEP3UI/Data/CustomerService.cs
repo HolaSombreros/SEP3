@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3Library.UIModels;
 
 namespace SEP3UI.Data {
@@ -14,10 +14,6 @@ namespace SEP3UI.Data {
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             Customer customer = await restService.GetAsync<Customer>($"customers?email={email}&password={password}");
             return customer;
-        }
-
-        public async Task<Customer> GetCustomerAsync(int customerId) {
-            throw new System.NotImplementedException();
         }
 
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {

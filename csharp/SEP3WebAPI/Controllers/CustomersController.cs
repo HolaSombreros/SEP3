@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Data;
 
@@ -62,9 +62,9 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpDelete]
         [Route("{customerId:int}/wishlist/{itemId:int}")]
-        public async Task<ActionResult> RemoveWishlistedItem([FromRoute] int customerId, [FromRoute] int itemId) {
+        public async Task<ActionResult> RemoveWishlistedItemAsync([FromRoute] int customerId, [FromRoute] int itemId) {
             try {
-                await service.RemoveWishlistedItem(customerId, itemId);
+                await service.RemoveWishlistedItemAsync(customerId, itemId);
                 return Ok();
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);

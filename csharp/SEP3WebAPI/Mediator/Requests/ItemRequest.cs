@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SEP3Library.Model;
+using SEP3Library.Models;
 
 namespace SEP3WebAPI.Mediator.Requests {
     public class ItemRequest : Request {
@@ -8,5 +8,9 @@ namespace SEP3WebAPI.Mediator.Requests {
         public Book Book { get; set; }
         public IList<Item> Items { get; set; }
         public Customer Customer { get; set; }
+        public int[] ItemsIds { get; set; }
+        
+        public int CustomerId { get; set; }
+        
     }
 }

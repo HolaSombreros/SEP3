@@ -5,13 +5,15 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
+using SEP3WebAPI.Mediator.Requests;
 
 namespace SEP3WebAPI.Data {
     public class RestService : IRestService {
         private IClient client;
+        
         public RestService() {
             client = new Client();
         }
@@ -20,16 +22,17 @@ namespace SEP3WebAPI.Data {
             return await client.GetItemsAsync(index);
         }
 
-        public async Task<IList<Item>> GetItemsByIdAsync(int[] itemsId) {
-            return await client.GetItemsByIdAsync(itemsId);
-        }
-
         public async Task<Item> GetItemAsync(int id) {
             return await client.GetItemAsync(id);
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
-            return await client.GetCustomerAsync(email, password);
+            Customer customer = await client.GetCustomerAsync(email, password);
+            if (customer == null)
+                throw new Exception("Email not registered");
+            if (customer.Password.Equals(password))
+                return customer;
+            throw new Exception("Wrong password");
         }
 
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
@@ -59,14 +62,14 @@ namespace SEP3WebAPI.Data {
             return await client.GetCustomerWishlistAsync(customer);
         }
 
-        public async Task RemoveWishlistedItem(int customerId, int itemId) {
+        public async Task RemoveWishlistedItemAsync(int customerId, int itemId) {
             Customer customer = await client.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
             
             Item item = await client.GetItemAsync(itemId);
             if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
             
-            await client.RemoveWishlistedItem(customer, item);
+            await client.RemoveWishlistedItemAsync(customer, item);
         }
 
         public async Task<Book> GetBookAsync(int id) {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public class Order {
         public int Id { get; set; }
         

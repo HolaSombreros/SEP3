@@ -1,7 +1,7 @@
 ﻿@page "/wishlist"
-@using SEP3Library.Model
 @using SEP3UI.Data
 @using System.Security.Claims
+@using SEP3Library.Models
 @inject IItemService itemService
 @inject IOrderService orderService
 @inject ICustomerService customerService
@@ -67,7 +67,7 @@
 @code {
     private int customerId;
     private IList<Item> items;
-    // TODO add card class to each item and fetch customer's wishlist from server
+    // TODO add card class to each item - need to modify overriden card class
     
     protected override async Task OnInitializedAsync() {
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -77,7 +77,6 @@
     private async Task PerformUnfavoriteAsync(Item item) {
         await customerService.RemoveWishlistedItem(customerId, item.Id);
         items.Remove(item);
-        // TODO - remove item from customer's wishlist server side.
     }
 
     private void PerformAddItemToCart(Item item) {

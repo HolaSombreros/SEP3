@@ -29,8 +29,8 @@ public class CustomerCommand implements Command {
             return reply;
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
-//            throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }
 
@@ -40,8 +40,6 @@ public class CustomerCommand implements Command {
 
     private void login() {
         reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getEmail()));
-        if (!request.getCustomer().getPassword().equals(reply.getCustomer().getPassword()))
-            throw new IllegalArgumentException("Invalid password");
     }
 
     private void register() {

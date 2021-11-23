@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public enum Genre {
         Action,
         Romance,

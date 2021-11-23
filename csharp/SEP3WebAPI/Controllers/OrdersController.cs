@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3Library.UIModels;
 
 using SEP3WebAPI.Data;

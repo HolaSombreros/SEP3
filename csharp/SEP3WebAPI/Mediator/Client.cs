@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
-using SEP3Library.Model;
+using SEP3Library.Models;
 using SEP3WebAPI.Mediator.Requests;
 
 namespace SEP3WebAPI.Mediator {
@@ -55,7 +55,7 @@ namespace SEP3WebAPI.Mediator {
             }
         }
 
-        public void Waiting() {
+        private void Waiting() {
             lock (lock1) {
                 waiting = true;
                 while (waiting) {
@@ -63,6 +63,16 @@ namespace SEP3WebAPI.Mediator {
                     waiting = false;
                 }
             }
+        }
+
+        public void Disconnect() {
+            networkStream.Close();
+            tcpClient.Close();
+        }
+
+        private void Send(String send) {
+            byte[] data = Encoding.ASCII.GetBytes(send + "\n");
+            networkStream.Write(data, 0, data.Length);
         }
 
         public async Task<IList<Item>> GetItemsAsync(int index) {
@@ -79,11 +89,11 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest)request).Items;
         }
 
-        public async Task<IList<Item>> GetItemsByIdAsync(int[] itemsId) {
+        public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getAllById",
-                // ItemsIds = itemsId
+                ItemsIds = itemIds
             };
             String send = JsonSerializer.Serialize(req,
                 new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
@@ -91,6 +101,7 @@ namespace SEP3WebAPI.Mediator {
             Waiting();
             if (request is ErrorRequest errorRequest)
                 throw new Exception(errorRequest.Message);
+            
             return ((ItemRequest)request).Items;
         }
 
@@ -127,6 +138,7 @@ namespace SEP3WebAPI.Mediator {
         }
         
         public async Task<Order> CreateOrderAsync(Order order) {
+            // TODO json too long problem
             OrderRequest req = new OrderRequest() {
                 Service = "order", 
                 Type = "purchase", 
@@ -197,6 +209,7 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
+            // TODO json too long problem
             ItemRequest req = new ItemRequest() {
                 Type = "getWishlist",
                 Service = "item",
@@ -210,7 +223,7 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest) request).Items;
         }
 
-        public async Task RemoveWishlistedItem(Customer customer, Item item) {
+        public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {
             ItemRequest req = new ItemRequest() {
                 Type = "removeWishlist",
                 Service = "item",
@@ -222,16 +235,6 @@ namespace SEP3WebAPI.Mediator {
             });
             Send(json);
             Waiting();
-        }
-
-        public void Disconnect() {
-            networkStream.Close();
-            tcpClient.Close();
-        }
-
-        private void Send(String send) {
-            byte[] data = Encoding.ASCII.GetBytes(send + "\n");
-            networkStream.Write(data, 0, data.Length);
         }
     }
 }

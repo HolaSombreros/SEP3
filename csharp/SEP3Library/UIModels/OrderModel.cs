@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using SEP3Library.Model;
+using SEP3Library.Models;
 
 namespace SEP3Library.UIModels {
     public class OrderModel {

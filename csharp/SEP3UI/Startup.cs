@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SEP3Library.Model;
 using SEP3UI.Authentication;
 using SEP3UI.Data;
 
@@ -33,7 +32,6 @@ namespace SEP3UI {
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-            services.AddScoped<EnumHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

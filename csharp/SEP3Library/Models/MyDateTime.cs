@@ -1,4 +1,4 @@
-namespace SEP3Library.Model {
+namespace SEP3Library.Models {
     public class MyDateTime {
         public int Year { get; set; }
         public int Month { get; set; }
