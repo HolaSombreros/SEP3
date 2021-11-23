@@ -1,7 +1,7 @@
 package database.daomodel;
 
+import model.Category;
 import model.Item;
-import model.enums.Category;
 
 import java.util.List;
 
@@ -18,4 +18,8 @@ public interface ItemDAO {
     List<Item> readCustomerWishlist(int customerId);
     void removeItemFromWishlist(int customerId, int itemId);
     List<Item> readByItemName(String itemName, int index);
+    void addToShoppingCart(Item item, int customerId);
+    List<Item> readShoppingCart (int customerId);
+    void updateShoppingCart (Item item, int customerId);
+    void removeFromShoppingCart (Item item, int customerId);
 }

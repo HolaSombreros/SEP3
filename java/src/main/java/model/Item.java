@@ -1,6 +1,5 @@
 package model;
 
-import model.enums.Category;
 import model.enums.ItemStatus;
 
 public class Item {

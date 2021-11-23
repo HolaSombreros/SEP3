@@ -3,10 +3,8 @@ package database.daoservice;
 import database.daomodel.BookDAO;
 import database.daoservice.mapper.BookMapper;
 import model.Book;
-import model.enums.Category;
-import model.enums.Genre;
+import model.Category;
 import model.enums.ItemStatus;
-import model.enums.Language;
 
 import java.sql.SQLException;
 import java.sql.Date;
@@ -22,7 +20,7 @@ public class BookDAOService implements BookDAO {
     }
 
     @Override
-    public Book create(String name, String description, double price, Category category, int quantity,String imgFilePath, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
+    public Book create(String name, String description, double price, Category category, int quantity, String imgFilePath, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
         try {
             if(!isBook(ISBN)) {
                 List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category, discount, quantity, status, image_filepath) VALUES (?,?,?,?::item_category,?,?,?::item_status,?)",
@@ -50,7 +48,7 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book read(int id) {
         try{
-            return databaseHelper.mapObject(new BookMapper(), "SELECT * FROM item Join book using(item_id) WHERE book.item_id = ?;",id);
+            return databaseHelper.mapObject(new BookMapper(), "SELECT * FROM item JOIN book USING(item_id) WHERE book.item_id = ?;",id);
         }
         catch(SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
