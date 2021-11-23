@@ -1,23 +1,23 @@
 package model;
 
 public class Category {
-    private String category;
+    private String name;
     private int id;
 
     public Category(int id,String category) {
         this.id = id;
-        this.category = category;
+        this.name = category;
     }
     public Category(int id) {
         this.id = id;
     }
 
-    public String getCategory() {
-        return category;
+    public String getName() {
+        return name;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {
@@ -29,6 +29,6 @@ public class Category {
     }
 
     public String toString(){
-        return "Id= " +  id + " Category= " + category;
+        return "Id= " +  id + " Category= " + name;
     }
 }
