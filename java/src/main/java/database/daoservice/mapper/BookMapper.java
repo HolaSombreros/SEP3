@@ -16,9 +16,9 @@ public class BookMapper implements DataMapper<Book> {
     @Override
     public Book map(ResultSet resultSet) throws SQLException {
         return new Book(resultSet.getInt("item_id"),resultSet.getString("name"),resultSet.getString("description"),
-                resultSet.getDouble("price"), new Category(resultSet.getInt("category")),resultSet.getInt("quantity"),
+                resultSet.getDouble("price"), new Category(resultSet.getInt("category_id")),resultSet.getInt("quantity"),
                 ItemStatus.fromString(resultSet.getString("status")), resultSet.getInt("discount"), resultSet.getString("image_filepath"), resultSet.getString("isbn"),
                 resultSet.getString("author_first_name"),resultSet.getString("author_last_name"), resultSet.getString("language"),
-                new ArrayList<Genre>((Collection<Genre>) resultSet.getArray("genre_id")), resultSet.getDate("publication_date").toLocalDate());
+                null, resultSet.getDate("publication_date").toLocalDate());
     }
 }

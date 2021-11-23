@@ -59,6 +59,10 @@ public class Book extends Item{
         return publicationDate;
     }
 
+    public void setGenre(List<Genre> genre) {
+        this.genre = genre;
+    }
+
     @Override
     public String toString() {
         return "Book{" +

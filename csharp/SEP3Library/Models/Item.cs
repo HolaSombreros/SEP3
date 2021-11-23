@@ -12,8 +12,6 @@ namespace SEP3Library.Models {
             set => price = value;
         }
         private double price;
-
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Category Category { get; set; }
         [Range(0, 100)]
         public int Discount { get; set; }
