@@ -68,6 +68,7 @@ public class ItemCommand implements Command {
 
     private void addToShoppingCart() {
         databaseManager.getItemDAOService().addToShoppingCart(request.getItem(), request.getCustomer().getId());
+        reply.setItem(request.getItem());
     }
 
     private void getShoppingCart() {
@@ -76,6 +77,7 @@ public class ItemCommand implements Command {
 
     private void updateShoppingCart() {
         databaseManager.getItemDAOService().updateShoppingCart(request.getItem(), request.getCustomer().getId());
+        reply.setItem(request.getItem());
     }
 
     private void removeFromShoppingCart() {

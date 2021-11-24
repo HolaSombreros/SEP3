@@ -16,7 +16,7 @@ namespace SEP3WebAPI.Mediator {
         private NetworkStream networkStream;
         private bool waiting;
         private object lock1;
-        private Request request;
+        private Request reply;
 
         public Client() {
             tcpClient = new TcpClient("127.0.0.1", port);
@@ -27,24 +27,24 @@ namespace SEP3WebAPI.Mediator {
 
         public void Receive(string result) {
             lock (lock1) {
-                request = JsonSerializer.Deserialize<Request>(result, 
+                reply = JsonSerializer.Deserialize<Request>(result, 
                     new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
-                if (request != null) {
-                    switch (request.Service) {
+                if (reply != null) {
+                    switch (reply.Service) {
                         case "item":
-                            request = JsonSerializer.Deserialize<ItemRequest>(result, 
+                            reply = JsonSerializer.Deserialize<ItemRequest>(result, 
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "order":
-                            request = JsonSerializer.Deserialize<OrderRequest>(result,
+                            reply = JsonSerializer.Deserialize<OrderRequest>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "customer":
-                            request = JsonSerializer.Deserialize<CustomerRequest>(result,
+                            reply = JsonSerializer.Deserialize<CustomerRequest>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "error":
-                            request = JsonSerializer.Deserialize<ErrorRequest>(result,
+                            reply = JsonSerializer.Deserialize<ErrorRequest>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "connection_error":
@@ -72,7 +72,7 @@ namespace SEP3WebAPI.Mediator {
             byte[] data = Encoding.ASCII.GetBytes(json + "\n");
             networkStream.Write(data, 0, data.Length);
             Waiting();
-            if (request is ErrorRequest errorRequest)
+            if (reply is ErrorRequest errorRequest)
                 throw new Exception(errorRequest.Message);
         }
         
@@ -88,7 +88,7 @@ namespace SEP3WebAPI.Mediator {
                 Index = index
             };
             Send(req);
-            return ((ItemRequest)request).Items;
+            return ((ItemRequest)reply).Items;
         }
 
         public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {
@@ -98,7 +98,7 @@ namespace SEP3WebAPI.Mediator {
                 ItemsIds = itemIds
             };
             Send(req);
-            return ((ItemRequest)request).Items;
+            return ((ItemRequest)reply).Items;
         }
 
         public async Task<Item> GetItemAsync(int id) {
@@ -110,7 +110,7 @@ namespace SEP3WebAPI.Mediator {
                 }
             };
            Send(req);
-           return ((ItemRequest) request).Item;
+           return ((ItemRequest) reply).Item;
         }
 
         public async Task<Book> GetBookAsync(int id) {
@@ -122,7 +122,7 @@ namespace SEP3WebAPI.Mediator {
                 }
             };
            Send(req);
-           return ((ItemRequest) request).Book;
+           return ((ItemRequest) reply).Book;
         }
         
         public async Task<Order> CreateOrderAsync(Order order) {
@@ -133,7 +133,7 @@ namespace SEP3WebAPI.Mediator {
                 Order = order
             };
             Send(req);
-            return ((OrderRequest)request).Order;
+            return ((OrderRequest)reply).Order;
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
@@ -146,7 +146,7 @@ namespace SEP3WebAPI.Mediator {
                 }
             };
             Send(req);
-            return ((CustomerRequest)request).Customer;
+            return ((CustomerRequest)reply).Customer;
         }
         
         public async Task<Customer> GetCustomerAsync(int customerId) {
@@ -158,7 +158,7 @@ namespace SEP3WebAPI.Mediator {
                 }
             };
             Send(req);
-            return ((CustomerRequest) request).Customer;
+            return ((CustomerRequest) reply).Customer;
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
@@ -168,7 +168,7 @@ namespace SEP3WebAPI.Mediator {
                 Customer = customer
             };
             Send(req);
-            return ((CustomerRequest)request).Customer;
+            return ((CustomerRequest)reply).Customer;
         }
 
         public async Task UpdateCustomerAsync(Customer customer) {
@@ -189,7 +189,7 @@ namespace SEP3WebAPI.Mediator {
                 Customer = customer
             };
             Send(req);
-            return ((ItemRequest) request).Items;
+            return ((ItemRequest) reply).Items;
         }
 
         public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {
@@ -202,7 +202,7 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
         }
 
-        public async Task AddToShoppingCartAsync(Item item, Customer customer) {
+        public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
             ItemRequest req = new ItemRequest() {
                 Type = "addShoppingCart",
                 Service = "item",
@@ -210,6 +210,7 @@ namespace SEP3WebAPI.Mediator {
                 Item = item
             };
             Send(req);
+            return ((ItemRequest) reply).Item;
         }
 
         public async Task<IList<Item>> GetShoppingCartAsync(Customer customer) {
@@ -219,10 +220,10 @@ namespace SEP3WebAPI.Mediator {
                 Customer = customer
             };
             Send(req);
-            return ((ItemRequest) request).Items;
+            return ((ItemRequest) reply).Items;
         }
 
-        public async Task UpdateShoppingCartAsync(Item item, Customer customer) {
+        public async Task<Item> UpdateShoppingCartAsync(Item item, Customer customer) {
             ItemRequest req = new ItemRequest() {
                 Type = "editShoppingCart",
                 Service = "item",
@@ -230,6 +231,7 @@ namespace SEP3WebAPI.Mediator {
                 Item = item
             };
             Send(req);
+            return ((ItemRequest) reply).Item;
         }
 
         public async Task RemoveFromShoppingCartAsync(Item item, Customer customer) {
