@@ -49,6 +49,18 @@ public class ItemDAOService implements ItemDAO {
     }
 
     @Override
+    public Item read(String name, String description, Category category) {
+        try {
+            Item item = databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item i JOIN category c USING (category_id) WHERE i.name = ? AND description = ? AND c.name = ?", name, description, category);
+            System.out.println(item.toString());
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item i JOIN category c USING (category_id) WHERE i.name = ? AND description = ? AND c.name = ?", name, description, category);
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
     public void update(Item item) {
         try {
             databaseHelper.executeUpdate("UPDATE item SET name = ?, description = ?, price = ?, category_id = ?, quantity = ?, status = ?::item_status, discount =?, image_filepath = ? WHERE item_id = ?", item.getName(), item.getDescription(),

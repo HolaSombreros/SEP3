@@ -91,6 +91,47 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest)reply).Items;
         }
 
+        public async Task<IList<Category>> GetCategories() {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getCategories"
+            };
+            string send = JsonSerializer.Serialize(req,
+                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
+            return ((ItemRequest)reply).Categories;
+        }
+
+        public async Task<Item> AddItemAsync(Item item) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "addItem",
+                Item = item
+            };
+            string send = JsonSerializer.Serialize(req, new JsonSerializerOptions {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            Send(send);
+            Waiting();
+            return ((ItemRequest) reply).Item;
+        }
+        
+        public async Task<Item> GetItemBySpecifications(string name, string description, Category category) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getItemBySpecifications",
+                Item = new Item() {
+                    Name = name,
+                    Description = description,
+                    Category = category
+                }
+            };
+            string send = JsonSerializer.Serialize(req,
+                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+            Send(send);
+            return ((ItemRequest) reply).Item;
+        }
+
         public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
