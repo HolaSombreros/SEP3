@@ -26,7 +26,7 @@ namespace SEP3UI.Data {
         
         /**
          * <summary>Method to send an asynchronous POST request with an object body to a specific endpoint</summary>
-         * <returns>Returns an object of a specific type</returns>
+         * <returns>Returns a new object of a specific type</returns>
          */
         public async Task<TOutput> PostAsync<TInput, TOutput>(TInput obj, string endpoint) {
             string json = JsonSerializer.Serialize(obj);
@@ -42,6 +42,26 @@ namespace SEP3UI.Data {
             });
             
             return created;
+        }
+
+        /**
+         * <summary>Method to send an asynchronous PUT request with an object body to a specific endpoint</summary>
+         * <returns>Returns an updated object of a specific type</returns>
+         */
+        public async Task<TOutput> PutAsync<TInput, TOutput>(TInput obj, string endpoint) {
+            string json = JsonSerializer.Serialize(obj);
+            using HttpClient client = new HttpClient();
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await client.PutAsync($"{uri}/{endpoint}", content);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) throw new Exception($"{responseContent}");
+
+            TOutput updated = JsonSerializer.Deserialize<TOutput>(responseContent, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            
+            return updated;
         }
 
         /**

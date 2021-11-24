@@ -102,7 +102,6 @@ public class DatabaseHelper<T> {
         }
     }
 
-
     public List<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);

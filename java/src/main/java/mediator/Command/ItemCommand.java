@@ -17,12 +17,16 @@ public class ItemCommand implements Command {
     public ItemCommand(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
         methods = new HashMap<>();
-        methods.put("getAll",this::getAll);
-        methods.put("get",this::getItem);
-        methods.put("book",this::getBook);
+        methods.put("getAll", this::getAll);
+        methods.put("get", this::getItem);
+        methods.put("book", this::getBook);
         methods.put("getWishlist", this::getWishlist);
         methods.put("getAllById", this::getAllById);
         methods.put("removeWishlist", this::removeItemFromWishlist);
+        methods.put("addShoppingCart", this::addToShoppingCart);
+        methods.put("getShoppingCart", this::getShoppingCart);
+        methods.put("editShoppingCart", this::updateShoppingCart);
+        methods.put("removeShoppingList", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
     }
 
@@ -58,11 +62,28 @@ public class ItemCommand implements Command {
     private void removeItemFromWishlist() {
         databaseManager.getItemDAOService().removeItemFromWishlist(request.getCustomer().getId(), request.getItem().getId());
     }
-    private void getAllById(){
+
+    private void getAllById() {
         reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
     }
 
     private void getItemsBySearchName(){
         reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
+    }
+
+    private void addToShoppingCart() {
+        databaseManager.getItemDAOService().addToShoppingCart(request.getItem(), request.getCustomer().getId());
+    }
+
+    private void getShoppingCart() {
+        reply.setItems(databaseManager.getItemDAOService().readShoppingCart(request.getCustomer().getId()));
+    }
+
+    private void updateShoppingCart() {
+        databaseManager.getItemDAOService().updateShoppingCart(request.getItem(), request.getCustomer().getId());
+    }
+
+    private void removeFromShoppingCart() {
+        databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
     }
 }

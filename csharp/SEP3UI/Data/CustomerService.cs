@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
+using SEP3UI.Authentication;
 
 namespace SEP3UI.Data {
     public class CustomerService : ICustomerService {
@@ -16,9 +18,19 @@ namespace SEP3UI.Data {
             return customer;
         }
 
+        public async Task<Customer> GetCustomerAsync(int customerId) {
+            Customer customer = await restService.GetAsync<Customer>($"customers/{customerId}");
+            return customer;
+        }
+
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
             Customer added = await restService.PostAsync<CustomerModel, Customer>(customer, "customers");
             return added;
+        }
+
+        public async Task<Customer> UpdateCustomerAsync(int customerId, CustomerModel customer) {
+            Customer updated = await restService.PutAsync<CustomerModel, Customer>(customer, $"customers/{customerId}");
+            return updated;
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
@@ -28,6 +40,22 @@ namespace SEP3UI.Data {
 
         public async Task RemoveWishlistedItem(int customerId, int itemId) {
             await restService.DeleteAsync($"customers/{customerId}/wishlist/{itemId}");
+        }
+
+        public Task AddToShoppingCartAsync(Item item, int customerId) {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Item>> GetShoppingCartAsync(int customerId) {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
+            throw new NotImplementedException();
         }
     }
 }
