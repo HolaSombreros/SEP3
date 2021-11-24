@@ -209,19 +209,19 @@ namespace SEP3WebAPI.Mediator {
             return ((CustomerRequest)request).Customer;
         }
 
-        public async Task UpdateCustomerAsync(Customer customer) {
+        public async Task<Customer> UpdateCustomerAsync(Customer customer) {
             CustomerRequest req = new CustomerRequest() {
                 Type = "update",
                 Service = "customer",
                 Customer = customer
             };
-            String json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
+            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
             Send(json);
             Waiting();
-            // TODO - Rename "request" to "reply" ???
             if (request is ErrorRequest errorRequest) throw new Exception(errorRequest.Message);
+            return ((CustomerRequest) request).Customer;
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {

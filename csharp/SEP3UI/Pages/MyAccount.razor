@@ -2,7 +2,6 @@
 @using SEP3Library.Models
 @using SEP3UI.Data
 @using System.Security.Claims
-@using System.ComponentModel.DataAnnotations
 @using SEP3Library.UIModels
 @attribute [Authorize]
 @inject AuthenticationStateProvider authStateProvider
@@ -77,7 +76,7 @@
                                 <span class="oi oi-lock-locked"></span>
                             </div>
                         </div>
-                        <InputText class="form-control" type="password" @bind-Value="oldCustomer.Password"/>
+                        <InputText class="form-control" type="password" readonly="true" @bind-Value="oldCustomer.Password"/>
                     </div>
                 </div>
                 <div class="form-group mb-3">
@@ -159,12 +158,14 @@
                 </div>
             </div>
             
-            <div class="text-center">
+            <div class="text-center mb-3">
                 <button class="btn btn-primary" type="submit" disabled="@IsDataUnchanged()">Update account</button>
             </div>
         </EditForm>
         
-        <div>@resultMessage</div>
+        <div class="text-center">
+            <span class="@resultColor">@resultMessage</span>
+        </div>
     </div>
 }
 
@@ -173,7 +174,9 @@
     private CustomerModel oldCustomer;
     private CustomerModel updatedCustomer;
     private string resultMessage;
+    private string resultColor;
 
+    // TODO - Password is [Required] because I use CustomerModel - should I really make a separate model just for this class?
     protected override async Task OnInitializedAsync() {
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
         Customer customer = await customerService.GetCustomerAsync(customerId);
@@ -214,8 +217,10 @@
         try {
             await customerService.UpdateCustomerAsync(customerId, updatedCustomer);
             resultMessage = "Account information successfully updated!";
+            resultColor = "text-success";
         } catch (Exception e) {
             resultMessage = e.Message;
+            resultColor = "text-danger";
         }
     }
 

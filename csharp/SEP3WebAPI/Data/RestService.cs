@@ -66,7 +66,7 @@ namespace SEP3WebAPI.Data {
             if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");
             
             Customer updated = await client.GetCustomerAsync(customerId);
-            if (updated == null) throw new NullReferenceException($"No such customer found with id: {customer}");
+            if (updated == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
 
             updated.Id = customerId;
             updated.FirstName = customer.FirstName;

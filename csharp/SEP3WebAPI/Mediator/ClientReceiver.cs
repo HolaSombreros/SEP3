@@ -25,7 +25,7 @@ namespace SEP3WebAPI.Mediator {
                         // TODO - Send amount of bytes needed first, then send data.
                         byte[] response = new byte[10240];
                         int bytesRead = stream.Read(response, 0, response.Length);
-                        string result = Encoding.ASCII.GetString(response, 0, bytesRead);
+                        string result = Encoding.UTF8.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
                         client.Receive(result);
                     }
