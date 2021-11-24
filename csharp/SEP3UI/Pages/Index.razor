@@ -6,12 +6,20 @@
 @inject IOrderService orderService
 
 <h3>Under Covers</h3>
-<div class="row justify-content-center "  id="searchBar">
-    <input class="col-md-4 border border-dark rounded"  @bind-value="searchItem" @onkeyup="@SearchItemsAsync" placeholder="Search..."/>
-    <span class="oi oi-magnifying-glass" aria-hidden="true" ></span>
+<div class="row justify-content-center " id="searchBar">
+    <input class="col-md-4 border border-dark rounded" @bind-value="searchItem" @onkeyup="@SearchItemsAsync" placeholder="Search..."/>
+    <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
 </div>
-
 @if (filteredItems != null) {
+@if (!filteredItems.Any()) {
+    <div class="card">
+        <div class="row">
+            <div class="col-8" >No items were found</div>
+            <img class="img-fluid image col-4" src="Images/blazor_meme.jpg"/>
+        </div>
+    </div>
+}
+else {
     <div id="productsWrapper" class="row ">
         @foreach (Item item in filteredItems) {
             <div class="card col-sm-3 m-3">
@@ -32,6 +40,8 @@
         }
     </div>
 }
+}
+
 <div class="text-center">
     <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMore">Load more</button>
 </div>

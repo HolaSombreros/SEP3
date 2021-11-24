@@ -42,7 +42,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item read(int id) {
         try {
-            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT *,category.name as category_name FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -71,7 +71,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByIndex(int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
+            return databaseHelper.mapList(new ItemMapper(), "SELECT *,category.name as category_name FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
