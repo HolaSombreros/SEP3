@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
+using SEP3Library.UIModels;
 
 namespace SEP3UI.Data {
     public class ItemService : IItemService {
@@ -25,6 +26,10 @@ namespace SEP3UI.Data {
 
         public async Task<IList<Category>> GetCategories() {
             return await restService.GetAsync <IList<Category>>($"items/categories");
+        }
+
+        public async Task<Item> AddItemAsync(ItemModel itemModel) {
+            return await restService.PostAsync<ItemModel, Item>(itemModel,"items");
         }
     }
 }

@@ -86,7 +86,8 @@ namespace SEP3WebAPI.Data {
                 Discount = itemModel.Discount,
                 Price = itemModel.Price,
                 Status = itemModel.Status,
-                Quantity = itemModel.Quantity
+                Quantity = itemModel.Quantity,
+                ImageName = "Images/sth"
             };
             return await client.AddItemAsync(i);
         }

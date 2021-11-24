@@ -3,55 +3,93 @@
 @using SEP3Library.Models
 @using SEP3Library.UIModels
 @using SEP3UI.Data
+@using System.Collections.ObjectModel
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject IItemService itemService
 
-<h3>Add tems</h3>
+<h3>Add Items</h3>
 @if (categories != null) {
-  <h4>Select category:</h4>
-  <EditForm Model="@itemModel">
-    <DataAnnotationsValidator/>
-    <div class="list-group">
-      @foreach (var category in categories) {
-        <button type="button" class="list-group-item list-group-item-action"> @category.Name</button>
-      }
-      <button type="button" class="list-group-item list-group-item-action">Other</button>
-    </div>
-    <form class="mt-3">
-      <div class="input-field">
-        <input type="text" data-mdb-showcounter="true" maxlength="100" id ="name" required/>
-        <label for="name">Add name</label>
-      </div>
-    </form>
-    <div>
-      <textarea class="form-control" type="text" maxlength="500" rows="10"></textarea>
-      <label for="description">Description</label>
-    </div>
-  </EditForm>
-  @* <option @onclick="() => ">Other</option>  *@
-  
+    <EditForm Model="@itemModel" OnValidSubmit="@AddItemAsync">
+        <div class="container">
+            <DataAnnotationsValidator/>
+            <div class="list-group text-center d-flex justify-content-center">
+                <h4>Select category:</h4>
+                @foreach (var category in categories) {
+                    <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
+                }
+                <button type="button" class="list-group-item list-group-item-action">Other</button>
+            <div class="input-field mt-5 mb-5">
+                        <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                        <label for="name">Name:</label>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Name)"/>
+                    <div class="form-group mt-5 inputs">
+                        <label for="description">Description:</label>
+                        <textarea @bind="itemModel.Description" class="form-control" type="text" maxlength="500" id="description" rows="5"></textarea>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Description)"/>
+                    <div class="form-group">
+                        <label for="exampleFormControlFile">Upload an image:</label>
+                        <input type="file" class="form-control-file" id="exampleFormControlFile">
+                    </div>
+                    Select the status of the specific item:
+                    <select class="form-select" aria-label="Default select example">
+                        <option >In Stock</option>
+                        <option value="1">Out Of Stock</option>
+                    </select>
+                    <div class="input-field mt-5 mb-5 inputs">
+                        <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
+                        <label for="price">Price:</label>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Price)"/>
+
+                    <div class="input-field mt-5 mb-5 inputs">
+                        <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
+                        <label for="quantity">Quantity:</label>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Quantity)"/>
+
+                    <div class="input-field mt-5 mb-5 inputs">
+                        <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
+                        <label for="discount">Discount:</label>
+                    </div>
+                <ValidationMessage For="@(() => itemModel.Discount)"/>
+                <div class="form-group d-flex justify-content-center">
+                    <label class="col-md-4 control-label"></label>
+                    <div class="col-md-4">
+                        <br>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
 @code {
-    private Item item;
     private IList<Category> categories;
+    private IList<ItemStatus> statuses = new Collection<ItemStatus>();
     private ItemModel itemModel = new ItemModel();
     private string errorMessage;
-    
+
     protected override async Task OnInitializedAsync() {
-      categories = await itemService.GetCategories();
+        categories = await itemService.GetCategories();
     }
 
-  private async Task AddItemAsync() {
-    try {
-      
+    private async Task AddItemAsync() {
+        try {
+            await itemService.AddItemAsync(itemModel);
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
     }
-    catch (Exception e) {
-      errorMessage = e.Message;
-    }
-  }
 
-  private void AddCategory(Category category) {
-    
-  }
-  
-  }
+    private void SetCategory(Category category) {
+        itemModel.Category = category;
+    }
+
+    private void AddCategory(Category category) {
+    }
+
 }

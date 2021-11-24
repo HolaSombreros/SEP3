@@ -16,7 +16,7 @@ label {
     transition: 0.2s all;
     cursor: text;
 }
-input {
+input, textarea {
     width: 75%;
     border: 0;
     outline: 0;
@@ -25,16 +25,23 @@ input {
     box-shadow: none;
     color: #111;
 }
-input:invalid {
+input:invalid, textarea:invalid {
     outline: 0;
 }
 input:focus,
-input:valid {
+input:valid, textarea:invalid, textarea:focus {
     border-color: #483D8B;
 }
 input:focus~label,
-input:valid~label {
+input:valid~label , textarea:valid~label, textarea:focus~label{
     font-size: 14px;
     top: -24px;
     color: #483D8B;
+}
+.inputs {
+    width: 400px;
+}
+
+#exampleFormControlFile{
+    border-bottom: none;
 }
