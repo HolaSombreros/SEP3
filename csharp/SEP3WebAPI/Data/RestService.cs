@@ -55,7 +55,7 @@ namespace SEP3WebAPI.Data {
             return await client.AddCustomerAsync(c);
         }
 
-        public async Task<Customer> UpdateCustomerAsync(int customerId, CustomerModel customer) {
+        public async Task<Customer> UpdateCustomerAsync(int customerId, UpdateCustomerModel customer) {
             if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
             if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");
             
@@ -72,7 +72,6 @@ namespace SEP3WebAPI.Data {
             updated.Address.City = customer.City;
             updated.PhoneNumber = customer.PhoneNumber;
             updated.Password = customer.Password;
-            updated.Role = customer.Role;
 
             await client.UpdateCustomerAsync(updated);
             return updated;

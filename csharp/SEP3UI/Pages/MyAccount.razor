@@ -1,4 +1,4 @@
-﻿@page "/settings/account"
+﻿@page "/account"
 @using SEP3Library.Models
 @using SEP3UI.Data
 @using System.Security.Claims
@@ -13,7 +13,7 @@
     <div class="container w-50">
         <h4>Personal details</h4>
         <hr/>
-        <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClicked">
+        <EditForm Model="@updatedCustomer" OnSubmit="UpdateAccountBtnClicked">
             <DataAnnotationsValidator/>
             <div class="form-group mb-3">
                 <label><strong>First name</strong></label>
@@ -171,47 +171,33 @@
 
 @code {
     private int customerId;
-    private CustomerModel oldCustomer;
-    private CustomerModel updatedCustomer;
+    private Customer oldCustomer;
+    private UpdateCustomerModel updatedCustomer;
     private string resultMessage;
     private string resultColor;
 
     // TODO - Password is [Required] because I use CustomerModel - should I really make a separate model just for this class?
     protected override async Task OnInitializedAsync() {
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        Customer customer = await customerService.GetCustomerAsync(customerId);
-        oldCustomer = new CustomerModel() {
-            FirstName = customer.FirstName,
-            LastName = customer.LastName,
-            Email = customer.Email,
-            Password = customer.Password,
-            ConfirmPassword = "",
-            Street = customer.Address.Street,
-            Number = customer.Address.Number,
-            ZipCode = customer.Address.ZipCode,
-            City = customer.Address.City,
-            PhoneNumber = customer.PhoneNumber,
-            Role = customer.Role,
-        };
-        updatedCustomer = new CustomerModel() {
+        oldCustomer = await customerService.GetCustomerAsync(customerId);
+        updatedCustomer = new UpdateCustomerModel() {
             FirstName = oldCustomer.FirstName,
             LastName = oldCustomer.LastName,
             Email = oldCustomer.Email,
             Password = "",
             ConfirmPassword = "",
-            Street = oldCustomer.Street,
-            Number = oldCustomer.Number,
-            ZipCode = oldCustomer.ZipCode,
-            City = oldCustomer.City,
-            PhoneNumber = oldCustomer.PhoneNumber,
-            Role = oldCustomer.Role
+            Street = oldCustomer.Address.Street,
+            Number = oldCustomer.Address.Number,
+            ZipCode = oldCustomer.Address.ZipCode,
+            City = oldCustomer.Address.City,
+            PhoneNumber = oldCustomer.PhoneNumber
         };
     }
 
     private async Task UpdateAccountBtnClicked() {
         if (updatedCustomer.Password.Equals("")) {
             updatedCustomer.Password = oldCustomer.Password;
-            updatedCustomer.ConfirmPassword = updatedCustomer.Password;
+            updatedCustomer.ConfirmPassword = oldCustomer.Password;
         }
 
         try {
@@ -230,9 +216,9 @@
                oldCustomer.Email.Equals(updatedCustomer.Email) &&
                updatedCustomer.Password.Equals("") &&
                updatedCustomer.ConfirmPassword.Equals("") &&
-               oldCustomer.Street.Equals(updatedCustomer.Street) &&
-               oldCustomer.Number.Equals(updatedCustomer.Number) &&
-               oldCustomer.ZipCode == updatedCustomer.ZipCode &&
-               oldCustomer.City.Equals(updatedCustomer.City);
+               oldCustomer.Address.Street.Equals(updatedCustomer.Street) &&
+               oldCustomer.Address.Number.Equals(updatedCustomer.Number) &&
+               oldCustomer.Address.ZipCode == updatedCustomer.ZipCode &&
+               oldCustomer.Address.City.Equals(updatedCustomer.City);
     }
 }
