@@ -3,7 +3,7 @@
 }
 
 .navbar {
-    background-color: #1b6ec2;
+    background-color: #330480;
 }
 
 nav {
@@ -30,7 +30,7 @@ nav {
     color: white;
 }
 
-@media (min-width: 575.98px) {
+@media (min-width: 767.98px) {
     .nav-item {
         margin-left: .75rem;
     }
@@ -44,10 +44,4 @@ nav {
         margin-left: 1.25rem;
         padding: 0 1.75rem;
     }
-}
-
-@media (max-width: 576px) {
-    /*nav > div:first-of-type {*/
-    /*    padding: 1rem 0;*/
-    /*}*/
 }

@@ -1,32 +1,32 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Text.Json.Serialization;
 
 namespace SEP3Library.UIModels {
     public class UpdateCustomerModel {
-        [DataType(DataType.EmailAddress)]
-        [Required(ErrorMessage = "Please enter an email address")]
-        public string Email {
-            get => email;
-            set {
-                if (!new EmailAddressAttribute().IsValid(value)) throw new InvalidDataException("Please enter a valid email address");
-                email = value;
-            }
-        }
-        private string email;
-        
         [Required(ErrorMessage = "Please enter a first name")]
-        [MaxLength(100, ErrorMessage = "The first name cannot exceed 100 characters")]
-        [MinLength(2, ErrorMessage = "The first name has to be longer than 2 characters")]
+        [MaxLength(100, ErrorMessage = "The first name cannot exceed {1} characters")]
+        [MinLength(2, ErrorMessage = "The first name has to be longer than {1} characters")]
         public string FirstName { get; set; }
         
         [Required(ErrorMessage = "Please enter a last name")]
-        [MaxLength(100, ErrorMessage = "The last name cannot exceed 100 characters")]
-        [MinLength(2, ErrorMessage = "The last name has to be longer than 2 characters")]
+        [MaxLength(100, ErrorMessage = "The last name cannot exceed {1} characters")]
+        [MinLength(2, ErrorMessage = "The last name has to be longer than {1} characters")]
         public string LastName { get; set; }
         
-        [Required(ErrorMessage = "Please enter a city")]
-        public string City { get; set; }
+        [Required(ErrorMessage = "Please enter an email address")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [Phone(ErrorMessage = "Please enter a valid phone number")]
+        [StringLength(30, MinimumLength = 8, ErrorMessage = "The password must be between {2} and {1} characters")]
+        public string PhoneNumber {
+            get => phoneNumber;
+            set {
+                phoneNumber = value;
+                if (phoneNumber != null && phoneNumber.Length == 0) phoneNumber = null;
+            }
+        }
+        private string phoneNumber;
         
         [Required(ErrorMessage = "Please enter a street name")]
         public string Street { get; set; }
@@ -34,19 +34,31 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please enter a street number")]
         public string Number { get; set; }
         
-        [Range(1000,9999,ErrorMessage = "Zipcode must be between 1000 and 9999")]
-        [Required(ErrorMessage = "Please enter a zipcode")]
+        [Required(ErrorMessage = "Please enter a zip code")]
+        [Range(1000, 9999, ErrorMessage = "The zip code must be a number between {1} and {2}")]
         public int ZipCode { get; set; }
         
-        [MaxLength(20, ErrorMessage = "The password cannot exceed 20 characters")]
-        [MinLength(6, ErrorMessage = "The password has to be longer than 6 characters")]
-        public string Password { get; set; }
+        [Required(ErrorMessage = "Please enter a city")]
+        public string City { get; set; }
         
-        [MaxLength(30, ErrorMessage = "The phone number has to be maximum 30 characters")]
-        [MinLength(8, ErrorMessage = "The phone number has to be minimum 8 characters")]
-        public string PhoneNumber { get; set; }
+        [StringLength(20, MinimumLength = 6, ErrorMessage = "The password must be between {2} and {1} characters")]
+        public string Password {
+            get => password;
+            set {
+                password = value;
+                if (password != null && password.Length == 0) password = null;
+            }
+        }
+        private string password;
         
         [Compare("Password", ErrorMessage = "Passwords must match")]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword {
+            get => confirmPassword;
+            set {
+                confirmPassword = value;
+                if (confirmPassword != null && confirmPassword.Length == 0) confirmPassword = null;
+            }
+        }
+        private string confirmPassword;
     }
 }

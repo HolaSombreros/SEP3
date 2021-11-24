@@ -10,10 +10,10 @@
 @if (oldCustomer == null) {
     <em>Loading...</em>
 } else {
-    <div class="container w-50">
+    <div class="offset-md-3 col-md-6 col-sm-12">
         <h4>Personal details</h4>
         <hr/>
-        <EditForm Model="@updatedCustomer" OnSubmit="UpdateAccountBtnClicked">
+        <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClicked">
             <DataAnnotationsValidator/>
             <div class="form-group mb-3">
                 <label><strong>First name</strong></label>
@@ -53,7 +53,7 @@
                 <ValidationMessage For="@(()=> updatedCustomer.Email)"/>
             </div>
             <div class="form-group mb-5">
-                <label><strong>Phone</strong></label>
+                <label><strong>Phone</strong> <small>(Optional)</small></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
@@ -144,7 +144,7 @@
                     </div>
                     <ValidationMessage For="@(()=> updatedCustomer.ZipCode)"/>
                 </div>
-                <div class="form-group mb-5">
+                <div class="form-group mb-3">
                     <label><strong>City</strong></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -157,15 +157,14 @@
                     <ValidationMessage For="@(()=> updatedCustomer.City)"/>
                 </div>
             </div>
-            
+        
             <div class="text-center mb-3">
+                <span class="@resultColor">@resultMessage</span>
+            </div>
+            <div class="text-center">
                 <button class="btn btn-primary" type="submit" disabled="@IsDataUnchanged()">Update account</button>
             </div>
         </EditForm>
-        
-        <div class="text-center">
-            <span class="@resultColor">@resultMessage</span>
-        </div>
     </div>
 }
 
@@ -176,7 +175,6 @@
     private string resultMessage;
     private string resultColor;
 
-    // TODO - Password is [Required] because I use CustomerModel - should I really make a separate model just for this class?
     protected override async Task OnInitializedAsync() {
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
         oldCustomer = await customerService.GetCustomerAsync(customerId);
@@ -184,8 +182,6 @@
             FirstName = oldCustomer.FirstName,
             LastName = oldCustomer.LastName,
             Email = oldCustomer.Email,
-            Password = "",
-            ConfirmPassword = "",
             Street = oldCustomer.Address.Street,
             Number = oldCustomer.Address.Number,
             ZipCode = oldCustomer.Address.ZipCode,
@@ -195,30 +191,45 @@
     }
 
     private async Task UpdateAccountBtnClicked() {
-        if (updatedCustomer.Password.Equals("")) {
-            updatedCustomer.Password = oldCustomer.Password;
-            updatedCustomer.ConfirmPassword = oldCustomer.Password;
-        }
-
         try {
+            if (updatedCustomer.Password == null) {
+                updatedCustomer.Password = oldCustomer.Password;
+                updatedCustomer.ConfirmPassword = oldCustomer.Password;
+            }
+
             await customerService.UpdateCustomerAsync(customerId, updatedCustomer);
+            oldCustomer.Password = updatedCustomer.Password;
             resultMessage = "Account information successfully updated!";
             resultColor = "text-success";
+            
+            // Reset the data annotations
+            updatedCustomer = new UpdateCustomerModel() {
+                FirstName = updatedCustomer.FirstName,
+                LastName = updatedCustomer.LastName,
+                Email = updatedCustomer.Email,
+                Street = updatedCustomer.Street,
+                Number = updatedCustomer.Number,
+                ZipCode = updatedCustomer.ZipCode,
+                City = updatedCustomer.City,
+                PhoneNumber = updatedCustomer.PhoneNumber
+            };
         } catch (Exception e) {
             resultMessage = e.Message;
             resultColor = "text-danger";
         }
     }
-
+    
     private bool IsDataUnchanged() {
         return oldCustomer.FirstName.Equals(updatedCustomer.FirstName) &&
                oldCustomer.LastName.Equals(updatedCustomer.LastName) &&
                oldCustomer.Email.Equals(updatedCustomer.Email) &&
-               updatedCustomer.Password.Equals("") &&
-               updatedCustomer.ConfirmPassword.Equals("") &&
+               updatedCustomer.Password == null &&
+               updatedCustomer.ConfirmPassword == null &&
                oldCustomer.Address.Street.Equals(updatedCustomer.Street) &&
                oldCustomer.Address.Number.Equals(updatedCustomer.Number) &&
                oldCustomer.Address.ZipCode == updatedCustomer.ZipCode &&
-               oldCustomer.Address.City.Equals(updatedCustomer.City);
+               oldCustomer.Address.City.Equals(updatedCustomer.City) &&
+               (oldCustomer.PhoneNumber == null && updatedCustomer.PhoneNumber == null || 
+                oldCustomer.PhoneNumber != null && oldCustomer.PhoneNumber.Equals(updatedCustomer.PhoneNumber));
     }
 }
