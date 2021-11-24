@@ -51,6 +51,6 @@ public class CustomerCommand implements Command {
 
     private void update() {
         Customer customer = request.getCustomer();
-        databaseManager.getCustomerDAOService().update(customer);
+        reply.setCustomer(databaseManager.getCustomerDAOService().update(customer));
     }
 }
