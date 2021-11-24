@@ -23,10 +23,11 @@ namespace SEP3WebAPI.Controllers {
                     return BadRequest("Input both email and password!");
                 }
                 Customer customer = await service.GetCustomerAsync(email, password);
-                return Ok(customer);
-            }
-            catch (NullReferenceException e) {
-                return NotFound(e.Message);
+                if (customer == null)
+                    return NotFound("Email not registered");
+                if (customer.Password.Equals(password))
+                    return Ok(customer);
+                return NotFound("Wrong password");
             }
             catch (Exception e) {
                 return StatusCode(500, e.Message);

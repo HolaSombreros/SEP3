@@ -26,5 +26,9 @@ namespace SEP3UI.Data {
         public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             return await restService.GetAsync<IList<Item>>($"items?index={index}&searchName={searchName}");
         }
+
+        public async Task<IList<Category>> GetCategories() {
+            return await restService.GetAsync <IList<Category>>($"items/categories");
+        }
     }
 }

@@ -1,6 +1,5 @@
 import database.daomodel.DatabaseManager;
 import mediator.Server;
-import model.Address;
 import model.Category;
 import model.Genre;
 
@@ -28,8 +27,7 @@ public class Tier3Main {
             Server server = new Server(databaseManager);
             System.out.println("Server started ^-^ ");
             server.run();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

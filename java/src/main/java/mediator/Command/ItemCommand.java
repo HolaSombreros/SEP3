@@ -29,6 +29,9 @@ public class ItemCommand implements Command {
         methods.put("editShoppingCart", this::updateShoppingCart);
         methods.put("removeShoppingCart", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
+        methods.put("getCategories", this::getCategories);
+        methods.put("addItem", this::addItem);
+        methods.put("getItemBySpecifications", this::getItemBySpecifications);
     }
 
     @Override public Request execute(Request request) {
@@ -46,6 +49,10 @@ public class ItemCommand implements Command {
 
     private void getAll() {
         reply.setItems(databaseManager.getItemDAOService().readByIndex(request.getIndex()));
+    }
+
+    private void getCategories() {
+        reply.setCategories(databaseManager.getCategoryDAOService().readAllCategories());
     }
 
     private void getItem() {
@@ -68,8 +75,7 @@ public class ItemCommand implements Command {
     private void removeItemFromWishlist() {
         databaseManager.getItemDAOService().removeItemFromWishlist(request.getCustomer().getId(), request.getItem().getId());
     }
-
-    private void getAllById() {
+    private void getAllById(){
         reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
     }
 
@@ -93,5 +99,12 @@ public class ItemCommand implements Command {
 
     private void getItemsBySearchName(){
         reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
+    }
+    private void addItem() {
+         reply.setItem(databaseManager.getItemDAOService().create(request.getItem().getName(),request.getItem().getDescription(),
+                request.getItem().getPrice(),request.getItem().getCategory(), request.getItem().getQuantity(),request.getItem().getImageName()));
+    }
+    private void getItemBySpecifications() {
+        reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getName(), request.getItem().getDescription(), request.getItem().getCategory()));
     }
 }

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
-using SEP3WebAPI.Mediator.Requests;
 
 namespace SEP3WebAPI.Data {
     public class RestService : IRestService {
@@ -28,11 +26,7 @@ namespace SEP3WebAPI.Data {
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             Customer customer = await client.GetCustomerAsync(email, password);
-            if (customer == null)
-                throw new Exception("Email not registered");
-            if (customer.Password.Equals(password))
-                return customer;
-            throw new Exception("Wrong password");
+            return customer;
         }
 
         public async Task<Customer> GetCustomerAsync(int customerId) {
@@ -155,6 +149,27 @@ namespace SEP3WebAPI.Data {
 
         public async Task<Book> GetBookAsync(int id) {
             return await client.GetBookAsync(id);
+        }
+
+        public async Task<IList<Category>> GetCategoriesAsync() {
+            return await client.GetCategories();
+        }
+
+        public async Task<Item> CreateItemAsync(ItemModel itemModel) {
+            if (itemModel == null) throw new InvalidDataException("Please specify an item of the proper format");
+            Item item = await client.GetItemBySpecifications(itemModel.Name, itemModel.Description, itemModel.Category);
+            if (item != null)
+                throw new InvalidDataException("This item already exists");
+            Item i = new Item() {
+                Name = itemModel.Name,
+                Description = itemModel.Description,
+                Category = itemModel.Category,
+                Discount = itemModel.Discount,
+                Price = itemModel.Price,
+                Status = itemModel.Status,
+                Quantity = itemModel.Quantity
+            };
+            return await client.AddItemAsync(i);
         }
 
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
