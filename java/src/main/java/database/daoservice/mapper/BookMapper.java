@@ -17,7 +17,7 @@ public class BookMapper implements DataMapper<Book> {
         return new Book(resultSet.getInt("item_id"),resultSet.getString("name"),resultSet.getString("description"),
                 resultSet.getDouble("price"), new Category(resultSet.getInt("category_id")),resultSet.getInt("quantity"),
                 ItemStatus.fromString(resultSet.getString("status")), resultSet.getInt("discount"), resultSet.getString("image_filepath"), resultSet.getString("isbn"),
-                resultSet.getString("author_first_name"),resultSet.getString("author_last_name"), resultSet.getString("language"),
+                null, resultSet.getString("language"),
                 null, resultSet.getDate("publication_date").toLocalDate());
     }
 }

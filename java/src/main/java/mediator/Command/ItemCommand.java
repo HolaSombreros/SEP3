@@ -88,6 +88,10 @@ public class ItemCommand implements Command {
         reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getName(), request.getItem().getDescription(), request.getItem().getCategory()));
     }
 
+    private void getItemsBySearchName(){
+        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
+    }
+
     private void addToShoppingCart() {
         databaseManager.getItemDAOService().addToShoppingCart(request.getItem(), request.getCustomer().getId());
         reply.setItem(request.getItem());
