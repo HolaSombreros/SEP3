@@ -72,5 +72,57 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpPut]
+        [Route("{customerId:int}/shoppingbasket")]
+        public async Task<ActionResult> AddShoppingCart([FromBody] Item item, [FromRoute] int customerId) {
+            try {
+                await service.AddToShoppingCartAsync(item, customerId);
+                return Ok();
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpGet]
+        [Route("{customerId:int}/shoppingbasket")]
+        public async Task<ActionResult> GetShoppingCart([FromRoute] int customerId) {
+            try {
+                IList<Item> shoppingCart = await service.GetShoppingCartAsync(customerId);
+                return Ok(shoppingCart);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpPut]
+        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        public async Task<ActionResult> EditShoppingCart([FromBody] Item item, [FromRoute] int customerId, [FromRoute] int itemId) {
+            try {
+                await service.UpdateShoppingCartAsync(item, itemId, customerId);
+                return Ok();
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpDelete]
+        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        public async Task<ActionResult> RemoveFromShoppingCart([FromRoute] int itemId, [FromRoute] int customerId) {
+            try {
+                await service.RemoveFromShoppingCartAsync(itemId, customerId);
+                return Ok();
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

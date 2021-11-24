@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -28,6 +29,22 @@ namespace SEP3UI.Data {
 
         public async Task RemoveWishlistedItem(int customerId, int itemId) {
             await restService.DeleteAsync($"customers/{customerId}/wishlist/{itemId}");
+        }
+
+        public Task AddToShoppingCartAsync(Item item, int customerId) {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Item>> GetShoppingCartAsync(int customerId) {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
+            throw new NotImplementedException();
         }
     }
 }

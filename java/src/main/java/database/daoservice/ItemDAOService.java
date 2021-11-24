@@ -146,7 +146,7 @@ public class ItemDAOService implements ItemDAO {
 
     @Override public void removeFromShoppingCart(Item item, int customerId) {
         try {
-            databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getQuantity(), customerId, item.getId());
+            databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId, item.getId());
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
