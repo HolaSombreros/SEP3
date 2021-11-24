@@ -1,6 +1,7 @@
 package mediator.Request;
 
 import model.Book;
+import model.Category;
 import model.Customer;
 import model.Item;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public class ItemRequest extends Request{
     private int index;
     private List<Item> items;
+    private List<Category> categories;
     private Item item;
     private Book book;
     private Customer customer;
@@ -18,6 +20,14 @@ public class ItemRequest extends Request{
     public ItemRequest(String service, String type) {
         super(service, type);
         items = new ArrayList<>();
+        categories = new ArrayList<>();
+    }
+
+    public List<Category> getCategories(){
+        return categories;
+    }
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
     
     public int[] getItemsIds() {

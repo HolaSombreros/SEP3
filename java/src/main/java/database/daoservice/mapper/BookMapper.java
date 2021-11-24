@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class BookMapper implements DataMapper<Book> {
-    //TODO: Arraylist to array
     @Override
     public Book map(ResultSet resultSet) throws SQLException {
         return new Book(resultSet.getInt("item_id"),resultSet.getString("name"),resultSet.getString("description"),

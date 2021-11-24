@@ -1,8 +1,11 @@
 ﻿@page "/ShoppingBasket"
 @using SEP3UI.Data
 @using SEP3Library.Models
+@using System.Security.Claims
 @inject IOrderService orderService
+@inject ICustomerService customerService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider authStateProvider
 
 <div class="card">
     <div class="row">
@@ -73,9 +76,15 @@
 </style>
 
 @code {
+    private int customerId;
     private bool isDisabled;
     
     protected override async Task OnInitializedAsync() {
+        try {
+            customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        } catch (Exception e) {
+            customerId = -1;
+        }
         SetDisabledState();
     }
 
@@ -85,16 +94,23 @@
     }
 
     private void DecreaseQuantity(Item item) {
-        if (item.Quantity > 1)
-            orderService.ShoppingCart.RemoveQuantityFromShoppingCart(item);
+        if (item.Quantity > 1) {
+            Item i = orderService.ShoppingCart.RemoveQuantityFromShoppingCart(item);
+            if (customerId != -1)
+                customerService.UpdateShoppingCartAsync(i,i.Id,customerId);
+        }
     }
     
     private void IncreaseQuantity(Item item) {
-        orderService.ShoppingCart.AddToShoppingCart(item);
+        Item i = orderService.ShoppingCart.IncreaseQuantity(item);
+        if (customerId != -1)
+            customerService.UpdateShoppingCartAsync(i,i.Id,customerId);
     }
 
     private void RemoveItemFromShoppingCart(Item item) {
         orderService.ShoppingCart.RemoveItemFromShoppingCart(item);
+        if (customerId != -1)
+            customerService.RemoveFromShoppingCartAsync(item.Id, customerId);
     }
 
     private int GetItemsBasedOnQuantity() {

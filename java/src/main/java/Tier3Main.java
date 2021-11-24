@@ -1,6 +1,7 @@
 import database.daomodel.DatabaseManager;
 import mediator.Server;
 import model.Author;
+import model.Address;
 import model.Category;
 import model.Genre;
 

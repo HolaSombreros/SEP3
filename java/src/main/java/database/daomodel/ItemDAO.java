@@ -9,6 +9,7 @@ public interface ItemDAO {
     //CRUD metods
     Item create(String name, String description, double price, Category category, int quantity, String imgFilepath);
     Item read(int id);
+    Item read(String name, String description, Category category);
     void update(Item item);
     void delete(Item item);
     List<Item> readByCategory(Category category);
@@ -22,4 +23,5 @@ public interface ItemDAO {
     List<Item> readShoppingCart (int customerId);
     void updateShoppingCart (Item item, int customerId);
     void removeFromShoppingCart (Item item, int customerId);
+
 }

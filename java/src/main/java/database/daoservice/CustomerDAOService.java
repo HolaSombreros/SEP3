@@ -56,7 +56,7 @@ public class CustomerDAOService implements CustomerDAO {
         }
     }
 
-    @Override public void update(Customer customer) {
+    @Override public Customer update(Customer customer) {
         try {
             Address address = addressDAOService.read(customer.getAddress().getStreet(),
                     customer.getAddress().getNumber(), customer.getAddress().getZipCode());
@@ -70,6 +70,8 @@ public class CustomerDAOService implements CustomerDAO {
                             + " password = ?, role = ?::user_role, phone_number = ?, address_id = ? WHERE customer_id = ?;",
                     customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
                     customer.getRole(), customer.getPhoneNumber(), customer.getAddress().getId(), customer.getId());
+
+            return customer;
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

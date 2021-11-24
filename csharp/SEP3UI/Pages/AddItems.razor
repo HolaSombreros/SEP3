@@ -1,0 +1,55 @@
+﻿@page "/AddItems"
+@using SEP3UI.Authentication
+@using SEP3Library.Models
+@using SEP3Library.UIModels
+@using SEP3UI.Data
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@inject IItemService itemService
+
+<h3>Add tems</h3>
+@if (categories != null) {
+    <h4>Select category:</h4>
+    <EditForm Model="@itemModel">
+        <DataAnnotationsValidator/>
+        <div class="list-group">
+            @foreach (var category in categories) {
+                <button type="button" class="list-group-item list-group-item-action"> @category.Name</button>
+            }
+            <button type="button" class="list-group-item list-group-item-action">Other</button>
+        </div>
+        <form class="mt-3">
+            <div class="input-field">
+                <input type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                <label for="name">Add name</label>
+            </div>
+        </form>
+        <div>
+            <textarea class="form-control" type="text" maxlength="500" rows="10"></textarea>
+            <label for="description">Description</label>
+        </div>
+    </EditForm>
+  @* <option @onclick="() => ">Other</option>  *@
+}
+
+@code {
+    private Item item;
+    private IList<Category> categories;
+    private ItemModel itemModel = new ItemModel();
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync() {
+        categories = await itemService.GetCategories();
+    }
+
+    private async Task AddItemAsync() {
+        try {
+        } catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private void AddCategory(Category category) {
+    }
+
+}
+
