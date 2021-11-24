@@ -191,6 +191,17 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest) reply).Items;
         }
 
+        public async Task<Item> AddToWishlist(int customerId, int itemId) {
+            ItemRequest req = new ItemRequest() {
+                Type = "addWishlist",
+                Service = "item",
+                Customer = new Customer() {Id = customerId},
+                Item = new Item() {Id = itemId}
+            };
+            Send(req);
+            return ((ItemRequest) reply).Item;
+        }
+
         public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {
             ItemRequest req = new ItemRequest() {
                 Type = "removeWishlist",

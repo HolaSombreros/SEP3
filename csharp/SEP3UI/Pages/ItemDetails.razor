@@ -1,6 +1,5 @@
 ﻿@page "/ItemDetails/{id:int}"
 @using SEP3UI.Data
-@using System.Runtime.InteropServices.ComTypes
 @using System.Security.Claims
 @using SEP3Library.Models
 @inject IItemService itemService
@@ -12,9 +11,11 @@
     <h2>Loading</h2>
 }
 else {
+    <div>
+    </div>
     <div class="container">
         <div class="card row ">
-            <div class="row border-top border-bottom">
+                        <div class="row border-top border-bottom">
                 <div class="col-md-6">
                     <div class="img-responsive m-3">
                         <img src="@item.ImageName"/>
@@ -22,6 +23,16 @@ else {
                 </div>
                 <div class="col-md-6">
                     <div class="pt-5 pl-5">
+                        <AuthorizeView>
+                        <div class="text-right">
+                            @if (favorite) {
+                                <i class="favorite oi oi-heart mr-5" @onclick="PerformUnfavoriteAsync"></i>
+                            }
+                            else {
+                                <i class="notfavorite oi oi-heart mr-5" @onclick="PerformFavoriteAsync"></i>
+                            }
+                        </div>
+                        </AuthorizeView>
                         <h2 class="mb-4">
                             <div class="retroshd">@item.Name</div>
                         </h2>
@@ -69,7 +80,7 @@ else {
                                 <strong>Quantity: </strong> @item.Quantity
                             </label>
                         </div>
-                          <div class="form-group mt-2">
+                        <div class="form-group mt-2">
                             <label>
                                 <strong>Status: </strong> @status
                             </label>
@@ -86,6 +97,30 @@ else {
     </div>
 }
 
+<style>
+.favorite {
+    font-size: 1.5em;
+    color: red;
+    transition: .3s;
+}
+
+.favorite:hover {
+    cursor: pointer;
+    color: lightgray;
+}
+
+.notfavorite {
+    font-size: 1.5em;
+    color: lightgray;
+    transition: .3s;
+}
+
+.notfavorite:hover {
+    cursor: pointer;
+    color: red;
+}
+</style>
+
 @code {
     [Parameter]
     public int Id { get; set; }
@@ -95,22 +130,29 @@ else {
     private Book book;
     private string status;
     private bool isDisabled;
+    private bool favorite =true;
 
     protected override async Task OnInitializedAsync() {
         item = await itemService.GetItemAsync(Id);
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
-        
+
         status = EnumHelper.GetDescription(item.Status == ItemStatus.InStock ? ItemStatus.InStock : ItemStatus.OutOfStock);
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             customerId = -1;
         }
+
+        if (customerId != -1) {
+            IList<Item> wishlist = await customerService.GetCustomerWishlistAsync(customerId);
+            favorite = wishlist.Contains(item);
+        }
     }
-    
+
     private void SetDisabledState() {
         if (item.Quantity < 1) {
             item.Status = ItemStatus.OutOfStock;
@@ -122,5 +164,16 @@ else {
         Item i = orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
         if (customerId != -1)
             customerService.AddToShoppingCartAsync(i,customerId);
+    }
+
+    private void PerformUnfavoriteAsync() {
+        favorite = false;
+        customerService.RemoveWishlistedItem(customerId, item.Id);
+
+    }
+
+    private void PerformFavoriteAsync() {
+        favorite = true;
+        customerService.AddToWishlistAsync(customerId, item);
     }
 }

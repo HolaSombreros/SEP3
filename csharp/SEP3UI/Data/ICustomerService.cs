@@ -9,6 +9,7 @@ namespace SEP3UI.Data {
         Task<Customer> GetCustomerAsync(int customerId);
         Task<Customer> AddCustomerAsync(CustomerModel customer);
         Task<Customer> UpdateCustomerAsync(int customerId, CustomerModel customer);
+        Task<Item> AddToWishlistAsync(int customerId, Item item);
         Task<IList<Item>> GetCustomerWishlistAsync(int customerId);
         Task RemoveWishlistedItem(int customerId, int itemId);
         public Task<Item> AddToShoppingCartAsync(Item item, int customerId);

@@ -118,7 +118,14 @@ public class ItemDAOService implements ItemDAO {
                     + "WHERE customer_id = ?;", customerId);
         } catch (SQLException e) {
             throw new IllegalStateException(e.getMessage());
+        }
+    }
 
+    @Override public void addWishlist(int customerId, int itemId) {
+        try {
+            databaseHelper.executeUpdate("INSERT INTO wishlist_item(customer_id, item_id) VALUES (?,?);", customerId, itemId);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
