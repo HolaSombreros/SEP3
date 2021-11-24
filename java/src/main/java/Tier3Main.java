@@ -13,7 +13,7 @@ public class Tier3Main {
     public static void main(String[] args) {
         DatabaseManager databaseManager = new DatabaseManager();
         System.out.println("Database Started  ^-^ ");
-        ArrayList<Genre> genres = new ArrayList<>();
+//        ArrayList<Genre> genres = new ArrayList<>();
 //        genres.add(new Genre("Romance", 1));
 //        databaseManager.getBookDAOService().create("Solo Leveling", "A light Novel", 12.50, new Category(1,"Book"), 15,"Images/solo_leveling_vol1.jpg","9781975319274","Chu", "Gong",
 //              "English",genres, LocalDate.of(2019,9,26));
