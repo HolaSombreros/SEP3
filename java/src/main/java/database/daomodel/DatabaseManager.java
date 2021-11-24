@@ -1,9 +1,6 @@
 package database.daomodel;
 
-import database.daoservice.BookDAOService;
-import database.daoservice.CustomerDAOService;
-import database.daoservice.ItemDAOService;
-import database.daoservice.OrderDAOService;
+import database.daoservice.*;
 
 public class DatabaseManager {
     private static String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=sep3";
@@ -14,12 +11,14 @@ public class DatabaseManager {
     private BookDAO bookDAOService;
     private OrderDAO orderDAOService;
     private CustomerDAO customerDAOService;
+    private CategoryDAO categoryDAOService;
 
     public DatabaseManager() {
         itemDAOService = new ItemDAOService(URL, USERNAME, PASSWORD);
         bookDAOService = new BookDAOService(URL, USERNAME, PASSWORD);
         orderDAOService = new OrderDAOService(URL, USERNAME, PASSWORD);
         customerDAOService = new CustomerDAOService(URL, USERNAME, PASSWORD);
+        categoryDAOService = new CategoryDAOService(URL, USERNAME,PASSWORD);
     }
 
     public ItemDAO getItemDAOService() {
@@ -36,5 +35,9 @@ public class DatabaseManager {
 
     public CustomerDAO getCustomerDAOService() {
         return customerDAOService;
+    }
+
+    public CategoryDAO getCategoryDAOService() {
+        return categoryDAOService;
     }
 }

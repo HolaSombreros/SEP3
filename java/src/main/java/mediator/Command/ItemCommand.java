@@ -23,6 +23,9 @@ public class ItemCommand implements Command {
         methods.put("getWishlist", this::getWishlist);
         methods.put("getAllById", this::getAllById);
         methods.put("removeWishlist", this::removeItemFromWishlist);
+        methods.put("getCategories", this::getCategories);
+        methods.put("addItem", this::addItem);
+        methods.put("getItemBySpecifications", this::getItemBySpecifications);
     }
 
     @Override public Request execute(Request request) {
@@ -42,6 +45,10 @@ public class ItemCommand implements Command {
         reply.setItems(databaseManager.getItemDAOService().readByIndex(request.getIndex()));
     }
 
+    private void getCategories() {
+        reply.setCategories(databaseManager.getCategoryDAOService().readAllCategories());
+    }
+
     private void getItem() {
         reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getId()));
     }
@@ -59,5 +66,12 @@ public class ItemCommand implements Command {
     }
     private void getAllById(){
         reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
+    }
+    private void addItem() {
+         reply.setItem(databaseManager.getItemDAOService().create(request.getItem().getName(),request.getItem().getDescription(),
+                request.getItem().getPrice(),request.getItem().getCategory(), request.getItem().getQuantity(),request.getItem().getImageName()));
+    }
+    private void getItemBySpecifications() {
+        reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getName(), request.getItem().getDescription(), request.getItem().getCategory()));
     }
 }

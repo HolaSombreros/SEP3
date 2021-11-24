@@ -6,7 +6,7 @@ namespace SEP3UI.Authentication {
 
         public static AuthorizationPolicy FollowAdminPolicy() {
             return new AuthorizationPolicyBuilder().RequireAuthenticatedUser()
-                .RequireRole("Admin")
+                .RequireRole("Administrator")
                 .Build();
         }
     }
