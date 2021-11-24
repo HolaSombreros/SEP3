@@ -31,10 +31,10 @@ else {
                         <div class="mt-2">
                             <span>
                                 <strong>Category:</strong>
-                                <a rel="tag" href="#">@item.Category.ToString()</a>
+                                <a rel="tag" href="#">@item.Category.Name</a>
                             </span>
                         </div>
-                        @if (item.Category == Category.Book && book != null) {
+                        @if (item.Category.Name.Equals("Book") && book != null) {
                             <div class="mt-2">
                                 <span>
                                     <strong>AuthorName:</strong>
@@ -49,13 +49,15 @@ else {
                             <div class="mt-2">
                                 <span>
                                     <strong>Language: </strong>
-                                    <a rel="tag" href="#">@book.Language.ToString()</a>
+                                    <a rel="tag" href="#">@book.Language</a>
                                 </span>
                             </div>
                             <div class="mt-2">
                                 <span>
                                     <strong>Genre: </strong>
-                                    <a rel="tag" href="#">@book.Genre.ToString()</a>
+                                    @foreach (Genre g in book.Genre) {
+                                        <a rel="tag" href="#">@g.Name</a>
+                                    }
                                 </span>
                             </div>
                         }
@@ -96,7 +98,7 @@ else {
 
     protected override async Task OnInitializedAsync() {
         item = await itemService.GetItemAsync(Id);
-        if (item.Category == Category.Book) {
+        if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
         

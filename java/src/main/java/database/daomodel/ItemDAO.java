@@ -1,7 +1,7 @@
 package database.daomodel;
 
+import model.Category;
 import model.Item;
-import model.enums.Category;
 
 import java.util.List;
 

@@ -1,22 +1,21 @@
 package model;
 
-import model.enums.Category;
-import model.enums.Genre;
 import model.enums.ItemStatus;
-import model.enums.Language;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Book extends Item{
 
     private String ISBN;
     private String authorFirstName;
     private String authorLastName;
-    private Language language;
-    private Genre genre;
+    private String language;
+    private List<Genre> genre;
     private MyDateTime publicationDate;
 
-    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String filePath, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, MyDateTime publicationDate) {
+    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String filePath, String ISBN, String authorFirstName, String authorLastName, String language, ArrayList<Genre> genre, MyDateTime publicationDate) {
         super(id, name, description, price, category, quantity, status, discount,filePath);
         this.ISBN = ISBN;
         this.authorFirstName = authorFirstName;
@@ -26,7 +25,7 @@ public class Book extends Item{
         this.publicationDate = publicationDate;
     }
 
-    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount,String filePath, String ISBN, String authorFirstName, String authorLastName, Language language, Genre genre, LocalDate publicationDate) {
+    public Book(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String filePath, String ISBN, String authorFirstName, String authorLastName, String language, ArrayList<Genre> genre, LocalDate publicationDate) {
         super(id, name, description, price, category, quantity, status, discount,filePath);
         this.ISBN = ISBN;
         this.authorFirstName = authorFirstName;
@@ -48,16 +47,20 @@ public class Book extends Item{
         return authorLastName;
     }
 
-    public Language getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
-    public Genre getGenre() {
+    public List<Genre> getGenre() {
         return genre;
     }
 
     public MyDateTime getPublicationDate() {
         return publicationDate;
+    }
+
+    public void setGenre(List<Genre> genre) {
+        this.genre = genre;
     }
 
     @Override

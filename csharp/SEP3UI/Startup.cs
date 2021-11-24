@@ -32,6 +32,9 @@ namespace SEP3UI {
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+            services.AddAuthorization(options => {
+                options.AddPolicy(Policies.IsAdmin, Policies.FollowAdminPolicy());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
