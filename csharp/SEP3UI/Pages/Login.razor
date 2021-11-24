@@ -2,8 +2,11 @@
 @using SEP3Library.UIModels
 @using SEP3UI.Authentication
 @using SEP3UI.Data
+@using SEP3Library.Models
+@using System.Security.Claims
 @inject NavigationManager navigationManager
 @inject ICustomerService customerService;
+@inject IOrderService orderService;
 @inject AuthenticationStateProvider authenticationStateProvider
 
 <!-- main box -->
@@ -73,6 +76,15 @@
     private async Task LoginAsync() {
         try {
             await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
+            int customerId = int.Parse((await authenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+           
+            IList<Item> items = await customerService.GetShoppingCartAsync(customerId);
+            foreach (var i in orderService.ShoppingCart.Items) {
+                if (items.FirstOrDefault(it => it.Id == i.Id) == null)
+                    await customerService.AddToShoppingCartAsync(i, customerId);
+            }
+            orderService.ShoppingCart.Items = await customerService.GetShoppingCartAsync(customerId);
+            
             navigationManager.NavigateTo("/");
         }
         catch (Exception e) {

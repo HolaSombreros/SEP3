@@ -101,6 +101,43 @@ namespace SEP3WebAPI.Data {
             await client.RemoveWishlistedItemAsync(customer, item);
         }
 
+        public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item1 = await client.GetItemAsync(item.Id);
+            if (item1 == null) throw new NullReferenceException($"No such item found with id: {item.Id}");
+
+            return await client.AddToShoppingCartAsync(item, customer);
+        }
+
+        public async Task<IList<Item>> GetShoppingCartAsync(int customerId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+
+            return await client.GetShoppingCartAsync(customer);
+        }
+
+        public async Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item1 = await client.GetItemAsync(itemId);
+            if (item1 == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+
+            return await client.UpdateShoppingCartAsync(item, customer);
+        }
+
+        public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item = await client.GetItemAsync(itemId);
+            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+
+            await client.RemoveFromShoppingCartAsync(item, customer);
+        }
+
         public async Task<Book> GetBookAsync(int id) {
             return await client.GetBookAsync(id);
         }

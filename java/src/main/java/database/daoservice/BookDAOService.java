@@ -50,7 +50,7 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book read(int id) {
         try{
-            return databaseHelper.mapObject(new BookMapper(), "SELECT * FROM item Join book using(item_id) WHERE book.item_id = ?;",id);
+            return databaseHelper.mapObject(new BookMapper(), "SELECT * FROM item JOIN book USING(item_id) WHERE book.item_id = ?;",id);
         }
         catch(SQLException e) {
             throw new IllegalArgumentException(e.getMessage());

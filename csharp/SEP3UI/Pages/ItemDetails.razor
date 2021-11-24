@@ -1,9 +1,12 @@
 ﻿@page "/ItemDetails/{id:int}"
 @using SEP3UI.Data
 @using System.Runtime.InteropServices.ComTypes
+@using System.Security.Claims
 @using SEP3Library.Models
 @inject IItemService itemService
 @inject IOrderService orderService
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 
 @if (item == null) {
     <h2>Loading</h2>
@@ -85,6 +88,7 @@ else {
     [Parameter]
     public int Id { get; set; }
 
+    private int customerId;
     private Item item;
     private Book book;
     private string status;
@@ -98,6 +102,7 @@ else {
         
         status = EnumHelper.GetDescription(item.Status == ItemStatus.InStock ? ItemStatus.InStock : ItemStatus.OutOfStock);
         SetDisabledState();
+        customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
     }
     
     private void SetDisabledState() {
@@ -108,6 +113,8 @@ else {
     }
 
     private void AddToShoppingCart(Item itemToAdd) {
-        orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
+        Item i = orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
+        if (customerId != null)
+            customerService.AddToShoppingCartAsync(i,customerId);
     }
 }

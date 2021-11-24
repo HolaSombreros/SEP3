@@ -1,10 +1,12 @@
 @page "/"
 @using SEP3UI.Data
-@using System.Collections
 @using SEP3Library.Models
+@using System.Security.Claims
 @inject NavigationManager NavigationManager
 @inject IItemService itemService
 @inject IOrderService orderService
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 
 <h3>Under Covers</h3>
 
@@ -34,11 +36,13 @@
 </div>
 
 @code {
+    private int customerId;
     private int itemIndex;
     private IList<Item> items;
     private string hidden;
 
     protected override async Task OnInitializedAsync() {
+        customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
         itemIndex = 0;
         items = await itemService.GetItemsAsync(itemIndex);
         hidden = "";
@@ -67,6 +71,8 @@
     }
 
     private void AddToShoppingCart(Item item) {
-        orderService.ShoppingCart.AddToShoppingCart(item);
+        Item i = orderService.ShoppingCart.AddToShoppingCart(item);
+        if (customerId != null)
+            customerService.AddToShoppingCartAsync(i,customerId);
     }
 }

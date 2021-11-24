@@ -120,4 +120,36 @@ public class ItemDAOService implements ItemDAO {
             throw new IllegalStateException(e.getMessage());
         }
     }
+
+    @Override public void addToShoppingCart(Item item, int customerId) {
+        try {
+            databaseHelper.executeUpdate("INSERT INTO shopping_cart_item(customer_id, item_id, quantity) VALUES (?,?,?);", customerId, item.getId(), item.getQuantity());
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public List<Item> readShoppingCart(int customerId) {
+        try {
+            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM shopping_cart_item JOIN item USING(item_id) WHERE customer_id = ?;", customerId);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public void updateShoppingCart(Item item, int customerId) {
+        try {
+            databaseHelper.executeUpdate("UPDATE shopping_cart_item SET quantity = ? WHERE customer_id = ? AND item_id = ?;", item.getQuantity(), customerId, item.getId());
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public void removeFromShoppingCart(Item item, int customerId) {
+        try {
+            databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId, item.getId());
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 }
