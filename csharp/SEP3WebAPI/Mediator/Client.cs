@@ -203,6 +203,7 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
+            Console.WriteLine("client");
             ItemRequest req = new ItemRequest() {
                 Type = "addShoppingCart",
                 Service = "item",
@@ -242,6 +243,20 @@ namespace SEP3WebAPI.Mediator {
                 Item = item
             };
             Send(req);
+        }
+
+        public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
+            ItemRequest req = new ItemRequest() {
+                Type = "searchByName",
+                Service = "item",
+                Item = new Item {
+                    Name = searchName
+                },
+                Index = index
+            };
+            Send(req);
+            Waiting();
+            return ((ItemRequest)reply).Items;
         }
     }
 }

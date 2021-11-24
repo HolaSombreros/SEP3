@@ -26,7 +26,8 @@ public class ItemCommand implements Command {
         methods.put("addShoppingCart", this::addToShoppingCart);
         methods.put("getShoppingCart", this::getShoppingCart);
         methods.put("editShoppingCart", this::updateShoppingCart);
-        methods.put("removeShoppingList", this::removeFromShoppingCart);
+        methods.put("removeShoppingCart", this::removeFromShoppingCart);
+        methods.put("searchByName",this::getItemsBySearchName);
     }
 
     @Override public Request execute(Request request) {
@@ -82,5 +83,9 @@ public class ItemCommand implements Command {
 
     private void removeFromShoppingCart() {
         databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
+    }
+
+    private void getItemsBySearchName(){
+        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
     }
 }
