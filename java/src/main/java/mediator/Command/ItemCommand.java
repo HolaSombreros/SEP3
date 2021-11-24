@@ -109,15 +109,4 @@ public class ItemCommand implements Command {
     private void removeFromShoppingCart() {
         databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
     }
-
-    private void getItemsBySearchName(){
-        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
-    }
-    private void addItem() {
-         reply.setItem(databaseManager.getItemDAOService().create(request.getItem().getName(),request.getItem().getDescription(),
-                request.getItem().getPrice(),request.getItem().getCategory(), request.getItem().getQuantity(),request.getItem().getImageName()));
-    }
-    private void getItemBySpecifications() {
-        reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getName(), request.getItem().getDescription(), request.getItem().getCategory()));
-    }
 }
