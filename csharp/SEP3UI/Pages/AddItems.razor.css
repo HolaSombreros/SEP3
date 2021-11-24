@@ -3,13 +3,12 @@
 }
 .input-field {
     position: relative;
-    width: 250px;
-    height: 44px;
+    width: 100%;
     line-height: 44px;
 }
 label {
-    position: absolute;
-    top: 0;
+    position: relative;
+    top: -30px;
     left: 0;
     width: 100%;
     color: #483D8B;
@@ -17,7 +16,7 @@ label {
     cursor: text;
 }
 input, textarea {
-    width: 75%;
+    width: 100%;
     border: 0;
     outline: 0;
     padding: 0.5rem 0;
@@ -35,11 +34,8 @@ input:valid, textarea:invalid, textarea:focus {
 input:focus~label,
 input:valid~label , textarea:valid~label, textarea:focus~label{
     font-size: 14px;
-    top: -24px;
+    top: -50px;
     color: #483D8B;
-}
-.inputs {
-    width: 400px;
 }
 
 #exampleFormControlFile{

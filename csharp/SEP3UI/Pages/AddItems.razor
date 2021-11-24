@@ -10,50 +10,63 @@
 <h3>Add Items</h3>
 @if (categories != null) {
     <EditForm Model="@itemModel" OnValidSubmit="@AddItemAsync">
-        <div class="container">
+        <div class="container text-center w-25 d-flex flex-column align-items-center">
             <DataAnnotationsValidator/>
-            <div class="list-group text-center d-flex justify-content-center">
                 <h4>Select category:</h4>
                 @foreach (var category in categories) {
                     <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
                 }
-                <button type="button" class="list-group-item list-group-item-action">Other</button>
-            <div class="input-field mt-5 mb-5">
-                        <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
-                        <label for="name">Name:</label>
-                    </div>
-                    <ValidationMessage For="@(() => itemModel.Name)"/>
-                    <div class="form-group mt-5 inputs">
-                        <label for="description">Description:</label>
-                        <textarea @bind="itemModel.Description" class="form-control" type="text" maxlength="500" id="description" rows="5"></textarea>
-                    </div>
-                    <ValidationMessage For="@(() => itemModel.Description)"/>
-                    <div class="form-group">
-                        <label for="exampleFormControlFile">Upload an image:</label>
-                        <input type="file" class="form-control-file" id="exampleFormControlFile">
-                    </div>
-                    Select the status of the specific item:
-                    <select class="form-select" aria-label="Default select example">
-                        <option >In Stock</option>
-                        <option value="1">Out Of Stock</option>
-                    </select>
-                    <div class="input-field mt-5 mb-5 inputs">
-                        <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
-                        <label for="price">Price:</label>
-                    </div>
-                    <ValidationMessage For="@(() => itemModel.Price)"/>
+            <button type="button" class="list-group-item list-group-item-action">Other</button>
+                <div class="mt-5">
+                    <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                    <label for="name">Name:</label>
+                </div>
+                <ValidationMessage For="@(() => itemModel.Name)"/>
+                <div class="mt-5 text-center">
+                    <label for="description">Description:</label>
+                    <textarea @bind="itemModel.Description" type="text" maxlength="500" id="description" rows="5"></textarea>
+                </div>
+                <ValidationMessage For="@(() => itemModel.Description)"/>
+                <div>
+                <label for="exampleFormControlFile">Upload an image:</label>
+                <input type="file" class="form-control-file" id="exampleFormControlFile" required>
+            </div>
+                <p>Status</p>
+                @foreach (ItemStatus status in Enum.GetValues(typeof(ItemStatus))) {
+                    <button type="button" @onclick="@(() => SetStatus(status))" class="list-group-item list-group-item-action"> @EnumHelper.GetDescription(status)</button>
+                }
+                <div class="mt-5 inputs">
+                    <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
+                    <label for="price">Price:</label>
+                </div>
+                <ValidationMessage For="@(() => itemModel.Price)"/>
 
-                    <div class="input-field mt-5 mb-5 inputs">
-                        <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
-                        <label for="quantity">Quantity:</label>
-                    </div>
-                    <ValidationMessage For="@(() => itemModel.Quantity)"/>
+                <div class="mt-5 inputs">
+                    <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
+                    <label for="quantity">Quantity:</label>
+                </div>
+                <ValidationMessage For="@(() => itemModel.Quantity)"/>
 
-                    <div class="input-field mt-5 mb-5 inputs">
-                        <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
-                        <label for="discount">Discount:</label>
-                    </div>
-                <ValidationMessage For="@(() => itemModel.Discount)"/>
+                <div class="mt-5 inputs">
+                    <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
+                    <label for="discount">Discount:</label>
+                </div>
+            <ValidationMessage For="@(() => itemModel.Discount)"/>
+            @if (itemModel.Category != null && itemModel.Category.Name.Equals("Book")) {
+                <div class="mt-5">
+                    <input  type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                    @* <label for="name">Author Firstname:</label> *@
+                </div>
+                <div class="mt-5">
+                    <input type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                    @* <label for="name">Author Lastname:</label> *@
+                </div>
+                <div class="mt-5">
+                    <input type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                    @* <InputDate type="date" />Date: *@
+                </div>
+                <ValidationMessage For="@(() => itemModel.Name)"/>
+            }
                 <div class="form-group d-flex justify-content-center">
                     <label class="col-md-4 control-label"></label>
                     <div class="col-md-4">
@@ -62,13 +75,11 @@
                     </div>
                 </div>
             </div>
-        </div>
     </EditForm>
 }
 
 @code {
     private IList<Category> categories;
-    private IList<ItemStatus> statuses = new Collection<ItemStatus>();
     private ItemModel itemModel = new ItemModel();
     private string errorMessage;
 
@@ -87,6 +98,10 @@
 
     private void SetCategory(Category category) {
         itemModel.Category = category;
+    }
+
+    private void SetStatus(ItemStatus status) {
+        itemModel.Status = status;
     }
 
     private void AddCategory(Category category) {
