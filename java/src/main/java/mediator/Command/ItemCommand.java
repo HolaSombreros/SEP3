@@ -26,7 +26,7 @@ public class ItemCommand implements Command {
         methods.put("addShoppingCart", this::addToShoppingCart);
         methods.put("getShoppingCart", this::getShoppingCart);
         methods.put("editShoppingCart", this::updateShoppingCart);
-        methods.put("removeShoppingList", this::removeFromShoppingCart);
+        methods.put("removeShoppingCart", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
     }
 

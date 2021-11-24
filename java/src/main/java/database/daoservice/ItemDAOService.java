@@ -111,7 +111,7 @@ public class ItemDAOService implements ItemDAO {
     }
     @Override public List<Item> readCustomerWishlist(int customerId) {
         try {
-            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id, name, description, price, category_id, discount, quantity, status, image_filepath "
+            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id, item.name, description, price, category_id, discount, quantity, status, image_filepath "
                     + "FROM item JOIN wishlist_item USING (item_id) "
                     + "JOIN customer USING (customer_id) "
                     + "JOIN category USING (category_id) "

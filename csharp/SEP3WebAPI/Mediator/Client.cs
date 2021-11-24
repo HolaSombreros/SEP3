@@ -178,7 +178,6 @@ namespace SEP3WebAPI.Mediator {
                 Customer = customer
             };
             Send(req);
-            // TODO - Rename "request" to "reply" ???
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
@@ -203,6 +202,7 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
+            Console.WriteLine("client");
             ItemRequest req = new ItemRequest() {
                 Type = "addShoppingCart",
                 Service = "item",
@@ -253,14 +253,9 @@ namespace SEP3WebAPI.Mediator {
                 },
                 Index = index
             };
-            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Send(json);
+            Send(req);
             Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            return ((ItemRequest)request).Items;
+            return ((ItemRequest)reply).Items;
         }
     }
 }

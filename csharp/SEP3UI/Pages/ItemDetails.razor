@@ -104,7 +104,11 @@ else {
         
         status = EnumHelper.GetDescription(item.Status == ItemStatus.InStock ? ItemStatus.InStock : ItemStatus.OutOfStock);
         SetDisabledState();
-        customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        try {
+            customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        } catch (Exception e) {
+            customerId = -1;
+        }
     }
     
     private void SetDisabledState() {
@@ -116,7 +120,7 @@ else {
 
     private void AddToShoppingCart(Item itemToAdd) {
         Item i = orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
-        if (customerId != null)
+        if (customerId != -1)
             customerService.AddToShoppingCartAsync(i,customerId);
     }
 }

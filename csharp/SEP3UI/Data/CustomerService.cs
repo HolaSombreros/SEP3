@@ -44,21 +44,22 @@ namespace SEP3UI.Data {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
-            Item added = await restService.PutAsync<Item, Item>(item, $"{customerId}/shoppingbasket");
+            Console.WriteLine("customerservice");
+            Item added = await restService.PutAsync<Item, Item>(item, $"customers/{customerId}/shoppingbasket");
             return added;
         }
 
         public async Task<IList<Item>> GetShoppingCartAsync(int customerId) {
-            return await restService.GetAsync<List<Item>>($"{customerId}/shoppingbasket");
+            return await restService.GetAsync<List<Item>>($"customers/{customerId}/shoppingbasket");
         }
 
         public async Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
-            Item updated = await restService.PutAsync<Item, Item>(item, $"{customerId}/shoppingbasket/{itemId}");
+            Item updated = await restService.PutAsync<Item, Item>(item, $"customers/{customerId}/shoppingbasket/{itemId}");
             return updated;
         }
 
         public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
-            await restService.DeleteAsync($"{customerId}/shoppingbasket/{itemId}");
+            await restService.DeleteAsync($"customers/{customerId}/shoppingbasket/{itemId}");
         }
     }
 }

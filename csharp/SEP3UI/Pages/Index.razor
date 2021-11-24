@@ -48,7 +48,11 @@
     private string searchItem;
 
     protected override async Task OnInitializedAsync() {
-        customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        try {
+            customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        } catch (Exception e) {
+            customerId = -1;
+        }
         itemIndex = 0;
         items = await itemService.GetItemsAsync(itemIndex);
         filteredItems = items;
@@ -79,7 +83,7 @@
 
     private void AddToShoppingCart(Item item) {
         Item i = orderService.ShoppingCart.AddToShoppingCart(item);
-        if (customerId != null)
+        if (customerId != -1)
             customerService.AddToShoppingCartAsync(i,customerId);
     }
 
