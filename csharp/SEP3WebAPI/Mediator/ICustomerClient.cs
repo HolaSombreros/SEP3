@@ -8,6 +8,7 @@ namespace SEP3WebAPI.Mediator {
         Task<Customer> GetCustomerAsync(string email, string password);
         Task<Customer> GetCustomerAsync(int customerId);
         Task<Customer> AddCustomerAsync(Customer customer);
+        Task UpdateCustomerAsync(Customer customer);
         Task<IList<Item>> GetCustomerWishlistAsync(Customer customer);
         Task RemoveWishlistedItemAsync(Customer customer, Item item);
         Task AddToShoppingCartAsync(Item item, Customer customer);

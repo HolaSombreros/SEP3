@@ -1,0 +1,233 @@
+﻿@page "/settings/account"
+@using SEP3Library.Models
+@using SEP3UI.Data
+@using System.Security.Claims
+@using System.ComponentModel.DataAnnotations
+@using SEP3Library.UIModels
+@attribute [Authorize]
+@inject AuthenticationStateProvider authStateProvider
+@inject ICustomerService customerService
+
+@if (oldCustomer == null) {
+    <em>Loading...</em>
+} else {
+    <div class="container w-50">
+        <h4>Personal details</h4>
+        <hr/>
+        <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClicked">
+            <DataAnnotationsValidator/>
+            <div class="form-group mb-3">
+                <label><strong>First name</strong></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <span class="oi oi-person"></span>
+                        </div>
+                    </div>
+                    <InputText class="form-control" @bind-Value="updatedCustomer.FirstName"/>
+                </div>
+                <ValidationMessage For="@(()=> updatedCustomer.FirstName)"/>
+            </div>
+            <div class="form-group mb-3">
+                <label><strong>Last name</strong></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <span class="oi oi-person"></span>
+                        </div>
+                    </div>
+                    <InputText class="form-control" @bind-Value="updatedCustomer.LastName"/>
+                </div>
+                <ValidationMessage For="@(()=> updatedCustomer.LastName)"/>
+            </div>
+            <div class="form-group mb-3">
+                <label><strong>Email</strong></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <span class="oi oi-envelope-closed"></span>
+                        </div>
+                    </div>
+                    <InputText class="form-control" @bind-Value="updatedCustomer.Email"/>
+                </div>
+                <small>Your name and email may appear around Under Covers where you contribute.</small>
+                <ValidationMessage For="@(()=> updatedCustomer.Email)"/>
+            </div>
+            <div class="form-group mb-5">
+                <label><strong>Phone</strong></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <span class="oi oi-phone"></span>
+                        </div>
+                    </div>
+                    <InputText class="form-control" @bind-Value="updatedCustomer.PhoneNumber"/>
+                </div>
+                <ValidationMessage For="@(()=> updatedCustomer.PhoneNumber)"/>
+            </div>
+            
+            <div class="mt-5">
+                <h4>Account security</h4>
+                <hr/>
+                <div class="form-group mb-3">
+                    <label><strong>Old password</strong></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="oi oi-lock-locked"></span>
+                            </div>
+                        </div>
+                        <InputText class="form-control" type="password" @bind-Value="oldCustomer.Password"/>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label><strong>New password</strong></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="oi oi-lock-locked"></span>
+                            </div>
+                        </div>
+                        <InputText class="form-control" type="password" @bind-Value="updatedCustomer.Password"/>
+                    </div>
+                    <ValidationMessage For="@(()=> updatedCustomer.Password)"/>
+                </div>
+                <div class="form-group mb-3">
+                    <label><strong>Confirm new password</strong></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="oi oi-lock-locked"></span>
+                            </div>
+                        </div>
+                        <InputText class="form-control" type="password" @bind-Value="updatedCustomer.ConfirmPassword"/>
+                    </div>
+                    <ValidationMessage For="@(()=> updatedCustomer.ConfirmPassword)"/>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h4>Address</h4>
+                <hr/>
+                <div class="form-group mb-3">
+                    <label><strong>Street name</strong></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="oi oi-home"></span>
+                            </div>
+                        </div>
+                        <InputText class="form-control" @bind-Value="updatedCustomer.Street"/>
+                    </div>
+                    <ValidationMessage For="@(()=> updatedCustomer.Street)"/>
+                </div>
+                <div class="form-group mb-3">
+                    <label><strong>Street number</strong></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="oi oi-home"></span>
+                            </div>
+                        </div>
+                        <InputText class="form-control" @bind-Value="updatedCustomer.Number"/>
+                    </div>
+                    <ValidationMessage For="@(()=> updatedCustomer.Number)"/>
+                </div>
+                <div class="form-group mb-3">
+                    <label><strong>Zip code</strong></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="oi oi-home"></span>
+                            </div>
+                        </div>
+                        <InputNumber class="form-control" @bind-Value="updatedCustomer.ZipCode"/>
+                    </div>
+                    <ValidationMessage For="@(()=> updatedCustomer.ZipCode)"/>
+                </div>
+                <div class="form-group mb-5">
+                    <label><strong>City</strong></label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <span class="oi oi-home"></span>
+                            </div>
+                        </div>
+                        <InputText class="form-control" @bind-Value="updatedCustomer.City"/>
+                    </div>
+                    <ValidationMessage For="@(()=> updatedCustomer.City)"/>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button class="btn btn-primary" type="submit" disabled="@IsDataUnchanged()">Update account</button>
+            </div>
+        </EditForm>
+        
+        <div>@resultMessage</div>
+    </div>
+}
+
+@code {
+    private int customerId;
+    private CustomerModel oldCustomer;
+    private CustomerModel updatedCustomer;
+    private string resultMessage;
+
+    protected override async Task OnInitializedAsync() {
+        customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        Customer customer = await customerService.GetCustomerAsync(customerId);
+        oldCustomer = new CustomerModel() {
+            FirstName = customer.FirstName,
+            LastName = customer.LastName,
+            Email = customer.Email,
+            Password = customer.Password,
+            ConfirmPassword = "",
+            Street = customer.Address.Street,
+            Number = customer.Address.Number,
+            ZipCode = customer.Address.ZipCode,
+            City = customer.Address.City,
+            PhoneNumber = customer.PhoneNumber,
+            Role = customer.Role,
+        };
+        updatedCustomer = new CustomerModel() {
+            FirstName = oldCustomer.FirstName,
+            LastName = oldCustomer.LastName,
+            Email = oldCustomer.Email,
+            Password = "",
+            ConfirmPassword = "",
+            Street = oldCustomer.Street,
+            Number = oldCustomer.Number,
+            ZipCode = oldCustomer.ZipCode,
+            City = oldCustomer.City,
+            PhoneNumber = oldCustomer.PhoneNumber,
+            Role = oldCustomer.Role
+        };
+    }
+
+    private async Task UpdateAccountBtnClicked() {
+        if (updatedCustomer.Password.Equals("")) {
+            updatedCustomer.Password = oldCustomer.Password;
+            updatedCustomer.ConfirmPassword = updatedCustomer.Password;
+        }
+
+        try {
+            await customerService.UpdateCustomerAsync(customerId, updatedCustomer);
+            resultMessage = "Account information successfully updated!";
+        } catch (Exception e) {
+            resultMessage = e.Message;
+        }
+    }
+
+    private bool IsDataUnchanged() {
+        return oldCustomer.FirstName.Equals(updatedCustomer.FirstName) &&
+               oldCustomer.LastName.Equals(updatedCustomer.LastName) &&
+               oldCustomer.Email.Equals(updatedCustomer.Email) &&
+               updatedCustomer.Password.Equals("") &&
+               updatedCustomer.ConfirmPassword.Equals("") &&
+               oldCustomer.Street.Equals(updatedCustomer.Street) &&
+               oldCustomer.Number.Equals(updatedCustomer.Number) &&
+               oldCustomer.ZipCode == updatedCustomer.ZipCode &&
+               oldCustomer.City.Equals(updatedCustomer.City);
+    }
+}

@@ -46,6 +46,36 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        
+        [HttpGet]
+        [Route("{customerId:int}")]
+        public async Task<ActionResult<Customer>> GetCustomerAsync([FromRoute] int customerId) {
+            try {
+                Customer customer = await service.GetCustomerAsync(customerId);
+                return Ok(customer);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("{customerId:int}")]
+        public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId, [FromBody] CustomerModel customer) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            
+            try {
+                Customer updated = await service.UpdateCustomerAsync(customerId, customer);
+                return Ok(updated);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
 
         [HttpGet]
         [Route("{customerId:int}/wishlist")]

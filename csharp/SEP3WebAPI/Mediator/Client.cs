@@ -85,7 +85,7 @@ namespace SEP3WebAPI.Mediator {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getAll",
-                Index = index,
+                Index = index
             };
             Send(req);
             return ((ItemRequest)request).Items;
@@ -165,18 +165,20 @@ namespace SEP3WebAPI.Mediator {
             CustomerRequest req = new CustomerRequest() {
                 Type = "register",
                 Service = "customer",
-                Customer = new Customer() {
-                    FirstName = customer.FirstName,
-                    LastName = customer.LastName,
-                    Password = customer.Password,
-                    Address = customer.Address,
-                    Email = customer.Email,
-                    PhoneNumber = customer.PhoneNumber,
-                    Role = customer.Role
-                }
+                Customer = customer
             };
             Send(req);
             return ((CustomerRequest)request).Customer;
+        }
+
+        public async Task UpdateCustomerAsync(Customer customer) {
+            CustomerRequest req = new CustomerRequest() {
+                Type = "update",
+                Service = "customer",
+                Customer = customer
+            };
+            Send(req);
+            // TODO - Rename "request" to "reply" ???
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
