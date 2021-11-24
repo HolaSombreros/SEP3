@@ -7,5 +7,6 @@ namespace SEP3WebAPI.Data {
         Task<IList<Item>> GetItemsAsync(int index);
         Task<Item> GetItemAsync(int id);
         Task<Book> GetBookAsync(int id);
+        Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index);
     }
 }

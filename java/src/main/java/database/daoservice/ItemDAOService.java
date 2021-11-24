@@ -77,6 +77,16 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
+    /*
+    //TODO: convert int[] to optional parameter, ask OLE
+    String query = "SELECT * FROM item WHERE ";
+            for(int i =0; i < itemIds.length; i++) {
+                if(i ==0)
+                    query += "item_id=?";
+                else
+                    query += " OR item_id=?";
+            }
+     */
     @Override
     public List<Item> readAllByIds(int[] itemIds) {
         try {
@@ -149,6 +159,16 @@ public class ItemDAOService implements ItemDAO {
         try {
             databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId, item.getId());
         } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Item> readByItemName(String itemName, int index) {
+        try{
+            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM item WHERE lower(name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
+        }
+        catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }

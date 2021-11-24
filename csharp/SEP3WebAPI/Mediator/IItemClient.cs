@@ -8,5 +8,6 @@ namespace SEP3WebAPI.Mediator {
         Task<IList<Item>> GetItemsByIdAsync(int[] itemIds);
         Task<Book> GetBookAsync(int id);
         Task<IList<Item>> GetItemsAsync(int index);
+        Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index);
     }
 }

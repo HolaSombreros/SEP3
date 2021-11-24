@@ -243,5 +243,24 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
         }
+
+        public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
+            ItemRequest req = new ItemRequest() {
+                Type = "searchByName",
+                Service = "item",
+                Item = new Item {
+                    Name = searchName
+                },
+                Index = index
+            };
+            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            Send(json);
+            Waiting();
+            if (request is ErrorRequest errorRequest)
+                throw new Exception(errorRequest.Message);
+            return ((ItemRequest)request).Items;
+        }
     }
 }
