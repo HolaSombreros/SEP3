@@ -3,7 +3,6 @@
 @using SEP3Library.Models
 @using SEP3Library.UIModels
 @using SEP3UI.Data
-@using System.Collections.ObjectModel
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject IItemService itemService
 
@@ -27,14 +26,16 @@
                     <textarea @bind="itemModel.Description" type="text" maxlength="500" id="description" rows="5"></textarea>
                 </div>
                 <ValidationMessage For="@(() => itemModel.Description)"/>
+            
                 <div>
-                <label for="exampleFormControlFile">Upload an image:</label>
-                <input type="file" class="form-control-file" id="exampleFormControlFile" required>
-            </div>
+                    <label for="exampleFormControlFile">Upload an image:</label>
+                    <input type="file" class="form-control-file" id="exampleFormControlFile" required>
+                </div>
                 <p>Status</p>
                 @foreach (ItemStatus status in Enum.GetValues(typeof(ItemStatus))) {
                     <button type="button" @onclick="@(() => SetStatus(status))" class="list-group-item list-group-item-action"> @EnumHelper.GetDescription(status)</button>
                 }
+            
                 <div class="mt-5 inputs">
                     <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
                     <label for="price">Price:</label>
@@ -45,27 +46,49 @@
                     <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
                     <label for="quantity">Quantity:</label>
                 </div>
-                <ValidationMessage For="@(() => itemModel.Quantity)"/>
-
-                <div class="mt-5 inputs">
+            <ValidationMessage For="@(() => itemModel.Quantity)"/>
+            
+            <div class="mt-5 inputs">
                     <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
                     <label for="discount">Discount:</label>
                 </div>
             <ValidationMessage For="@(() => itemModel.Discount)"/>
+            
             @if (itemModel.Category != null && itemModel.Category.Name.Equals("Book")) {
                 <div class="mt-5">
-                    <input  type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
-                    @* <label for="name">Author Firstname:</label> *@
+                    <input @bind-value="((BookModel)itemModel).Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn" required/>
+                    <label for="bookIsbn">Book isbn:</label> 
                 </div>
+                <ValidationMessage For="@(() => ((BookModel)itemModel).Isbn)"/>
+                
                 <div class="mt-5">
-                    <input type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
-                    @* <label for="name">Author Lastname:</label> *@
+                    <input @bind-value="((BookModel)itemModel).AuthorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName" required/>
+                    <label for="authorFName">Author first name:</label> 
                 </div>
+                <ValidationMessage For="@(() => ((BookModel)itemModel).AuthorFirstName)"/>
+                
                 <div class="mt-5">
-                    <input type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                    <input @bind-value="((BookModel)itemModel).AuthorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLName" required/>
+                    <label for="authorLName">Author last name:</label> 
+                </div>
+                <ValidationMessage For="@(() => ((BookModel)itemModel).AuthorLastName)"/>
+                
+                <div class="mt-5">
+                    <input @bind-value="((BookModel)itemModel).Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language" required/>
+                    <label for="language">Book language:</label> 
+                </div>
+                <ValidationMessage For="@(() => ((BookModel)itemModel).Language)"/>
+                <div class="mt-5">
+                    <input   type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
                     @* <InputDate type="date" />Date: *@
                 </div>
-                <ValidationMessage For="@(() => itemModel.Name)"/>
+                
+                <div class="form-check form-check-inline">
+                    @foreach (Genre g in genres) {
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                        <label class="form-check-label" for="inlineCheckbox1">@g.Name</label>
+                    }
+                </div>
             }
                 <div class="form-group d-flex justify-content-center">
                     <label class="col-md-4 control-label"></label>
@@ -80,7 +103,8 @@
 
 @code {
     private IList<Category> categories;
-    private ItemModel itemModel = new ItemModel();
+    private IList<Genre> genres;
+    private ItemModel itemModel = new BookModel();
     private string errorMessage;
 
     protected override async Task OnInitializedAsync() {
