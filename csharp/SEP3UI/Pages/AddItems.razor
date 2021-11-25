@@ -18,18 +18,18 @@
             <button type="button" class="list-group-item list-group-item-action">Other</button>
                 <div class="mt-5">
                     <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
-                    <label for="name">Name:</label>
+                    <label class="label-customised" for="name">Name:</label>
                 </div>
                 <ValidationMessage For="@(() => itemModel.Name)"/>
                 <div class="mt-5 text-center">
-                    <label for="description">Description:</label>
+                    <label class="label-customised" for="description">Description:</label>
                     <textarea @bind="itemModel.Description" type="text" maxlength="500" id="description" rows="5"></textarea>
                 </div>
                 <ValidationMessage For="@(() => itemModel.Description)"/>
             
                 <div>
-                    <label for="exampleFormControlFile">Upload an image:</label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile" required>
+                    <label class="label-customised" for="exampleFormControlFile">Upload an image:</label>
+                    <input type="file" class="form-control-file" id="exampleFormControlFile">
                 </div>
                 <p>Status</p>
                 @foreach (ItemStatus status in Enum.GetValues(typeof(ItemStatus))) {
@@ -38,57 +38,69 @@
             
                 <div class="mt-5 inputs">
                     <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
-                    <label for="price">Price:</label>
+                    <label class="label-customised" for="price">Price:</label>
                 </div>
                 <ValidationMessage For="@(() => itemModel.Price)"/>
 
                 <div class="mt-5 inputs">
                     <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
-                    <label for="quantity">Quantity:</label>
+                    <label class="label-customised" for="quantity">Quantity:</label>
                 </div>
             <ValidationMessage For="@(() => itemModel.Quantity)"/>
             
             <div class="mt-5 inputs">
                     <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
-                    <label for="discount">Discount:</label>
+                    <label class="label-customised" for="discount">Discount:</label>
                 </div>
             <ValidationMessage For="@(() => itemModel.Discount)"/>
             
             @if (itemModel.Category != null && itemModel.Category.Name.Equals("Book")) {
                 <div class="mt-5">
                     <input @bind-value="((BookModel)itemModel).Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn" required/>
-                    <label for="bookIsbn">Book isbn:</label> 
+                    <label class="label-customised" for="bookIsbn">Book isbn:</label> 
                 </div>
                 <ValidationMessage For="@(() => ((BookModel)itemModel).Isbn)"/>
                 
                 <div class="mt-5">
                     <input @bind-value="((BookModel)itemModel).AuthorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName" required/>
-                    <label for="authorFName">Author first name:</label> 
+                    <label class="label-customised" for="authorFName">Author first name:</label> 
                 </div>
                 <ValidationMessage For="@(() => ((BookModel)itemModel).AuthorFirstName)"/>
                 
                 <div class="mt-5">
                     <input @bind-value="((BookModel)itemModel).AuthorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLName" required/>
-                    <label for="authorLName">Author last name:</label> 
+                    <label class="label-customised" for="authorLName">Author last name:</label> 
                 </div>
                 <ValidationMessage For="@(() => ((BookModel)itemModel).AuthorLastName)"/>
                 
                 <div class="mt-5">
                     <input @bind-value="((BookModel)itemModel).Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language" required/>
-                    <label for="language">Book language:</label> 
+                    <label class="label-customised" for="language">Book language:</label> 
                 </div>
                 <ValidationMessage For="@(() => ((BookModel)itemModel).Language)"/>
+                
                 <div class="mt-5">
-                    <input   type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
-                    @* <InputDate type="date" />Date: *@
+                     <InputDate @bind-Value="((BookModel)itemModel).PublicationDate" type="date" />Date: 
                 </div>
                 
-                <div class="form-check form-check-inline">
-                    @foreach (Genre g in genres) {
-                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                        <label class="form-check-label" for="inlineCheckbox1">@g.Name</label>
-                    }
+                <div class="demo-section k-form k-form-vertical">
+                    <div class="k-form-field">
+                        <label for="travel-date" class="k-label k-form-label">Travel Date</label>
+                        <div class="k-form-field-wrap">
+                            <TelerikDatePicker Min="@Min" Max="@Max" Id="travel-date"></TelerikDatePicker>
+                        </div>
+                    </div>
+                    <div class="k-form-field">
+                        <p>The selected travel date is: <strong>@selectedDate?.ToLongDateString()</strong></p>
+                    </div>
                 </div>
+                
+                @foreach (Genre g in genres) {
+                    <div class="form-check form-check-inline">
+                        <input @onclick="@(() => AddGenre(g))" class="form-check-input" type="checkbox" id="inlineCheckbox" value="option1">
+                        <label class="form-check-label" for="inlineCheckbox">@g.Name</label>
+                    </div> 
+                }
             }
                 <div class="form-group d-flex justify-content-center">
                     <label class="col-md-4 control-label"></label>
@@ -104,15 +116,25 @@
 @code {
     private IList<Category> categories;
     private IList<Genre> genres;
+    private List<Genre> selectedGenres = new List<Genre>();
     private ItemModel itemModel = new BookModel();
     private string errorMessage;
+    public DateTime Max = new DateTime(2050, 12, 31);
+    public DateTime Min = new DateTime(1950, 1, 1);
+    private DateTime? selectedDate;
+
 
     protected override async Task OnInitializedAsync() {
         categories = await itemService.GetCategories();
+        genres = await itemService.GetGenres();
     }
 
     private async Task AddItemAsync() {
         try {
+            ((BookModel) itemModel).Genre = selectedGenres;
+            foreach (var g in selectedGenres) {
+                Console.WriteLine(g);
+            }
             await itemService.AddItemAsync(itemModel);
         }
         catch (Exception e) {
@@ -126,6 +148,10 @@
 
     private void SetStatus(ItemStatus status) {
         itemModel.Status = status;
+    }
+
+    private void AddGenre(Genre genre) {
+         selectedGenres.Add(genre);
     }
 
     private void AddCategory(Category category) {

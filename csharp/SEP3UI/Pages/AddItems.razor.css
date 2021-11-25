@@ -6,7 +6,7 @@
     width: 100%;
     line-height: 44px;
 }
-label {
+.label-customised {
     position: relative;
     top: -30px;
     left: 0;
@@ -15,7 +15,7 @@ label {
     transition: 0.2s all;
     cursor: text;
 }
-input, textarea {
+input[type=text], textarea {
     width: 100%;
     border: 0;
     outline: 0;
@@ -24,20 +24,20 @@ input, textarea {
     box-shadow: none;
     color: #111;
 }
-input:invalid, textarea:invalid {
+input[type=text]:invalid, textarea:invalid {
     outline: 0;
 }
-input:focus,
-input:valid, textarea:invalid, textarea:focus {
+input[type=text]:focus,
+input[type=text]:valid, textarea:invalid, textarea:focus {
     border-color: #483D8B;
 }
-input:focus~label,
-input:valid~label , textarea:valid~label, textarea:focus~label{
+input[type=text]:focus~label,
+input[type=text]:valid~label , textarea:valid~label, textarea:focus~label{
     font-size: 14px;
     top: -50px;
     color: #483D8B;
 }
 
-#exampleFormControlFile{
+#exampleFormControlFile, #inlineCheckbox{
     border-bottom: none;
 }

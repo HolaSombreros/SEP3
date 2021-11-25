@@ -28,6 +28,10 @@ namespace SEP3UI.Data {
             return await restService.GetAsync<IList<Category>>($"items/categories");
         }
 
+        public async Task<IList<Genre>> GetGenres() {
+            return await restService.GetAsync<IList<Genre>>("items/genres");
+        }
+
         public async Task<Item> AddItemAsync(ItemModel itemModel) {
             return await restService.PostAsync<ItemModel, Item>(itemModel, "items");
         }

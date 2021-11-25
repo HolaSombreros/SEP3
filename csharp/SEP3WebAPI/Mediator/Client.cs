@@ -90,18 +90,22 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest)request).Items;
         }
 
-        public async Task<IList<Category>> GetCategories() {
+        public async Task<IList<Category>> GetCategoriesAsync() {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getCategories"
             };
-            string send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
+            Send(req);
             return ((ItemRequest)request).Categories;
+        }
+
+        public async Task<IList<Genre>> GetGenresAsync() {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getGenres"
+            };
+            Send(req);
+            return ((ItemRequest) request).Genres;
         }
 
         public async Task<Item> AddItemAsync(Item item) {
@@ -110,16 +114,10 @@ namespace SEP3WebAPI.Mediator {
                 Type = "addItem",
                 Item = item
             };
-            string send = JsonSerializer.Serialize(req, new JsonSerializerOptions {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
+            Send(req);
             return ((ItemRequest) request).Item;
         }
-        public async Task<Item> GetItemBySpecifications(string name, string description, Category category) {
+        public async Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getItemBySpecifications",
@@ -129,12 +127,7 @@ namespace SEP3WebAPI.Mediator {
                     Category = category
                 }
             };
-            string send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
+            Send(req);
             return ((ItemRequest) request).Item;
         }
 

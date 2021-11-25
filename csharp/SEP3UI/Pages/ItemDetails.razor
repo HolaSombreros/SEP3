@@ -34,9 +34,9 @@ else {
                             <div class="mt-2">
                                 <span>
                                     <strong>Author:</strong>
-                                    @foreach (Author author in book.Authors) {
-                                        <a rel="tag" href="#">@author.FirstName @author.LastName</a>
-                                    }
+                                    @* @foreach (Author author in book.Authors) { *@
+                                    @*     <a rel="tag" href="#">@author.FirstName @author.LastName</a> *@
+                                    @* } *@
                                 </span>
                             </div>
                             <div class="mt-2">
@@ -95,7 +95,6 @@ else {
 
     protected override async Task OnInitializedAsync() {
         item = await itemService.GetItemAsync(Id);
-        Console.WriteLine(item.Category.Name);
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }

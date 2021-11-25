@@ -87,6 +87,22 @@ namespace SEP3WebAPI.Controllers {
             }
         }
 
+        [HttpGet]
+        [Route("genres")]
+        public async Task<ActionResult<IList<Genre>>> GetGenresAsync() {
+            try {
+                IList<Genre> genres = await service.GetGenresAsync();
+                return Ok(genres);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult<Item>> AddItemAsync([FromBody] ItemModel itemModel) {
             if (!ModelState.IsValid)
