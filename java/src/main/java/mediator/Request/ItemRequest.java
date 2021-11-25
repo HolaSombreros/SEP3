@@ -16,7 +16,6 @@ public class ItemRequest extends Request{
     private Book book;
     private Customer customer;
     private int[] itemsIds;
-    private int customerId;
 
     public ItemRequest(String service, String type) {
         super(service, type);

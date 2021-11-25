@@ -10,5 +10,6 @@ namespace SEP3UI.Data {
         Task<Book> GetBookAsync(int id);
         Task<IList<Category>> GetCategories();
         Task<Item> AddItemAsync(ItemModel itemModel);
+        Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index);
     }
 }

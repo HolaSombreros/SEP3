@@ -19,6 +19,7 @@ public class CustomerCommand implements Command {
         methods.put("get", this::get);
         methods.put("login", this::login);
         methods.put("register", this::register);
+        methods.put("update", this::update);
     }
 
     @Override public Request execute(Request request) {
@@ -46,5 +47,10 @@ public class CustomerCommand implements Command {
         Customer customer = request.getCustomer();
         reply.setCustomer(databaseManager.getCustomerDAOService().create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
             customer.getRole(), customer.getAddress(), customer.getPhoneNumber()));
+    }
+
+    private void update() {
+        Customer customer = request.getCustomer();
+        databaseManager.getCustomerDAOService().update(customer);
     }
 }
