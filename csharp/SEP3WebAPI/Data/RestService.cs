@@ -88,6 +88,10 @@ namespace SEP3WebAPI.Data {
             return created;
         }
 
+        public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
+            return await client.GetItemsByCategoryAsync(category, index);
+        }
+
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
             Customer customer = await client.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
@@ -269,10 +273,6 @@ namespace SEP3WebAPI.Data {
 
         public async Task<IList<Order>> GetOrdersAsync(int index) {
             return await client.GetOrdersAsync(index);
-        }
-
-        public async Task<IList<Item>> GetItemsByCategoryAsync(Category category, int index) {
-            return await client.GetItemsByCategoryAsync(category, index);
         }
     }
 }
