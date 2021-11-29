@@ -67,8 +67,7 @@ namespace SEP3WebAPI.Mediator {
 
         private void Send(object req) {
             string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             byte[] data = Encoding.ASCII.GetBytes(json + "\n");
             networkStream.Write(data, 0, data.Length);
             Waiting();
@@ -89,7 +88,6 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemRequest)reply).Items;
-
         }
 
         public async Task<IList<Category>> GetCategoriesAsync() {
@@ -97,10 +95,8 @@ namespace SEP3WebAPI.Mediator {
                 Service = "item",
                 Type = "getCategories"
             };
-
             Send(req);
-            return ((ItemRequest)reply).Categories;
-
+            return ((ItemRequest) reply).Categories;
         }
 
         public async Task<IList<Genre>> GetGenresAsync() {
@@ -178,7 +174,6 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
            return ((ItemRequest) reply).Item;
-
         }
 
         public async Task<Book> GetBookAsync(int id) {
@@ -202,9 +197,18 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((OrderRequest)reply).Order;
-
         }
-        
+
+        public async Task<IList<Order>> GetOrdersAsync(int index) {
+            OrderRequest req = new OrderRequest() {
+                Service = "order",
+                Type = "getAll",
+                Index = index
+            };
+            Send(req);
+            return ((OrderRequest) reply).Orders;
+        }
+
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             CustomerRequest req = new CustomerRequest() {
                 Type = "login",
@@ -259,6 +263,17 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemRequest) reply).Items;
+        }
+
+        public async Task<Item> AddToWishlist(int customerId, int itemId) {
+            ItemRequest req = new ItemRequest() {
+                Type = "addWishlist",
+                Service = "item",
+                Customer = new Customer() {Id = customerId},
+                Item = new Item() {Id = itemId}
+            };
+            Send(req);
+            return ((ItemRequest) reply).Item;
         }
 
         public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {

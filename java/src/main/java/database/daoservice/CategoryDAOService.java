@@ -18,8 +18,7 @@ public class CategoryDAOService implements CategoryDAO {
     @Override
     public List<Category> readAllCategories() {
         try {
-            List<Category> categories = databaseHelper.mapList(new CategoryMapper(), "SELECT * FROM category;");
-            return categories;
+            return databaseHelper.mapList(new CategoryMapper(), "SELECT * FROM category;");
         }
         catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
