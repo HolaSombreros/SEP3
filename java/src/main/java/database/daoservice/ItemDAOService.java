@@ -144,7 +144,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByItemName(String itemName, int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM item WHERE lower(name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
+            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
         }
         catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());

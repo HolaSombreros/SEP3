@@ -90,13 +90,13 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest)reply).Items;
         }
 
-        public async Task<IList<Category>> GetCategories() {
+        public async Task<IList<Category>> GetCategoriesAsync() {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getCategories"
             };
             Send(req);
-            Waiting();
+            Console.WriteLine(((ItemRequest)reply).Categories);
             return ((ItemRequest)reply).Categories;
         }
 
@@ -110,7 +110,7 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest) reply).Item;
         }
         
-        public async Task<Item> GetItemBySpecifications(string name, string description, Category category) {
+        public async Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getItemBySpecifications",
