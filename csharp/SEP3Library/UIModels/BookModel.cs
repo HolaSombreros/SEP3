@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using SEP3Library.Models;
 
 namespace SEP3Library.UIModels {
-    public class BookModel : ItemModel {
+    public class BookModel {
         
         [Required(ErrorMessage = "Please enter an isbn")]
         [MaxLength(20, ErrorMessage = "The first name cannot exceed 20 characters")]
@@ -18,7 +19,7 @@ namespace SEP3Library.UIModels {
         public string AuthorLastName { get; set; }
         
         [Required(ErrorMessage = "Please enter a publication date for the author")]
-        public MyDateTime PublicationDate { get; set; }
+        public DateTime PublicationDate { get; set; }
         
         [Required(ErrorMessage = "Please enter a language")]
         [MaxLength(20, ErrorMessage = "The first name cannot exceed 20 characters")]

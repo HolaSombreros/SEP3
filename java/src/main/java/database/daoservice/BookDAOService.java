@@ -28,7 +28,7 @@ public class BookDAOService implements BookDAO {
     }
 
     @Override
-    public Book create(String name, String description, double price, Category category, int quantity, String imgFilePath, String ISBN, ArrayList<Author> authors, String language, ArrayList<Genre> genre, LocalDate publicationDate) {
+    public Book create(String name, String description, double price, Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
         try {
             for(Author author: authors){
                 Author a = authorDAOService.create(author.getFirstName(), author.getLastName());
@@ -58,6 +58,7 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book read(String ISBN, int id) {
         try {
+            System.out.println(id);
             Book book = databaseHelper.mapObject(new BookMapper(),"SELECT * FROM  book JOIN item USING(item_id) WHERE book.item_id = ? AND ISBN = ?", id,ISBN);
             book.setGenre(genreDAOService.getGenresOfBook(id));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(id));
@@ -73,6 +74,24 @@ public class BookDAOService implements BookDAO {
             Book book = databaseHelper.mapObject(new BookMapper(),"SELECT * FROM book JOIN item USING(item_id) WHERE item_id = ?", id);
             book.setGenre(genreDAOService.getGenresOfBook(id));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(id));
+            return book;
+        }
+        catch(SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * Read method used only to check if the database contains the ISBN specified by the admin on purpose of book creation
+     * It does not provide more information than the ISBN
+     * Do not use if you need more information about the item, genre or authors
+     * @param ISBN
+     * @return
+     */
+    @Override
+    public Book read(String ISBN) {
+        try {
+            Book book = databaseHelper.mapObject(new BookMapper(), "SELECT * FROM book WHERE ISBN = ?", ISBN);
             return book;
         }
         catch(SQLException e) {

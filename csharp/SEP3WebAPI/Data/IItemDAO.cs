@@ -11,6 +11,7 @@ namespace SEP3WebAPI.Data {
         Task<IList<Category>> GetCategoriesAsync();
         Task<IList<Genre>> GetGenresAsync();
         Task<Item> CreateItemAsync(ItemModel itemModel);
+        Task<Book> CreateBookAsync(ItemModel bookModel);
         Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index);
     }
 }

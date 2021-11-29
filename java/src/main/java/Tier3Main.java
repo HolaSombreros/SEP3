@@ -19,12 +19,12 @@ public class Tier3Main {
         ArrayList<Author> authors = new ArrayList<>();
         genres.add(new Genre("Romance", 1));
         authors.add(new Author("Chu", "Chang"));
-        databaseManager.getBookDAOService().create("Solo Leveling", "A light Novel", 12.50, new Category(1,"Book"), 15,"Images/solo_leveling_vol1.jpg","9781975319274",authors,
-              "English",genres, LocalDate.of(2019,9,26));
-        databaseManager.getItemDAOService().create("Ceramic Tea Pot", "a red ceramic tea pot", 50.25,new Category(2, "Home"), 25, "Images/red_ceramic_teapot.png");
-        databaseManager.getBookDAOService().create("Pride and Prejudice", "A classic novel; Has too many movies", 12.50, new Category(1,"Book"), 25,"Images/pride_and_prejudice.jpg","9780679783268",new ArrayList<Author>(Arrays.asList(new Author("Jane","Austen"))),
-                "English", genres, LocalDate.of(1813,1,28));
-        databaseManager.getItemDAOService().create("Lavender Candle", "Lavender scented candle", 10.00,new Category(2, "Home"), 25, "Images/lavender_candle.jpg");
+//        databaseManager.getBookDAOService().create("Solo Leveling", "A light Novel", 12.50, new Category(1,"Book"), 15,"Images/solo_leveling_vol1.jpg","9781975319274",authors,
+//              "English",genres, LocalDate.of(2019,9,26));
+//        databaseManager.getItemDAOService().create("Ceramic Tea Pot", "a red ceramic tea pot", 50.25,new Category(2, "Home"), 25, "Images/red_ceramic_teapot.png");
+//        databaseManager.getBookDAOService().create("Pride and Prejudice", "A classic novel; Has too many movies", 12.50, new Category(1,"Book"), 25,"Images/pride_and_prejudice.jpg","9780679783268",new ArrayList<Author>(Arrays.asList(new Author("Jane","Austen"))),
+//                "English", genres, LocalDate.of(1813,1,28));
+//        databaseManager.getItemDAOService().create("Lavender Candle", "Lavender scented candle", 10.00,new Category(2, "Home"), 25, "Images/lavender_candle.jpg");
         try {
             Server server = new Server(databaseManager);
             System.out.println("Server started ^-^ ");

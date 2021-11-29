@@ -77,7 +77,7 @@ namespace SEP3WebAPI.Data {
             await client.UpdateCustomerAsync(updated);
             return updated;
         }
-
+        
         public Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             return client.GetItemsBySearchAsync(searchName, index);
         }
@@ -149,7 +149,7 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<Item> CreateItemAsync(ItemModel itemModel) {
-            if (itemModel == null) throw new InvalidDataException("Please specify an item of the proper format");
+            if (itemModel == null) throw new InvalidDataException("Please specify an item of the proper format!");
             Item item = await client.GetItemBySpecificationsAsync(itemModel.Name, itemModel.Description, itemModel.Category);
             if (item != null)
                 throw new InvalidDataException("This item already exists");
@@ -164,6 +164,42 @@ namespace SEP3WebAPI.Data {
                 ImageName = "Images/sth"
             };
             return await client.AddItemAsync(i);
+        }
+        
+        public async Task<Book> CreateBookAsync(ItemModel itemModel) {
+            if (itemModel == null) throw new InvalidDataException("Please specify a book of the proper format!");
+            Book book = await client.GetBookBySpecificationsAsync(itemModel.BookModel.Isbn);
+            if (book != null)
+                throw new InvalidDataException("This book already exists, please edit in case of stock refill");
+            
+            Book b = new Book() {
+                Name = itemModel.Name,
+                Description = itemModel.Description,
+                Category = itemModel.Category,
+                Discount = itemModel.Discount,
+                Price = itemModel.Price,
+                Status = itemModel.Status,
+                Quantity = itemModel.Quantity,
+                ImageName = "Images/Booklala",
+                Isbn = itemModel.BookModel.Isbn,
+                Language = itemModel.BookModel.Language,
+                PublicationDate = new MyDateTime() {
+                    Year = itemModel.BookModel.PublicationDate.Year,
+                    Month = itemModel.BookModel.PublicationDate.Month,
+                    Day = itemModel.BookModel.PublicationDate.Day,
+                    Hour = itemModel.BookModel.PublicationDate.Hour,
+                    Minute = itemModel.BookModel.PublicationDate.Minute,
+                    Second = itemModel.BookModel.PublicationDate.Second
+                },
+                Authors = new List<Author>() {
+                    new Author() {
+                        FirstName = itemModel.BookModel.AuthorFirstName,
+                        LastName = itemModel.BookModel.AuthorLastName
+                    }
+                },
+                Genre = itemModel.BookModel.Genre
+            };
+            return await client.AddBookAsync(b);
         }
 
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {

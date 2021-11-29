@@ -5,137 +5,143 @@
 @using SEP3UI.Data
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject IItemService itemService
-
-<h3>Add Items</h3>
+<header>
+    <div class="overlay">
+        <h1>Add Items</h1>
+    
 @if (categories != null) {
-    <EditForm Model="@itemModel" OnValidSubmit="@AddItemAsync">
-        <div class="container text-center w-25 d-flex flex-column align-items-center">
+    <EditForm Model="@itemModel">
+        <div class="container text-center d-flex flex-column align-items-center mt-3">
             <DataAnnotationsValidator/>
-                <h4>Select category:</h4>
-                @foreach (var category in categories) {
-                    <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
-                }
-            <button type="button" class="list-group-item list-group-item-action">Other</button>
-                <div class="mt-5">
-                    <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
-                    <label class="label-customised" for="name">Name:</label>
+            <div class="row">
+                <div class="col-md-4 mr-3">
+                    <div class="">
+                        <label class="simple-customised"> Select category:</label>
+                        @foreach (var category in categories) {
+                            <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
+                        }
+                        <button type="button" class="list-group-item list-group-item-action">Other</button>
+                    </div>
+                    <div class="mt-3">
+                        <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                        <label class="label-customised" for="name">Name:</label>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Name)"/>
+                    <div class="mt-3 text-center">
+                        <label class="label-customised" for="description">Description:</label>
+                        <textarea @bind="itemModel.Description" type="text" maxlength="500" id="description" rows="5"></textarea>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Description)"/>
                 </div>
-                <ValidationMessage For="@(() => itemModel.Name)"/>
-                <div class="mt-5 text-center">
-                    <label class="label-customised" for="description">Description:</label>
-                    <textarea @bind="itemModel.Description" type="text" maxlength="500" id="description" rows="5"></textarea>
-                </div>
-                <ValidationMessage For="@(() => itemModel.Description)"/>
-            
-                <div>
-                    <label class="label-customised" for="exampleFormControlFile">Upload an image:</label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile">
-                </div>
-                <p>Status</p>
-                @foreach (ItemStatus status in Enum.GetValues(typeof(ItemStatus))) {
-                    <button type="button" @onclick="@(() => SetStatus(status))" class="list-group-item list-group-item-action"> @EnumHelper.GetDescription(status)</button>
-                }
-            
-                <div class="mt-5 inputs">
-                    <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
-                    <label class="label-customised" for="price">Price:</label>
-                </div>
-                <ValidationMessage For="@(() => itemModel.Price)"/>
+                <div class="col-md-4 mr-3">
+                    <div>
+                        <label for="controlFile">Upload an image:</label>
+                        <input type="file" id="controlFile">
+                    </div>
+                    Status
+                    @foreach (ItemStatus status in Enum.GetValues(typeof(ItemStatus))) {
+                        <button type="button" @onclick="@(() => SetStatus(status))" class="list-group-item list-group-item-action"> @EnumHelper.GetDescription(status)</button>
+                    }
+                    <div class="mt-3 inputs">
+                        <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
+                        <label class="label-customised" for="price">Price:</label>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Price)"/>
 
-                <div class="mt-5 inputs">
-                    <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
-                    <label class="label-customised" for="quantity">Quantity:</label>
+                    <div class="mt-3 inputs">
+                        <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
+                        <label class="label-customised" for="quantity">Quantity:</label>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Quantity)"/>
+
+                    <div class="mt-3 inputs">
+                        <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
+                        <label class="label-customised" for="discount">Discount:</label>
+                    </div>
+                    <ValidationMessage For="@(() => itemModel.Discount)"/>
                 </div>
-            <ValidationMessage For="@(() => itemModel.Quantity)"/>
-            
-            <div class="mt-5 inputs">
-                    <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
-                    <label class="label-customised" for="discount">Discount:</label>
-                </div>
-            <ValidationMessage For="@(() => itemModel.Discount)"/>
-            
-            @if (itemModel.Category != null && itemModel.Category.Name.Equals("Book")) {
-                <div class="mt-5">
-                    <input @bind-value="((BookModel)itemModel).Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn" required/>
-                    <label class="label-customised" for="bookIsbn">Book isbn:</label> 
-                </div>
-                <ValidationMessage For="@(() => ((BookModel)itemModel).Isbn)"/>
-                
-                <div class="mt-5">
-                    <input @bind-value="((BookModel)itemModel).AuthorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName" required/>
-                    <label class="label-customised" for="authorFName">Author first name:</label> 
-                </div>
-                <ValidationMessage For="@(() => ((BookModel)itemModel).AuthorFirstName)"/>
-                
-                <div class="mt-5">
-                    <input @bind-value="((BookModel)itemModel).AuthorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLName" required/>
-                    <label class="label-customised" for="authorLName">Author last name:</label> 
-                </div>
-                <ValidationMessage For="@(() => ((BookModel)itemModel).AuthorLastName)"/>
-                
-                <div class="mt-5">
-                    <input @bind-value="((BookModel)itemModel).Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language" required/>
-                    <label class="label-customised" for="language">Book language:</label> 
-                </div>
-                <ValidationMessage For="@(() => ((BookModel)itemModel).Language)"/>
-                
-                <div class="mt-5">
-                     <InputDate @bind-Value="((BookModel)itemModel).PublicationDate" type="date" />Date: 
-                </div>
-                
-                <div class="demo-section k-form k-form-vertical">
-                    <div class="k-form-field">
-                        <label for="travel-date" class="k-label k-form-label">Travel Date</label>
-                        <div class="k-form-field-wrap">
-                            <TelerikDatePicker Min="@Min" Max="@Max" Id="travel-date"></TelerikDatePicker>
+                @if (itemModel.Category != null && itemModel.Category.Name.Equals("Book")) {
+                    <div class="col-md-3 mr-3">
+                        <div>
+                            <input @bind-value="itemModel.BookModel.Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn" required/>
+                            <label class="label-customised" for="bookIsbn">Book isbn:</label>
+                        </div>
+                        <ValidationMessage For="@(() => itemModel.BookModel.Isbn)"/>
+
+                        <div>
+                            <input @bind-value="itemModel.BookModel.AuthorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName" required/>
+                            <label class="label-customised" for="authorFName">Author first name:</label>
+                        </div>
+                        <ValidationMessage For="@(() => itemModel.BookModel.AuthorFirstName)"/>
+
+                        <div>
+                            <input @bind-value="itemModel.BookModel.AuthorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLName" required/>
+                            <label class="label-customised" for="authorLName">Author last name:</label>
+                        </div>
+                        <ValidationMessage For="@(() => itemModel.BookModel.AuthorLastName)"/>
+
+                        <div>
+                            <input @bind-value="itemModel.BookModel.Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language" required/>
+                            <label class="label-customised" for="language">Book language:</label>
+                        </div>
+                        <ValidationMessage For="@(() => itemModel.BookModel.Language)"/>
+
+                        <div>
+                            <label id="problematic-label">Date:</label>
+                            <InputDate @bind-Value="itemModel.BookModel.PublicationDate"/>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <label class="simple-customised">Genres:</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            @foreach (Genre g in genres) {
+                                <input @onclick="@(() => AddGenre(g))" class="form-check-input ml-2" type="checkbox" id="inlineCheckbox" value="option1">
+                                <label class="form-check-label" for="inlineCheckbox">@g.Name</label>
+                            }
                         </div>
                     </div>
-                    <div class="k-form-field">
-                        <p>The selected travel date is: <strong>@selectedDate?.ToLongDateString()</strong></p>
-                    </div>
-                </div>
-                
-                @foreach (Genre g in genres) {
-                    <div class="form-check form-check-inline">
-                        <input @onclick="@(() => AddGenre(g))" class="form-check-input" type="checkbox" id="inlineCheckbox" value="option1">
-                        <label class="form-check-label" for="inlineCheckbox">@g.Name</label>
-                    </div> 
                 }
-            }
-                <div class="form-group d-flex justify-content-center">
-                    <label class="col-md-4 control-label"></label>
-                    <div class="col-md-4">
-                        <br>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
             </div>
+        </div>
+        <div class="form-group d-flex text-center justify-content-center">
+            <label class=" control-label"></label>
+            <div class="">
+                <br>
+                <button type="submit" @onclick="(() => AddItemAsync())" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+         <div class="card d-flex align-items-center text-danger">
+            <div>@errorMessage</div>
+        </div>
     </EditForm>
 }
+</div>
+</header>   
 
 @code {
     private IList<Category> categories;
     private IList<Genre> genres;
     private List<Genre> selectedGenres = new List<Genre>();
-    private ItemModel itemModel = new BookModel();
+    private ItemModel itemModel = new ItemModel();
     private string errorMessage;
-    public DateTime Max = new DateTime(2050, 12, 31);
-    public DateTime Min = new DateTime(1950, 1, 1);
-    private DateTime? selectedDate;
-
 
     protected override async Task OnInitializedAsync() {
         categories = await itemService.GetCategories();
         genres = await itemService.GetGenres();
+        itemModel.BookModel = new BookModel();
     }
 
     private async Task AddItemAsync() {
         try {
-            ((BookModel) itemModel).Genre = selectedGenres;
+            Console.WriteLine(itemModel.Name + itemModel.Category + itemModel.BookModel.Genre + itemModel.Description);
+             itemModel.BookModel.Genre = selectedGenres;
             foreach (var g in selectedGenres) {
-                Console.WriteLine(g);
+                Console.WriteLine(g.Name);
             }
             await itemService.AddItemAsync(itemModel);
+            //TODO: Receive this from tier2-tier3
+            errorMessage = "Successful item added";
         }
         catch (Exception e) {
             errorMessage = e.Message;
@@ -151,7 +157,7 @@
     }
 
     private void AddGenre(Genre genre) {
-         selectedGenres.Add(genre);
+        selectedGenres.Add(genre);
     }
 
     private void AddCategory(Category category) {

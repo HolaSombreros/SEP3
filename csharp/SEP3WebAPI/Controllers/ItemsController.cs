@@ -108,6 +108,11 @@ namespace SEP3WebAPI.Controllers {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try {
+                if (itemModel.Category.Name.Equals("Book")) {
+                    Console.WriteLine("Hello");
+                    Book book = await service.CreateBookAsync(itemModel);
+                    return Created($"/{book.Id}", book);
+                }
                 Item item = await service.CreateItemAsync(itemModel);
                 return Created($"/{item.Id}", item);
             }

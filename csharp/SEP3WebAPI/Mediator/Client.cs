@@ -117,6 +117,17 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             return ((ItemRequest) request).Item;
         }
+
+        public async Task<Book> AddBookAsync(Book book) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "addBook",
+                Book = book
+            };
+            Send(req);
+            return ((ItemRequest) request).Book;
+        }
+
         public async Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
@@ -129,6 +140,18 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemRequest) request).Item;
+        }
+
+        public async Task<Book> GetBookBySpecificationsAsync(string isbn) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getBookBySpecifications",
+                Book = new Book() {
+                    Isbn = isbn
+                }
+            };
+            Send(req);
+            return ((ItemRequest) request).Book;
         }
 
         public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {

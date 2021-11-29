@@ -19,6 +19,7 @@ public class ItemRequest extends Request{
         super(service, type);
         items = new ArrayList<>();
         categories = new ArrayList<>();
+        genres = new ArrayList<>();
     }
 
     public List<Genre> getGenres() {
