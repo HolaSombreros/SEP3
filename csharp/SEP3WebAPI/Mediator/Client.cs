@@ -198,7 +198,17 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             return ((OrderRequest)reply).Order;
         }
-        
+
+        public async Task<IList<Order>> GetOrdersAsync(int index) {
+            OrderRequest req = new OrderRequest() {
+                Service = "order",
+                Type = "getAll",
+                Index = index
+            };
+            Send(req);
+            return ((OrderRequest) reply).Orders;
+        }
+
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             CustomerRequest req = new CustomerRequest() {
                 Type = "login",

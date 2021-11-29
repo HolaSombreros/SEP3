@@ -128,8 +128,4 @@ public class ItemCommand implements Command {
     private void removeFromShoppingCart() {
         databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
     }
-
-    private void getItemsBySearchName(){
-        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
-    }
 }

@@ -1,6 +1,7 @@
 package database.daoservice;
 
 import database.daomodel.OrderDAO;
+import database.daoservice.mapper.ItemMapper;
 import database.daoservice.mapper.OrderMapper;
 import model.*;
 import model.enums.OrderStatus;
@@ -48,6 +49,14 @@ public class OrderDAOService implements OrderDAO {
             Order order =  databaseHelper.mapObject(new OrderMapper(), "SELECT * FROM purchase JOIN (SELECT * from address JOIN city USING (zip_code))a USING (address_id) WHERE purchase_id = ?;", id);
             order.setItems(itemDAOService.readAllFromOrder(id));
             return order;
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public List<Order> readByIndex(int index) {
+        try{
+            return databaseHelper.mapList(new OrderMapper(), "SELECT * FROM purchase JOIN (SELECT * from address JOIN city USING (zip_code))a USING (address_id) ORDER BY purchase_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +28,21 @@ namespace SEP3WebAPI.Controllers {
             } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
             } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IList<Order>>> GetOrdersAsync([FromQuery] int index) {
+            try {
+                IList<Order> orders = await service.GetOrdersAsync(index);
+                return Ok(orders);
+            } 
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }

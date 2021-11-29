@@ -258,5 +258,9 @@ namespace SEP3WebAPI.Data {
 
             return await client.CreateOrderAsync(order);
         }
+
+        public async Task<IList<Order>> GetOrdersAsync(int index) {
+            return await client.GetOrdersAsync(index);
+        }
     }
 }
