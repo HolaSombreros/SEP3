@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
@@ -20,7 +21,8 @@ namespace SEP3UI.Data {
         }
 
         public async Task<IList<Order>> GetOrdersAsync(int index) {
-            return await restService.GetAsync<IList<Order>>("orders?index={index}");
+            IList<Order> orders = await restService.GetAsync<IList<Order>>($"orders?index={index}");
+            return orders;
         }
     }
 }

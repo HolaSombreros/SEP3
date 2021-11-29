@@ -15,5 +15,9 @@ namespace SEP3Library.Models {
         [Range(1000,9999,ErrorMessage="Zipcode must be between 1000 and 9999")]
         [Required(ErrorMessage = "Please enter a zipcode")]
         public int ZipCode { get; set; }
+
+        public override string ToString() {
+            return $"{Street}, {Number}, {ZipCode}, {City}";
+        }
     }
 }

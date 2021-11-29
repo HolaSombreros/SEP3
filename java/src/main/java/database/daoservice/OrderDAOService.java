@@ -22,12 +22,12 @@ public class OrderDAOService implements OrderDAO {
     }
 
     @Override
-    public Order create(List<Item> items, Address address, MyDateTime dateTime, OrderStatus status, String firstName, String lastName, String email) {
+    public Order create(List<Item> items, Address address, MyDateTime dateTime, OrderStatus status, String firstName, String lastName, String email, int customerId) {
         try {
             //TODO: decrease the quantity in item table after you place an order
             Address address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
             List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO purchase (address_id, date_time, status, first_name, last_name, email, customer_id) " +
-                            "VALUES (?,?,?::purchase_status,?,?,?,?);", address1.getId(),dateTime.getLocalDateTime(),status.toString(), firstName, lastName, email, null);
+                            "VALUES (?,?,?::purchase_status,?,?,?,?);", address1.getId(),dateTime.getLocalDateTime(),status.toString(), firstName, lastName, email, customerId==0?null:customerId);
 
             for(Item item: items){
                 databaseHelper.executeUpdate("INSERT INTO purchase_item (purchase_id, item_id, quantity, price) VALUES (?,?,?,?);",keys.get(0) ,item.getId(), item.getQuantity(), item.getPrice());
@@ -56,7 +56,11 @@ public class OrderDAOService implements OrderDAO {
 
     @Override public List<Order> readByIndex(int index) {
         try{
-            return databaseHelper.mapList(new OrderMapper(), "SELECT * FROM purchase JOIN (SELECT * from address JOIN city USING (zip_code))a USING (address_id) ORDER BY purchase_id DESC LIMIT 21 OFFSET 21 * ?",index);
+            List<Order> orders = databaseHelper.mapList(new OrderMapper(), "SELECT * FROM purchase JOIN (SELECT * from address JOIN city USING (zip_code))a USING (address_id) ORDER BY purchase_id DESC LIMIT 21 OFFSET 21 * ?",index);
+            for (Order order : orders) {
+                order.setItems(itemDAOService.readAllFromOrder(order.getId()));
+            }
+            return orders;
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

@@ -253,7 +253,8 @@ namespace SEP3WebAPI.Data {
                     Second = DateTime.Now.Second
                 },
                 Items = orderModel.Items,
-                OrderStatus = OrderStatus.Pending
+                OrderStatus = OrderStatus.Pending,
+                CustomerId = orderModel.CustomerId
             };
 
             return await client.CreateOrderAsync(order);
