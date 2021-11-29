@@ -353,5 +353,17 @@ namespace SEP3WebAPI.Mediator {
             Send(request);
             return ((ItemRequest)reply).Items;
         }
+
+        public async Task<Category> AddCategoryAsync(Category category) {
+            ItemRequest req = new ItemRequest() {
+                Type = "addCategory",
+                Service = "item",
+                Categories = new List<Category>()
+            };
+            req.Categories.Add(category);
+            
+            Send(req);
+            return ((ItemRequest) reply).Categories[0];
+        }
     }
 }

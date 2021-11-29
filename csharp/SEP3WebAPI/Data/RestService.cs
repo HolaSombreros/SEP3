@@ -56,9 +56,6 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<Customer> UpdateCustomerAsync(int customerId, UpdateCustomerModel customer) {
-            if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
-            if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");
-            
             Customer updated = await client.GetCustomerAsync(customerId);
             if (updated == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
 
@@ -79,6 +76,16 @@ namespace SEP3WebAPI.Data {
         
         public Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             return client.GetItemsBySearchAsync(searchName, index);
+        }
+        
+        public async Task<Category> AddCategoryAsync(Category category) {
+            IList<Category> existing = await client.GetCategoriesAsync();
+            if (existing.Any(c => c.Name.ToLower().Equals(category.Name.ToLower()))) {
+                throw new InvalidDataException("That category name already exists");
+            }
+
+            Category created = await client.AddCategoryAsync(category);
+            return created;
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {

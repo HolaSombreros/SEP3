@@ -1,7 +1,6 @@
 package mediator.Request;
 
-public  class Request {
-
+public class Request {
     private String service;
     private String type;
 
@@ -25,5 +24,4 @@ public  class Request {
     public void setType(String type) {
         this.type = type;
     }
-
 }
