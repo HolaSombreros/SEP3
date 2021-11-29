@@ -88,6 +88,16 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpPost]
+        [Route("categories")]
+        public async Task<ActionResult<Category>> AddCategoryAsync([FromBody] Category category) {
+            try {
+                throw new NotImplementedException();
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost]
         public async Task<ActionResult<Item>> AddItemAsync([FromBody] ItemModel itemModel) {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -2,10 +2,6 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.navbar {
-    background-color: #330480;
-}
-
 nav {
     padding: 0.5rem 1rem;
 }
@@ -14,6 +10,14 @@ nav {
     font-size: 1.2rem;
     margin-right: .5rem;
     top: 2px;
+}
+
+.oi-cog {
+    top: 4px;
+}
+
+.dropdown:hover {
+    cursor: pointer;
 }
 
 .nav-item ::deep a {

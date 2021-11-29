@@ -1,0 +1,38 @@
+﻿@page "/categories/new"
+@using SEP3Library.Models
+@using SEP3UI.Data
+@inject IItemService itemService
+
+<div class="container">
+    <h3>Add Item Category</h3>
+    <EditForm Model="category" OnValidSubmit="AddCategoryAsync">
+        <DataAnnotationsValidator/>
+        <div class="form-group">
+            <label>Category name</label>
+            <InputText class="form-control" @bind-Value="category.Name"/>
+            <ValidationMessage For="@(() => category.Name)"/>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary" type="submit">Add Category</button>
+            <span class="d-block @resultMessageTextColor">@resultMessageText</span>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private Category category = new Category();
+    private string resultMessageText = "";
+    private string resultMessageTextColor = "";
+
+    private async Task AddCategoryAsync() {
+        try {
+            await itemService.AddCategoryAsync(category);
+            resultMessageText = $"\"{category.Name}\" category successfully added!";
+            resultMessageTextColor = "text-success";
+            category = new Category();
+        } catch (Exception e) {
+            resultMessageText = e.Message;
+            resultMessageTextColor = "text-danger";
+        }
+    }
+}

@@ -30,5 +30,9 @@ namespace SEP3UI.Data {
         public async Task<IList<Category>> GetCategories() {
             return await restService.GetAsync <IList<Category>>($"items/categories");
         }
+
+        public async Task<Category> AddCategoryAsync(Category category) {
+            return await restService.PostAsync<Category, Category>(category, "items/categories");
+        }
     }
 }
