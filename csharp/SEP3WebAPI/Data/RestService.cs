@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
@@ -90,6 +91,51 @@ namespace SEP3WebAPI.Data {
 
         public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
             return await client.GetItemsByCategoryAsync(category, index);
+        }
+
+        public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
+            if (item == null) throw new InvalidDataException("Please provide an item of the proper format");
+            Item toUpdate = await client.GetItemAsync(id);
+            if (toUpdate == null) throw new NullReferenceException($"No such item found with id: {id}");
+            toUpdate.Name = item.Name;
+            toUpdate.Description = item.Description;
+            toUpdate.Category = item.Category;
+            toUpdate.Price = item.Price;
+            toUpdate.Quantity = item.Quantity;
+            toUpdate.Status = item.Status;
+            toUpdate.Discount = item.Discount;
+            toUpdate.ImageName = "Item/haha";
+            
+            await client.UpdateItemAsync(toUpdate);
+            return toUpdate;
+        }
+
+        public async Task<Book> UpdateBookAsync(int id, ItemModel book) {
+            if (book == null) throw new InvalidDataException("Please provide an item of the proper format");
+            Book toUpdate = await client.GetBookAsync(id);
+            if (toUpdate == null) throw new NullReferenceException($"No such book found with id: {id}");
+            toUpdate.Name = book.Name;
+            toUpdate.Description = book.Description;
+            toUpdate.Category = book.Category;
+            toUpdate.Price = book.Price;
+            toUpdate.Quantity = book.Quantity;
+            toUpdate.Status = book.Status;
+            toUpdate.Discount = book.Discount;
+            toUpdate.ImageName = "Item/haha";
+            toUpdate.Authors = book.Authors;
+            toUpdate.Genre = book.Genre;
+            toUpdate.Isbn = book.Isbn;
+            toUpdate.Language = book.Language;
+            toUpdate.PublicationDate = new MyDateTime() {
+                Year = book.PublicationDate.Year,
+                Month = book.PublicationDate.Month,
+                Day = book.PublicationDate.Day,
+                Hour = book.PublicationDate.Hour,
+                Minute = book.PublicationDate.Minute,
+                Second = book.PublicationDate.Second
+            };
+            await client.UpdateBookAsync(toUpdate);
+            return toUpdate;
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
@@ -179,7 +225,7 @@ namespace SEP3WebAPI.Data {
                 Category = itemModel.Category,
                 Discount = itemModel.Discount,
                 Price = itemModel.Price,
-                Status = itemModel.Status,
+                Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
                 ImageName = "Images/sth"
             };
@@ -188,7 +234,7 @@ namespace SEP3WebAPI.Data {
         
         public async Task<Book> CreateBookAsync(ItemModel itemModel) {
             if (itemModel == null) throw new InvalidDataException("Please specify a book of the proper format!");
-            Book book = await client.GetBookBySpecificationsAsync(itemModel.BookModel.Isbn);
+            Book book = await client.GetBookBySpecificationsAsync(itemModel.Isbn);
             if (book != null)
                 throw new InvalidDataException("This book already exists, please edit in case of stock refill");
             
@@ -198,26 +244,21 @@ namespace SEP3WebAPI.Data {
                 Category = itemModel.Category,
                 Discount = itemModel.Discount,
                 Price = itemModel.Price,
-                Status = itemModel.Status,
+                Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
                 ImageName = "Images/Booklala",
-                Isbn = itemModel.BookModel.Isbn,
-                Language = itemModel.BookModel.Language,
+                Isbn = itemModel.Isbn,
+                Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {
-                    Year = itemModel.BookModel.PublicationDate.Year,
-                    Month = itemModel.BookModel.PublicationDate.Month,
-                    Day = itemModel.BookModel.PublicationDate.Day,
-                    Hour = itemModel.BookModel.PublicationDate.Hour,
-                    Minute = itemModel.BookModel.PublicationDate.Minute,
-                    Second = itemModel.BookModel.PublicationDate.Second
+                    Year = itemModel.PublicationDate.Year,
+                    Month = itemModel.PublicationDate.Month,
+                    Day = itemModel.PublicationDate.Day,
+                    Hour = itemModel.PublicationDate.Hour,
+                    Minute = itemModel.PublicationDate.Minute,
+                    Second = itemModel.PublicationDate.Second
                 },
-                Authors = new List<Author>() {
-                    new Author() {
-                        FirstName = itemModel.BookModel.AuthorFirstName,
-                        LastName = itemModel.BookModel.AuthorLastName
-                    }
-                },
-                Genre = itemModel.BookModel.Genre
+                Authors = itemModel.Authors,
+                Genre = itemModel.Genre
             };
             return await client.AddBookAsync(b);
         }

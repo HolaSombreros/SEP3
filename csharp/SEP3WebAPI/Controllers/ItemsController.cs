@@ -142,5 +142,25 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Item>> UpdateItemAsync([FromRoute] int id, [FromBody] ItemModel item) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            try {
+                Item updated; 
+                if (item.Category.Name.Equals("Book")) 
+                     updated = await service.UpdateBookAsync(id,item);
+                else 
+                    updated = await service.UpdateItemAsync(id, item);
+                return Ok(updated);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
+    
 }

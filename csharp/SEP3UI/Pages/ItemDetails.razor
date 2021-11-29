@@ -2,20 +2,20 @@
 @using SEP3UI.Data
 @using System.Security.Claims
 @using SEP3Library.Models
+@using SEP3UI.Authentication
 @inject IItemService itemService
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navigationManager
 
 @if (item == null) {
     <h2>Loading</h2>
 }
 else {
-    <div>
-    </div>
     <div class="container">
         <div class="card row ">
-                        <div class="row border-top border-bottom">
+            <div class="row border-top border-bottom">
                 <div class="col-md-6">
                     <div class="img-responsive m-3">
                         <img src="@item.ImageName"/>
@@ -49,9 +49,9 @@ else {
                             <div class="mt-2">
                                 <span>
                                     <strong>Author:</strong>
-                                    @* @foreach (Author author in book.Authors) { *@
-                                    @*     <a rel="tag" href="#">@author.FirstName @author.LastName</a> *@
-                                    @* } *@
+                                    @foreach (Author author in book.Authors) {
+                                        <a rel="tag" href="#">@author.FirstName @author.LastName</a>
+                                    }
                                 </span>
                             </div>
                             <div class="mt-2">
@@ -91,6 +91,12 @@ else {
                             <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">
                                 <i class="fa fa-shopping-cart"></i> Add to Shopping Cart
                             </button>
+                            <AuthorizeView Policy="@Policies.IsAdmin">
+                                <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => View(item.Id, item.Category.Name))">
+                                    <i class="fa fa-shopping-cart"></i> Edit Item
+                                </button>
+                            </AuthorizeView>
+                            
                         </div>
                     </div>
                 </div>
@@ -144,8 +150,7 @@ else {
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             customerId = -1;
         }
 
@@ -161,11 +166,15 @@ else {
             isDisabled = true;
         }
     }
-//a comment
+
     private void AddToShoppingCart(Item itemToAdd) {
         Item i = orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
         if (customerId != -1)
             customerService.AddToShoppingCartAsync(i,customerId);
+    }
+    
+    private void View(int id, String categoryName) {
+        navigationManager.NavigateTo($"EditItem/{id}/{categoryName}");
     }
 
     private void PerformUnfavoriteAsync() {

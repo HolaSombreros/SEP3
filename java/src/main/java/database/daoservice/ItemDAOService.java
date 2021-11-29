@@ -58,10 +58,15 @@ public class ItemDAOService implements ItemDAO {
     }
 
     @Override
-    public void update(Item item) {
+    public Item update(Item item) {
         try {
+            if(!isCategory(item.getCategory().getName())) {
+                List<Integer> key =databaseHelper.executeUpdateWithKeys("INSERT INTO category (name) VALUES (?)", item.getCategory().getName());
+                item.getCategory().setId(key.get(0));
+            }
             databaseHelper.executeUpdate("UPDATE item SET name = ?, description = ?, price = ?, category_id = ?, quantity = ?, status = ?::item_status, discount =?, image_filepath = ? WHERE item_id = ?", item.getName(), item.getDescription(),
                     item.getPrice(), item.getCategory().getId(), item.getQuantity(), item.getStatus().toString(), item.getDiscount(), item.getImageName(), item.getId());
+            return item;
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
