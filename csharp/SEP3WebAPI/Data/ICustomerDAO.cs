@@ -9,7 +9,7 @@ namespace SEP3WebAPI.Data {
         Task<Customer> GetCustomerAsync(string email, string password);
         Task<Customer> GetCustomerAsync(int customerId);
         Task<Customer> AddCustomerAsync(CustomerModel customer);
-        Task<Customer> UpdateCustomerAsync(int customerId, CustomerModel customer);
+        Task<Customer> UpdateCustomerAsync(int customerId, UpdateCustomerModel customer);
         Task<IList<Item>> GetCustomerWishlistAsync(int customerId);
         Task<Item> AddToWishlist(int customerId, int itemId);
         Task RemoveWishlistedItemAsync(int customerId, int itemId);

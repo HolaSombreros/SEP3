@@ -1,4 +1,4 @@
-﻿/*search-bar css*/
+/*search-bar css*/
 body, .search-bar {
     display: flex;
 }
@@ -217,4 +217,9 @@ body, .search-bar {
     -ms-transition:  width .2s ease-in;
     transition: width .2s ease-in;
 
+}
+
+.image{
+    width: 300px;
+    height: 400px;
 }

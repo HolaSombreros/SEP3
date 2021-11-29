@@ -1,24 +1,19 @@
 .navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .navbar {
-    background-color: rgba(139, 0, 0, 1.0);
-}
-
-.navbar-brand {
-    font-size: 1.1rem;
-}
-
-.oi {
-    width: 2rem;
-    font-size: 1.1rem;
-    vertical-align: text-top;
-    top: -1px;
+    background-color: #330480;
 }
 
 nav {
-    padding: 0;
+    padding: 0.5rem 1rem;
+}
+
+.oi {
+    font-size: 1.2rem;
+    margin-right: .5rem;
+    top: 2px;
 }
 
 .nav-item ::deep a {
@@ -35,14 +30,18 @@ nav {
     color: white;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 767.98px) {
     .nav-item {
-        margin-left: .5rem;
+        margin-left: .75rem;
     }
-}
-
-@media (max-width: 640.98px) {
-    nav > div:first-of-type {
-        padding: 1rem;
+    
+    .oi-cart {
+        transform: scale(1.25);
+    }
+    
+    .navbar-nav button {
+        border-radius: 20px;
+        margin-left: 1.25rem;
+        padding: 0 1.75rem;
     }
 }

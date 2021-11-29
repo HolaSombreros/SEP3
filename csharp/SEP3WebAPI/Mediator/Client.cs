@@ -131,7 +131,7 @@ namespace SEP3WebAPI.Mediator {
                 ItemsIds = itemIds
             };
             Send(req);
-            return ((ItemRequest)reply).Items;
+            return ((ItemRequest) reply).Items;
         }
 
         public async Task<Item> GetItemAsync(int id) {

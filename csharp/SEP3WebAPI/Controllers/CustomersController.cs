@@ -63,7 +63,7 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpPut]
         [Route("{customerId:int}")]
-        public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId, [FromBody] CustomerModel customer) {
+        public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId, [FromBody] UpdateCustomerModel customer) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
