@@ -171,7 +171,7 @@ public class ItemDAOService implements ItemDAO {
 
     @Override public List<Item> readShoppingCart(int customerId) {
         try {
-            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM shopping_cart_item JOIN item USING(item_id) WHERE customer_id = ?;", customerId);
+            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM shopping_cart_item JOIN item USING(item_id) JOIN category USING(category_id) WHERE customer_id = ?;", customerId);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -198,6 +198,16 @@ public class ItemDAOService implements ItemDAO {
             return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM category WHERE name = ?", category).next();
         }
         catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Item> readAllByCategory(Category category, int index) {
+        try{
+            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name FROM item JOIN category USING(category_id) WHERE category_id = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category.getId(), index);
+        }
+        catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }

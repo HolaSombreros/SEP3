@@ -5,8 +5,6 @@ import mediator.Request.ItemRequest;
 import mediator.Request.Request;
 import model.Item;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ItemCommand implements Command {
@@ -35,8 +33,10 @@ public class ItemCommand implements Command {
         methods.put("addShoppingCart", this::addToShoppingCart);
         methods.put("getShoppingCart", this::getShoppingCart);
         methods.put("editShoppingCart", this::updateShoppingCart);
-        methods.put("removeShoppingList", this::removeFromShoppingCart);
+        methods.put("removeShoppingCart", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
+        methods.put("getCategories", this::getCategories);
+        methods.put("getAllByCategory", this::getAllByCategory);
     }
 
     @Override public Request execute(Request request) {
@@ -127,5 +127,10 @@ public class ItemCommand implements Command {
 
     private void removeFromShoppingCart() {
         databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
+    }
+
+    private void getAllByCategory(){
+        System.out.println(request.getCategories().get(0));
+        reply.setItems(databaseManager.getItemDAOService().readAllByCategory(request.getCategories().get(0),request.getIndex()));
     }
 }

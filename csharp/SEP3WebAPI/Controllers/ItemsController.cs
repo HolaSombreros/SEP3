@@ -18,17 +18,20 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName) {
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName, [FromQuery] Category? category) {
             try {
-                if (searchName == null) {
-                    IList<Item> items = await service.GetItemsAsync(index);
-                    return Ok(items);
-                }
-                else {
+                if (searchName != null) {
                     IList<Item> items = await service.GetItemsBySearchAsync(searchName,index);
                     return Ok(items);
                 }
-                
+                if (category.Id != 0 && category.Name != null) {
+                    IList<Item> items = await service.GetItemsByCategoryAsync(category, index);
+                    return Ok(items);
+                }
+                else {
+                    IList<Item> items = await service.GetItemsAsync(index);
+                    return Ok(items);
+                }
             } 
             catch (NullReferenceException e) {
                 return NotFound(e.Message);

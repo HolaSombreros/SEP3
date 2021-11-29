@@ -10,6 +10,7 @@ public class ItemRequest extends Request{
     private List<Item> items;
     private List<Category> categories;
     private List<Genre> genres;
+    private Category category;
     private Item item;
     private Book book;
     private Customer customer;
