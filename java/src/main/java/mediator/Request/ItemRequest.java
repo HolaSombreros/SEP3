@@ -12,6 +12,7 @@ public class ItemRequest extends Request{
     private int index;
     private List<Item> items;
     private List<Category> categories;
+    private Category category;
     private Item item;
     private Book book;
     private Customer customer;
