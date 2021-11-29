@@ -152,12 +152,12 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<IList<Category>> GetCategoriesAsync() {
-            return await client.GetCategories();
+            return await client.GetCategoriesAsync();
         }
 
         public async Task<Item> CreateItemAsync(ItemModel itemModel) {
             if (itemModel == null) throw new InvalidDataException("Please specify an item of the proper format");
-            Item item = await client.GetItemBySpecifications(itemModel.Name, itemModel.Description, itemModel.Category);
+            Item item = await client.GetItemBySpecificationsAsync(itemModel.Name, itemModel.Description, itemModel.Category);
             if (item != null)
                 throw new InvalidDataException("This item already exists");
             Item i = new Item() {

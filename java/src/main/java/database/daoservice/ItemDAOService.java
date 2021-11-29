@@ -42,7 +42,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item read(int id) {
         try {
-            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT *,category.name as category_name FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -83,7 +83,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByIndex(int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
+            return databaseHelper.mapList(new ItemMapper(), "SELECT *,category.name as category_name FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -98,34 +98,23 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
+  
     @Override
     public List<Item> readAllByIds(int[] itemIds) {
         try {
-             String query = "SELECT * FROM item WHERE item_id IN (";
-                        for (int i = 0; i < itemIds.length; i++) {
-                            if (i == 0) {
-                                query += "?";
-                            } else {
-                                query += ", ?";
-                            }
-                        }
-                        query += ") ORDER BY item_id ASC;";
-            
-                        Object[] ids = new Object[itemIds.length];
-                        for (int i = 0; i < ids.length; i++) {
-                            ids[i] = itemIds[i];
-                        }
-            
-                        return databaseHelper.mapList(new ItemMapper(), query, ids);
+            List<Item> items = new ArrayList<>();
+            for(int i = 0; i < itemIds.length; i++) {
+                items.add(databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item JOIN category USING (category_id) WHERE item_id=?", itemIds[i]));
+            }
+            return items;
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
-    
     @Override public List<Item> readCustomerWishlist(int customerId) {
         try {
-            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id, name, description, price, category_id, discount, quantity, status, image_filepath "
+            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id, item.name, description, price, category_id, discount, quantity, status, image_filepath "
                     + "FROM item JOIN wishlist_item USING (item_id) "
                     + "JOIN customer USING (customer_id) "
                     + "JOIN category USING (category_id) "
@@ -155,7 +144,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByItemName(String itemName, int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM item WHERE lower(name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
+            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
         }
         catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
@@ -188,7 +177,7 @@ public class ItemDAOService implements ItemDAO {
 
     @Override public void removeFromShoppingCart(Item item, int customerId) {
         try {
-            databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId, item.getId());
+            databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
