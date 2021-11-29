@@ -129,7 +129,7 @@
 
     protected override async Task OnInitializedAsync() {
         categories = await itemService.GetCategories();
-        genres = await itemService.GetGenres();
+        genres = await itemService.GetGenresAsync();
         itemModel.BookModel = new BookModel();
 
     }

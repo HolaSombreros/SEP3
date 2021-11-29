@@ -2,11 +2,11 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.daomodel.DatabaseManager;
-import mediator.Command.Command;
-import mediator.Command.CustomerCommand;
-import mediator.Command.ItemCommand;
-import mediator.Command.OrderCommand;
-import mediator.Request.*;
+import mediator.command.Command;
+import mediator.command.CustomerCommand;
+import mediator.command.ItemCommand;
+import mediator.command.OrderCommand;
+import mediator.request.*;
 
 
 import java.io.BufferedReader;

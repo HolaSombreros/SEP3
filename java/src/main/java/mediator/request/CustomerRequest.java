@@ -1,4 +1,4 @@
-package mediator.Request;
+package mediator.request;
 
 import model.Customer;
 

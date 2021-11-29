@@ -1,7 +1,7 @@
-package mediator.Command;
+package mediator.command;
 
 import database.daomodel.DatabaseManager;
-import mediator.Request.*;
+import mediator.request.*;
 import model.Customer;
 
 import java.util.HashMap;

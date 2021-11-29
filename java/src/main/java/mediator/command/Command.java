@@ -1,6 +1,6 @@
-package mediator.Command;
+package mediator.command;
 
-import mediator.Request.Request;
+import mediator.request.Request;
 
 public interface Command {
     Request execute(Request request);

@@ -1,10 +1,9 @@
-package mediator.Command;
+package mediator.command;
 
 import database.daomodel.DatabaseManager;
-import mediator.Request.ItemRequest;
-import mediator.Request.Request;
+import mediator.request.ItemRequest;
+import mediator.request.Request;
 import model.Category;
-import model.Item;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

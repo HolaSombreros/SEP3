@@ -1,9 +1,8 @@
-package mediator.Command;
+package mediator.command;
 
 import database.daomodel.DatabaseManager;
-import mediator.Request.ItemRequest;
-import mediator.Request.OrderRequest;
-import mediator.Request.Request;
+import mediator.request.OrderRequest;
+import mediator.request.Request;
 import model.Order;
 
 import java.util.HashMap;

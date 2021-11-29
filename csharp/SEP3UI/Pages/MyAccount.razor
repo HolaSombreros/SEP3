@@ -13,7 +13,7 @@
     <div class="offset-md-3 col-md-6 col-sm-12">
         <h4>Personal details</h4>
         <hr/>
-        <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClicked">
+        <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClickedAsync">
             <DataAnnotationsValidator/>
             <div class="form-group mb-3">
                 <label><strong>First name</strong></label>
@@ -190,7 +190,7 @@
         };
     }
 
-    private async Task UpdateAccountBtnClicked() {
+    private async Task UpdateAccountBtnClickedAsync() {
         try {
             if (updatedCustomer.Password == null) {
                 updatedCustomer.Password = oldCustomer.Password;

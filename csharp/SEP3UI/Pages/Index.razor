@@ -18,11 +18,11 @@
                         </div>
                     </div>
                     <li>
-                        <div @onclick="@LoadAllItems">All</div>
+                        <div @onclick="@LoadAllItemsAsync">All</div>
                     </li>
                     @foreach (Category category in categories) {
                         <li>
-                            <div @onclick="(() => LoadItemsByCategory(category))">@category.Name</div>
+                            <div @onclick="(() => LoadItemsByCategoryAsync(category))">@category.Name</div>
                         </li>
                     }
                 </ul>
@@ -72,7 +72,7 @@
     </div>
 </div>
 <div class="text-center">
-    <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMore">Load more</button>
+    <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMoreAsync">Load more</button>
 </div>
 
 @code {
@@ -105,7 +105,7 @@
         return false;
     }
 
-    private async Task LoadMore() {
+    private async Task LoadMoreAsync() {
         itemIndex++;
         IList<Item> newList = await itemService.GetItemsAsync(itemIndex);
         if (newList.Count == 0) {
@@ -131,11 +131,11 @@
         filteredItems = await itemService.GetItemsBySearchAsync(searchItem, itemIndex);
     }
 
-    private async Task LoadItemsByCategory(Category category) {
+    private async Task LoadItemsByCategoryAsync(Category category) {
         filteredItems = await itemService.GetItemsByCategoriesAsync(category, itemIndex);
     }
 
-    private async Task LoadAllItems() {
+    private async Task LoadAllItemsAsync() {
         filteredItems = await itemService.GetItemsAsync(itemIndex);
     }
 }

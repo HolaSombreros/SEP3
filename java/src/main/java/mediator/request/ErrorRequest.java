@@ -1,4 +1,4 @@
-package mediator.Request;
+package mediator.request;
 
 public class ErrorRequest extends Request {
     private String message;
