@@ -324,8 +324,28 @@ namespace SEP3WebAPI.Mediator {
                 Index = index
             };
             Send(req);
-            Waiting();
             return ((ItemRequest)reply).Items;
+        }
+
+        public async Task<Item> UpdateItemAsync(Item item) {
+            ItemRequest req = new ItemRequest() {
+                Type = "updateItem",
+                Service = "item",
+                Item = item
+            };
+            Send(req);
+            return ((ItemRequest) reply).Item;
+
+        }
+
+        public async Task<Book> UpdateBookAsync(Book book) {
+            ItemRequest req = new ItemRequest() {
+                Type = "updateBook",
+                Service = "item",
+                Book = book
+            };
+            Send(req);
+            return ((ItemRequest) reply).Book;
         }
     }
 }

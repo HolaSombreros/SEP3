@@ -1,15 +1,17 @@
 ﻿@page "/AddItems"
+@page "/EditItem/{Id:int}/{CategoryName}"
 @using SEP3UI.Authentication
 @using SEP3Library.Models
 @using SEP3Library.UIModels
 @using SEP3UI.Data
+@using System.ComponentModel.DataAnnotations
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject IItemService itemService
 <header>
     <div class="overlay">
         <h1>Add Items</h1>
     
-@if (categories != null) {
+@if (categories != null &&itemModel !=null) {
     <EditForm Model="@itemModel">
         <div class="container text-center d-flex flex-column align-items-center mt-3">
             <DataAnnotationsValidator/>
@@ -23,7 +25,7 @@
                         <button type="button" class="list-group-item list-group-item-action">Other</button>
                     </div>
                     <div class="mt-3">
-                        <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name" required/>
+                        <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name"/>
                         <label class="label-customised" for="name">Name:</label>
                     </div>
                     <ValidationMessage For="@(() => itemModel.Name)"/>
@@ -38,24 +40,21 @@
                         <label for="controlFile">Upload an image:</label>
                         <input type="file" id="controlFile">
                     </div>
-                    Status
-                    @foreach (ItemStatus status in Enum.GetValues(typeof(ItemStatus))) {
-                        <button type="button" @onclick="@(() => SetStatus(status))" class="list-group-item list-group-item-action"> @EnumHelper.GetDescription(status)</button>
-                    }
+                    
                     <div class="mt-3 inputs">
-                        <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price" required/>
+                        <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price"/>
                         <label class="label-customised" for="price">Price:</label>
                     </div>
                     <ValidationMessage For="@(() => itemModel.Price)"/>
 
                     <div class="mt-3 inputs">
-                        <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity" required/>
+                        <input @bind-value="itemModel.Quantity" type="number" data-mdb-showcounter="true" id="quantity"/>
                         <label class="label-customised" for="quantity">Quantity:</label>
                     </div>
                     <ValidationMessage For="@(() => itemModel.Quantity)"/>
 
                     <div class="mt-3 inputs">
-                        <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount" required/>
+                        <input @bind-value="itemModel.Discount" type="number" data-mdb-showcounter="true" id="discount"/>
                         <label class="label-customised" for="discount">Discount:</label>
                     </div>
                     <ValidationMessage For="@(() => itemModel.Discount)"/>
@@ -63,32 +62,49 @@
                 @if (itemModel.Category != null && itemModel.Category.Name.Equals("Book")) {
                     <div class="col-md-3 mr-3">
                         <div>
-                            <input @bind-value="itemModel.BookModel.Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn" required/>
+                            <input @bind-value="itemModel.Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn"/>
                             <label class="label-customised" for="bookIsbn">Book isbn:</label>
                         </div>
-                        <ValidationMessage For="@(() => itemModel.BookModel.Isbn)"/>
-
+                        <ValidationMessage For="@(() => itemModel.Isbn)"/>
+                        
                         <div>
-                            <input @bind-value="itemModel.BookModel.AuthorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName" required/>
+                            <input @bind-value="authorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName"/>
                             <label class="label-customised" for="authorFName">Author first name:</label>
                         </div>
-                        <ValidationMessage For="@(() => itemModel.BookModel.AuthorFirstName)"/>
+                        <ValidationMessage For="@(() => authorFirstName)"/>
 
                         <div>
-                            <input @bind-value="itemModel.BookModel.AuthorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLName" required/>
+                            <input @bind-value="authorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLName"/>
                             <label class="label-customised" for="authorLName">Author last name:</label>
                         </div>
-                        <ValidationMessage For="@(() => itemModel.BookModel.AuthorLastName)"/>
-
+                        <ValidationMessage For="@(() => authorLastName)"/>
+                        
                         <div>
-                            <input @bind-value="itemModel.BookModel.Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language" required/>
+                            <br>
+                            <button @onclick="(() => AddAuthorsClicked())" class="btn btn-primary">Add author</button>
+                        </div>
+                        @if (addMoreAuthors) {
+                            <div class="list-group">
+                                @foreach (Author author in itemModel.Authors) {
+                                    <div class="list-group-item ">
+                                        @author.FirstName @author.LastName
+                                        <button @onclick="@(() => RemoveAuthorClicked(author))">
+                                            <i class="oi oi-trash" style="color:red"></i>
+                                        </button>
+                                    </div>
+                                }
+                            </div> 
+                        }
+
+                        <div class="mt-1">
+                            <input @bind-value="itemModel.Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language"/>
                             <label class="label-customised" for="language">Book language:</label>
                         </div>
-                        <ValidationMessage For="@(() => itemModel.BookModel.Language)"/>
+                        <ValidationMessage For="@(() => itemModel.Language)"/>
 
                         <div>
                             <label id="problematic-label">Date:</label>
-                            <InputDate @bind-Value="itemModel.BookModel.PublicationDate"/>
+                            <InputDate @bind-Value="itemModel.PublicationDate"/>
                         </div>
 
                         <div class="d-flex justify-content-center">
@@ -99,6 +115,8 @@
                                 <input @onclick="@(() => AddGenre(g))" class="form-check-input ml-2" type="checkbox" id="inlineCheckbox" value="option1">
                                 <label class="form-check-label" for="inlineCheckbox">@g.Name</label>
                             }
+                            <ValidationMessage For="@(() => itemModel.Genre)"/>
+
                         </div>
                     </div>
                 }
@@ -106,7 +124,7 @@
         </div>
         <div class="form-group d-flex text-center justify-content-center">
             <label class=" control-label"></label>
-            <div class="">
+            <div>
                 <br>
                 <button type="submit" @onclick="(() => AddItemAsync())" class="btn btn-primary">Submit</button>
             </div>
@@ -120,33 +138,81 @@
 </header>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public string CategoryName { get; set; }
+    
     private IList<Category> categories;
     private IList<Genre> genres;
     private List<Genre> selectedGenres = new List<Genre>();
     private ItemModel itemModel = new ItemModel();
     private string errorMessage;
+    private bool addMoreAuthors;
+    
+    [MaxLength(50, ErrorMessage = "The first name cannot exceed 50 characters")]
+    [Required(ErrorMessage = "Please enter a first name for the author")]
+    private string authorFirstName;
+    
+    [Required(ErrorMessage = "Please enter a last name for the author")]
+    [MaxLength(50, ErrorMessage = "The first name cannot exceed 50 characters")]
+    private string authorLastName;
 
     protected override async Task OnInitializedAsync() {
         categories = await itemService.GetCategories();
         genres = await itemService.GetGenres();
-        itemModel.BookModel = new BookModel();
-
+        itemModel.Authors = new List<Author>();
+        addMoreAuthors = false;
+        if (CategoryName != null) {
+            Book book = null;
+            Item item = null;
+            if (CategoryName.Equals("Book")) {
+                book = await itemService.GetBookAsync(Id);
+                itemModel.Name = book.Name;
+                itemModel.Description = book.Description;
+                itemModel.Category = book.Category;
+                itemModel.Discount = book.Discount;
+                itemModel.Price = book.Price;
+                itemModel.Status = book.Status;
+                itemModel.Quantity = book.Quantity;
+                itemModel.Isbn = book.Isbn;
+                itemModel.Authors = book.Authors;
+                itemModel.Genre = book.Genre;
+                itemModel.Language = book.Language;
+                itemModel.PublicationDate = new DateTime(book.PublicationDate.Year, book.PublicationDate.Month, book.PublicationDate.Day, book.PublicationDate.Hour,
+                    book.PublicationDate.Minute, book.PublicationDate.Second);
+                genres = itemModel.Genre;
+            }
+            else {
+                item = await itemService.GetItemAsync(Id);
+                itemModel.Name = item.Name;
+                itemModel.Description = item.Description;
+                itemModel.Category = item.Category;
+                itemModel.Discount = item.Discount;
+                itemModel.Price = item.Price;
+                itemModel.Status = item.Status;
+                itemModel.Quantity = item.Quantity;
+            }
+        }
     }
 
     private async Task AddItemAsync() {
         try {
-
-            Console.WriteLine(itemModel.Name + itemModel.Category + itemModel.BookModel.Genre + itemModel.Description);
-             itemModel.BookModel.Genre = selectedGenres;
-            foreach (var g in selectedGenres) {
-                Console.WriteLine(g.Name);
+            itemModel.Genre = selectedGenres;
+            if (itemModel.Category.Name.Equals("Book")) {
+                if (selectedGenres.Count < 1 || itemModel.Authors.Count < 1)
+                    errorMessage = "Please input a genre or author";
+                else 
+                    await itemService.AddItemAsync(itemModel);
             }
-            await itemService.AddItemAsync(itemModel);
-            //TODO: Receive this from tier2-tier3
-            errorMessage = "Successful item added";
+            else {
+                await itemService.AddItemAsync(itemModel);
+                //TODO: Receive this from tier2-tier3
+                errorMessage = "Successful item added";
+            }
         }
         catch (Exception e) {
-        errorMessage = e.Message;
+            
         }
     }
 
@@ -162,7 +228,20 @@
         selectedGenres.Add(genre);
     }
 
-    private void AddCategory(Category category) {
+    private bool AddAuthorsClicked() {
+        Author author = new Author() {
+            FirstName = authorFirstName,
+            LastName = authorLastName
+        };
+        itemModel.Authors.Add(author);
+        authorFirstName = null;
+        authorLastName = null;
+        addMoreAuthors = true;
+        return addMoreAuthors;
+    }
+
+    private void RemoveAuthorClicked(Author author) {
+        itemModel.Authors.Remove(author);
     }
 
 }
