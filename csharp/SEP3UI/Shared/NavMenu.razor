@@ -11,37 +11,46 @@
 
     <div class="navbar-collapse @NavMenuCssClass">
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <NavLink class="nav-link text-center" href="/ShoppingBasket" @onclick="CollapseDropdownMenu">
+                    <span class="oi oi-cart" aria-hidden="true"></span> Cart
+                </NavLink>
+            </li>
+            <AuthorizeView Policy="@Policies.IsAdmin">
+                <li class="nav-item">
+                    <NavLink class="nav-link text-center" href="/categories/new" @onclick="CollapseDropdownMenu">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Add New Category
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link text-center" href="/AddItems" @onclick="CollapseDropdownMenu">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Add New Item
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link text-center" href="/OrderList" @onclick="CollapseDropdownMenu">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
+                    </NavLink>
+                </li>
+            </AuthorizeView>
             <AuthorizeView>
                 <NotAuthorized>
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-center" href="/ShoppingBasket">
-                            <span class="oi oi-cart" aria-hidden="true"></span> Cart
-                        </NavLink>
-                    </li>
                     <button class="btn btn-info" @onclick="NavigateToLogin">Login</button>
                 </NotAuthorized>
                 <Authorized>
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-center" href="/ShoppingBasket">
-                            <span class="oi oi-cart" aria-hidden="true"></span> Cart
-                        </NavLink>
-                    </li>
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleDropdownMenu">
-                            <span class="oi oi-cog" aria-hidden="true"></span> Settings
+                            <span class="oi oi-cog" aria-hidden="true"></span> More
                         </NavLink>
                         @if (!collapseDropdownMenu) {
                             <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
-                                <NavLink class="dropdown-item" href="/categories/new">
-                                    <span class="oi oi-plus" aria-hidden="true"></span> Add Item Category
-                                </NavLink>
-                                <NavLink class="dropdown-item" href="/wishlist">
+                                <NavLink class="nav-link dropdown-item text-center" href="/wishlist" @onclick="CollapseDropdownMenu">
                                     <span class="oi oi-list" aria-hidden="true"></span> My Wishlist
                                 </NavLink>
-                                <NavLink class="dropdown-item" href="/account">
+                                <NavLink class="nav-link dropdown-item text-center" href="/account" @onclick="CollapseDropdownMenu">
                                     <span class="oi oi-person" aria-hidden="true"></span> My Account
                                 </NavLink>
-                                <NavLink class="dropdown-item" href="/Logout">
+                                <NavLink class="nav-link dropdown-item text-center" @onclick="NavigateToLogout">
                                     <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                                 </NavLink>
                             </div>
@@ -49,20 +58,9 @@
                     </li>
                 </Authorized>
             </AuthorizeView>
-            <AuthorizeView Policy="@Policies.IsAdmin">
-                <li class="nav-item">
-                    <NavLink class="nav-link text-center" href="/AddItems">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Add Items
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link text-center" href="/OrderList">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
-                    </NavLink>
-                </li>
-            </AuthorizeView>
         </ul>
-</div>
+    </div>
+</nav>
 @* <div class="hello"> *@
 @* <div class="top_bar" id="bottom_bar"> *@
 @*     <div class="container"> *@
@@ -81,7 +79,6 @@
 @*     </div> *@
 @* </div> *@
 @* </div> *@
-</nav>
 
 @code {
     private bool collapseNavMenu = true;
@@ -98,11 +95,16 @@
         collapseDropdownMenu = !collapseDropdownMenu;
     }
 
+    private void CollapseDropdownMenu() {
+        collapseDropdownMenu = true;
+    }
+
     private void NavigateToLogin() {
         nav.NavigateTo("/login");
     }
 
     private void NavigateToLogout() {
+        CollapseDropdownMenu();
         nav.NavigateTo("/logout");
     }
 }

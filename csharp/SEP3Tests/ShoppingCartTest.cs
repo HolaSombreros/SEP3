@@ -90,38 +90,38 @@ namespace SEP3Tests {
             Assert.AreEqual(expected, actual);
         }
 
-        //     [Test]
-        //     public void AddItem_WhenCartHasSameItem_UpdateTotal() {
-        //         decimal expected = 12.24M;
-        //         Item item = new Item() {
-        //             Id = 1,
-        //             Price = 6.12M
-        //         };
-        //
-        //         cart.AddToShoppingCart(item);
-        //         cart.AddToShoppingCart(item);
-        //
-        //         decimal actual = cart.Total;
-        //         Assert.AreEqual(expected, actual);
-        //     }
-        //
-        //     [Test]
-        //     public void AddItem_WhenCartHasDifferentItems_UpdateTotal() {
-        //         decimal expected = 19.74M;
-        //         Item first = new Item() {
-        //             Id = 1,
-        //             Price = 7.46M
-        //         };
-        //         Item second = new Item() {
-        //             Id = 2,
-        //             Price = 12.28M
-        //         };
-        //
-        //         cart.AddToShoppingCart(first);
-        //         cart.AddToShoppingCart(second);
-        //
-        //         decimal actual = cart.Total;
-        //         Assert.AreEqual(expected, actual);
-        //     }
+        [Test]
+        public void AddItem_WhenCartHasSameItem_UpdateTotal() {
+            decimal expected = 12.24M;
+            Item item = new Item() {
+                Id = 1,
+                Price = 6.12M
+            };
+        
+            cart.AddToShoppingCart(item);
+            cart.AddToShoppingCart(item);
+        
+            decimal actual = cart.Total;
+            Assert.AreEqual(expected, actual);
+        }
+        
+        [Test]
+        public void AddItem_WhenCartHasDifferentItems_UpdateTotal() {
+            decimal expected = 19.74M;
+            Item first = new Item() {
+                Id = 1,
+                Price = 7.46M
+            };
+            Item second = new Item() {
+                Id = 2,
+                Price = 12.28M
+            };
+        
+            cart.AddToShoppingCart(first);
+            cart.AddToShoppingCart(second);
+        
+            decimal actual = cart.Total;
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

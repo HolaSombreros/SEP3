@@ -133,7 +133,7 @@ public class BookDAOService implements BookDAO {
     @Override
     public List<Book> readAll() {
         try {
-            List<Book> books = databaseHelper.mapList(new BookMapper(), "SELECT * FROM book JOIN item USING (item_id);");
+            List<Book> books = databaseHelper.mapList(new BookMapper(), "SELECT *, item.name AS item_name, category.name AS category_name FROM book JOIN item USING (item_id) JOIN category USING(category_id);");
             for(Book book: books) {
                 book.setGenre(genreDAOService.getGenresOfBook(book.getId()));
                 book.setAuthors(authorDAOService.readAllAuthorsOfBook(book.getId()));
@@ -147,7 +147,7 @@ public class BookDAOService implements BookDAO {
 
     private Book readByISBN(String ISBN){
         try {
-            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT * FROM book JOIN item USING (item_id) WHERE ISBN = ?;", ISBN);
+            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT *, item.name AS item_name, category.name AS category_name FROM book JOIN item USING (item_id) JOIN category USING(category_id) WHERE ISBN = ?;", ISBN);
             book.setGenre(genreDAOService.getGenresOfBook(book.getId()));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(book.getId()));
             return book;
