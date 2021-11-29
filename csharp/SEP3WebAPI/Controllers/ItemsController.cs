@@ -87,6 +87,22 @@ namespace SEP3WebAPI.Controllers {
             }
         }
 
+        [HttpGet]
+        [Route("genres")]
+        public async Task<ActionResult<IList<Genre>>> GetGenresAsync() {
+            try {
+                IList<Genre> genres = await service.GetGenresAsync();
+                return Ok(genres);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpPost]
         [Route("categories")]
         public async Task<ActionResult<Category>> AddCategoryAsync([FromBody] Category category) {
@@ -102,6 +118,11 @@ namespace SEP3WebAPI.Controllers {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try {
+                if (itemModel.Category.Name.Equals("Book")) {
+                    Console.WriteLine("Hello");
+                    Book book = await service.CreateBookAsync(itemModel);
+                    return Created($"/{book.Id}", book);
+                }
                 Item item = await service.CreateItemAsync(itemModel);
                 return Created($"/{item.Id}", item);
             }

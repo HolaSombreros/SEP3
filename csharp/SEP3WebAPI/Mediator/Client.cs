@@ -89,17 +89,27 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemRequest)reply).Items;
+
         }
 
-        public async Task<IList<Category>> GetCategories() {
+        public async Task<IList<Category>> GetCategoriesAsync() {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getCategories"
             };
-            string send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
+
+            Send(req);
             return ((ItemRequest)reply).Categories;
+
+        }
+
+        public async Task<IList<Genre>> GetGenresAsync() {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getGenres"
+            };
+            Send(req);
+            return ((ItemRequest) reply).Genres;
         }
 
         public async Task<Item> AddItemAsync(Item item) {
@@ -108,15 +118,21 @@ namespace SEP3WebAPI.Mediator {
                 Type = "addItem",
                 Item = item
             };
-            string send = JsonSerializer.Serialize(req, new JsonSerializerOptions {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Send(send);
-            Waiting();
+            Send(req);
             return ((ItemRequest) reply).Item;
         }
-        
-        public async Task<Item> GetItemBySpecifications(string name, string description, Category category) {
+
+        public async Task<Book> AddBookAsync(Book book) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "addBook",
+                Book = book
+            };
+            Send(req);
+            return ((ItemRequest) reply).Book;
+        }
+
+        public async Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
                 Type = "getItemBySpecifications",
@@ -126,10 +142,20 @@ namespace SEP3WebAPI.Mediator {
                     Category = category
                 }
             };
-            string send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
+            Send(req);
             return ((ItemRequest) reply).Item;
+        }
+
+        public async Task<Book> GetBookBySpecificationsAsync(string isbn) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getBookBySpecifications",
+                Book = new Book() {
+                    Isbn = isbn
+                }
+            };
+            Send(req);
+            return ((ItemRequest) reply).Book;
         }
 
         public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {
@@ -150,8 +176,9 @@ namespace SEP3WebAPI.Mediator {
                     Id = id
                 }
             };
-           Send(req);
+            Send(req);
            return ((ItemRequest) reply).Item;
+
         }
 
         public async Task<Book> GetBookAsync(int id) {
@@ -162,7 +189,7 @@ namespace SEP3WebAPI.Mediator {
                     Id = id
                 }
             };
-           Send(req);
+            Send(req);
            return ((ItemRequest) reply).Book;
         }
         
@@ -175,6 +202,7 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((OrderRequest)reply).Order;
+
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {

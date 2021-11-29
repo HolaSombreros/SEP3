@@ -7,7 +7,6 @@ import model.Item;
 import model.enums.ItemStatus;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemDAOService implements ItemDAO {
@@ -42,7 +41,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item read(int id) {
         try {
-            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT *,category.name as category_name FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -51,9 +50,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item read(String name, String description, Category category) {
         try {
-            Item item = databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item i JOIN category c USING (category_id) WHERE i.name = ? AND description = ? AND c.name = ?", name, description, category);
-            System.out.println(item.toString());
-            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item i JOIN category c USING (category_id) WHERE i.name = ? AND description = ? AND c.name = ?", name, description, category);
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT * FROM item i JOIN category c USING (category_id) WHERE i.name = ? AND description = ? AND c.name = ?", name, description, category.getName());
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -83,7 +80,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByIndex(int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(), "SELECT * FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
+            return databaseHelper.mapList(new ItemMapper(), "SELECT *,category.name as category_name FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -144,6 +141,18 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
+
+    @Override
+    public List<Item> readByItemName(String itemName, int index) {
+        try{
+            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM item WHERE lower(name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
+        }
+        catch (SQLException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+
     @Override public void addToShoppingCart(Item item, int customerId) {
         try {
             databaseHelper.executeUpdate("INSERT INTO shopping_cart_item(customer_id, item_id, quantity) VALUES (?,?,?);", customerId, item.getId(), item.getQuantity());
@@ -181,16 +190,6 @@ public class ItemDAOService implements ItemDAO {
             return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM category WHERE name = ?", category).next();
         }
         catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Item> readByItemName(String itemName, int index) {
-        try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT * FROM item WHERE lower(name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
-        }
-        catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }

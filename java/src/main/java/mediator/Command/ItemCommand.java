@@ -5,6 +5,8 @@ import mediator.Request.ItemRequest;
 import mediator.Request.Request;
 import model.Item;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ItemCommand implements Command {
@@ -23,14 +25,17 @@ public class ItemCommand implements Command {
         methods.put("getWishlist", this::getWishlist);
         methods.put("getAllById", this::getAllById);
         methods.put("removeWishlist", this::removeItemFromWishlist);
+        methods.put("getCategories", this::getCategories);
+        methods.put("getGenres", this::getGenres);
+        methods.put("addItem", this::addItem);
+        methods.put("addBook",this::addBook);
+        methods.put("getItemBySpecifications", this::getItemBySpecifications);
+        methods.put("getBookBySpecifications", this::getBookBySpecifications);
         methods.put("addShoppingCart", this::addToShoppingCart);
         methods.put("getShoppingCart", this::getShoppingCart);
         methods.put("editShoppingCart", this::updateShoppingCart);
-        methods.put("removeShoppingCart", this::removeFromShoppingCart);
+        methods.put("removeShoppingList", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
-        methods.put("getCategories", this::getCategories);
-        methods.put("addItem", this::addItem);
-        methods.put("getItemBySpecifications", this::getItemBySpecifications);
     }
 
     @Override public Request execute(Request request) {
@@ -54,6 +59,10 @@ public class ItemCommand implements Command {
         reply.setCategories(databaseManager.getCategoryDAOService().readAllCategories());
     }
 
+    private void getGenres() {
+        reply.setGenres(databaseManager.getGenreDAOService().getAllGenres());
+    }
+
     private void getItem() {
         reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getId()));
     }
@@ -73,14 +82,24 @@ public class ItemCommand implements Command {
     private void getAllById() {
         reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
     }
-    
+
     private void addItem() {
          reply.setItem(databaseManager.getItemDAOService().create(request.getItem().getName(),request.getItem().getDescription(),
                 request.getItem().getPrice(),request.getItem().getCategory(), request.getItem().getQuantity(),request.getItem().getImageName()));
     }
-    
+
+    private void addBook(){
+        reply.setBook(databaseManager.getBookDAOService().create(request.getBook().getName(), request.getBook().getDescription(),request.getBook().getPrice(),request.getBook().getCategory(),
+                request.getBook().getQuantity(),request.getBook().getImageName(),request.getBook().getISBN(), request.getBook().getAuthors(),request.getBook().getLanguage(),request.getBook().getGenre(),
+                LocalDate.of(request.getBook().getPublicationDate().getYear(), request.getBook().getPublicationDate().getMonth(),request.getBook().getPublicationDate().getDay())));
+    }
+
     private void getItemBySpecifications() {
         reply.setItem(databaseManager.getItemDAOService().read(request.getItem().getName(), request.getItem().getDescription(), request.getItem().getCategory()));
+    }
+
+    private void getBookBySpecifications() {
+        reply.setBook(databaseManager.getBookDAOService().read(request.getBook().getISBN()));
     }
 
     private void addToShoppingCart() {

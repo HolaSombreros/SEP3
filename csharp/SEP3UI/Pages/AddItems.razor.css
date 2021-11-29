@@ -1,23 +1,23 @@
-﻿form {
+﻿
+form {
     margin: 75px;
 }
 .input-field {
     position: relative;
-    width: 250px;
-    height: 44px;
+    width: 100%;
     line-height: 44px;
 }
-label {
-    position: absolute;
-    top: 0;
+.label-customised {
+    position: relative;
+    top: -30px;
     left: 0;
     width: 100%;
     color: #483D8B;
     transition: 0.2s all;
     cursor: text;
 }
-input {
-    width: 75%;
+input[type=text], input[type=number], textarea {
+    width: 100%;
     border: 0;
     outline: 0;
     padding: 0.5rem 0;
@@ -25,16 +25,81 @@ input {
     box-shadow: none;
     color: #111;
 }
-input:invalid {
+input[type=text]:invalid, input[type=number]:invalid, textarea:invalid {
     outline: 0;
 }
-input:focus,
-input:valid {
+input[type=text]:focus,
+input[type=text]:valid,
+input[type=number]:focus, 
+input[type=number]:valid,
+textarea:invalid,
+textarea:focus {
     border-color: #483D8B;
 }
-input:focus~label,
-input:valid~label {
+input[type=text]:focus~label,
+input[type=text]:valid~label,
+input[type=number]:focus~label,
+input[type=number]:valid~label,
+textarea:valid~label,
+textarea:focus~label{
     font-size: 14px;
-    top: -24px;
+    top: -50px;
     color: #483D8B;
+}
+
+#exampleFormControlFile, #inlineCheckbox{
+    border-bottom: none;
+}
+
+#problematic-label {
+    color: #483D8B;
+}
+
+.simple-customised {
+    color: #483D8B;
+}
+
+header {
+    /*background: url('http://www.autodatz.com/wp-content/uploads/2017/05/Old-Car-Wallpapers-Hd-36-with-Old-Car-Wallpapers-Hd.jpg');*/
+    text-align: center;
+    width: 100%;
+    height: auto;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 85% 85% / 30%;
+}
+/*header .overlay{*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    padding: 25px;*/
+/*    color: #FFF;*/
+/*    text-shadow: 1px 1px 1px #333;*/
+/*    background-image: linear-gradient( 135deg, #9f05ff69 10%, #fd5e086b 100%);*/
+/*    z-index: 2;*/
+/*}*/
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 30px;
+    margin-bottom: 30px;
+}
+button {
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    /*border-radius: 50px;*/
+    color: #333;
+    background: #fff;
+    margin-bottom: 10px;
+    box-shadow: 0 3px 20px 0 #0000003b;
+}
+button:hover{
+    cursor: pointer;
+}
+
+input, textarea {
+    border-radius: 10px;
+
 }

@@ -37,13 +37,15 @@ else {
                         @if (item.Category.Name.Equals("Book") && book != null) {
                             <div class="mt-2">
                                 <span>
-                                    <strong>AuthorName:</strong>
-                                    <a rel="tag" href="#">@book.AuthorFirstName @book.AuthorLastName</a>
+                                    <strong>Author:</strong>
+                                    @* @foreach (Author author in book.Authors) { *@
+                                    @*     <a rel="tag" href="#">@author.FirstName @author.LastName</a> *@
+                                    @* } *@
                                 </span>
                             </div>
                             <div class="mt-2">
                                 <span>
-                                    <strong>Publication Date: </strong>@book.PublicationDate.DateToString()
+                                    <strong>Publication Date: </strong>@book.PublicationDate
                                 </span>
                             </div>
                             <div class="mt-2">
