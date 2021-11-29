@@ -23,4 +23,5 @@ public interface ItemDAO {
     List<Item> readShoppingCart (int customerId);
     void updateShoppingCart (Item item, int customerId);
     void removeFromShoppingCart (Item item, int customerId);
+
 }

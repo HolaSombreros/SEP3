@@ -1,8 +1,7 @@
-﻿@page "/settings/account"
+﻿@page "/account"
 @using SEP3Library.Models
 @using SEP3UI.Data
 @using System.Security.Claims
-@using System.ComponentModel.DataAnnotations
 @using SEP3Library.UIModels
 @attribute [Authorize]
 @inject AuthenticationStateProvider authStateProvider
@@ -11,7 +10,7 @@
 @if (oldCustomer == null) {
     <em>Loading...</em>
 } else {
-    <div class="container w-50">
+    <div class="offset-md-3 col-md-6 col-sm-12">
         <h4>Personal details</h4>
         <hr/>
         <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClicked">
@@ -54,7 +53,7 @@
                 <ValidationMessage For="@(()=> updatedCustomer.Email)"/>
             </div>
             <div class="form-group mb-5">
-                <label><strong>Phone</strong></label>
+                <label><strong>Phone</strong> <small>(Optional)</small></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
@@ -77,7 +76,7 @@
                                 <span class="oi oi-lock-locked"></span>
                             </div>
                         </div>
-                        <InputText class="form-control" type="password" @bind-Value="oldCustomer.Password"/>
+                        <InputText class="form-control" type="password" readonly="true" @bind-Value="oldCustomer.Password"/>
                     </div>
                 </div>
                 <div class="form-group mb-3">
@@ -145,7 +144,7 @@
                     </div>
                     <ValidationMessage For="@(()=> updatedCustomer.ZipCode)"/>
                 </div>
-                <div class="form-group mb-5">
+                <div class="form-group mb-3">
                     <label><strong>City</strong></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -158,76 +157,79 @@
                     <ValidationMessage For="@(()=> updatedCustomer.City)"/>
                 </div>
             </div>
-            
+        
+            <div class="text-center mb-3">
+                <span class="@resultColor">@resultMessage</span>
+            </div>
             <div class="text-center">
                 <button class="btn btn-primary" type="submit" disabled="@IsDataUnchanged()">Update account</button>
             </div>
         </EditForm>
-        
-        <div>@resultMessage</div>
     </div>
 }
 
 @code {
     private int customerId;
-    private CustomerModel oldCustomer;
-    private CustomerModel updatedCustomer;
+    private Customer oldCustomer;
+    private UpdateCustomerModel updatedCustomer;
     private string resultMessage;
+    private string resultColor;
 
     protected override async Task OnInitializedAsync() {
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        Customer customer = await customerService.GetCustomerAsync(customerId);
-        oldCustomer = new CustomerModel() {
-            FirstName = customer.FirstName,
-            LastName = customer.LastName,
-            Email = customer.Email,
-            Password = customer.Password,
-            ConfirmPassword = "",
-            Street = customer.Address.Street,
-            Number = customer.Address.Number,
-            ZipCode = customer.Address.ZipCode,
-            City = customer.Address.City,
-            PhoneNumber = customer.PhoneNumber,
-            Role = customer.Role,
-        };
-        updatedCustomer = new CustomerModel() {
+        oldCustomer = await customerService.GetCustomerAsync(customerId);
+        updatedCustomer = new UpdateCustomerModel() {
             FirstName = oldCustomer.FirstName,
             LastName = oldCustomer.LastName,
             Email = oldCustomer.Email,
-            Password = "",
-            ConfirmPassword = "",
-            Street = oldCustomer.Street,
-            Number = oldCustomer.Number,
-            ZipCode = oldCustomer.ZipCode,
-            City = oldCustomer.City,
-            PhoneNumber = oldCustomer.PhoneNumber,
-            Role = oldCustomer.Role
+            Street = oldCustomer.Address.Street,
+            Number = oldCustomer.Address.Number,
+            ZipCode = oldCustomer.Address.ZipCode,
+            City = oldCustomer.Address.City,
+            PhoneNumber = oldCustomer.PhoneNumber
         };
     }
 
     private async Task UpdateAccountBtnClicked() {
-        if (updatedCustomer.Password.Equals("")) {
-            updatedCustomer.Password = oldCustomer.Password;
-            updatedCustomer.ConfirmPassword = updatedCustomer.Password;
-        }
-
         try {
+            if (updatedCustomer.Password == null) {
+                updatedCustomer.Password = oldCustomer.Password;
+                updatedCustomer.ConfirmPassword = oldCustomer.Password;
+            }
+
             await customerService.UpdateCustomerAsync(customerId, updatedCustomer);
+            oldCustomer.Password = updatedCustomer.Password;
             resultMessage = "Account information successfully updated!";
+            resultColor = "text-success";
+            
+            // Reset the data annotations
+            updatedCustomer = new UpdateCustomerModel() {
+                FirstName = updatedCustomer.FirstName,
+                LastName = updatedCustomer.LastName,
+                Email = updatedCustomer.Email,
+                Street = updatedCustomer.Street,
+                Number = updatedCustomer.Number,
+                ZipCode = updatedCustomer.ZipCode,
+                City = updatedCustomer.City,
+                PhoneNumber = updatedCustomer.PhoneNumber
+            };
         } catch (Exception e) {
             resultMessage = e.Message;
+            resultColor = "text-danger";
         }
     }
-
+    
     private bool IsDataUnchanged() {
         return oldCustomer.FirstName.Equals(updatedCustomer.FirstName) &&
                oldCustomer.LastName.Equals(updatedCustomer.LastName) &&
                oldCustomer.Email.Equals(updatedCustomer.Email) &&
-               updatedCustomer.Password.Equals("") &&
-               updatedCustomer.ConfirmPassword.Equals("") &&
-               oldCustomer.Street.Equals(updatedCustomer.Street) &&
-               oldCustomer.Number.Equals(updatedCustomer.Number) &&
-               oldCustomer.ZipCode == updatedCustomer.ZipCode &&
-               oldCustomer.City.Equals(updatedCustomer.City);
+               updatedCustomer.Password == null &&
+               updatedCustomer.ConfirmPassword == null &&
+               oldCustomer.Address.Street.Equals(updatedCustomer.Street) &&
+               oldCustomer.Address.Number.Equals(updatedCustomer.Number) &&
+               oldCustomer.Address.ZipCode == updatedCustomer.ZipCode &&
+               oldCustomer.Address.City.Equals(updatedCustomer.City) &&
+               (oldCustomer.PhoneNumber == null && updatedCustomer.PhoneNumber == null || 
+                oldCustomer.PhoneNumber != null && oldCustomer.PhoneNumber.Equals(updatedCustomer.PhoneNumber));
     }
 }

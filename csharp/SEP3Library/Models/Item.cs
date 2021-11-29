@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace SEP3Library.Models {
@@ -15,6 +16,7 @@ namespace SEP3Library.Models {
         public Category Category { get; set; }
         [Range(0, 100)]
         public int Discount { get; set; }
+        [Range(0, Int32.MaxValue)]
         public int Quantity { get; set; }
         
         [JsonConverter(typeof(JsonStringEnumConverter))]

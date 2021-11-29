@@ -117,7 +117,7 @@
     </EditForm>
 }
 </div>
-</header>   
+</header>
 
 @code {
     private IList<Category> categories;
@@ -130,10 +130,12 @@
         categories = await itemService.GetCategories();
         genres = await itemService.GetGenres();
         itemModel.BookModel = new BookModel();
+
     }
 
     private async Task AddItemAsync() {
         try {
+
             Console.WriteLine(itemModel.Name + itemModel.Category + itemModel.BookModel.Genre + itemModel.Description);
              itemModel.BookModel.Genre = selectedGenres;
             foreach (var g in selectedGenres) {
@@ -144,7 +146,7 @@
             errorMessage = "Successful item added";
         }
         catch (Exception e) {
-            errorMessage = e.Message;
+        errorMessage = e.Message;
         }
     }
 
@@ -164,3 +166,4 @@
     }
 
 }
+

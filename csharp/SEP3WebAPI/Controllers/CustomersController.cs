@@ -63,7 +63,7 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpPut]
         [Route("{customerId:int}")]
-        public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId, [FromBody] CustomerModel customer) {
+        public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId, [FromBody] UpdateCustomerModel customer) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
@@ -106,10 +106,14 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpPut]
         [Route("{customerId:int}/shoppingbasket")]
-        public async Task<ActionResult> AddShoppingCart([FromBody] Item item, [FromRoute] int customerId) {
+        public async Task<ActionResult<Item>> AddShoppingCart([FromBody] Item item, [FromRoute] int customerId) {
+            Console.WriteLine("customercontroller");
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
             try {
-                await service.AddToShoppingCartAsync(item, customerId);
-                return Ok();
+                Item item1 = await service.AddToShoppingCartAsync(item, customerId);
+                return Ok(item);
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
@@ -132,10 +136,13 @@ namespace SEP3WebAPI.Controllers {
         
         [HttpPut]
         [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
-        public async Task<ActionResult> EditShoppingCart([FromBody] Item item, [FromRoute] int customerId, [FromRoute] int itemId) {
+        public async Task<ActionResult<Item>> EditShoppingCart([FromBody] Item item, [FromRoute] int customerId, [FromRoute] int itemId) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
             try {
-                await service.UpdateShoppingCartAsync(item, itemId, customerId);
-                return Ok();
+                Item item1 = await service.UpdateShoppingCartAsync(item, itemId, customerId);
+                return Ok(item);
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {

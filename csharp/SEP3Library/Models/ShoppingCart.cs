@@ -31,22 +31,29 @@ namespace SEP3Library.Models {
             }
         }
 
-        public void AddToShoppingCart(Item item) {
+        public Item IncreaseQuantity(Item item) {
+            Item i = item.Copy();
+            Item test = Items.First(it => it.Id == item.Id);
+            test.Quantity++;
+            return test;
+        }
+
+        public Item AddToShoppingCart(Item item) {
             Item item1 = item.Copy();
             Item test = Items.FirstOrDefault(i => i.Id == item.Id);
             if (test == null) {
-                Items.Add(item1);
                 item1.Quantity = 1;
+                Items.Add(item1);
+                return item1;
             }
-            else {
-                test.Quantity++;
-            }
+            return null;
         }
 
-        public void RemoveQuantityFromShoppingCart(Item item) {
+        public Item RemoveQuantityFromShoppingCart(Item item) {
             Item i = item.Copy();
             Item test = Items.First(it => it.Id == item.Id);
             test.Quantity--;
+            return test;
         }
 
         public void RemoveItemFromShoppingCart(Item item) {

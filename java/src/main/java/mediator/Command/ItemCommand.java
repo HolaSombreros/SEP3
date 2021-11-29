@@ -82,10 +82,12 @@ public class ItemCommand implements Command {
     private void getAllById() {
         reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
     }
+
     private void addItem() {
          reply.setItem(databaseManager.getItemDAOService().create(request.getItem().getName(),request.getItem().getDescription(),
                 request.getItem().getPrice(),request.getItem().getCategory(), request.getItem().getQuantity(),request.getItem().getImageName()));
     }
+
     private void addBook(){
         reply.setBook(databaseManager.getBookDAOService().create(request.getBook().getName(), request.getBook().getDescription(),request.getBook().getPrice(),request.getBook().getCategory(),
                 request.getBook().getQuantity(),request.getBook().getImageName(),request.getBook().getISBN(), request.getBook().getAuthors(),request.getBook().getLanguage(),request.getBook().getGenre(),
@@ -99,12 +101,10 @@ public class ItemCommand implements Command {
     private void getBookBySpecifications() {
         reply.setBook(databaseManager.getBookDAOService().read(request.getBook().getISBN()));
     }
-    private void getItemsBySearchName(){
-        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
-    }
 
     private void addToShoppingCart() {
         databaseManager.getItemDAOService().addToShoppingCart(request.getItem(), request.getCustomer().getId());
+        reply.setItem(request.getItem());
     }
 
     private void getShoppingCart() {
@@ -113,10 +113,14 @@ public class ItemCommand implements Command {
 
     private void updateShoppingCart() {
         databaseManager.getItemDAOService().updateShoppingCart(request.getItem(), request.getCustomer().getId());
+        reply.setItem(request.getItem());
     }
 
     private void removeFromShoppingCart() {
         databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
+    }
 
+    private void getItemsBySearchName(){
+        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
     }
 }

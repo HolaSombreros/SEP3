@@ -2,13 +2,16 @@
 @using SEP3Library.UIModels
 @using SEP3UI.Authentication
 @using SEP3UI.Data
+@using SEP3Library.Models
+@using System.Security.Claims
 @inject NavigationManager navigationManager
 @inject ICustomerService customerService;
+@inject IOrderService orderService;
 @inject AuthenticationStateProvider authenticationStateProvider
 
 <!-- main box -->
 <div class="card">
-    <div class="row border-top border-bottom">
+    <div class="row align-items-center">
         <!-- logo box -->
         <div class="col-4">
             <img src="Images/Under Covers.png" class="img-fluid"alt="Under Covers Logo"/>
@@ -51,7 +54,7 @@
             </div>
             <div class="text-center" style="color:red">@errorMessage</div>
             <div class="form-group d-flex justify-content-center">
-                Don't have an account? <a class="pl-2" rel="tag" @onclick="GoToRegister" style="color:blue; cursor: pointer">Register now!</a>
+                Don't have an account? <a class="pl-2 text-primary" rel="tag" @onclick="GoToRegister" style="cursor: pointer">Register now!</a>
             </div>
         </div>
 
@@ -73,6 +76,15 @@
     private async Task LoginAsync() {
         try {
             await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
+            int customerId = int.Parse((await authenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+           
+            IList<Item> items = await customerService.GetShoppingCartAsync(customerId);
+            foreach (var i in orderService.ShoppingCart.Items) {
+                if (items.FirstOrDefault(it => it.Id == i.Id) == null)
+                    await customerService.AddToShoppingCartAsync(i, customerId);
+            }
+            orderService.ShoppingCart.Items = await customerService.GetShoppingCartAsync(customerId);
+            
             navigationManager.NavigateTo("/");
         }
         catch (Exception e) {
