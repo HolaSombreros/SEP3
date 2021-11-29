@@ -3,11 +3,13 @@ package mediator.Command;
 import database.daomodel.DatabaseManager;
 import mediator.Request.ItemRequest;
 import mediator.Request.Request;
+import model.Category;
 import model.Item;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ItemCommand implements Command {
 
@@ -36,6 +38,7 @@ public class ItemCommand implements Command {
         methods.put("editShoppingCart", this::updateShoppingCart);
         methods.put("removeShoppingList", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
+        methods.put("addCategory", this::addCategory);
     }
 
     @Override public Request execute(Request request) {
@@ -122,5 +125,11 @@ public class ItemCommand implements Command {
 
     private void getItemsBySearchName(){
         reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
+    }
+
+    private void addCategory() {
+        List<Category> categories = new ArrayList<>();
+        categories.add(databaseManager.getCategoryDAOService().createCategory(request.getCategories().get(0).getName()));
+        reply.setCategories(categories);
     }
 }

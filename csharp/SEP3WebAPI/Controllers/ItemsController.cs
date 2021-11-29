@@ -106,8 +106,13 @@ namespace SEP3WebAPI.Controllers {
         [HttpPost]
         [Route("categories")]
         public async Task<ActionResult<Category>> AddCategoryAsync([FromBody] Category category) {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             try {
-                throw new NotImplementedException();
+                Category created = await service.AddCategoryAsync(category);
+                return Created($"/{created.Id}", created);
+            } catch (InvalidDataException e) {
+                return Conflict(e.Message);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }

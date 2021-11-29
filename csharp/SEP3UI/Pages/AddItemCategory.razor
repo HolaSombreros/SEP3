@@ -3,7 +3,7 @@
 @using SEP3UI.Data
 @inject IItemService itemService
 
-<div class="container">
+<div class="container w-50">
     <h3>Add Item Category</h3>
     <EditForm Model="category" OnValidSubmit="AddCategoryAsync">
         <DataAnnotationsValidator/>
@@ -14,7 +14,7 @@
         </div>
         <div class="text-center">
             <button class="btn btn-primary" type="submit">Add Category</button>
-            <span class="d-block @resultMessageTextColor">@resultMessageText</span>
+            <span class="d-block mt-2 @resultMessageTextColor">@resultMessageText</span>
         </div>
     </EditForm>
 </div>
