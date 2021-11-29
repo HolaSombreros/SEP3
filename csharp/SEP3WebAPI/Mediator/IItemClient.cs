@@ -12,6 +12,6 @@ namespace SEP3WebAPI.Mediator {
         Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category);
         Task<IList<Category>> GetCategoriesAsync();
         Task<Item> AddItemAsync(Item item);
-       
+        Task<IList<Item>> GetItemsByCategoryAsync(Category category, int index);
     }
 }

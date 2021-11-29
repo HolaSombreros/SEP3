@@ -110,7 +110,6 @@ namespace SEP3WebAPI.Data {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
-            Console.WriteLine("rest service");
             Customer customer = await client.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
             
@@ -218,6 +217,10 @@ namespace SEP3WebAPI.Data {
             };
 
             return await client.CreateOrderAsync(order);
+        }
+
+        public async Task<IList<Item>> GetItemsByCategoryAsync(Category category, int index) {
+            return await client.GetItemsByCategoryAsync(category, index);
         }
     }
 }

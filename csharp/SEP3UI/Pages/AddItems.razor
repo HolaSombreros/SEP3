@@ -38,7 +38,7 @@
     private string errorMessage;
 
     protected override async Task OnInitializedAsync() {
-        categories = await itemService.GetCategories();
+        categories = await itemService.GetCategoriesAsync();
     }
 
     private async Task AddItemAsync() {

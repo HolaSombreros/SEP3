@@ -299,7 +299,18 @@ namespace SEP3WebAPI.Mediator {
                 Index = index
             };
             Send(req);
-            Waiting();
+            return ((ItemRequest)reply).Items;
+        }
+
+        public async Task<IList<Item>> GetItemsByCategoryAsync(Category category, int index) {
+            ItemRequest request = new ItemRequest() {
+                Type = "getAllByCategory",
+                Service = "item",
+                Categories = new List<Category>(),
+                Index = index
+            };
+            request.Categories.Add(category);
+            Send(request);
             return ((ItemRequest)reply).Items;
         }
     }
