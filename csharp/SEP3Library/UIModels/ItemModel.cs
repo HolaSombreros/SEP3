@@ -35,6 +35,9 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please select a category")]
         public Category Category { get; set; }
         
+        public BookModel BookModel { get; set; }
+        
+        
         
     }
 }

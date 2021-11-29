@@ -12,6 +12,7 @@ public class DatabaseManager {
     private OrderDAO orderDAOService;
     private CustomerDAO customerDAOService;
     private CategoryDAO categoryDAOService;
+    private GenreDAO genreDAOService;
 
     public DatabaseManager() {
         itemDAOService = new ItemDAOService(URL, USERNAME, PASSWORD);
@@ -19,6 +20,11 @@ public class DatabaseManager {
         orderDAOService = new OrderDAOService(URL, USERNAME, PASSWORD);
         customerDAOService = new CustomerDAOService(URL, USERNAME, PASSWORD);
         categoryDAOService = new CategoryDAOService(URL, USERNAME,PASSWORD);
+        genreDAOService = new GenreDAOService(URL,USERNAME,PASSWORD);
+    }
+
+    public GenreDAO getGenreDAOService() {
+        return genreDAOService;
     }
 
     public ItemDAO getItemDAOService() {

@@ -38,6 +38,75 @@ nav {
     .oi-cart {
         transform: scale(1.25);
     }
+}
+
+.top_bar {
+    width: 100%;
+    height: 56px;
+    bottom: 0;
+    background: #fafafa;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.05);
+    z-index: 2
+}
+
+.hello.scrolled .top_bar {
+    display: none;
+}
+
+.top_bar_contact {
+    display: inline-block
+}
+
+.top_bar_contact_item {
+    font-size: 16px;
+    line-height: 56px;
+    margin-right: 40px
+}
+
+.top_bar_contact_item:not(:first-child) {
+    margin-right: 0px
+}
+
+.top_bar_contact_item a {
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 56px;
+    color: #000;
+    -webkit-transition: all 200ms ease;
+    -moz-transition: all 200ms ease;
+    -ms-transition: all 200ms ease;
+    -o-transition: all 200ms ease;
+    transition: all 200ms ease
+}
+
+.top_bar_contact_item a:hover {
+    color: #8a8a8a
+}
+
+.top_bar_contact_item:last-child {
+    margin-right: 0px
+}
+
+.top_bar_icon {
+    display: inline-block;
+    margin-right: 14px;
+    -webkit-transform: translateY(-2px);
+    -moz-transform: translateY(-2px);
+    -ms-transform: translateY(-2px);
+    -o-transform: translateY(-2px);
+    transform: translateY(-2px)
+}
+
+#bottom_bar {
+    overflow: visible;
+    display: inline-block;
+    position: fixed;
+    left: 10px;
+    bottom: 0;
+    width: 100%;
+    z-index:2;
+}
+
     
     .navbar-nav button {
         border-radius: 20px;
@@ -45,3 +114,4 @@ nav {
         padding: 0 1.75rem;
     }
 }
+

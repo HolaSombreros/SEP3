@@ -96,8 +96,16 @@ namespace SEP3WebAPI.Mediator {
                 Type = "getCategories"
             };
             Send(req);
-            Console.WriteLine(((ItemRequest)reply).Categories);
-            return ((ItemRequest)reply).Categories;
+            return ((ItemRequest) reply).Categories;
+        }
+
+        public async Task<IList<Genre>> GetGenresAsync() {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getGenres"
+            };
+            Send(req);
+            return ((ItemRequest) reply).Genres;
         }
 
         public async Task<Item> AddItemAsync(Item item) {
@@ -106,10 +114,20 @@ namespace SEP3WebAPI.Mediator {
                 Type = "addItem",
                 Item = item
             };
-            Send(req); 
+            Send(req);
             return ((ItemRequest) reply).Item;
         }
-        
+
+        public async Task<Book> AddBookAsync(Book book) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "addBook",
+                Book = book
+            };
+            Send(req);
+            return ((ItemRequest) reply).Book;
+        }
+
         public async Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category) {
             ItemRequest req = new ItemRequest() {
                 Service = "item",
@@ -122,6 +140,18 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemRequest) reply).Item;
+        }
+
+        public async Task<Book> GetBookBySpecificationsAsync(string isbn) {
+            ItemRequest req = new ItemRequest() {
+                Service = "item",
+                Type = "getBookBySpecifications",
+                Book = new Book() {
+                    Isbn = isbn
+                }
+            };
+            Send(req);
+            return ((ItemRequest) reply).Book;
         }
 
         public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {
@@ -142,7 +172,7 @@ namespace SEP3WebAPI.Mediator {
                     Id = id
                 }
             };
-           Send(req);
+            Send(req);
            return ((ItemRequest) reply).Item;
         }
 
@@ -154,7 +184,7 @@ namespace SEP3WebAPI.Mediator {
                     Id = id
                 }
             };
-           Send(req);
+            Send(req);
            return ((ItemRequest) reply).Book;
         }
         

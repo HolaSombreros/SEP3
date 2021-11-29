@@ -1,9 +1,6 @@
 package mediator.Request;
 
-import model.Book;
-import model.Category;
-import model.Customer;
-import model.Item;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +9,7 @@ public class ItemRequest extends Request{
     private int index;
     private List<Item> items;
     private List<Category> categories;
+    private List<Genre> genres;
     private Item item;
     private Book book;
     private Customer customer;
@@ -21,6 +19,15 @@ public class ItemRequest extends Request{
         super(service, type);
         items = new ArrayList<>();
         categories = new ArrayList<>();
+        genres = new ArrayList<>();
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 
     public List<Category> getCategories(){

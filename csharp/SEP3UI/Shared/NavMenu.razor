@@ -50,8 +50,33 @@
                     </NavLink>
                 </li>
             </AuthorizeView>
-        </ul>
-    </div>
+        <AuthorizeView Policy="@Policies.IsAdmin">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="/AddItems">
+                    <span class="oi oi-plus" aria-hidden="true"></span>Add Items
+                </NavLink>
+            </li>
+        </AuthorizeView>
+    </ul>
+</div>
+@* <div class="hello"> *@
+@* <div class="top_bar" id="bottom_bar"> *@
+@*     <div class="container"> *@
+@*         <div class="row"> *@
+@*             <div class="col d-flex flex-row"> *@
+@*                 <div class="top_bar_contact_item"> *@
+@*                     <div class="top_bar_icon"><img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1560918577/phone.png" alt=""></div>+91 9823 132 111 *@
+@*                 </div> *@
+@*                 <div class="top_bar_contact_item"> *@
+@*                     <div class="top_bar_icon"> *@
+@*                         <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1560918597/mail.png" alt=""> *@
+@*                     </div><a href="mailme@undercovers.com">mailme@undercovers.com</a> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+@* </div> *@
 </nav>
 
 @code {
