@@ -157,7 +157,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByItemName(String itemName, int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE lower(name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
+            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
         }
         catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
@@ -209,7 +209,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readAllByCategory(String category, int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE category_name = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category, index);
+            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE category.name = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category, index);
         }
         catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
