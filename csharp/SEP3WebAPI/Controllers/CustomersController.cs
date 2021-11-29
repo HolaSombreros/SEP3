@@ -91,6 +91,19 @@ namespace SEP3WebAPI.Controllers {
             }
         }
 
+        [HttpPut]
+        [Route("{customerId:int}/wishlist/{itemId:int}")]
+        public async Task<ActionResult<Item>> AddToWishlist([FromRoute] int customerId, [FromRoute] int itemId) {
+            try {
+                Item item = await service.AddToWishlist(customerId, itemId);
+                return Ok(item);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
         [HttpDelete]
         [Route("{customerId:int}/wishlist/{itemId:int}")]
         public async Task<ActionResult> RemoveWishlistedItemAsync([FromRoute] int customerId, [FromRoute] int itemId) {

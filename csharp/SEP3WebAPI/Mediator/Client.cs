@@ -67,8 +67,7 @@ namespace SEP3WebAPI.Mediator {
 
         private void Send(object req) {
             string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
             byte[] data = Encoding.ASCII.GetBytes(json + "\n");
             networkStream.Write(data, 0, data.Length);
             Waiting();
@@ -96,9 +95,8 @@ namespace SEP3WebAPI.Mediator {
                 Service = "item",
                 Type = "getCategories"
             };
-            string send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
+            Send(req);
+            Waiting();
             return ((ItemRequest)reply).Categories;
         }
 
@@ -108,11 +106,7 @@ namespace SEP3WebAPI.Mediator {
                 Type = "addItem",
                 Item = item
             };
-            string send = JsonSerializer.Serialize(req, new JsonSerializerOptions {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Send(send);
-            Waiting();
+            Send(req); 
             return ((ItemRequest) reply).Item;
         }
         
@@ -126,9 +120,7 @@ namespace SEP3WebAPI.Mediator {
                     Category = category
                 }
             };
-            string send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
+            Send(req);
             return ((ItemRequest) reply).Item;
         }
 
@@ -231,6 +223,17 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemRequest) reply).Items;
+        }
+
+        public async Task<Item> AddToWishlist(int customerId, int itemId) {
+            ItemRequest req = new ItemRequest() {
+                Type = "addWishlist",
+                Service = "item",
+                Customer = new Customer() {Id = customerId},
+                Item = new Item() {Id = itemId}
+            };
+            Send(req);
+            return ((ItemRequest) reply).Item;
         }
 
         public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {
