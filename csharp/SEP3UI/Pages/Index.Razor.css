@@ -1,3 +1,8 @@
+
+.image{
+    width: 300px;
+    height: 400px;
+}
 /*search-bar css*/
 body, .search-bar {
     display: flex;
