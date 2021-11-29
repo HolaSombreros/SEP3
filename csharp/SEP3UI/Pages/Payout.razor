@@ -2,8 +2,12 @@
 @using Microsoft.AspNetCore.Components
 @using SEP3Library.UIModels
 @using SEP3UI.Data
+@using System.Security.Claims
+@using SEP3Library.Models
 @inject NavigationManager NavigationManager
 @inject IOrderService orderService
+@inject AuthenticationStateProvider authStateProvider
+@inject ICustomerService customerService
 
 <EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmitAsync">
     <div class="container">
@@ -101,13 +105,32 @@
 @code {
     private OrderModel orderModel = new OrderModel();
     private string errorMessage;
+    private int customerId;
 
     protected override async Task OnInitializedAsync() {
+        try {
+            customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+            Customer customer = await customerService.GetCustomerAsync(customerId);
+            orderModel.FirstName = customer.FirstName;
+            orderModel.LastName = customer.LastName;
+            orderModel.Email = customer.Email;
+            orderModel.City = customer.Address.City;
+            orderModel.Number = customer.Address.Number;
+            orderModel.ZipCode = customer.Address.ZipCode;
+            orderModel.Street = customer.Address.Street;
+        } catch (Exception e) {
+            customerId = -1;
+        }
         orderModel.Items = orderService.ShoppingCart.Items;
     }
     
     private async Task HandleValidSubmitAsync() {
         try {
+            if (customerId != -1) {
+                orderModel.CustomerId = customerId;
+                foreach (Item item in orderService.ShoppingCart.Items)
+                await customerService.RemoveFromShoppingCartAsync(item.Id, customerId);
+            }
             await orderService.CreateOrderAsync(orderModel);
             orderService.ShoppingCart.EmptyShoppingCart();
             errorMessage = "Successful purchase!";

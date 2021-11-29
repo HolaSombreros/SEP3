@@ -56,12 +56,7 @@ namespace SEP3WebAPI.Data {
             return await client.AddCustomerAsync(c);
         }
 
-
         public async Task<Customer> UpdateCustomerAsync(int customerId, UpdateCustomerModel customer) {
-
-            if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
-            if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");
-            
             Customer updated = await client.GetCustomerAsync(customerId);
             if (updated == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
 
@@ -79,8 +74,23 @@ namespace SEP3WebAPI.Data {
             await client.UpdateCustomerAsync(updated);
             return updated;
         }
+        
         public Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             return client.GetItemsBySearchAsync(searchName, index);
+        }
+        
+        public async Task<Category> AddCategoryAsync(Category category) {
+            IList<Category> existing = await client.GetCategoriesAsync();
+            if (existing.Any(c => c.Name.ToLower().Equals(category.Name.ToLower()))) {
+                throw new InvalidDataException("That category name already exists");
+            }
+
+            Category created = await client.AddCategoryAsync(category);
+            return created;
+        }
+
+        public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
+            return await client.GetItemsByCategoryAsync(category, index);
         }
 
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
@@ -133,6 +143,16 @@ namespace SEP3WebAPI.Data {
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
             
             return await client.GetCustomerWishlistAsync(customer);
+        }
+
+        public async Task<Item> AddToWishlist(int customerId, int itemId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item = await client.GetItemAsync(itemId);
+            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+            
+            return await client.AddToWishlist(customerId, itemId);
         }
 
         public async Task RemoveWishlistedItemAsync(int customerId, int itemId) {
@@ -285,10 +305,15 @@ namespace SEP3WebAPI.Data {
                     Second = DateTime.Now.Second
                 },
                 Items = orderModel.Items,
-                OrderStatus = OrderStatus.Pending
+                OrderStatus = OrderStatus.Pending,
+                CustomerId = orderModel.CustomerId
             };
 
             return await client.CreateOrderAsync(order);
+        }
+
+        public async Task<IList<Order>> GetOrdersAsync(int index) {
+            return await client.GetOrdersAsync(index);
         }
     }
 }

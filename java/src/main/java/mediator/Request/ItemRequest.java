@@ -10,6 +10,7 @@ public class ItemRequest extends Request{
     private List<Item> items;
     private List<Category> categories;
     private List<Genre> genres;
+    private Category category;
     private Item item;
     private Book book;
     private Customer customer;
@@ -33,6 +34,7 @@ public class ItemRequest extends Request{
     public List<Category> getCategories(){
         return categories;
     }
+
     public void setCategories(List<Category> categories) {
         this.categories = categories;
     }

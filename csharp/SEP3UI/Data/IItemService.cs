@@ -12,6 +12,8 @@ namespace SEP3UI.Data {
         Task<IList<Genre>> GetGenres();
         Task<Item> AddItemAsync(ItemModel itemModel);
         Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index);
-
+        Task<Category> AddCategoryAsync(Category category);
+        Task<IList<Category>> GetCategoriesAsync();
+        Task<IList<Item>> GetItemsByCategoriesAsync(Category category, int index);
     }
 }

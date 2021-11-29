@@ -1,0 +1,21 @@
+﻿.favorite {
+    font-size: 1.5em;
+    color: red;
+    transition: .3s;
+}
+
+.favorite:hover {
+    cursor: pointer;
+    color: lightgray;
+}
+
+.notfavorite {
+    font-size: 1.5em;
+    color: lightgray;
+    transition: .3s;
+}
+
+.notfavorite:hover {
+    cursor: pointer;
+    color: red;
+}

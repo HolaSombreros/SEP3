@@ -25,7 +25,7 @@
                             <ul class="list-unstyled list-inline">
                                 <li class="mb-2">
                                     <i class="oi oi-heart mr-3" @onclick="(() => PerformUnfavoriteAsync(item))"/>
-                                    [<a href="">@item.Category.ToString()</a>]
+                                    [<a href="">@item.Category.Name</a>]
                                 </li>
                                 <li class="mb-2">@item.Description</li>
                                 <li>Price: <span class="text-info" style="font-size: 1.5em;">@item.Price DKK</span>

@@ -18,17 +18,20 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName) {
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName, [FromQuery] string? category) {
             try {
-                if (searchName == null) {
-                    IList<Item> items = await service.GetItemsAsync(index);
-                    return Ok(items);
-                }
-                else {
+                if (searchName != null) {
                     IList<Item> items = await service.GetItemsBySearchAsync(searchName,index);
                     return Ok(items);
                 }
-                
+                if (category != null) {
+                    IList<Item> items = await service.GetItemsByCategoryAsync(category, index);
+                    return Ok(items);
+                }
+                else {
+                    IList<Item> items = await service.GetItemsAsync(index);
+                    return Ok(items);
+                }
             } 
             catch (NullReferenceException e) {
                 return NotFound(e.Message);
@@ -99,6 +102,21 @@ namespace SEP3WebAPI.Controllers {
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("categories")]
+        public async Task<ActionResult<Category>> AddCategoryAsync([FromBody] Category category) {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try {
+                Category created = await service.AddCategoryAsync(category);
+                return Created($"/{created.Id}", created);
+            } catch (InvalidDataException e) {
+                return Conflict(e.Message);
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }

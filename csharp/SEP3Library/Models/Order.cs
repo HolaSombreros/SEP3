@@ -5,6 +5,8 @@ using System.Text.Json.Serialization;
 namespace SEP3Library.Models {
     public class Order {
         public int Id { get; set; }
+
+        public int CustomerId { get; set; }
         
         [Required(ErrorMessage = "Please specify the date and time this order was created")]
         public MyDateTime DateTime { get; set; }

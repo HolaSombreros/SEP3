@@ -8,7 +8,11 @@ namespace SEP3Library.Models {
         public int Second { get; set; }
        
         public string DateToString(){
-            return $"{Day}/{Month}{Year}";
+            return $"{Day}/{Month}/{Year}";
+        }
+
+        public override string ToString() {
+            return DateToString() + $" {Hour}:{Minute}";
         }
     }
 

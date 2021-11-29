@@ -1,7 +1,7 @@
 ﻿@using SEP3UI.Authentication
 @inject NavigationManager nav
 
-<nav class="navbar navbar-expand-md navbar-dark">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <a class="navbar-brand" href="/">    
         <img src="Images/undercoverslogo.png" alt="Under Covers logo" style="height: 50px"/>
     </a>
@@ -26,20 +26,26 @@
                             <span class="oi oi-cart" aria-hidden="true"></span> Cart
                         </NavLink>
                     </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-center" href="/wishlist">
-                            <span class="oi oi-list" aria-hidden="true"></span> Wishlist
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleDropdownMenu">
+                            <span class="oi oi-cog" aria-hidden="true"></span> Settings
                         </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-center" href="/account">
-                            <span class="oi oi-person" aria-hidden="true"></span> My Account
-                        </NavLink>
-                    </li>
-                    <li class="nav-item">
-                        <NavLink class="nav-link text-center" href="/Logout">
-                            <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
-                        </NavLink>
+                        @if (!collapseDropdownMenu) {
+                            <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                                <NavLink class="dropdown-item" href="/categories/new">
+                                    <span class="oi oi-plus" aria-hidden="true"></span> Add Item Category
+                                </NavLink>
+                                <NavLink class="dropdown-item" href="/wishlist">
+                                    <span class="oi oi-list" aria-hidden="true"></span> My Wishlist
+                                </NavLink>
+                                <NavLink class="dropdown-item" href="/account">
+                                    <span class="oi oi-person" aria-hidden="true"></span> My Account
+                                </NavLink>
+                                <NavLink class="dropdown-item" href="/Logout">
+                                    <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                                </NavLink>
+                            </div>
+                        }
                     </li>
                 </Authorized>
             </AuthorizeView>
@@ -47,6 +53,11 @@
                 <li class="nav-item">
                     <NavLink class="nav-link text-center" href="/AddItems">
                         <span class="oi oi-plus" aria-hidden="true"></span> Add Items
+                    </NavLink>
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link text-center" href="/OrderList">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
                     </NavLink>
                 </li>
             </AuthorizeView>
@@ -74,11 +85,17 @@
 
 @code {
     private bool collapseNavMenu = true;
+    private bool collapseDropdownMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
+        collapseDropdownMenu = true;
+    }
+
+    private void ToggleDropdownMenu() {
+        collapseDropdownMenu = !collapseDropdownMenu;
     }
 
     private void NavigateToLogin() {

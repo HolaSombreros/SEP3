@@ -7,44 +7,70 @@
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
-
-<h3>Under Covers</h3>
-<div class="row justify-content-center " id="searchBar">
-    <input class="col-md-4 border border-dark rounded" @bind-value="searchItem" @onkeyup="@SearchItemsAsync" placeholder="Search..."/>
-    <span class="oi oi-magnifying-glass" aria-hidden="true"></span>
-</div>
-@if (filteredItems != null) {
-@if (!filteredItems.Any()) {
-    <div class="card">
-        <div class="row">
-            <div class="col-8" >No items were found</div>
-            <img class="img-fluid image col-4" src="Images/blazor_meme.jpg"/>
-        </div>
-    </div>
-}
-else {
-    <div id="productsWrapper" class="row ">
-        @foreach (Item item in filteredItems) {
-            <div class="card col-sm-3 m-3">
-                <div @onclick="@(() => NavigateToItemDetails(item))">
-                    <a asp-route-id="@item.Id" title="Order @item.Name">
-                        <div>
-                            <h3>@item.Name</h3>
-                            <img class="product-image img-fluid img-thumbnail image" src="@item.ImageName" alt="Image of @item.Name"/>
-                            <p class="card-text">@item.Description</p>
+<div class="row">
+    <div class="col-md-3 ">
+        @if (categories != null) {
+            <nav class="navbar navbar-inverse" role="navigation">
+                <ul class="nav sidebar-nav">
+                    <div class="sidebar-header">
+                        <div class="sidebar-brand">
+                            <a href="#">Categories</a>
                         </div>
-                    </a>
-                </div>
-                <div class="action">
-                    <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
-                    <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))">Add to Shopping cart</button>
-                </div>
-            </div>
+                    </div>
+                    <li>
+                        <div @onclick="@LoadAllItems">All</div>
+                    </li>
+                    @foreach (Category category in categories) {
+                        <li>
+                            <div @onclick="(() => LoadItemsByCategory(category))">@category.Name</div>
+                        </li>
+                    }
+                </ul>
+            </nav>
         }
     </div>
-}
-}
-
+    <div class="d-block col-md-9">
+        <div >
+            <form class="search-bar">
+                <input type="search" name="search" pattern=".*\S.*" required @bind-value="searchItem" placeholder="Type To Search..."/>
+                <buttonc class="search-btn" type="submit" @onclick="@SearchButtonPressedAsync"></buttonc>
+            </form>
+        </div>
+        <div >
+            @if (filteredItems != null) {
+                @if (!filteredItems.Any()) {
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-8 text-center">No items were found </div>
+                            <img class="img-fluid image col-4" src="Images/blazor_meme.jpg"/>
+                        </div>
+                    </div>
+                }
+                else {
+                    <div id="productsWrapper" class="row ">
+                        @foreach (Item item in filteredItems) {
+                            <div class="card col-sm-3 m-3">
+                                <div @onclick="@(() => NavigateToItemDetails(item))">
+                                    <a asp-route-id="@item.Id" title="Order @item.Name">
+                                        <div>
+                                            <h3>@item.Name</h3>
+                                            <img class="product-image img-fluid img-thumbnail image" src="@item.ImageName" alt="Image of @item.Name"/>
+                                            <p class="card-text">@item.Description</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="action">
+                                    <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
+                                    <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
 <div class="text-center">
     <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMore">Load more</button>
 </div>
@@ -56,16 +82,20 @@ else {
     private IList<Item> filteredItems;
     private string hidden;
     private string searchItem;
+    private IList<Category> categories;
+
 
     protected override async Task OnInitializedAsync() {
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             customerId = -1;
         }
         itemIndex = 0;
         items = await itemService.GetItemsAsync(itemIndex);
         filteredItems = items;
+        categories = await itemService.GetCategoriesAsync();
         hidden = "";
     }
 
@@ -94,13 +124,18 @@ else {
     private void AddToShoppingCart(Item item) {
         Item i = orderService.ShoppingCart.AddToShoppingCart(item);
         if (customerId != -1)
-            customerService.AddToShoppingCartAsync(i,customerId);
+            customerService.AddToShoppingCartAsync(i, customerId);
     }
 
-    private async Task SearchItemsAsync(KeyboardEventArgs e) {
-        if (e.Key == "Enter") {
-            filteredItems = await itemService.GetItemsBySearchAsync(searchItem, itemIndex);
-        }
+    private async Task SearchButtonPressedAsync() {
+        filteredItems = await itemService.GetItemsBySearchAsync(searchItem, itemIndex);
     }
 
+    private async Task LoadItemsByCategory(Category category) {
+        filteredItems = await itemService.GetItemsByCategoriesAsync(category, itemIndex);
+    }
+
+    private async Task LoadAllItems() {
+        filteredItems = await itemService.GetItemsAsync(itemIndex);
+    }
 }
