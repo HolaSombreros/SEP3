@@ -18,7 +18,7 @@ namespace SEP3Library.UIModels {
         
         [Required(ErrorMessage = "Please enter a price")]
         [Range(1,Double.PositiveInfinity)]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         
         [Range(0, 100)]
         public int Discount { get; set; }

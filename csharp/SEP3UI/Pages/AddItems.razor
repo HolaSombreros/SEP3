@@ -311,7 +311,7 @@
                     if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1)
                         errorMessage = "Please input a genre or author";
                     else
-                        await itemService.AddItemAsync(itemModel);
+                        await itemService.AddBookAsync(bookModel);
                 }
                 else {
                     await itemService.AddItemAsync(itemModel);
@@ -334,7 +334,7 @@
             Name = selectedGenreName
         });
         bookModel.Genre = selectedGenres;
-        selectedGenres = null;
+        selectedGenreName = null;
     }
 
     private void SetCategory(Category category) {

@@ -34,6 +34,17 @@ public class CategoryDAOService implements CategoryDAO {
         }
     }
 
+    @Override
+    public Category read(String categoryName) {
+        try{
+            Category category = databaseHelper.mapObject(new CategoryMapper(), "SELECT * FROM category WHERE lower(name) = lower(?)", categoryName);
+            return category;
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
     @Override public Category createCategory(String name) {
         try {
             List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO category (name) VALUES (?);", name);
