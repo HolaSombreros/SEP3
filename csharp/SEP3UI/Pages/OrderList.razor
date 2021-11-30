@@ -60,7 +60,7 @@
         hidden = "";
     }
 
-    private async Task LoadMore() {
+    private async Task LoadMoreAsync() {
         orderIndex++;
         IList<Order> newList = await orderService.GetOrdersAsync(orderIndex);
         if (newList.Count == 0) {

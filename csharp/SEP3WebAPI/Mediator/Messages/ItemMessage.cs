@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using SEP3Library.Models;
 
-namespace SEP3WebAPI.Mediator.Requests {
-    public class ItemRequest : Request {
+namespace SEP3WebAPI.Mediator.Messages {
+    public class ItemMessage : Message {
         public int Index { get; set; }
         public Item Item { get; set; }
         public Book Book { get; set; }

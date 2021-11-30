@@ -1,15 +1,15 @@
-package mediator.Request;
+package mediator.message;
 
 import model.Order;
 
 import java.util.List;
 
-public class OrderRequest extends Request{
+public class OrderMessage extends Message {
     private int index;
     private Order order;
     private List<Order> orders;
 
-    public OrderRequest(String service, String type) {
+    public OrderMessage(String service, String type) {
         super(service, type);
     }
 

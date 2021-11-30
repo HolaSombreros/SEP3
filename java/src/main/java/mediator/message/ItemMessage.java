@@ -1,11 +1,11 @@
-package mediator.Request;
+package mediator.message;
 
 import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemRequest extends Request{
+public class ItemMessage extends Message {
     private int index;
     private List<Item> items;
     private List<Category> categories;
@@ -17,7 +17,7 @@ public class ItemRequest extends Request{
     private int[] itemsIds;
     private String orderBy;
 
-    public ItemRequest(String service, String type) {
+    public ItemMessage(String service, String type) {
         super(service, type);
         items = new ArrayList<>();
         categories = new ArrayList<>();

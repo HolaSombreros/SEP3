@@ -128,7 +128,7 @@
                                 <label class="form-check-label" for="inlineCheckbox">@g.Name</label>
                             }
                         </div>
-                         <ValidationMessage For="@(() => itemModel.Genre)"/>
+                        <ValidationMessage For="@(() => itemModel.Genre)"/>
                     </div>
                 }
             </div>
@@ -172,6 +172,7 @@
     protected override async Task OnInitializedAsync() {
         categories = await itemService.GetCategoriesAsync();
         genres = await itemService.GetGenresAsync();
+        itemModel.BookModel = new BookModel();
         itemModel.Authors = new List<Author>();
         addMoreAuthors = false;
         if (CategoryName != null) {
