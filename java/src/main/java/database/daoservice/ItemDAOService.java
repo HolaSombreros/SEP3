@@ -9,6 +9,7 @@ import model.enums.ItemStatus;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 
 public class ItemDAOService implements ItemDAO {
 
@@ -211,6 +212,19 @@ public class ItemDAOService implements ItemDAO {
     public List<Item> readAllByCategory(String category, int index) {
         try{
             return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE category.name = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category, index);
+        }
+        catch (SQLException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Item> readAllByPrice(String order, int index) {
+        try{
+            if(order.equalsIgnoreCase("ascending"))
+                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY price LIMIT 21 OFFSET 21 * ?", index);
+            else
+                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY price DESC LIMIT 21 OFFSET 21 * ?", index);
         }
         catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());

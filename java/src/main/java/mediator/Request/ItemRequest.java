@@ -15,6 +15,7 @@ public class ItemRequest extends Request{
     private Book book;
     private Customer customer;
     private int[] itemsIds;
+    private String orderBy;
 
     public ItemRequest(String service, String type) {
         super(service, type);
@@ -85,5 +86,13 @@ public class ItemRequest extends Request{
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
     }
 }
