@@ -62,7 +62,9 @@ public class GenreDAOService implements GenreDAO {
     @Override
     public void updateBookGenre(Genre genre, int itemId) {
         try{
-            databaseHelper.executeUpdateWithKeys("INSERT INTO book_genre VALUES (?,?)", itemId,genre.getId());
+            Genre g = read(genre.getName());
+            if(!isGenre(g.getName()))
+                databaseHelper.executeUpdateWithKeys("INSERT INTO book_genre VALUES (?,?)", itemId,g.getId());
         }
         catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
