@@ -85,16 +85,28 @@
                         </div>
                         @if (addMoreAuthors) {
                             <div class="list-group">
-                                @foreach (Author author in itemModel.Authors) {
-                                    <div class="list-group-item ">
-                                        @author.FirstName @author.LastName
-                                        <button @onclick="@(() => RemoveAuthorClicked(author))">
-                                            <i class="oi oi-trash" style="color:red"></i>
-                                        </button>
-                                    </div>
-                                }
-                            </div> 
+                            </div>
                         }
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Remove</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (Author author in itemModel.Authors) {
+                                <tr class="family-row">
+                                    <td>@author.LastName</td>
+                                    <td>@author.LastName</td>
+                                    <td>
+                                        <i @onclick="@(() => RemoveAuthorClicked(author))"class="oi oi-trash" style="color:red"></i>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
 
                         <div class="mt-1">
                             <input @bind-value="itemModel.Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language"/>
@@ -115,9 +127,8 @@
                                 <input @onclick="@(() => AddGenre(g))" class="form-check-input ml-2" type="checkbox" id="inlineCheckbox" value="option1">
                                 <label class="form-check-label" for="inlineCheckbox">@g.Name</label>
                             }
-                            <ValidationMessage For="@(() => itemModel.Genre)"/>
-
                         </div>
+                        <ValidationMessage For="@(() => itemModel.Genre)"/>
                     </div>
                 }
             </div>
@@ -159,7 +170,7 @@
     private string authorLastName;
 
     protected override async Task OnInitializedAsync() {
-        categories = await itemService.GetCategories();
+        categories = await itemService.GetCategoriesAsync();
         genres = await itemService.GetGenresAsync();
         itemModel.BookModel = new BookModel();
         itemModel.Authors = new List<Author>();
