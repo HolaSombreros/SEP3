@@ -3,17 +3,16 @@ using System.Linq;
 
 namespace SEP3Library.Models {
     public class ShoppingCart {
-        public Customer User { get; set; }
-        public readonly double ShippingPrice = 25.00;
-        public IList<Item> Items  { get; set; }
+        public readonly decimal ShippingPrice = 25.00M;
+        public IList<Item> Items { get; set; }
         
         public ShoppingCart() {
             Items = new List<Item>();
         }
 
-        public double Total {
+        public decimal Total {
             get {
-                double p = 0;
+                decimal p = 0;
                 foreach (var i in Items) {
                     p += i.Price * i.Quantity;
                 }
@@ -31,22 +30,29 @@ namespace SEP3Library.Models {
             }
         }
 
-        public void AddToShoppingCart(Item item) {
+        public Item IncreaseQuantity(Item item) {
+            Item i = item.Copy();
+            Item test = Items.First(it => it.Id == item.Id);
+            test.Quantity++;
+            return test;
+        }
+
+        public Item AddToShoppingCart(Item item) {
             Item item1 = item.Copy();
             Item test = Items.FirstOrDefault(i => i.Id == item.Id);
             if (test == null) {
-                Items.Add(item1);
                 item1.Quantity = 1;
+                Items.Add(item1);
+                return item1;
             }
-            else {
-                test.Quantity++;
-            }
+            return null;
         }
 
-        public void RemoveQuantityFromShoppingCart(Item item) {
+        public Item RemoveQuantityFromShoppingCart(Item item) {
             Item i = item.Copy();
             Item test = Items.First(it => it.Id == item.Id);
             test.Quantity--;
+            return test;
         }
 
         public void RemoveItemFromShoppingCart(Item item) {
@@ -58,7 +64,7 @@ namespace SEP3Library.Models {
             Items.Clear();
         }
         
-        public double TotalOrderPrice() {
+        public decimal TotalOrderPrice() {
             return Total + ShippingPrice;
         }
     }

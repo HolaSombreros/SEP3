@@ -23,7 +23,7 @@ public class MyDateTime {
     public MyDateTime(LocalDateTime localDateTime){
         this.year = localDateTime.getYear();
         this.month = localDateTime.getMonth().getValue();
-        this.day = localDateTime.getDayOfYear();
+        this.day = localDateTime.getDayOfMonth();
         this.hour = localDateTime.getHour();
         this.minute = localDateTime.getMinute();
         this.second = localDateTime.getSecond();

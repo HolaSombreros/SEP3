@@ -15,7 +15,7 @@ a, .btn-link {
 }
 
 .content {
-    padding-top: 1.1rem;
+    /*padding-top: 1.1rem;*/
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -42,89 +42,10 @@ a, .btn-link {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
-
-.card {
-    margin: auto;
-    max-width: 950px;
-    width: 90%;
-    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 1rem;
-    border: transparent
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
 }
-
-@media(max-width:767px) {
-    .card {
-        margin: 3vh auto
-    }
-    .cart {
-        padding: 4vh;
-        border-bottom-left-radius: unset;
-        border-top-right-radius: 1rem
-    }
-}
-
-.cart {
-    background-color: #fff;
-    padding: 4vh 5vh;
-    border-bottom-left-radius: 1rem;
-    border-top-left-radius: 1rem
-}
-
-.summary {
-    background-color: #ddd;
-    border-top-right-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-    padding: 4vh;
-    color: rgb(65, 65, 65)
-}
-
-@media(max-width:767px) {
-    .summary {
-        border-top-right-radius: unset;
-        border-bottom-left-radius: 1rem
-    }
-}
-
-.summary .col-2 {
-    padding: 0
-}
-
-.summary .col-10 {
-    padding: 0
-}
-
-.row {
-    margin: 0
-}
-
-.title b {
-    font-size: 1.5rem
-}
-
-.main {
-    margin: 0;
-    padding: 2vh 0;
-    width: 100%
-
-}
-
-.quantity {
-    width: 120px;
-}
-
-.retroshd {
-    color: #2c2c2c;
-    letter-spacing: .05em;
-    text-shadow: 2px 2px 0px #d5d5d5, 4px 4px 0px rgba(0, 0, 0, 0.2);
-}
-
-.image{
-    width: 300px;
-    height: 400px;
-}
+    

@@ -31,6 +31,5 @@ namespace SEP3Library.Models {
         public Address Address { get; set; } = new Address();
         public string Role { get; set; }
         public string PhoneNumber { get; set; }
-        
     }
 }

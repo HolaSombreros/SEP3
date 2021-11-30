@@ -1,6 +1,8 @@
 package database.daoservice;
 
+import database.daoservice.mapper.CategoryMapper;
 import database.daoservice.mapper.DataMapper;
+import model.Category;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -102,7 +104,6 @@ public class DatabaseHelper<T> {
         }
     }
 
-
     public List<T> mapList(DataMapper<T> mapper, String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             ResultSet resultSet = executeQuery(connection,query,parameters);
@@ -115,5 +116,4 @@ public class DatabaseHelper<T> {
             throw new IllegalStateException(e.getMessage());
         }
     }
-
 }

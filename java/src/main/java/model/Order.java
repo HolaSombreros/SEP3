@@ -11,6 +11,7 @@ public class Order {
     private String lastName;
     private String email;
     private int id;
+    private int customerId;
     private Address address;
     private MyDateTime dateTime;
     private OrderStatus orderStatus;
@@ -19,7 +20,7 @@ public class Order {
         items = new ArrayList<>();
     }
 
-    public Order(List<Item> items, String firstName, String lastName, String email, int id, Address address, MyDateTime dateTime, OrderStatus orderStatus) {
+    public Order(List<Item> items, String firstName, String lastName, String email, int id, Address address, MyDateTime dateTime, OrderStatus orderStatus, int customerId) {
         this.items = items;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -28,6 +29,7 @@ public class Order {
         this.address = address;
         this.dateTime = dateTime;
         this.orderStatus = orderStatus;
+        this.customerId = customerId;
     }
 
     public void setItems(List<Item> items){
@@ -63,5 +65,41 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public void setDateTime(MyDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

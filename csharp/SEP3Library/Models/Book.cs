@@ -1,14 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SEP3Library.Models {
     public class Book : Item {
         public string Isbn { get; set; }
-        public string AuthorFirstName { get; set; }
-        public string AuthorLastName { get; set; }
+        public List<Author> Authors { get; set; }
         public MyDateTime PublicationDate { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public Language Language { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public Genre Genre { get; set; }
+        public string Language { get; set; }
+        public List<Genre> Genre { get; set; }
     }
 }

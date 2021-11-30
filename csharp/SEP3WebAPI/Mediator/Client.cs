@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Connections;
 using SEP3Library.Models;
-using SEP3WebAPI.Mediator.Requests;
+using SEP3WebAPI.Mediator.Messages;
 
 namespace SEP3WebAPI.Mediator {
     public class Client : IClient {
@@ -15,36 +15,36 @@ namespace SEP3WebAPI.Mediator {
         private int port = 1234;
         private NetworkStream networkStream;
         private bool waiting;
-        private Object lock1;
-        private Request request;
+        private object lock1;
+        private Message reply;
 
         public Client() {
             tcpClient = new TcpClient("127.0.0.1", port);
             networkStream = tcpClient.GetStream();
             ClientReceiver clientReceiver = new ClientReceiver(this, networkStream);
-            lock1 = new Object();
+            lock1 = new object();
         }
 
         public void Receive(string result) {
             lock (lock1) {
-                request = JsonSerializer.Deserialize<Request>(result, 
+                reply = JsonSerializer.Deserialize<Message>(result,
                     new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
-                if (request != null) {
-                    switch (request.Service) {
+                if (reply != null) {
+                    switch (reply.Service) {
                         case "item":
-                            request = JsonSerializer.Deserialize<ItemRequest>(result, 
+                            reply = JsonSerializer.Deserialize<ItemMessage>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "order":
-                            request = JsonSerializer.Deserialize<OrderRequest>(result,
+                            reply = JsonSerializer.Deserialize<OrderMessage>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "customer":
-                            request = JsonSerializer.Deserialize<CustomerRequest>(result,
+                            reply = JsonSerializer.Deserialize<CustomerMessage>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "error":
-                            request = JsonSerializer.Deserialize<ErrorRequest>(result,
+                            reply = JsonSerializer.Deserialize<ErrorMessage>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "connection_error":
@@ -65,95 +65,153 @@ namespace SEP3WebAPI.Mediator {
             }
         }
 
+        private void Send(object req) {
+            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+            byte[] data = Encoding.ASCII.GetBytes(json + "\n");
+            networkStream.Write(data, 0, data.Length);
+            Waiting();
+            if (reply is ErrorMessage errorRequest)
+                throw new Exception(errorRequest.Message);
+        }
+        
         public void Disconnect() {
             networkStream.Close();
             tcpClient.Close();
         }
-
-        private void Send(String send) {
-            byte[] data = Encoding.ASCII.GetBytes(send + "\n");
-            networkStream.Write(data, 0, data.Length);
-        }
-
+        
         public async Task<IList<Item>> GetItemsAsync(int index) {
-            ItemRequest req = new ItemRequest() {
+            ItemMessage req = new ItemMessage() {
                 Service = "item",
                 Type = "getAll",
                 Index = index
             };
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            return ((ItemRequest)request).Items;
+            Send(req);
+            return ((ItemMessage)reply).Items;
+        }
+
+        public async Task<IList<Category>> GetCategoriesAsync() {
+            ItemMessage req = new ItemMessage() {
+                Service = "item",
+                Type = "getCategories"
+            };
+            Send(req);
+            return ((ItemMessage) reply).Categories;
+        }
+
+        public async Task<IList<Genre>> GetGenresAsync() {
+            ItemMessage req = new ItemMessage() {
+                Service = "item",
+                Type = "getGenres"
+            };
+            Send(req);
+            return ((ItemMessage) reply).Genres;
+        }
+
+        public async Task<Item> AddItemAsync(Item item) {
+            ItemMessage req = new ItemMessage() {
+                Service = "item",
+                Type = "addItem",
+                Item = item
+            };
+            Send(req);
+            return ((ItemMessage) reply).Item;
+        }
+
+        public async Task<Book> AddBookAsync(Book book) {
+            ItemMessage req = new ItemMessage() {
+                Service = "item",
+                Type = "addBook",
+                Book = book
+            };
+            Send(req);
+            return ((ItemMessage) reply).Book;
+        }
+
+        public async Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category) {
+            ItemMessage req = new ItemMessage() {
+                Service = "item",
+                Type = "getItemBySpecifications",
+                Item = new Item() {
+                    Name = name,
+                    Description = description,
+                    Category = category
+                }
+            };
+            Send(req);
+            return ((ItemMessage) reply).Item;
+        }
+
+        public async Task<Book> GetBookBySpecificationsAsync(string isbn) {
+            ItemMessage req = new ItemMessage() {
+                Service = "item",
+                Type = "getBookBySpecifications",
+                Book = new Book() {
+                    Isbn = isbn
+                }
+            };
+            Send(req);
+            return ((ItemMessage) reply).Book;
         }
 
         public async Task<IList<Item>> GetItemsByIdAsync(int[] itemIds) {
-            ItemRequest req = new ItemRequest() {
+            ItemMessage req = new ItemMessage() {
                 Service = "item",
                 Type = "getAllById",
                 ItemsIds = itemIds
             };
-            String send = JsonSerializer.Serialize(req,
-                new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            
-            return ((ItemRequest)request).Items;
+            Send(req);
+            return ((ItemMessage) reply).Items;
         }
 
         public async Task<Item> GetItemAsync(int id) {
-            ItemRequest req = new ItemRequest() {
+            ItemMessage req = new ItemMessage() {
                 Type = "get",
                 Service = "item",
                 Item = new Item() {
                     Id = id
                 }
             };
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            return ((ItemRequest) request).Item;
+            Send(req);
+           return ((ItemMessage) reply).Item;
         }
 
         public async Task<Book> GetBookAsync(int id) {
-            ItemRequest req = new ItemRequest() {
+            ItemMessage req = new ItemMessage() {
                 Type = "book",
                 Service = "item",
                 Item = new Item() {
                     Id = id
                 }
             };
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            return ((ItemRequest) request).Book;
+            Send(req);
+           return ((ItemMessage) reply).Book;
         }
         
         public async Task<Order> CreateOrderAsync(Order order) {
             // TODO json too long problem
-            OrderRequest req = new OrderRequest() {
+            OrderMessage req = new OrderMessage() {
                 Service = "order", 
                 Type = "purchase", 
                 Order = order
             };
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            return ((OrderRequest)request).Order;
+            Send(req);
+            return ((OrderMessage)reply).Order;
+        }
+
+        public async Task<IList<Order>> GetOrdersAsync(int index) {
+            OrderMessage req = new OrderMessage() {
+                Service = "order",
+                Type = "getAll",
+                Index = index
+            };
+            Send(req);
+            return ((OrderMessage) reply).Orders;
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
-            CustomerRequest req = new CustomerRequest() {
+            CustomerMessage req = new CustomerMessage() {
                 Type = "login",
                 Service = "customer",
                 Customer = new Customer() {
@@ -161,80 +219,185 @@ namespace SEP3WebAPI.Mediator {
                     Password = password
                 }
             };
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            return ((CustomerRequest)request).Customer;
+            Send(req);
+            return ((CustomerMessage)reply).Customer;
         }
         
         public async Task<Customer> GetCustomerAsync(int customerId) {
-            CustomerRequest req = new CustomerRequest() {
+            CustomerMessage req = new CustomerMessage() {
                 Type = "get",
                 Service = "customer",
                 Customer = new Customer() {
                     Id = customerId
                 }
             };
-            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Send(json);
-            Waiting();
-            return ((CustomerRequest) request).Customer;
+            Send(req);
+            return ((CustomerMessage) reply).Customer;
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
-            
-            CustomerRequest req = new CustomerRequest() {
+            CustomerMessage req = new CustomerMessage() {
                 Type = "register",
                 Service = "customer",
-                Customer = new Customer() {
-                    FirstName = customer.FirstName,
-                    LastName = customer.LastName,
-                    Password = customer.Password,
-                    Address = customer.Address,
-                    Email = customer.Email,
-                    PhoneNumber = customer.PhoneNumber,
-                    Role = customer.Role
-                }
+                Customer = customer
             };
-            String send = JsonSerializer.Serialize(req, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
-            Send(send);
-            Waiting();
-            if (request is ErrorRequest errorRequest)
-                throw new Exception(errorRequest.Message);
-            return ((CustomerRequest)request).Customer;
+            Send(req);
+            return ((CustomerMessage)reply).Customer;
+        }
+
+        public async Task<Customer> UpdateCustomerAsync(Customer customer) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "update",
+                Service = "customer",
+                Customer = customer
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Customer;
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
             // TODO json too long problem
-            ItemRequest req = new ItemRequest() {
+            ItemMessage req = new ItemMessage() {
                 Type = "getWishlist",
                 Service = "item",
                 Customer = customer
             };
-            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Send(json);
-            Waiting();
-            return ((ItemRequest) request).Items;
+            Send(req);
+            return ((ItemMessage) reply).Items;
+        }
+
+        public async Task<Item> AddToWishlist(int customerId, int itemId) {
+            ItemMessage req = new ItemMessage() {
+                Type = "addWishlist",
+                Service = "item",
+                Customer = new Customer() {Id = customerId},
+                Item = new Item() {Id = itemId}
+            };
+            Send(req);
+            return ((ItemMessage) reply).Item;
         }
 
         public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {
-            ItemRequest req = new ItemRequest() {
+            ItemMessage req = new ItemMessage() {
                 Type = "removeWishlist",
                 Service = "item",
                 Customer = customer,
                 Item = item
             };
-            string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-            Send(json);
-            Waiting();
+            Send(req);
+        }
+
+        public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
+            Console.WriteLine("client");
+            ItemMessage req = new ItemMessage() {
+                Type = "addShoppingCart",
+                Service = "item",
+                Customer = customer,
+                Item = item
+            };
+            Send(req);
+            return ((ItemMessage) reply).Item;
+        }
+
+        public async Task<IList<Item>> GetShoppingCartAsync(Customer customer) {
+            ItemMessage req = new ItemMessage() {
+                Type = "getShoppingCart",
+                Service = "item",
+                Customer = customer
+            };
+            Send(req);
+            return ((ItemMessage) reply).Items;
+        }
+
+        public async Task<Item> UpdateShoppingCartAsync(Item item, Customer customer) {
+            ItemMessage req = new ItemMessage() {
+                Type = "editShoppingCart",
+                Service = "item",
+                Customer = customer,
+                Item = item
+            };
+            Send(req);
+            return ((ItemMessage) reply).Item;
+        }
+
+        public async Task RemoveFromShoppingCartAsync(Item item, Customer customer) {
+            ItemMessage req = new ItemMessage() {
+                Type = "removeShoppingCart",
+                Service = "item",
+                Customer = customer,
+                Item = item
+            };
+            Send(req);
+        }
+
+        public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
+            ItemMessage req = new ItemMessage() {
+                Type = "searchByName",
+                Service = "item",
+                Item = new Item {
+                    Name = searchName
+                },
+                Index = index
+            };
+            Send(req);
+            return ((ItemMessage)reply).Items;
+        }
+
+        public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
+            ItemMessage message = new ItemMessage() {
+                Type = "getAllByCategory",
+                Service = "item",
+                Item = new Item() {
+                    Name = category
+                },
+                Index = index
+            };
+            Send(message);
+            return ((ItemMessage)reply).Items;
+        }
+
+        public async Task<Item> UpdateItemAsync(Item item) {
+            ItemMessage req = new ItemMessage() {
+                Type = "updateItem",
+                Service = "item",
+                Item = item
+            };
+            Send(req);
+            return ((ItemMessage) reply).Item;
+
+        }
+
+        public async Task<Book> UpdateBookAsync(Book book) {
+            ItemMessage req = new ItemMessage() {
+                Type = "updateBook",
+                Service = "item",
+                Book = book
+            };
+            Send(req);
+            return ((ItemMessage) reply).Book;
+        }
+
+        public async Task<Category> AddCategoryAsync(Category category) {
+            ItemMessage req = new ItemMessage() {
+                Type = "addCategory",
+                Service = "item",
+                Categories = new List<Category>()
+            };
+            req.Categories.Add(category);
+            
+            Send(req);
+            return ((ItemMessage) reply).Categories[0];
+        }
+
+        public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
+            ItemMessage request = new ItemMessage() {
+                Type = "getAllByPrice",
+                Service = "item",
+                OrderBy = orderBy,
+                Index = index
+            };
+            Send(request);
+            return ((ItemMessage)reply).Items;
         }
     }
 }

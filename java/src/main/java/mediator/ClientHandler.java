@@ -2,11 +2,11 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.daomodel.DatabaseManager;
-import mediator.Command.Command;
-import mediator.Command.CustomerCommand;
-import mediator.Command.ItemCommand;
-import mediator.Command.OrderCommand;
-import mediator.Request.*;
+import mediator.command.Command;
+import mediator.command.CustomerCommand;
+import mediator.command.ItemCommand;
+import mediator.command.OrderCommand;
+import mediator.message.*;
 
 
 import java.io.BufferedReader;
@@ -26,7 +26,7 @@ public class ClientHandler implements Runnable {
     private DatabaseManager databaseManager;
     private HashMap<String, Runnable> service;
     private String received;
-    private Request reply;
+    private Message reply;
 
     public ClientHandler(Socket socket, DatabaseManager databaseManager) throws IOException {
         this.socket = socket;
@@ -46,19 +46,19 @@ public class ClientHandler implements Runnable {
             try {
                 received = in.readLine();
                 System.out.println(received);
-                Request request = gson.fromJson(received, Request.class);
+                Message request = gson.fromJson(received, Message.class);
                 if (request != null) {
                     service.get(request.getService()).run();
                     sendReply(command.execute(reply));
                 }
             }
             catch (IOException e) {
-                ErrorRequest errorRequest = new ErrorRequest("connection_error", "connection_error");
+                ErrorMessage errorRequest = new ErrorMessage("connection_error", "connection_error");
                 sendReply(errorRequest);
                 running = false;
             }
             catch (Exception e) {
-                ErrorRequest errorRequest = new ErrorRequest("error", "error");
+                ErrorMessage errorRequest = new ErrorMessage("error", "error");
                 errorRequest.setMessage(e.getMessage());
                 sendReply(errorRequest);
             }
@@ -66,22 +66,31 @@ public class ClientHandler implements Runnable {
     }
 
     private void itemServiceRun() {
-        reply = gson.fromJson(received, ItemRequest.class);
+        reply = gson.fromJson(received, ItemMessage.class);
         command = new ItemCommand(databaseManager);
     }
 
     private void orderServiceRun() {
-        reply = gson.fromJson(received, OrderRequest.class);
+        reply = gson.fromJson(received, OrderMessage.class);
         command = new OrderCommand(databaseManager);
     }
 
     private void customerServiceRun() {
-        reply = gson.fromJson(received,CustomerRequest.class);
+        reply = gson.fromJson(received, CustomerMessage.class);
         command = new CustomerCommand(databaseManager);
     }
 
-    private void sendReply(Request reply) {
+    private void sendReply(Message reply) {
         String replyGson = gson.toJson(reply);
+//        out.println(replyGson.length());
+//        System.out.println("----- " + replyGson.length());
+//        try {
+//            Thread.sleep(500);
+//        }
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         out.println(replyGson);
+        System.out.println("> " + replyGson);
     }
 }

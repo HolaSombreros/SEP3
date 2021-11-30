@@ -1,56 +1,122 @@
-﻿@* <div class="top-row pl-4 navbar navbar-dark"> *@
-<div>
-    <a class="navbar-brand" href="">    
+﻿@using SEP3UI.Authentication
+@inject NavigationManager nav
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">    
         <img src="Images/undercoverslogo.png" alt="Under Covers logo" style="height: 50px"/>
     </a>
-</div>
-<button class="navbar-toggler" @onclick="ToggleNavMenu">
-    <span class="navbar-toggler-icon"></span>
-</button>
+    <button class="navbar-toggler ml-auto" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="navbar  list-unstyled">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span>Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="/ShoppingBasket">
-                <span class="oi oi-cart" aria-hidden="true"></span>Shopping Cart
-            </NavLink>
-        </li>
-        <AuthorizeView>
-            <NotAuthorized>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="/Login">
-                        <span class="oi oi-account-login" aria-hidden="true"></span>Login
+    <div class="navbar-collapse @NavMenuCssClass">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <NavLink class="nav-link text-center" href="/ShoppingBasket" @onclick="CollapseDropdownMenus">
+                    <span class="oi oi-cart" aria-hidden="true"></span> Cart
+                </NavLink>
+            </li>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <button class="btn btn-info" @onclick="NavigateToLogin">Login</button>
+                </NotAuthorized>
+                <Authorized>
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleAccountDropdownMenu">
+                            <span class="oi oi-person" aria-hidden="true"></span> Account
+                        </NavLink>
+                        @if (!collapseAccountDropdownMenu) {
+                            <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/wishlist" @onclick="CollapseDropdownMenus">
+                                    <span class="oi oi-list" aria-hidden="true"></span> My Wishlist
+                                </NavLink>
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/account" @onclick="CollapseDropdownMenus">
+                                    <span class="oi oi-person" aria-hidden="true"></span> My Account
+                                </NavLink>
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" @onclick="NavigateToLogout">
+                                    <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                                </NavLink>
+                            </div>
+                        }
+                    </li>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Policy="@Policies.IsAdmin">
+                <li class="nav-item dropdown">
+                    <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleAdminDropdownMenu">
+                        <span class="oi oi-cog" aria-hidden="true"></span> Admin
                     </NavLink>
+                    @if (!collapseAdminDropdownMenu) {
+                        <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/categories/new" @onclick="CollapseDropdownMenus">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Add New Category
+                            </NavLink>
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/AddItems" @onclick="CollapseDropdownMenus">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Add New Item
+                            </NavLink>
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
+                            </NavLink>
+                        </div>
+                    }
                 </li>
-            </NotAuthorized>
-            <Authorized>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="/Logout">
-                        <span class="oi oi-account-logout" aria-hidden="true"></span>Logout
-                    </NavLink>
-                </li>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="/wishlist">
-                        <span class="oi oi-list"></span> Wishlist
-                    </NavLink>
-                </li>
-            </Authorized>
-        </AuthorizeView>
-    </ul>
-</div>
+            </AuthorizeView>
+        </ul>
+    </div>
+</nav>
+@* <div class="hello"> *@
+@* <div class="top_bar" id="bottom_bar"> *@
+@*     <div class="container"> *@
+@*         <div class="row"> *@
+@*             <div class="col d-flex flex-row"> *@
+@*                 <div class="top_bar_contact_item"> *@
+@*                     <div class="top_bar_icon"><img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1560918577/phone.png" alt=""></div>+91 9823 132 111 *@
+@*                 </div> *@
+@*                 <div class="top_bar_contact_item"> *@
+@*                     <div class="top_bar_icon"> *@
+@*                         <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1560918597/mail.png" alt=""> *@
+@*                     </div><a href="mailme@undercovers.com">mailme@undercovers.com</a> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+@* </div> *@
 
 @code {
     private bool collapseNavMenu = true;
+    private bool collapseAccountDropdownMenu = true;
+    private bool collapseAdminDropdownMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
+        collapseAccountDropdownMenu = true;
+        collapseAdminDropdownMenu = true;
     }
 
+    private void ToggleAccountDropdownMenu() {
+        collapseAccountDropdownMenu = !collapseAccountDropdownMenu;
+        collapseAdminDropdownMenu = true;
+    }
+
+    private void ToggleAdminDropdownMenu() {
+        collapseAdminDropdownMenu = !collapseAdminDropdownMenu;
+        collapseAccountDropdownMenu = true;
+    }
+
+    private void CollapseDropdownMenus() {
+        collapseAccountDropdownMenu = true;
+        collapseAdminDropdownMenu = true;
+    }
+
+    private void NavigateToLogin() {
+        nav.NavigateTo("/login");
+    }
+
+    private void NavigateToLogout() {
+        CollapseDropdownMenus();
+        nav.NavigateTo("/logout");
+    }
 }
