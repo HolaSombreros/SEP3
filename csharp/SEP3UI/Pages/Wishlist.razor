@@ -36,10 +36,10 @@
                     </div>
                     <div class="col-md-4 col-sm-12">
                         @if (item.Quantity == 0) {
-                            <strong class="text-danger">Out of stock.</strong>
+                            <strong class="text-danger">Out of stock</strong>
                             <button class="btn btn-outline-dark w-100 mt-2" disabled>Add To Cart</button>
                         } else {
-                            <strong class="text-success">In stock.</strong>
+                            <strong class="text-success">In stock</strong>
                             <button class="btn btn-outline-primary w-100 mt-2" @onclick="@(() => PerformAddItemToCart(item))">Add To Cart</button>
                         }
                     </div>

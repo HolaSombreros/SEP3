@@ -1,10 +1,10 @@
-package mediator.Request;
+package mediator.message;
 
-public class Request {
+public class Message {
     private String service;
     private String type;
 
-    public Request(String service, String type) {
+    public Message(String service, String type) {
         this.service = service;
         this.type = type;
     }

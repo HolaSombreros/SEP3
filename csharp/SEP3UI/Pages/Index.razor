@@ -7,30 +7,52 @@
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
+
 <div class="row">
-    <div class="col-md-3 ">
+    <div id="sidebar" class="col-md-3 d-block">
         @if (categories != null) {
-            <nav class="navbar navbar-inverse" role="navigation">
+            <nav class="sidebar-nav" role="navigation">
                 <ul class="nav sidebar-nav">
                     <div class="sidebar-header">
                         <div class="sidebar-brand">
-                            <a href="#">Categories</a>
+                            <a>Categories</a>
                         </div>
                     </div>
-                    <li>
-                        <div @onclick="@LoadAllItems">All</div>
+                    <li class="category">
+                        <a @onclick="@LoadAllItemsAsync">All</a>
                     </li>
                     @foreach (Category category in categories) {
                         <li>
-                            <div @onclick="(() => LoadItemsByCategory(category))">@category.Name</div>
+                            <a @onclick="(() => LoadItemsByCategoryAsync(category))">@category.Name</a>
                         </li>
                     }
+                </ul>
+                <ul class="nav" id="filtering">
+                    <div class="sidebar-header">
+                        <div class="sidebar-brand">
+                            <a>Filter</a>
+                        </div>
+                    </div>
+                    <li>
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle text-center" @onclick="ToggleDropdownMenu">
+                                Price
+                            </a>
+                            @if (!collapseDropdownMenu) {
+                                <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
+                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceAscendingAsync">Ascending</a>
+                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceDescendingAsync">Descending</a>
+                                </div>
+                            }
+
+                        </div>
+                    </li>
                 </ul>
             </nav>
         }
     </div>
     <div class="d-block col-md-9">
-        <div >
+        <div>
             <form class="search-bar">
                 <input type="search" name="search" pattern=".*\S.*" required @bind-value="searchItem" placeholder="Type To Search..."/>
                 <buttonc class="search-btn" type="submit" @onclick="@SearchButtonPressedAsync"></buttonc>
@@ -39,15 +61,19 @@
         <div >
             @if (filteredItems != null) {
                 @if (!filteredItems.Any()) {
-                    <div class="card">
-                        <div class="row">
-                            <div class="col-8 text-center">No items were found </div>
-                            <img class="img-fluid image col-4" src="Images/blazor_meme.jpg"/>
+                    <div class="container">
+                        <div class="d-block justify-content-center">
+                            <div class="text-center">
+                                <strong>No items were found </strong>
+                            </div>
+                            <div class="text-center">
+                                <img class="img-fluid image " src="Images/blazor_meme.jpg"/>
+                            </div>
                         </div>
                     </div>
                 }
                 else {
-                    <div id="productsWrapper" class="row ">
+                    <div id="productsWrapper" class="row">
                         @foreach (Item item in filteredItems) {
                             <div class="card col-sm-3 m-3">
                                 <div @onclick="@(() => NavigateToItemDetails(item))">
@@ -59,9 +85,19 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="action">
-                                    <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
-                                    <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                <div >
+                                    @if (@item.Discount > 0) {
+                                        <p class="mb-0">$@string.Format("{0:f}", item.Price)</p>
+                                        <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                        <p style="color: darkred">
+                                            <strong> DISCOUNT: @item.Discount%</strong>
+                                        </p>
+                                    }
+                                    else {
+                                        <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
+                                        <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                    }
+
                                 </div>
                             </div>
                         }
@@ -72,7 +108,7 @@
     </div>
 </div>
 <div class="text-center">
-    <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMore">Load more</button>
+    <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMoreAsync">Load more</button>
 </div>
 
 @code {
@@ -83,6 +119,8 @@
     private string hidden;
     private string searchItem;
     private IList<Category> categories;
+    private string orderBy;
+    private bool collapseDropdownMenu = true;
 
 
     protected override async Task OnInitializedAsync() {
@@ -97,15 +135,16 @@
         filteredItems = items;
         categories = await itemService.GetCategoriesAsync();
         hidden = "";
+        orderBy = "";
     }
-
+    
     private bool GetDisabledState(Item item) {
         if (item.Quantity < 1)
             return true;
         return false;
     }
 
-    private async Task LoadMore() {
+    private async Task LoadMoreAsync() {
         itemIndex++;
         IList<Item> newList = await itemService.GetItemsAsync(itemIndex);
         if (newList.Count == 0) {
@@ -131,11 +170,30 @@
         filteredItems = await itemService.GetItemsBySearchAsync(searchItem, itemIndex);
     }
 
-    private async Task LoadItemsByCategory(Category category) {
+    private async Task LoadItemsByCategoryAsync(Category category) {
         filteredItems = await itemService.GetItemsByCategoriesAsync(category, itemIndex);
     }
 
-    private async Task LoadAllItems() {
+    private async Task LoadAllItemsAsync() {
         filteredItems = await itemService.GetItemsAsync(itemIndex);
+    }
+
+    private async Task FilterByPriceAscendingAsync() {
+        orderBy = "ascending";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
+
+    }
+
+    private async Task FilterByPriceDescendingAsync() {
+        orderBy = "descending";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
+    }
+    private void ToggleDropdownMenu() {
+        collapseDropdownMenu = !collapseDropdownMenu;
+    }
+    private void CollapseDropdownMenu() {
+        collapseDropdownMenu = true;
     }
 }

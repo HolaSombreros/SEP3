@@ -45,7 +45,7 @@
         </table>
     }
     <div class="text-center">
-        <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMore">Load more</button>
+        <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMoreAsync">Load more</button>
     </div>
 </div>
 
@@ -60,7 +60,7 @@
         hidden = "";
     }
 
-    private async Task LoadMore() {
+    private async Task LoadMoreAsync() {
         orderIndex++;
         IList<Order> newList = await orderService.GetOrdersAsync(orderIndex);
         if (newList.Count == 0) {

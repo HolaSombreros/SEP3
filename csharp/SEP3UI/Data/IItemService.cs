@@ -17,6 +17,6 @@ namespace SEP3UI.Data {
         Task<IList<Item>> GetItemsByCategoriesAsync(Category category, int index);
         Task<Item> UpdateItemAsync(int id, ItemModel item);
         Task<Book> UpdateBookAsync(int id, BookModel item);
-
+        Task<IList<Item>> GetItemsByPrice(string orderBy, int index);
     }
 }

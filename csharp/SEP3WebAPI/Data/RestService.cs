@@ -145,7 +145,7 @@ namespace SEP3WebAPI.Data {
             return await client.GetCustomerWishlistAsync(customer);
         }
 
-        public async Task<Item> AddToWishlist(int customerId, int itemId) {
+        public async Task<Item> AddToWishlistAsync(int customerId, int itemId) {
             Customer customer = await client.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
             
@@ -231,7 +231,7 @@ namespace SEP3WebAPI.Data {
             };
             return await client.AddItemAsync(i);
         }
-        
+
         public async Task<Book> CreateBookAsync(BookModel itemModel) {
             if (itemModel == null) throw new InvalidDataException("Please specify a book of the proper format!");
             Book book = await client.GetBookBySpecificationsAsync(itemModel.Isbn);
@@ -314,6 +314,10 @@ namespace SEP3WebAPI.Data {
 
         public async Task<IList<Order>> GetOrdersAsync(int index) {
             return await client.GetOrdersAsync(index);
+        }
+
+        public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
+            return await client.GetItemsByPriceAsync(orderBy, index);
         }
     }
 }

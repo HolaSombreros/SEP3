@@ -1,17 +1,16 @@
-package mediator.Command;
+package mediator.command;
 
 import database.daomodel.DatabaseManager;
-import mediator.Request.ItemRequest;
-import mediator.Request.OrderRequest;
-import mediator.Request.Request;
+import mediator.message.OrderMessage;
+import mediator.message.Message;
 import model.Order;
 
 import java.util.HashMap;
 
 public class OrderCommand implements Command {
 
-    private OrderRequest request;
-    private OrderRequest reply;
+    private OrderMessage request;
+    private OrderMessage reply;
     private DatabaseManager databaseManager;
     private HashMap<String, Runnable> methods;
 
@@ -22,10 +21,10 @@ public class OrderCommand implements Command {
         methods.put("getAll", this::getAll);
     }
 
-    @Override public Request execute(Request request) {
+    @Override public Message execute(Message request) {
         try {
-            this.request = (OrderRequest) request;
-            reply = new OrderRequest(request.getService(), request.getType());
+            this.request = (OrderMessage) request;
+            reply = new OrderMessage(request.getService(), request.getType());
             methods.get(request.getType()).run();
             return reply;
         }

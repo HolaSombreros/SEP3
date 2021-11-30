@@ -1,10 +1,9 @@
-package mediator.Command;
+package mediator.command;
 
 import database.daomodel.DatabaseManager;
-import mediator.Request.ItemRequest;
-import mediator.Request.Request;
+import mediator.message.ItemMessage;
+import mediator.message.Message;
 import model.Category;
-import model.Item;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +12,8 @@ import java.util.List;
 
 public class ItemCommand implements Command {
 
-    private ItemRequest request;
-    private ItemRequest reply;
+    private ItemMessage request;
+    private ItemMessage reply;
     private DatabaseManager databaseManager;
     private HashMap<String, Runnable> methods;
 
@@ -39,17 +38,17 @@ public class ItemCommand implements Command {
         methods.put("editShoppingCart", this::updateShoppingCart);
         methods.put("removeShoppingCart", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
-        methods.put("getCategories", this::getCategories);
         methods.put("getAllByCategory", this::getAllByCategory);
         methods.put("addCategory", this::addCategory);
         methods.put("updateItem", this::updateItem);
         methods.put("updateBook", this::updateBook);
+        methods.put("getAllByPrice",this::getALlByPrice);
     }
 
-    @Override public Request execute(Request request) {
+    @Override public Message execute(Message request) {
         try {
-            this.request = (ItemRequest) request;
-            reply = new ItemRequest(request.getService(), request.getType());
+            this.request = (ItemMessage) request;
+            reply = new ItemMessage(request.getService(), request.getType());
             methods.get(request.getType()).run();
             return reply;
         }
@@ -153,5 +152,9 @@ public class ItemCommand implements Command {
         List<Category> categories = new ArrayList<>();
         categories.add(databaseManager.getCategoryDAOService().createCategory(request.getCategories().get(0).getName()));
         reply.setCategories(categories);
+    }
+
+    private void getALlByPrice(){
+        reply.setItems(databaseManager.getItemDAOService().readAllByPrice(request.getOrderBy(), request.getIndex()));
     }
 }
