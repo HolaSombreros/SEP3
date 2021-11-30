@@ -27,12 +27,12 @@ namespace SEP3WebAPI.Mediator {
 
         public void Receive(string result) {
             lock (lock1) {
-                reply = JsonSerializer.Deserialize<Message>(result, 
+                reply = JsonSerializer.Deserialize<Message>(result,
                     new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
                 if (reply != null) {
                     switch (reply.Service) {
                         case "item":
-                            reply = JsonSerializer.Deserialize<ItemMessage>(result, 
+                            reply = JsonSerializer.Deserialize<ItemMessage>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
                         case "order":
@@ -387,6 +387,17 @@ namespace SEP3WebAPI.Mediator {
             
             Send(req);
             return ((ItemMessage) reply).Categories[0];
+        }
+
+        public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
+            ItemMessage request = new ItemMessage() {
+                Type = "getAllByPrice",
+                Service = "item",
+                OrderBy = orderBy,
+                Index = index
+            };
+            Send(request);
+            return ((ItemMessage)reply).Items;
         }
     }
 }

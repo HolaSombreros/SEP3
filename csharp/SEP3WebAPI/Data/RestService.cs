@@ -315,5 +315,9 @@ namespace SEP3WebAPI.Data {
         public async Task<IList<Order>> GetOrdersAsync(int index) {
             return await client.GetOrdersAsync(index);
         }
+
+        public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
+            return await client.GetItemsByPriceAsync(orderBy, index);
+        }
     }
 }

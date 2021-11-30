@@ -42,6 +42,7 @@ public class ItemCommand implements Command {
         methods.put("addCategory", this::addCategory);
         methods.put("updateItem", this::updateItem);
         methods.put("updateBook", this::updateBook);
+        methods.put("getAllByPrice",this::getALlByPrice);
     }
 
     @Override public Message execute(Message request) {
@@ -151,5 +152,9 @@ public class ItemCommand implements Command {
         List<Category> categories = new ArrayList<>();
         categories.add(databaseManager.getCategoryDAOService().createCategory(request.getCategories().get(0).getName()));
         reply.setCategories(categories);
+    }
+
+    private void getALlByPrice(){
+        reply.setItems(databaseManager.getItemDAOService().readAllByPrice(request.getOrderBy(), request.getIndex()));
     }
 }

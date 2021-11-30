@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -14,5 +15,6 @@ namespace SEP3UI.Data {
         Task<Category> AddCategoryAsync(Category category);
         Task<IList<Category>> GetCategoriesAsync();
         Task<IList<Item>> GetItemsByCategoriesAsync(Category category, int index);
+        Task<IList<Item>> GetItemsByPrice(string orderBy, int index);
     }
 }

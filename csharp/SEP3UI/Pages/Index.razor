@@ -9,7 +9,7 @@
 @inject AuthenticationStateProvider authStateProvider
 
 <div class="row">
-    <div id="sidebar" class="col-md-3 ">
+    <div id="sidebar" class="col-md-3 d-block">
         @if (categories != null) {
             <nav class="sidebar-nav" role="navigation">
                 <ul class="nav sidebar-nav">
@@ -22,10 +22,31 @@
                         <a @onclick="@LoadAllItemsAsync">All</a>
                     </li>
                     @foreach (Category category in categories) {
-                        <li class="category">
+                        <li>
                             <a @onclick="(() => LoadItemsByCategoryAsync(category))">@category.Name</a>
                         </li>
                     }
+                </ul>
+                <ul class="nav" id="filtering">
+                    <div class="sidebar-header">
+                        <div class="sidebar-brand">
+                            <a>Filter</a>
+                        </div>
+                    </div>
+                    <li>
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle text-center" @onclick="ToggleDropdownMenu">
+                                Price
+                            </a>
+                            @if (!collapseDropdownMenu) {
+                                <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
+                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceAscendingAsync">Ascending</a>
+                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceDescendingAsync">Descending</a>
+                                </div>
+                            }
+
+                        </div>
+                    </li>
                 </ul>
             </nav>
         }
@@ -64,10 +85,13 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="action">
+                                <div >
                                     @if (@item.Discount > 0) {
-                                        <p class="price float-left">$@string.Format("{0:f}", item.Price)</p> <p style="color: darkred">(@item.Discount)</p>
+                                        <p class="mb-0">$@string.Format("{0:f}", item.Price)</p>
                                         <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                        <p style="color: darkred">
+                                            <strong> DISCOUNT: @item.Discount%</strong>
+                                        </p>
                                     }
                                     else {
                                         <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
@@ -95,6 +119,8 @@
     private string hidden;
     private string searchItem;
     private IList<Category> categories;
+    private string orderBy;
+    private bool collapseDropdownMenu = true;
 
 
     protected override async Task OnInitializedAsync() {
@@ -109,8 +135,9 @@
         filteredItems = items;
         categories = await itemService.GetCategoriesAsync();
         hidden = "";
+        orderBy = "";
     }
-
+    
     private bool GetDisabledState(Item item) {
         if (item.Quantity < 1)
             return true;
@@ -151,4 +178,22 @@
         filteredItems = await itemService.GetItemsAsync(itemIndex);
     }
 
+    private async Task FilterByPriceAscendingAsync() {
+        orderBy = "ascending";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
+
+    }
+
+    private async Task FilterByPriceDescendingAsync() {
+        orderBy = "descending";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
+    }
+    private void ToggleDropdownMenu() {
+        collapseDropdownMenu = !collapseDropdownMenu;
+    }
+    private void CollapseDropdownMenu() {
+        collapseDropdownMenu = true;
+    }
 }

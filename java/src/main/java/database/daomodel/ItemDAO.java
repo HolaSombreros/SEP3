@@ -26,4 +26,5 @@ public interface ItemDAO {
     void updateShoppingCart (Item item, int customerId);
     void removeFromShoppingCart (Item item, int customerId);
     List<Item> readAllByCategory(String category, int index);
+    List<Item> readAllByPrice(String order, int index);
 }

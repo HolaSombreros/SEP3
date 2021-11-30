@@ -155,7 +155,7 @@ body, .search-bar {
 }
 /*side bar css*/
 .sidebar-nav {
-    position: absolute;
+    /*position: absolute;*/
     top: 0;
     width: 330px;
     margin: 0;
@@ -272,4 +272,14 @@ body, .search-bar {
     .sidebar-nav{
         width: 100%;
     }
+}
+
+#filtering{
+    position: unset;
+    top: 0;
+    width: 330px;
+    height: 100px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }

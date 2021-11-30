@@ -15,6 +15,7 @@ public class ItemMessage extends Message {
     private Book book;
     private Customer customer;
     private int[] itemsIds;
+    private String orderBy;
 
     public ItemMessage(String service, String type) {
         super(service, type);
@@ -85,5 +86,13 @@ public class ItemMessage extends Message {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
     }
 }
