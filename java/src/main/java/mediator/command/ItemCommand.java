@@ -1,8 +1,8 @@
 package mediator.command;
 
 import database.daomodel.DatabaseManager;
-import mediator.request.ItemRequest;
-import mediator.request.Request;
+import mediator.message.ItemMessage;
+import mediator.message.Message;
 import model.Category;
 
 import java.time.LocalDate;
@@ -12,8 +12,8 @@ import java.util.List;
 
 public class ItemCommand implements Command {
 
-    private ItemRequest request;
-    private ItemRequest reply;
+    private ItemMessage request;
+    private ItemMessage reply;
     private DatabaseManager databaseManager;
     private HashMap<String, Runnable> methods;
 
@@ -45,10 +45,10 @@ public class ItemCommand implements Command {
         methods.put("updateBook", this::updateBook);
     }
 
-    @Override public Request execute(Request request) {
+    @Override public Message execute(Message request) {
         try {
-            this.request = (ItemRequest) request;
-            reply = new ItemRequest(request.getService(), request.getType());
+            this.request = (ItemMessage) request;
+            reply = new ItemMessage(request.getService(), request.getType());
             methods.get(request.getType()).run();
             return reply;
         }

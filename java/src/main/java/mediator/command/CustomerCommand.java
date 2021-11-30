@@ -1,15 +1,15 @@
 package mediator.command;
 
 import database.daomodel.DatabaseManager;
-import mediator.request.*;
+import mediator.message.*;
 import model.Customer;
 
 import java.util.HashMap;
 
 public class CustomerCommand implements Command {
 
-    private CustomerRequest request;
-    private CustomerRequest reply;
+    private CustomerMessage request;
+    private CustomerMessage reply;
     private DatabaseManager databaseManager;
     private HashMap<String, Runnable> methods;
 
@@ -22,10 +22,10 @@ public class CustomerCommand implements Command {
         methods.put("update", this::update);
     }
 
-    @Override public Request execute(Request request) {
+    @Override public Message execute(Message request) {
         try {
-            this.request = (CustomerRequest) request;
-            reply = new CustomerRequest(request.getService(), request.getType());
+            this.request = (CustomerMessage) request;
+            reply = new CustomerMessage(request.getService(), request.getType());
             methods.get(request.getType()).run();
             return reply;
         }

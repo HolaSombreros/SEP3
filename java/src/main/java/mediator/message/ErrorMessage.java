@@ -1,9 +1,9 @@
-package mediator.request;
+package mediator.message;
 
-public class ErrorRequest extends Request {
+public class ErrorMessage extends Message {
     private String message;
 
-    public ErrorRequest(String service, String type) {
+    public ErrorMessage(String service, String type) {
         super(service, type);
     }
 

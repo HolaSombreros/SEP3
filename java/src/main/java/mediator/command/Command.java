@@ -1,7 +1,7 @@
 package mediator.command;
 
-import mediator.request.Request;
+import mediator.message.Message;
 
 public interface Command {
-    Request execute(Request request);
+    Message execute(Message request);
 }

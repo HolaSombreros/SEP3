@@ -1,12 +1,12 @@
-package mediator.request;
+package mediator.message;
 
 import model.Customer;
 
-public class CustomerRequest extends Request{
+public class CustomerMessage extends Message {
 
     private Customer customer;
 
-    public CustomerRequest(String service, String type) {
+    public CustomerMessage(String service, String type) {
         super(service, type);
     }
 
