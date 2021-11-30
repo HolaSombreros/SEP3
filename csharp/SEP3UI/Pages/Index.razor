@@ -23,7 +23,7 @@
                     </li>
                     @foreach (Category category in categories) {
                         <li>
-                            <a @onclick="(() => LoadItemsByCategory(category))">@category.Name</a>
+                            <a @onclick="(() => LoadItemsByCategoryAsync(category))">@category.Name</a>
                         </li>
                     }
                 </ul>
@@ -40,8 +40,8 @@
                             </a>
                             @if (!collapseDropdownMenu) {
                                 <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
-                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceAscending">Ascending</a>
-                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceDescending">Descending</a>
+                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceAscendingAsync">Ascending</a>
+                                    <a class="dropdown-item text-center" @onclick="@FilterByPriceDescendingAsync">Descending</a>
                                 </div>
                             }
 
@@ -137,13 +137,7 @@
         hidden = "";
         orderBy = "";
     }
-    private void ToggleDropdownMenu() {
-        collapseDropdownMenu = !collapseDropdownMenu;
-    }
-
-    private void CollapseDropdownMenu() {
-        collapseDropdownMenu = true;
-    }
+    
     private bool GetDisabledState(Item item) {
         if (item.Quantity < 1)
             return true;
@@ -184,17 +178,22 @@
         filteredItems = await itemService.GetItemsAsync(itemIndex);
     }
 
-    private async Task FilterByPriceAscending() {
+    private async Task FilterByPriceAscendingAsync() {
         orderBy = "ascending";
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
 
     }
 
-    private async Task FilterByPriceDescending() {
+    private async Task FilterByPriceDescendingAsync() {
         orderBy = "descending";
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
     }
-
+    private void ToggleDropdownMenu() {
+        collapseDropdownMenu = !collapseDropdownMenu;
+    }
+    private void CollapseDropdownMenu() {
+        collapseDropdownMenu = true;
+    }
 }

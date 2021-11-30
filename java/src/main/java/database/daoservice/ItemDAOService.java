@@ -162,7 +162,8 @@ public class ItemDAOService implements ItemDAO {
             return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
         }
         catch (SQLException e){
-            throw new IllegalArgumentException(e.getMessage());
+            return null;
+//            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
