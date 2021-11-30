@@ -3,11 +3,12 @@ package database.daomodel;
 import model.Category;
 import model.Item;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ItemDAO {
     //CRUD metods
-    Item create(String name, String description, double price, Category category, int quantity, String imgFilepath);
+    Item create(String name, String description, BigDecimal price, Category category, int quantity, String imgFilepath);
     Item read(int id);
     Item read(String name, String description, Category category);
     Item update(Item item);

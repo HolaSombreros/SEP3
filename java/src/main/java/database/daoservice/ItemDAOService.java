@@ -6,6 +6,7 @@ import model.Category;
 import model.Item;
 import model.enums.ItemStatus;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class ItemDAOService implements ItemDAO {
     }
 
     @Override
-    public Item create(String name, String description, double price, Category category, int quantity, String imgFilepath){
+    public Item create(String name, String description, BigDecimal price, Category category, int quantity, String imgFilepath){
         try {
             List<Integer> categoryKeys = null;
             List<Integer> keys= null;
@@ -85,7 +86,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readByIndex(int index) {
         try{
-            return databaseHelper.mapList(new ItemMapper(), "SELECT *,category.name as category_name, item.name AS item_name FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
+            return databaseHelper.mapList(new ItemMapper(), "SELECT *, category.name as category_name, item.name AS item_name FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -94,7 +95,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public List<Item> readAllFromOrder(int orderId) {
         try {
-            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id, item.name AS name, description, category_id, discount, status, purchase_id, purchase_item.quantity, purchase_item.price, image_filepath, category.name AS category_name FROM item JOIN category USING (category_id) JOIN purchase_item USING (item_id) WHERE purchase_id = ?;",orderId);
+            return databaseHelper.mapList(new ItemMapper(), "SELECT item_id, item.name AS item_name, description, category_id, discount, status, purchase_id, purchase_item.quantity, purchase_item.price, image_filepath, category.name AS category_name FROM item JOIN category USING (category_id) JOIN purchase_item USING (item_id) WHERE purchase_id = ?;",orderId);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

@@ -8,14 +8,17 @@ namespace SEP3Library.Models {
         public string Name { get; set; }
         public string Description { get; set; }
         
-        public double Price {
-            get => price - price * ((double) Discount / 100);
+        public decimal Price {
+            get => price - price * ((decimal) Discount / 100);
             set => price = value;
         }
-        private double price;
+        private decimal price;
+        
         public Category Category { get; set; }
+        
         [Range(0, 100)]
         public int Discount { get; set; }
+        
         [Range(0, Int32.MaxValue)]
         public int Quantity { get; set; }
         

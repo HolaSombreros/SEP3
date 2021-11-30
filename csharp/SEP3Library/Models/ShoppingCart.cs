@@ -3,17 +3,16 @@ using System.Linq;
 
 namespace SEP3Library.Models {
     public class ShoppingCart {
-        public Customer User { get; set; }
-        public readonly double ShippingPrice = 25.00;
-        public IList<Item> Items  { get; set; }
+        public readonly decimal ShippingPrice = 25.00M;
+        public IList<Item> Items { get; set; }
         
         public ShoppingCart() {
             Items = new List<Item>();
         }
 
-        public double Total {
+        public decimal Total {
             get {
-                double p = 0;
+                decimal p = 0;
                 foreach (var i in Items) {
                     p += i.Price * i.Quantity;
                 }
@@ -65,7 +64,7 @@ namespace SEP3Library.Models {
             Items.Clear();
         }
         
-        public double TotalOrderPrice() {
+        public decimal TotalOrderPrice() {
             return Total + ShippingPrice;
         }
     }

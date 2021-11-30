@@ -14,60 +14,44 @@
 } else {
     <div class="container">
         @foreach (Item item in items) {
-            @if (item.Status != ItemStatus.OutOfStock) {
-                <div class="row mb-4 align-items-center">
-                    <div class="col-md-4 col-sm-12 row justify-content-center">
-                        <img class="img-fluid" src="@item.ImageName" alt="Image of @item.Name" style="height: auto; width: auto; max-height: 200px; max-width: 300px; object-fit: cover;"/>
+            <div class="row mb-5 align-items-center">
+                <div class="col-md-4 col-sm-12 row justify-content-center">
+                    <img src="@item.ImageName" alt="Image of @item.Name"/>
+                </div>
+                <div class="col-md-8 col-sm-12 row">
+                    <h3 class="col-sm-12 mb-3">@item.Name</h3>
+                    <div class="col-md-8 col-sm-12">
+                        <ul class="list-unstyled list-inline">
+                            <li class="mb-2">
+                                <i class="oi oi-heart mr-3" @onclick="@(() => PerformUnfavoriteAsync(item))"/>
+                                <a href="">[@item.Category.Name]</a>
+                            </li>
+                            <li class="mb-2">@item.Description</li>
+                            <li>Price: <span class="text-info" style="font-size: 1.5em;">@Math.Round(item.Price, 2, MidpointRounding.ToEven) DKK</span>
+                                @if (item.Discount > 0) {
+                                    <span class="ml-2 text-danger">(@item.Discount% OFF)</span>
+                                }
+                            </li>
+                        </ul>
                     </div>
-                    <div class="col-md-8 col-sm-12 row">
-                        <h3 class="col-sm-12 mb-3">@item.Name</h3>
-                        <div class="col-md-8 col-sm-12">
-                            <ul class="list-unstyled list-inline">
-                                <li class="mb-2">
-                                    <i class="oi oi-heart mr-3" @onclick="(() => PerformUnfavoriteAsync(item))"/>
-                                    [<a href="">@item.Category.Name</a>]
-                                </li>
-                                <li class="mb-2">@item.Description</li>
-                                <li>Price: <span class="text-info" style="font-size: 1.5em;">@item.Price DKK</span>
-                                    @if (item.Discount > 0) {
-                                        <span class="ml-2 text-danger">(@item.Discount% OFF)</span>
-                                    }
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4 col-sm-12">
-                            @if (item.Quantity == 0) {
-                                <strong class="text-danger">Out of stock.</strong>
-                                <button class="btn btn-outline-dark w-100 mt-2" disabled>Add To Cart</button>
-                            } else {
-                                <strong class="text-success">In stock.</strong>
-                                <button class="btn btn-outline-primary w-100 mt-2" @onclick="(() => PerformAddItemToCart(item))">Add To Cart</button>
-                            }
-                        </div>
+                    <div class="col-md-4 col-sm-12">
+                        @if (item.Quantity == 0) {
+                            <strong class="text-danger">Out of stock.</strong>
+                            <button class="btn btn-outline-dark w-100 mt-2" disabled>Add To Cart</button>
+                        } else {
+                            <strong class="text-success">In stock.</strong>
+                            <button class="btn btn-outline-primary w-100 mt-2" @onclick="@(() => PerformAddItemToCart(item))">Add To Cart</button>
+                        }
                     </div>
                 </div>
-            }
+            </div>
         }
     </div>
 }
 
-<style>
-    i {
-        font-size: 1.5em;
-        color: red;
-        transition: .3s;
-    }
-
-    i:hover {
-        cursor: pointer;
-        color: lightgrey;
-    }
-</style>
-
 @code {
     private int customerId;
     private IList<Item> items;
-    // TODO add card class to each item - need to modify overriden card class
     
     protected override async Task OnInitializedAsync() {
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
