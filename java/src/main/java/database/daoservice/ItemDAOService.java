@@ -67,7 +67,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item update(Item item) {
         try {
-            if(categoryDaoService.read(item.getCategory().getName()) != null) {
+            if(categoryDaoService.read(item.getCategory().getName()) == null) {
                 List<Integer> key =databaseHelper.executeUpdateWithKeys("INSERT INTO category (name) VALUES (?)", item.getCategory().getName());
                 item.getCategory().setId(key.get(0));
             }
