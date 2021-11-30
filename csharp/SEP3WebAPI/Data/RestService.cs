@@ -231,7 +231,7 @@ namespace SEP3WebAPI.Data {
             };
             return await client.AddItemAsync(i);
         }
-        
+
         public async Task<Book> CreateBookAsync(BookModel itemModel) {
             if (itemModel == null) throw new InvalidDataException("Please specify a book of the proper format!");
             Book book = await client.GetBookBySpecificationsAsync(itemModel.Isbn);
