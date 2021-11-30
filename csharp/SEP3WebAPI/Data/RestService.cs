@@ -74,7 +74,7 @@ namespace SEP3WebAPI.Data {
             await client.UpdateCustomerAsync(updated);
             return updated;
         }
-        
+
         public Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             return client.GetItemsBySearchAsync(searchName, index);
         }
@@ -110,7 +110,7 @@ namespace SEP3WebAPI.Data {
             return toUpdate;
         }
 
-        public async Task<Book> UpdateBookAsync(int id, ItemModel book) {
+        public async Task<Book> UpdateBookAsync(int id, BookModel book) {
             if (book == null) throw new InvalidDataException("Please provide an item of the proper format");
             Book toUpdate = await client.GetBookAsync(id);
             if (toUpdate == null) throw new NullReferenceException($"No such book found with id: {id}");
@@ -232,7 +232,7 @@ namespace SEP3WebAPI.Data {
             return await client.AddItemAsync(i);
         }
         
-        public async Task<Book> CreateBookAsync(ItemModel itemModel) {
+        public async Task<Book> CreateBookAsync(BookModel itemModel) {
             if (itemModel == null) throw new InvalidDataException("Please specify a book of the proper format!");
             Book book = await client.GetBookBySpecificationsAsync(itemModel.Isbn);
             if (book != null)

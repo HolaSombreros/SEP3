@@ -60,7 +60,6 @@ textarea:focus~label{
 }
 
 header {
-    /*background: url('http://www.autodatz.com/wp-content/uploads/2017/05/Old-Car-Wallpapers-Hd-36-with-Old-Car-Wallpapers-Hd.jpg');*/
     text-align: center;
     width: 100%;
     height: auto;
@@ -68,7 +67,6 @@ header {
     background-attachment: fixed;
     position: relative;
     overflow: hidden;
-    border-radius: 0 0 85% 85% / 30%;
 }
 /*header .overlay{*/
 /*    width: 100%;*/

@@ -24,6 +24,10 @@ namespace SEP3UI.Data {
             return await restService.GetAsync<Book>($"items/books/{id}");
         }
 
+        public async Task<Book> AddBookAsync(BookModel bookModel) {
+            return await restService.PostAsync<BookModel, Book>(bookModel, "items/books");
+        }
+
         public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             return await restService.GetAsync<IList<Item>>($"items?index={index}&searchName={searchName}");
         }
@@ -44,6 +48,14 @@ namespace SEP3UI.Data {
             return await restService.GetAsync<IList<Item>>(
                 $"Items?index={index}&category={category.Name}");
         }
+
+        public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
+            return await restService.PutAsync<ItemModel,Item>(item, $"items/{id}");
+        }
+        public async Task<Book> UpdateBookAsync(int id, BookModel item) {
+            return await restService.PutAsync<BookModel,Book>(item, $"items/books/{id}");
+        }
+        
 
         public async Task<Category> AddCategoryAsync(Category category) {
             return await restService.PostAsync<Category, Category>(category, "items/categories");

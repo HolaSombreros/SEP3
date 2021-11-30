@@ -123,16 +123,24 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpPost]
         public async Task<ActionResult<Item>> AddItemAsync([FromBody] ItemModel itemModel) {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             try {
-                if (itemModel.Category.Name.Equals("Book")) {
-                    Console.WriteLine("Hello");
-                    Book book = await service.CreateBookAsync(itemModel);
-                    return Created($"/{book.Id}", book);
-                }
                 Item item = await service.CreateItemAsync(itemModel);
                 return Created($"/{item.Id}", item);
+            }
+            catch (InvalidDataException e) {
+                return BadRequest(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("books")]
+        public async Task<ActionResult<Book>> AddBookAsync([FromBody] BookModel itemModel) {
+            try {
+                Book book = await service.CreateBookAsync(itemModel);
+                    return Created($"/{book.Id}", book);
             }
             catch (InvalidDataException e) {
                 return BadRequest(e.Message);
@@ -145,15 +153,20 @@ namespace SEP3WebAPI.Controllers {
         [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<Item>> UpdateItemAsync([FromRoute] int id, [FromBody] ItemModel item) {
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            }
             try {
-                Item updated; 
-                if (item.Category.Name.Equals("Book")) 
-                     updated = await service.UpdateBookAsync(id,item);
-                else 
-                    updated = await service.UpdateItemAsync(id, item);
+                Item updated = await service.UpdateItemAsync(id, item);
+                return Ok(updated);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        [HttpPut]
+        [Route("books/{id:int}")]
+        public async Task<ActionResult<Book>> UpdateBookAsync([FromRoute] int id, [FromBody] BookModel item) {
+            try {
+                Item updated = await service.UpdateBookAsync(id,item);
                 return Ok(updated);
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
