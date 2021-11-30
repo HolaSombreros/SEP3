@@ -24,10 +24,6 @@ namespace SEP3UI.Data {
             return await restService.GetAsync<Book>($"items/books/{id}");
         }
 
-        public async Task<IList<Category>> GetCategories() {
-            throw new System.NotImplementedException();
-        }
-
         public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             return await restService.GetAsync<IList<Item>>($"items?index={index}&searchName={searchName}");
         }
@@ -36,7 +32,7 @@ namespace SEP3UI.Data {
             return await restService.GetAsync <IList<Category>>($"items/categories");
         }
 
-        public async Task<IList<Genre>> GetGenres() {
+        public async Task<IList<Genre>> GetGenresAsync() {
             return await restService.GetAsync<IList<Genre>>("items/genres");
         }
 
