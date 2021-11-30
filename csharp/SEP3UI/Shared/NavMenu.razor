@@ -12,51 +12,54 @@
     <div class="navbar-collapse @NavMenuCssClass">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <NavLink class="nav-link text-center" href="/ShoppingBasket" @onclick="CollapseDropdownMenu">
+                <NavLink class="nav-link text-center" href="/ShoppingBasket" @onclick="CollapseDropdownMenus">
                     <span class="oi oi-cart" aria-hidden="true"></span> Cart
                 </NavLink>
             </li>
-            <AuthorizeView Policy="@Policies.IsAdmin">
-                <li class="nav-item">
-                    <NavLink class="nav-link text-center" href="/categories/new" @onclick="CollapseDropdownMenu">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Add New Category
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link text-center" href="/AddItems" @onclick="CollapseDropdownMenu">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Add New Item
-                    </NavLink>
-                </li>
-                <li class="nav-item">
-                    <NavLink class="nav-link text-center" href="/OrderList" @onclick="CollapseDropdownMenu">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
-                    </NavLink>
-                </li>
-            </AuthorizeView>
             <AuthorizeView>
                 <NotAuthorized>
                     <button class="btn btn-info" @onclick="NavigateToLogin">Login</button>
                 </NotAuthorized>
                 <Authorized>
                     <li class="nav-item dropdown">
-                        <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleDropdownMenu">
-                            <span class="oi oi-cog" aria-hidden="true"></span> More
+                        <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleAccountDropdownMenu">
+                            <span class="oi oi-person" aria-hidden="true"></span> Account
                         </NavLink>
-                        @if (!collapseDropdownMenu) {
+                        @if (!collapseAccountDropdownMenu) {
                             <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
-                                <NavLink class="nav-link dropdown-item text-center" href="/wishlist" @onclick="CollapseDropdownMenu">
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/wishlist" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-list" aria-hidden="true"></span> My Wishlist
                                 </NavLink>
-                                <NavLink class="nav-link dropdown-item text-center" href="/account" @onclick="CollapseDropdownMenu">
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/account" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-person" aria-hidden="true"></span> My Account
                                 </NavLink>
-                                <NavLink class="nav-link dropdown-item text-center" @onclick="NavigateToLogout">
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" @onclick="NavigateToLogout">
                                     <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                                 </NavLink>
                             </div>
                         }
                     </li>
                 </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Policy="@Policies.IsAdmin">
+                <li class="nav-item dropdown">
+                    <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleAdminDropdownMenu">
+                        <span class="oi oi-cog" aria-hidden="true"></span> Admin
+                    </NavLink>
+                    @if (!collapseAdminDropdownMenu) {
+                        <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/categories/new" @onclick="CollapseDropdownMenus">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Add New Category
+                            </NavLink>
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/AddItems" @onclick="CollapseDropdownMenus">
+                                <span class="oi oi-plus" aria-hidden="true"></span> Add New Item
+                            </NavLink>
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
+                            </NavLink>
+                        </div>
+                    }
+                </li>
             </AuthorizeView>
         </ul>
     </div>
@@ -82,21 +85,30 @@
 
 @code {
     private bool collapseNavMenu = true;
-    private bool collapseDropdownMenu = true;
+    private bool collapseAccountDropdownMenu = true;
+    private bool collapseAdminDropdownMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
-        collapseDropdownMenu = true;
+        collapseAccountDropdownMenu = true;
+        collapseAdminDropdownMenu = true;
     }
 
-    private void ToggleDropdownMenu() {
-        collapseDropdownMenu = !collapseDropdownMenu;
+    private void ToggleAccountDropdownMenu() {
+        collapseAccountDropdownMenu = !collapseAccountDropdownMenu;
+        collapseAdminDropdownMenu = true;
     }
 
-    private void CollapseDropdownMenu() {
-        collapseDropdownMenu = true;
+    private void ToggleAdminDropdownMenu() {
+        collapseAdminDropdownMenu = !collapseAdminDropdownMenu;
+        collapseAccountDropdownMenu = true;
+    }
+
+    private void CollapseDropdownMenus() {
+        collapseAccountDropdownMenu = true;
+        collapseAdminDropdownMenu = true;
     }
 
     private void NavigateToLogin() {
@@ -104,7 +116,7 @@
     }
 
     private void NavigateToLogout() {
-        CollapseDropdownMenu();
+        CollapseDropdownMenus();
         nav.NavigateTo("/logout");
     }
 }
