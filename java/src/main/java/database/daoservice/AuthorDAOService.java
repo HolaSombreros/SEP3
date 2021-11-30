@@ -68,7 +68,7 @@ public class AuthorDAOService implements AuthorDAO {
             if (read(author.getId()) == null)
                 return create(author.getFirstName(), author.getLastName());
             else {
-                databaseHelper.executeUpdate("UPDATE author SET first_name = ?, last_name", author.getFirstName(), author.getLastName());
+                databaseHelper.executeUpdate("UPDATE author SET first_name = ?, last_name = ?", author.getFirstName(), author.getLastName());
                 return read(author.getId());
             }
         } catch (SQLException e) {

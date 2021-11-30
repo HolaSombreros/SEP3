@@ -18,13 +18,13 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName, [FromQuery] Category? category) {
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName, [FromQuery] string? category) {
             try {
                 if (searchName != null) {
                     IList<Item> items = await service.GetItemsBySearchAsync(searchName,index);
                     return Ok(items);
                 }
-                if (category.Id != 0 && category.Name != null) {
+                if (category != null) {
                     IList<Item> items = await service.GetItemsByCategoryAsync(category, index);
                     return Ok(items);
                 }
@@ -142,5 +142,25 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Item>> UpdateItemAsync([FromRoute] int id, [FromBody] ItemModel item) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            try {
+                Item updated; 
+                if (item.Category.Name.Equals("Book")) 
+                     updated = await service.UpdateBookAsync(id,item);
+                else 
+                    updated = await service.UpdateItemAsync(id, item);
+                return Ok(updated);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
+    
 }

@@ -46,7 +46,7 @@ namespace SEP3UI.Data {
 
         public async Task<IList<Item>> GetItemsByCategoriesAsync(Category category, int index) {
             return await restService.GetAsync<IList<Item>>(
-                $"Items?index={index}&Id={category.Id}&Name={category.Name}");
+                $"Items?index={index}&category={category.Name}");
         }
 
         public async Task<Category> AddCategoryAsync(Category category) {

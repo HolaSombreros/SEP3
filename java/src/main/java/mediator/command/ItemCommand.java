@@ -41,6 +41,8 @@ public class ItemCommand implements Command {
         methods.put("getCategories", this::getCategories);
         methods.put("getAllByCategory", this::getAllByCategory);
         methods.put("addCategory", this::addCategory);
+        methods.put("updateItem", this::updateItem);
+        methods.put("updateBook", this::updateBook);
     }
 
     @Override public Request execute(Request request) {
@@ -88,6 +90,7 @@ public class ItemCommand implements Command {
     private void removeItemFromWishlist() {
         databaseManager.getItemDAOService().removeItemFromWishlist(request.getCustomer().getId(), request.getItem().getId());
     }
+    
     private void getAllById(){
         reply.setItems(databaseManager.getItemDAOService().readAllByIds(request.getItemsIds()));
     }
@@ -97,10 +100,18 @@ public class ItemCommand implements Command {
                 request.getItem().getPrice(),request.getItem().getCategory(), request.getItem().getQuantity(),request.getItem().getImageName()));
     }
 
+    private void updateItem(){
+        reply.setItem(databaseManager.getItemDAOService().update(request.getItem()));
+    }
+
     private void addBook(){
         reply.setBook(databaseManager.getBookDAOService().create(request.getBook().getName(), request.getBook().getDescription(),request.getBook().getPrice(),request.getBook().getCategory(),
                 request.getBook().getQuantity(),request.getBook().getImageName(),request.getBook().getISBN(), request.getBook().getAuthors(),request.getBook().getLanguage(),request.getBook().getGenre(),
                 LocalDate.of(request.getBook().getPublicationDate().getYear(), request.getBook().getPublicationDate().getMonth(),request.getBook().getPublicationDate().getDay())));
+    }
+
+    private void updateBook(){
+        reply.setBook(databaseManager.getBookDAOService().update(request.getBook()));
     }
 
     private void getItemBySpecifications() {
@@ -133,9 +144,8 @@ public class ItemCommand implements Command {
         databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
     }
 
-    private void getAllByCategory(){
-        System.out.println(request.getCategories().get(0));
-        reply.setItems(databaseManager.getItemDAOService().readAllByCategory(request.getCategories().get(0),request.getIndex()));
+    private void getAllByCategory() {
+        reply.setItems(databaseManager.getItemDAOService().readAllByCategory(request.getItem().getName(), request.getIndex()));
     }
 
     private void addCategory() {

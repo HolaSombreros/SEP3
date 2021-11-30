@@ -67,7 +67,8 @@ namespace SEP3WebAPI.Mediator {
 
         private void Send(object req) {
             string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
             byte[] data = Encoding.ASCII.GetBytes(json + "\n");
             networkStream.Write(data, 0, data.Length);
             Waiting();
@@ -208,7 +209,7 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             return ((OrderRequest) reply).Orders;
         }
-
+        
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             CustomerRequest req = new CustomerRequest() {
                 Type = "login",
@@ -342,16 +343,38 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemRequest)reply).Items;
         }
 
-        public async Task<IList<Item>> GetItemsByCategoryAsync(Category category, int index) {
+        public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
             ItemRequest request = new ItemRequest() {
                 Type = "getAllByCategory",
                 Service = "item",
-                Categories = new List<Category>(),
+                Item = new Item() {
+                    Name = category
+                },
                 Index = index
             };
-            request.Categories.Add(category);
             Send(request);
             return ((ItemRequest)reply).Items;
+        }
+
+        public async Task<Item> UpdateItemAsync(Item item) {
+            ItemRequest req = new ItemRequest() {
+                Type = "updateItem",
+                Service = "item",
+                Item = item
+            };
+            Send(req);
+            return ((ItemRequest) reply).Item;
+
+        }
+
+        public async Task<Book> UpdateBookAsync(Book book) {
+            ItemRequest req = new ItemRequest() {
+                Type = "updateBook",
+                Service = "item",
+                Book = book
+            };
+            Send(req);
+            return ((ItemRequest) reply).Book;
         }
 
         public async Task<Category> AddCategoryAsync(Category category) {

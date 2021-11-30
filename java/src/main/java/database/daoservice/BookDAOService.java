@@ -59,7 +59,7 @@ public class BookDAOService implements BookDAO {
     public Book read(String ISBN, int id) {
         try {
             System.out.println(id);
-            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT * FROM  book JOIN item USING(item_id) WHERE book.item_id = ? AND ISBN = ?", id,ISBN);
+            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT *,item.name AS item_name, category.name AS category_name FROM book JOIN item USING(item_id) JOIN category USING(category_id) WHERE book.item_id = ? AND ISBN = ?", id,ISBN);
             book.setGenre(genreDAOService.getGenresOfBook(id));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(id));
             return book;
@@ -71,7 +71,8 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book read(int id) {
         try{
-            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT * FROM book JOIN item USING(item_id) WHERE item_id = ?", id);
+            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM book JOIN item USING(item_id) JOIN category USING(category_id) WHERE item_id = ?", id);
+            System.out.println(book.getName());
             book.setGenre(genreDAOService.getGenresOfBook(id));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(id));
             return book;
@@ -108,7 +109,7 @@ public class BookDAOService implements BookDAO {
                 if(!isInBookGenre(book.getId(), g.getId()))
                     genreDAOService.updateBookGenre(g,book.getId());
             }
-            databaseHelper.executeUpdate("UPDATE item SET name = ?, description = ?, price = ?, category_id = ?, quantity = ?, status = ?, discount =?, image_filepath = ? WHERE item_id = ?",
+            databaseHelper.executeUpdate("UPDATE item SET name = ?, description = ?, price = ?, category_id = ?, quantity = ?, status = ?::item_status, discount =?, image_filepath = ? WHERE item_id = ?",
                     book.getName(), book.getDescription(), book.getPrice(), book.getCategory().getId(), book.getQuantity(), book.getStatus().toString(),
                     book.getDiscount(),book.getImageName(), book.getId());
 
@@ -132,7 +133,7 @@ public class BookDAOService implements BookDAO {
     @Override
     public List<Book> readAll() {
         try {
-            List<Book> books = databaseHelper.mapList(new BookMapper(), "SELECT * FROM book JOIN item USING (item_id);");
+            List<Book> books = databaseHelper.mapList(new BookMapper(), "SELECT *, item.name AS item_name, category.name AS category_name FROM book JOIN item USING (item_id) JOIN category USING(category_id);");
             for(Book book: books) {
                 book.setGenre(genreDAOService.getGenresOfBook(book.getId()));
                 book.setAuthors(authorDAOService.readAllAuthorsOfBook(book.getId()));
@@ -146,7 +147,7 @@ public class BookDAOService implements BookDAO {
 
     private Book readByISBN(String ISBN){
         try {
-            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT * FROM book JOIN item USING (item_id) WHERE ISBN = ?;", ISBN);
+            Book book = databaseHelper.mapObject(new BookMapper(),"SELECT *, item.name AS item_name, category.name AS category_name FROM book JOIN item USING (item_id) JOIN category USING(category_id) WHERE ISBN = ?;", ISBN);
             book.setGenre(genreDAOService.getGenresOfBook(book.getId()));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(book.getId()));
             return book;
