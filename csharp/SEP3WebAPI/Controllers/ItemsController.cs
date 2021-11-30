@@ -18,7 +18,7 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName, [FromQuery] string? category) {
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName, [FromQuery] string? category, [FromQuery] string? orderBy) {
             try {
                 if (searchName != null) {
                     IList<Item> items = await service.GetItemsBySearchAsync(searchName,index);
@@ -26,6 +26,10 @@ namespace SEP3WebAPI.Controllers {
                 }
                 if (category != null) {
                     IList<Item> items = await service.GetItemsByCategoryAsync(category, index);
+                    return Ok(items);
+                }
+                if (orderBy != null) {
+                    IList<Item> items = await service.GetItemsByPriceAsync(orderBy, index);
                     return Ok(items);
                 }
                 else {

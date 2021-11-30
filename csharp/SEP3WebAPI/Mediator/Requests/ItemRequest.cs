@@ -11,5 +11,6 @@ namespace SEP3WebAPI.Mediator.Requests {
         public IList<Genre> Genres { get; set; }
         public Customer Customer { get; set; }
         public int[] ItemsIds { get; set; }
+        public string OrderBy { get; set; }
     }
 }
