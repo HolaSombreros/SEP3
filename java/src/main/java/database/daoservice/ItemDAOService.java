@@ -1,11 +1,11 @@
 package database.daoservice;
 
+import database.daomodel.CategoryDAO;
 import database.daomodel.ItemDAO;
 import database.daoservice.mapper.ItemMapper;
 import model.Category;
 import model.Item;
 import model.enums.ItemStatus;
-
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
@@ -14,9 +14,12 @@ import java.util.Locale;
 public class ItemDAOService implements ItemDAO {
 
     private DatabaseHelper<Item> databaseHelper;
+    private CategoryDAO categoryDaoService;
 
     public ItemDAOService(String url, String username, String password) {
         databaseHelper = new DatabaseHelper<>(url, username, password);
+        categoryDaoService = new CategoryDAOService(url, username, password);
+
     }
 
     @Override
@@ -24,14 +27,16 @@ public class ItemDAOService implements ItemDAO {
         try {
             List<Integer> categoryKeys = null;
             List<Integer> keys= null;
-            if(!isCategory(category.getName())) {
+            Category existing = categoryDaoService.read(category.getName());
+            if(existing== null) {
                 categoryKeys = databaseHelper.executeUpdateWithKeys("INSERT INTO category (name) VALUES (?)", category.getName());
-               keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category_id, discount, quantity, status, image_filepath) VALUES (?,?,?,?,?,?,?::item_status,?)",
+                keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category_id, discount, quantity, status, image_filepath) VALUES (?,?,?,?,?,?,?::item_status,?)",
                         name, description,price,categoryKeys.get(0),0,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
+
             }
             else{
                keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category_id, discount, quantity, status, image_filepath) VALUES (?,?,?,?,?,?,?::item_status,?)",
-                        name, description,price,category.getId(),0,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
+                        name, description,price,existing.getId(),0,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
             }
             return read(keys.get(0));
 
@@ -43,7 +48,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item read(int id) {
         try {
-            return databaseHelper.mapObject(new ItemMapper(), "SELECT *,category.name as category_name, item.name AS item_name FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT *, category.name as category_name, item.name AS item_name FROM item JOIN category USING (category_id) WHERE item_id = ?;", id);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -52,7 +57,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item read(String name, String description, Category category) {
         try {
-            return databaseHelper.mapObject(new ItemMapper(), "SELECT *, category.name AS category_name, item.name AS item_name FROM item i JOIN category c USING (category_id) WHERE i.name = ? AND description = ? AND c.name = ?", name, description, category.getName());
+            return databaseHelper.mapObject(new ItemMapper(), "SELECT *, c.name AS category_name, i.name AS item_name FROM item i JOIN category c USING (category_id) WHERE i.name = ? AND description = ? AND c.name = ?", name, description, category.getName());
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -62,7 +67,7 @@ public class ItemDAOService implements ItemDAO {
     @Override
     public Item update(Item item) {
         try {
-            if(!isCategory(item.getCategory().getName())) {
+            if(categoryDaoService.read(item.getCategory().getName()) != null) {
                 List<Integer> key =databaseHelper.executeUpdateWithKeys("INSERT INTO category (name) VALUES (?)", item.getCategory().getName());
                 item.getCategory().setId(key.get(0));
             }
@@ -196,15 +201,6 @@ public class ItemDAOService implements ItemDAO {
         try {
             databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId);
         } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    private boolean isCategory(String category) {
-        try{
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM category WHERE name = ?", category).next();
-        }
-        catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

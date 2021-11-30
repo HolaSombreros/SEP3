@@ -60,7 +60,6 @@ textarea:focus~label{
 }
 
 header {
-    /*background: url('http://www.autodatz.com/wp-content/uploads/2017/05/Old-Car-Wallpapers-Hd-36-with-Old-Car-Wallpapers-Hd.jpg');*/
     text-align: center;
     width: 100%;
     height: auto;
@@ -68,17 +67,7 @@ header {
     background-attachment: fixed;
     position: relative;
     overflow: hidden;
-    border-radius: 0 0 85% 85% / 30%;
 }
-/*header .overlay{*/
-/*    width: 100%;*/
-/*    height: 100%;*/
-/*    padding: 25px;*/
-/*    color: #FFF;*/
-/*    text-shadow: 1px 1px 1px #333;*/
-/*    background-image: linear-gradient( 135deg, #9f05ff69 10%, #fd5e086b 100%);*/
-/*    z-index: 2;*/
-/*}*/
 
 h1 {
     font-family: 'Dancing Script', cursive;
@@ -89,7 +78,6 @@ button {
     border: none;
     outline: none;
     padding: 10px 20px;
-    /*border-radius: 50px;*/
     color: #333;
     background: #fff;
     margin-bottom: 10px;
@@ -97,11 +85,6 @@ button {
 }
 button:hover{
     cursor: pointer;
-}
-
-input, textarea {
-    border-radius: 10px;
-
 }
 
 #exampleFormControlFile, #inlineCheckbox{
@@ -135,7 +118,3 @@ button:hover{
     cursor: pointer;
 }
 
-input, textarea {
-    border-radius: 10px;
-
-}

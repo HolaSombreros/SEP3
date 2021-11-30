@@ -41,7 +41,11 @@ public class BookDAOService implements BookDAO {
                 Item item = itemDAOService.create(name,description,price,category,quantity,imgFilePath);
                 databaseHelper.executeUpdate("INSERT INTO book (ISBN, item_id, language, publication_date) VALUES (?,?,?,?)",
                         ISBN, item.getId(), language, publicationDate);
+                List<Genre> existing = new ArrayList<>();
                 for(Genre g : genre) {
+                    existing.add(genreDAOService.read(g.getName()));
+                }
+                for(Genre g : existing) {
                     genreDAOService.updateBookGenre(g,item.getId());
                 }
                 for(Author author: authors){

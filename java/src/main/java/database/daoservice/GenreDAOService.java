@@ -52,7 +52,6 @@ public class GenreDAOService implements GenreDAO {
             if (read(genre.getId()) == null)
                 return create(genre.getName());
             else {
-//                databaseHelper.executeUpdate("UPDATE genre SET name = ?", genre.getName());
                 return read(genre.getId());
             }
         } catch (Exception e) {
