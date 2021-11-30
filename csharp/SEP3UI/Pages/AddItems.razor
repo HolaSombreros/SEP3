@@ -257,7 +257,9 @@
                 bookModel.Language = book.Language;
                 bookModel.PublicationDate = new DateTime(book.PublicationDate.Year, book.PublicationDate.Month, book.PublicationDate.Day, book.PublicationDate.Hour,
                     book.PublicationDate.Minute, book.PublicationDate.Second);
-                genres = bookModel.Genre;
+                foreach(Genre g in book.Genre)
+                    selectedGenres.Add(g);
+                // genres = bookModel.Genre;
             }
             else {
                 itemModel = new ItemModel();
@@ -329,10 +331,12 @@
 
     private void SetSelectedGenre(ChangeEventArgs args) {
         selectedGenreName = args.Value.ToString();
-        Console.WriteLine(selectedGenreName);
-        selectedGenres.Add(new Genre() {
+        Genre g = new Genre() {
             Name = selectedGenreName
-        });
+        };
+        Genre found = selectedGenres.FirstOrDefault(i => i.Name.ToLower().Equals(g.Name.ToLower()));
+        if(found == null)
+            selectedGenres.Add(g);
         bookModel.Genre = selectedGenres;
         selectedGenreName = null;
     }
