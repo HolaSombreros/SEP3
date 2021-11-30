@@ -2,16 +2,17 @@ package model;
 
 import model.enums.ItemStatus;
 
+import java.math.BigDecimal;
+
 public class Item {
 
     private int id;
     private String name;
     private String description;
-    private double price;
+    private BigDecimal price;
     private Category category;
     private int quantity;
     private ItemStatus status;
-    //TODO discuss discount
     private int discount;
     private String imageName;
 
@@ -21,7 +22,7 @@ public class Item {
     }
 
 
-    public Item(int id, String name, String description, double price, Category category, int quantity, String imgFilepath) {
+    public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, String imgFilepath) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,7 +34,7 @@ public class Item {
         this.imageName = imgFilepath;
     }
 
-    public Item(int id, String name, String description, double price, Category category, int quantity, ItemStatus status, int discount, String imgFilepath) {
+    public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, ItemStatus status, int discount, String imgFilepath) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -65,7 +66,7 @@ public class Item {
         return description;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
@@ -89,7 +90,7 @@ public class Item {
         this.description = description;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

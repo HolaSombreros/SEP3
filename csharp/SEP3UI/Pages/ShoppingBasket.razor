@@ -116,17 +116,19 @@
     private int GetItemsBasedOnQuantity() {
         return orderService.ShoppingCart.FinalQuantity;
     }
+    
     /*
      * Method returns the total of the shopping cart, but not the shipping rate
      * Yes, we need 2 methods :)
      */
-    private double GetFinalPrice() {
+    private decimal GetFinalPrice() {
         return orderService.ShoppingCart.Total;
     }
+    
     /*
      * Method returns the total of the shopping cart plus the shipping rate
      */
-    private double GetTotalOrderPrice() {
+    private decimal GetTotalOrderPrice() {
         return orderService.ShoppingCart.TotalOrderPrice();
     }
     

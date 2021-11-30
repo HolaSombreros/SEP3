@@ -7,6 +7,7 @@ import database.daomodel.ItemDAO;
 import database.daoservice.mapper.BookMapper;
 import model.*;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Date;
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ public class BookDAOService implements BookDAO {
     }
 
     @Override
-    public Book create(String name, String description, double price, Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
+    public Book create(String name, String description, BigDecimal price, Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
         try {
             for(Author author: authors){
                 Author a = authorDAOService.create(author.getFirstName(), author.getLastName());

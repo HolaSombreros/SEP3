@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 using System.Text.Json.Serialization;
 using SEP3Library.Models;
 
@@ -18,8 +19,8 @@ namespace SEP3Library.UIModels {
         public string Description { get; set; }
         
         [Required(ErrorMessage = "Please enter a price")]
-        [Range(1,Double.PositiveInfinity)]
-        public double Price { get; set; }
+        [Range(1, double.PositiveInfinity)]
+        public decimal Price { get; set; }
         
         [Range(0, 100)]
         public int Discount { get; set; }
