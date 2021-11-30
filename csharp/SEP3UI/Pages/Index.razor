@@ -9,13 +9,13 @@
 @inject AuthenticationStateProvider authStateProvider
 
 <div class="row">
-    <div class="col-md-3 ">
+    <div id="sidebar" class="col-md-3 ">
         @if (categories != null) {
             <nav class="sidebar-nav" role="navigation">
                 <ul class="nav sidebar-nav">
                     <div class="sidebar-header">
                         <div class="sidebar-brand">
-                            <a href="#">Categories</a>
+                            <a>Categories</a>
                         </div>
                     </div>
                     <li class="category">
@@ -42,8 +42,12 @@
                 @if (!filteredItems.Any()) {
                     <div class="container">
                         <div class="d-block justify-content-center">
-                            <div class="text-center"><strong>No items were found </strong></div>
-                            <div class="text-center"><img class="img-fluid image " src="Images/blazor_meme.jpg"/></div>
+                            <div class="text-center">
+                                <strong>No items were found </strong>
+                            </div>
+                            <div class="text-center">
+                                <img class="img-fluid image " src="Images/blazor_meme.jpg"/>
+                            </div>
                         </div>
                     </div>
                 }
@@ -61,8 +65,15 @@
                                     </a>
                                 </div>
                                 <div class="action">
-                                    <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
-                                    <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                    @if (@item.Discount > 0) {
+                                        <p class="price float-left">$@string.Format("{0:f}", item.Price)</p> <p style="color: darkred">(@item.Discount)</p>
+                                        <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                    }
+                                    else {
+                                        <p class="price float-left">$@string.Format("{0:f}", item.Price)</p>
+                                        <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                    }
+
                                 </div>
                             </div>
                         }
@@ -139,4 +150,5 @@
     private async Task LoadAllItems() {
         filteredItems = await itemService.GetItemsAsync(itemIndex);
     }
+
 }
