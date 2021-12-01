@@ -5,7 +5,7 @@
 @inject IItemService itemService
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 
-<div class="container w-50">
+<div class="mt-3 container w-50">
     <h3>Add new item category</h3>
     <EditForm Model="category" OnValidSubmit="AddCategoryAsync">
         <DataAnnotationsValidator/>
@@ -15,7 +15,7 @@
             <ValidationMessage For="@(() => category.Name)"/>
         </div>
         <div class="text-center">
-            <button class="btn btn-primary" type="submit">Add New Category</button>
+            <button class="btn btn-primary">Add New Category</button>
             <span class="d-block mt-2 @resultMessageTextColor">@resultMessageText</span>
         </div>
     </EditForm>

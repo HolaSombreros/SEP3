@@ -125,7 +125,7 @@
                     </div>
                 </fieldset>
                 <div class="form-group d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button class="btn btn-primary">Register</button>
                 </div>
                 <div class="card d-flex" style="color:red">@errorMessage</div>
             </EditForm>
@@ -146,7 +146,6 @@
             navigationManager.NavigateTo("/Login");
         }
         catch (Exception e) {
-            Console.WriteLine(e.StackTrace);
             errorMessage = e.Message;
         }
     }

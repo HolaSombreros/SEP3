@@ -8,5 +8,6 @@ namespace SEP3UI.Data {
         ShoppingCart ShoppingCart { get; init; }
         Task<Order> CreateOrderAsync(OrderModel order);
         Task<IList<Order>> GetOrdersAsync(int index);
+        Task<Order> GetOrderAsync(int orderId);
     }
 }

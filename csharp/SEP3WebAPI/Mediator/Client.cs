@@ -209,7 +209,19 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             return ((OrderMessage) reply).Orders;
         }
-        
+
+        public async Task<Order> GetOrderAsync(int orderId) {
+            OrderMessage request = new OrderMessage() {
+                Service = "order",
+                Type = "get",
+                Order = new Order() {
+                    Id = orderId
+                }
+            };
+            Send(request);
+            return ((OrderMessage) reply).Order;
+        }
+
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "login",
@@ -288,7 +300,6 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
-            Console.WriteLine("client");
             ItemMessage req = new ItemMessage() {
                 Type = "addShoppingCart",
                 Service = "item",

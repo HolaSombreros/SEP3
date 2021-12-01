@@ -49,7 +49,6 @@ namespace SEP3UI.Data {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
-            Console.WriteLine("customerservice");
             Item added = await restService.PutAsync<Item, Item>(item, $"customers/{customerId}/shoppingbasket");
             return added;
         }

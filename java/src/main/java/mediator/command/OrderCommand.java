@@ -19,7 +19,7 @@ public class OrderCommand implements Command {
         methods = new HashMap<>();
         methods.put("purchase",this::purchase);
         methods.put("getAll", this::getAll);
-
+        methods.put("get", this::get);
     }
 
     @Override public Message execute(Message request) {
@@ -45,5 +45,7 @@ public class OrderCommand implements Command {
         reply.setOrders(databaseManager.getOrderDAOService().readByIndex(request.getIndex()));
     }
 
-
+    private void get() {
+        reply.setOrder(databaseManager.getOrderDAOService().read(request.getOrder().getId()));
+    }
 }

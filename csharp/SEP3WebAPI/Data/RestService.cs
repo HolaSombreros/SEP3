@@ -234,7 +234,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/sth"
+                ImageName = "Images/" + itemModel.ImageName
             };
             return await client.AddItemAsync(i);
         }
@@ -253,7 +253,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/Booklala",
+                ImageName = "Images/" + itemModel.ImageName,
                 Isbn = itemModel.Isbn,
                 Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {
@@ -339,6 +339,10 @@ namespace SEP3WebAPI.Data {
 
         public async Task<IList<Order>> GetOrdersAsync(int index) {
             return await client.GetOrdersAsync(index);
+        }
+
+        public async Task<Order> GetOrderAsync(int orderId) {
+            return await client.GetOrderAsync(orderId);
         }
 
         public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
