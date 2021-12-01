@@ -100,7 +100,7 @@ else {
                                 <i class="fa fa-shopping-cart"></i> Add to Shopping Cart
                             </button>
                             <AuthorizeView Policy="@Policies.IsAdmin">
-                                <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => View(item.Id, item.Category.Name))">
+                                <button class="btn btn-round btn-dark" @onclick="(() => View(item.Id, item.Category.Name))">
                                     <i class="fa fa-shopping-cart"></i> Edit Item
                                 </button>
                             </AuthorizeView>

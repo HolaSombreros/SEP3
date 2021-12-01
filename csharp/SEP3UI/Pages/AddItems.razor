@@ -295,13 +295,16 @@
     }
 
     private void SetInputFile(InputFileChangeEventArgs args) {
-        if (!args.File.ContentType.Split("/")[1].Equals("png")) throw new Exception("You can only upload png files");
-        uploadedFile = args.File;
+        errorMessage = "";
+        if (!args.File.ContentType.Split("/")[1].Equals("png")) {
+            errorMessage = "You can only upload png files";
+        } else {
+            uploadedFile = args.File;
+        }
     }
 
     private async Task UploadFile() {
-        long maxFileSize = 1024 * 15;
-
+        long maxFileSize = long.MaxValue;
         var path = Path.Combine(Environment.ContentRootPath, @"wwwroot\Images", uploadedFile.Name);
         await using FileStream fs = new(path, FileMode.Create);
         await uploadedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
