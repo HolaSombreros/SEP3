@@ -227,7 +227,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/sth"
+                ImageName = "Images/" + itemModel.ImageName
             };
             return await client.AddItemAsync(i);
         }
@@ -246,7 +246,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/Booklala",
+                ImageName = "Images/" + itemModel.ImageName,
                 Isbn = itemModel.Isbn,
                 Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {

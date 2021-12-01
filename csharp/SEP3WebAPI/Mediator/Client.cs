@@ -300,7 +300,6 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
-            Console.WriteLine("client");
             ItemMessage req = new ItemMessage() {
                 Type = "addShoppingCart",
                 Service = "item",

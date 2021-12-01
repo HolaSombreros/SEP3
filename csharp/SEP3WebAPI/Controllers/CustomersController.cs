@@ -148,7 +148,6 @@ namespace SEP3WebAPI.Controllers {
         [HttpPut]
         [Route("{customerId:int}/shoppingbasket")]
         public async Task<ActionResult<Item>> AddShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId) {
-            Console.WriteLine("customercontroller");
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
