@@ -23,21 +23,18 @@ namespace SEP3WebAPI.Mediator {
                 while (running) {
                     try {
                         // Handle amount of data that will be sent
-                        byte[] response = new byte[10000];
+                        byte[] response = new byte[8];
                         int bytesRead = stream.Read(response, 0, response.Length);
                         string result = Encoding.ASCII.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
-                        // Console.WriteLine("----- " + result);
-                        
-                        // Thread.Sleep(100);
                         
                         // Handle the actual data
-                        // response = new byte[int.Parse(result)];
-                        // bytesRead = stream.Read(response, 0, response.Length);
-                        // // TODO - Using UTF8 allows for special characters like Æ Ø and Å
-                        // result = Encoding.UTF8.GetString(response, 0, bytesRead);
-                        // result = result.Replace("\n", "");
-                        // Console.WriteLine("> " + result);
+                        response = new byte[int.Parse(result) + 2];
+                        bytesRead = stream.Read(response, 0, response.Length);
+                        
+                        // Using UTF8 allows for special characters like Æ Ø and Å
+                        result = Encoding.UTF8.GetString(response, 0, bytesRead);
+                        result = result.Replace("\n", "");
                         client.Receive(result);
                     }
                     catch (ConnectionAbortedException e) {
@@ -52,7 +49,7 @@ namespace SEP3WebAPI.Mediator {
             thread.Start();
         }
 
-        public void Disconnect() {
+        private void Disconnect() {
             running = false;
             stream.Close();
             client.Disconnect();
