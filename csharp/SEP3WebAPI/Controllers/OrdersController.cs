@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
-
-using SEP3WebAPI.Data;
+using SEP3UI.Data;
+using IRestService = SEP3WebAPI.Data.IRestService;
 
 namespace SEP3WebAPI.Controllers {
     [ApiController]
@@ -43,6 +43,21 @@ namespace SEP3WebAPI.Controllers {
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("{orderId:int}")]
+        public async Task<ActionResult<Order>> GetOrderAsync([FromRoute] int orderId) {
+            try {
+                Order order = await service.GetOrderAsync(orderId);
+                if (order == null) {
+                    return NotFound($"No order found with id {orderId}");
+                }
+
+                return Ok(order);
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }

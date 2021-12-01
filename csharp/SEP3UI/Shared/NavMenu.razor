@@ -2,7 +2,7 @@
 @inject NavigationManager nav
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">    
+    <a class="navbar-brand" href="/" @onclick="CollapseDropdownMenus">    
         <img src="Images/undercoverslogo.png" alt="Under Covers logo" style="height: 50px"/>
     </a>
     <button class="navbar-toggler ml-auto" @onclick="ToggleNavMenu">
@@ -35,6 +35,11 @@
                                 </NavLink>
                                 <NavLink class="nav-link dropdown-item text-center text-md-left" @onclick="NavigateToLogout">
                                     <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                                </NavLink>
+                                
+                                @* TODO - Remove this one eventually AND the NavigateToOrder method! *@
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" @onclick="NavigateToOrder">
+                                    <span class="oi oi-info"></span> Order #1
                                 </NavLink>
                             </div>
                         }
@@ -118,5 +123,10 @@
     private void NavigateToLogout() {
         CollapseDropdownMenus();
         nav.NavigateTo("/logout");
+    }
+
+    private void NavigateToOrder() {
+        CollapseDropdownMenus();
+        nav.NavigateTo("/orders/1");
     }
 }
