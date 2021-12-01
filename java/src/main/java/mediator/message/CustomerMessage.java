@@ -1,6 +1,7 @@
 package mediator.message;
 
 import model.Customer;
+import model.Order;
 import model.Notification;
 
 import java.util.List;
@@ -8,6 +9,29 @@ import java.util.List;
 public class CustomerMessage extends Message {
 
     private Customer customer;
+    private List<Customer> customers;
+    private Notification notification;
+    private List<Notification> notifications;
+    private List<Order> orders;
+    private int index;
+    private int customerId;
+
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
     private List<Customer> customers;
     private Notification notification;
     private List<Notification> notifications;

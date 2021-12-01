@@ -23,6 +23,7 @@ public class CustomerCommand implements Command {
         methods.put("getNotifications", this::getNotifications);
         methods.put("getAdmins", this::getAdmins);
         methods.put("sendNotification", this::sendNotification);
+        methods.put("getAllByCustomer",this::getAllOrdersByCustomer);
     }
 
     @Override public Message execute(Message request) {
@@ -69,5 +70,9 @@ public class CustomerCommand implements Command {
     private void sendNotification() {
         databaseManager.getNotificationDAOService()
             .create(request.getCustomer().getId(), request.getNotification().getText(), request.getNotification().getTime(), request.getNotification().getStatus());
+    }
+
+    private void getAllOrdersByCustomer(){
+        reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
     }
 }

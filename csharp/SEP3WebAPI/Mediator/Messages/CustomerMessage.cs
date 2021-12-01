@@ -1,4 +1,3 @@
-﻿using System.Collections;
 using System.Collections.Generic;
 using SEP3Library.Models;
 
@@ -9,5 +8,7 @@ namespace SEP3WebAPI.Mediator.Messages {
         public Notification Notification { get; set; }
         public IList<Notification> Notifications { get; set; }
         public int Index { get; set; }
+        public int CustomerId { get; set; }
+        public IList<Order> Orders { get; set; }
     }
 }

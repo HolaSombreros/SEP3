@@ -2,9 +2,11 @@
 @using SEP3UI.Data
 @using SEP3Library.Models
 @using SEP3UI.Authentication
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@using System.Security.Claims
+@* @attribute [Authorize(Policy = Policies.IsAdmin)] *@
 @inject IOrderService orderService
-
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 <div class="container-fluid px-4">
     <h1>Orders</h1>
     @if (orders == null || !orders.Any()) {
@@ -19,7 +21,9 @@
                 <th>Order ID</th>
                 <th>Items</th>
                 <th>Total</th>
+                <AuthorizeView Policy="@Policies.IsAdmin">
                 <th>Customer ID</th>
+                </AuthorizeView>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Address</th>
@@ -33,7 +37,9 @@
                     <td>@order.Id</td>
                     <td>@GetAmount(order)</td>
                     <td>@GetTotal(order)</td>
+                    <AuthorizeView Policy="@Policies.IsAdmin">
                     <td>@(order.CustomerId == 0 ? "Not Registered" : order.CustomerId)</td>
+                    </AuthorizeView>
                     <td>@order.FirstName @order.LastName</td>
                     <td>@order.Email</td>
                     <td>@order.Address.ToString()</td>
@@ -53,11 +59,19 @@
     private IList<Order> orders;
     private int orderIndex;
     private string hidden;
+    private Customer customer;
     
     protected override async Task OnInitializedAsync() {
         NavBarEvent.Invoke();
+        customer = await customerService.GetCustomerAsync(int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id")));
+        if (customer.Role.ToLower().Equals("administrator")) {
+            orders = await orderService.GetOrdersAsync(orderIndex);
+        }
+        else {
+            orders = await customerService.GetOrdersByCustomer(customer.Id, orderIndex);
+        }
         orderIndex = 0;
-        orders = await orderService.GetOrdersAsync(orderIndex);
+        
         hidden = "";
     }
 

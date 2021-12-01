@@ -8,5 +8,6 @@ namespace SEP3WebAPI.Data {
     public interface IOrderDAO {
         Task<Order> CreateOrderAsync(OrderModel orderModel);
         Task<IList<Order>> GetOrdersAsync(int index);
+        
     }
 }
