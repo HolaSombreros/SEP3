@@ -20,6 +20,7 @@ public class CustomerCommand implements Command {
         methods.put("login", this::login);
         methods.put("register", this::register);
         methods.put("update", this::update);
+        methods.put("getAllByCustomer",this::getAllOrdersByCustomer);
     }
 
     @Override public Message execute(Message request) {
@@ -52,5 +53,9 @@ public class CustomerCommand implements Command {
     private void update() {
         Customer customer = request.getCustomer();
         reply.setCustomer(databaseManager.getCustomerDAOService().update(customer));
+    }
+
+    private void getAllOrdersByCustomer(){
+        reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
     }
 }

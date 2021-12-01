@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
-using SEP3UI.Data;
-using IRestService = SEP3WebAPI.Data.IRestService;
+using SEP3WebAPI.Data;
 
 namespace SEP3WebAPI.Controllers {
     [ApiController]

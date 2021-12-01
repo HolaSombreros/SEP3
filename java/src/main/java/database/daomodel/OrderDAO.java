@@ -13,5 +13,5 @@ public interface OrderDAO {
     List<Order> readByIndex(int index);
     void update(Order order);
     void delete(Order order);
-    List<Order> readAll();
+    List<Order> readAllOrdersByCustomer(int customerId, int index);
 }

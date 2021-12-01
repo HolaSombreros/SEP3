@@ -66,5 +66,9 @@ namespace SEP3UI.Data {
         public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
             await restService.DeleteAsync($"customers/{customerId}/shoppingbasket/{itemId}");
         }
+
+        public async Task<IList<Order>> GetOrdersByCustomer(int customerId, int index) {
+            return await restService.GetAsync<IList<Order>>($"Customers/{customerId}/order?index={index}");
+        }
     }
 }
