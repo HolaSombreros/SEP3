@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Features;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
-using SEP3UI.Authentication;
 
 namespace SEP3UI.Data {
     public class CustomerService : ICustomerService {
@@ -65,6 +63,10 @@ namespace SEP3UI.Data {
 
         public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
             await restService.DeleteAsync($"customers/{customerId}/shoppingbasket/{itemId}");
+        }
+
+        public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
+            return await restService.GetAsync<IList<Notification>>($"customers/{customerId}/notifications?index={index}");
         }
     }
 }

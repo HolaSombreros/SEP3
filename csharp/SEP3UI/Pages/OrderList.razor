@@ -55,6 +55,7 @@
     private string hidden;
     
     protected override async Task OnInitializedAsync() {
+        NavBarEvent.Invoke();
         orderIndex = 0;
         orders = await orderService.GetOrdersAsync(orderIndex);
         hidden = "";

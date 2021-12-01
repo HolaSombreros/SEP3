@@ -1,5 +1,11 @@
 ﻿@using SEP3UI.Authentication
+@using System.Collections
+@using System.Security.Claims
+@using SEP3Library.Models
+@using SEP3UI.Data
 @inject NavigationManager nav
+@inject ICustomerService customerService 
+@inject AuthenticationStateProvider authStateProvider
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <a class="navbar-brand" href="/">    
@@ -21,6 +27,31 @@
                     <button class="btn btn-info" @onclick="NavigateToLogin">Login</button>
                 </NotAuthorized>
                 <Authorized>
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link text-center" @onclick="ToggleNotificationDropdownMenuAsync">
+                            <span class="oi oi-bell" aria-hidden="true"></span>
+                        </NavLink>
+                        @if (!collapseNotificationDropdownMenu) {
+                            @if (notifications == null || !notifications.Any()) {
+                                <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                                    <div class="dropdown-item">Loading...</div>
+                                </div>
+                            }
+                            else {
+                                <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                                    @foreach (Notification notification in notifications) {
+                                        <div class="dropdown-item">
+                                            @notification.Text
+                                            @notification.Time
+                                        </div>
+                                    }
+                                    <div class="text-center">
+                                        <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMoreAsync">Load more</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </li>
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleAccountDropdownMenu">
                             <span class="oi oi-person" aria-hidden="true"></span> Account
@@ -87,6 +118,40 @@
     private bool collapseNavMenu = true;
     private bool collapseAccountDropdownMenu = true;
     private bool collapseAdminDropdownMenu = true;
+    private bool collapseNotificationDropdownMenu = true;
+
+    private int notificationIndex;
+    private IList<Notification> notifications;
+    private string hidden;
+    private int customerId;
+
+    protected override async Task OnInitializedAsync() {
+        NavBarEvent.AddAction(Load);
+    }
+    
+    private async void Load() {
+        try {
+            customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        } catch (Exception e) {
+            customerId = -1;
+        }
+        notificationIndex = 0;
+        if (customerId != -1)
+            notifications = await customerService.GetNotificationsAsync(customerId, notificationIndex);
+        hidden = "";
+    }
+
+    private async Task LoadMoreAsync() {
+        notificationIndex++;
+        IList<Notification> newList = await customerService.GetNotificationsAsync(customerId, notificationIndex);
+        if (newList.Count == 0) {
+            hidden = "display: none";
+            notificationIndex--;
+        }
+        foreach (Notification notification in newList) {
+            notifications.Add(notification);
+        }
+    }
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -94,21 +159,31 @@
         collapseNavMenu = !collapseNavMenu;
         collapseAccountDropdownMenu = true;
         collapseAdminDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
     }
 
     private void ToggleAccountDropdownMenu() {
         collapseAccountDropdownMenu = !collapseAccountDropdownMenu;
         collapseAdminDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
     }
 
     private void ToggleAdminDropdownMenu() {
         collapseAdminDropdownMenu = !collapseAdminDropdownMenu;
         collapseAccountDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
+    }
+    
+    private async void ToggleNotificationDropdownMenuAsync() {
+        collapseAdminDropdownMenu = true;
+        collapseAccountDropdownMenu = true;
+        collapseNotificationDropdownMenu = !collapseNotificationDropdownMenu;
     }
 
     private void CollapseDropdownMenus() {
         collapseAccountDropdownMenu = true;
         collapseAdminDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
     }
 
     private void NavigateToLogin() {

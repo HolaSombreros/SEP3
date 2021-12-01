@@ -330,6 +330,38 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
         }
 
+        public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "getNotifications",
+                Service = "customer",
+                Index = index,
+                Customer = new Customer() {
+                    Id = customerId
+                }
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Notifications;
+        }
+
+        public async Task<IList<Customer>> GetAdminsAsync() {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "getAdmins",
+                Service = "customer"
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Customers;
+        }
+
+        public async Task SendNotificationAsync(Customer customer, Notification notification) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "sendNotification",
+                Service = "customer",
+                Customer = customer,
+                Notification = notification
+            };
+            Send(req);
+        }
+
         public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             ItemMessage req = new ItemMessage() {
                 Type = "searchByName",

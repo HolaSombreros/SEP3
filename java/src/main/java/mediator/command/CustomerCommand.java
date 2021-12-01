@@ -20,6 +20,9 @@ public class CustomerCommand implements Command {
         methods.put("login", this::login);
         methods.put("register", this::register);
         methods.put("update", this::update);
+        methods.put("getNotifications", this::getNotifications);
+        methods.put("getAdmins", this::getAdmins);
+        methods.put("sendNotification", this::sendNotification);
     }
 
     @Override public Message execute(Message request) {
@@ -45,12 +48,26 @@ public class CustomerCommand implements Command {
 
     private void register() {
         Customer customer = request.getCustomer();
-        reply.setCustomer(databaseManager.getCustomerDAOService().create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
-            customer.getRole(), customer.getAddress(), customer.getPhoneNumber()));
+        reply.setCustomer(databaseManager.getCustomerDAOService()
+            .create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(), customer.getRole(), customer.getAddress(),
+                customer.getPhoneNumber()));
     }
 
     private void update() {
         Customer customer = request.getCustomer();
         reply.setCustomer(databaseManager.getCustomerDAOService().update(customer));
+    }
+
+    private void getNotifications() {
+        reply.setNotifications(databaseManager.getNotificationDAOService().readAll(request.getCustomer().getId(), request.getIndex()));
+    }
+
+    private void getAdmins() {
+        reply.setCustomers(databaseManager.getCustomerDAOService().readAdmins());
+    }
+
+    private void sendNotification() {
+        databaseManager.getNotificationDAOService()
+            .create(request.getCustomer().getId(), request.getNotification().getText(), request.getNotification().getTime(), request.getNotification().getStatus());
     }
 }

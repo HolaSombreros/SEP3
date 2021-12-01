@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -136,7 +137,7 @@ namespace SEP3WebAPI.Controllers {
         
         [HttpGet]
         [Route("{customerId:int}/shoppingbasket")]
-        public async Task<ActionResult> GetShoppingCartAsync([FromRoute] int customerId) {
+        public async Task<ActionResult<IList<Item>>> GetShoppingCartAsync([FromRoute] int customerId) {
             try {
                 IList<Item> shoppingCart = await service.GetShoppingCartAsync(customerId);
                 return Ok(shoppingCart);
@@ -162,13 +163,27 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
-        
+
         [HttpDelete]
         [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
-        public async Task<ActionResult> RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
+        public async Task<ActionResult>
+            RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
             try {
                 await service.RemoveFromShoppingCartAsync(itemId, customerId);
                 return Ok();
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route( "{customerId:int}/notifications")]
+        public async Task<ActionResult<IList<Notification>>> GetNotificationsAsync([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Notification> notifications = await service.GetNotificationsAsync(customerId, index);
+                return Ok(notifications);
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
