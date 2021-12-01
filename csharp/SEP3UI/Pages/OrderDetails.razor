@@ -130,7 +130,7 @@
                                 <td>@item.Id</td>
                                 <td>@item.Name</td>
                                 <td>@item.Quantity</td>
-                                <td>@Math.Round(item.Price, 2, MidpointRounding.ToEven) DKK</td>
+                                <td>@item.PriceIncludingDiscount DKK</td>
                                 <td>@Math.Round(item.Price * item.Quantity, 2, MidpointRounding.ToEven) DKK</td>
                             </tr>
                         }
@@ -158,6 +158,6 @@
 
     protected override async Task OnInitializedAsync() {
         order = await orderService.GetOrderAsync(Id);
-        totalPrice = order.Items.Sum(i => i.Price * i.Quantity);
+        totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity);
     }
 }

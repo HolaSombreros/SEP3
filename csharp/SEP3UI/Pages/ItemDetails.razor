@@ -75,7 +75,7 @@ else {
                             </div>
                         }
                         <div class="mt-2">
-                            <strong>Price: </strong> <span class="amount-old">@Math.Round(item.Price, 2, MidpointRounding.ToEven) DKK</span>
+                            <strong>Price: </strong> <span class="amount-old">@item.PriceIncludingDiscount DKK</span>
                             @if (item.Discount > 0) {
                                 <span class="ml-2 text-danger">(@item.Discount% OFF)</span>
                             }
@@ -90,9 +90,9 @@ else {
                                 <strong>Status: </strong>
                             </label>
                             @if (item.Quantity == 0) {
-                                <span class="text-danger"> Out of stock.</span>
+                                <span class="text-danger"> Out of stock</span>
                             } else {
-                                <span class="text-success"> In stock.</span>
+                                <span class="text-success"> In stock</span>
                             }
                         </div>
                         <div class="mt-5">

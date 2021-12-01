@@ -104,7 +104,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = item.Quantity;
             toUpdate.Status = item.Status;
             toUpdate.Discount = item.Discount;
-            toUpdate.ImageName = "Images/" + item.ImageName;
+            toUpdate.ImageName = item.ImageName;
             
             await client.UpdateItemAsync(toUpdate);
             return toUpdate;
@@ -121,7 +121,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = book.Quantity;
             toUpdate.Status = book.Status;
             toUpdate.Discount = book.Discount;
-            toUpdate.ImageName = "Images/" + book.ImageName;
+            toUpdate.ImageName = book.ImageName;
             toUpdate.Authors = book.Authors;
             toUpdate.Genre = book.Genre;
             toUpdate.Isbn = book.Isbn;
@@ -227,7 +227,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/" + itemModel.ImageName
+                ImageName = itemModel.ImageName
             };
             return await client.AddItemAsync(i);
         }
@@ -246,7 +246,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/" + itemModel.ImageName,
+                ImageName = itemModel.ImageName,
                 Isbn = itemModel.Isbn,
                 Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {

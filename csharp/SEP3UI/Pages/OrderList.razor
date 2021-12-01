@@ -97,7 +97,7 @@
     private decimal GetTotal(Order order) {
         decimal price = 0;
         foreach (Item item in order.Items) {
-            price += item.Price;
+            price += item.PriceIncludingDiscount;
         }
         return price;
     }

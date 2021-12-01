@@ -34,7 +34,7 @@
                             <span class="border">@item.Quantity</span>
                             <a @onclick="(() => IncreaseQuantity(item))"> + </a>
                         </div>
-                        <div class="col"> @(item.Price * item.Quantity) DKK 
+                        <div class="col">@Math.Round(item.PriceIncludingDiscount * item.Quantity, 2, MidpointRounding.ToEven) DKK 
                             <a class="close" @onclick="(() => RemoveItemFromShoppingCart(item))">&#10005;</a>
                         </div>
                     </div>
