@@ -22,6 +22,7 @@ public class CustomerCommand implements Command {
         methods.put("update", this::update);
         methods.put("getCustomersByIndex", this::getCustomersByIndex);
         methods.put("updateRole", this::updateRole);
+        methods.put("getAllByCustomer",this::getAllOrdersByCustomer);
     }
 
     @Override public Message execute(Message request) {
@@ -61,5 +62,9 @@ public class CustomerCommand implements Command {
 
     private void updateRole() {
         reply.setCustomer(databaseManager.getCustomerDAOService().updateRole(request.getCustomer()));
+    }
+
+    private void getAllOrdersByCustomer(){
+        reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
     }
 }

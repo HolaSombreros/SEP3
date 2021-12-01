@@ -53,10 +53,10 @@
     </div>
     <div class="d-block col-md-9">
         <div>
-            <form class="search-bar">
+            <div class="search-bar">
                 <input type="search" name="search" pattern=".*\S.*" required @bind-value="searchItem" placeholder="Type To Search..."/>
-                <buttonc class="search-btn" type="submit" @onclick="@SearchButtonPressedAsync"></buttonc>
-            </form>
+                <button class="search-btn" @onclick="@SearchButtonPressedAsync"></button>
+            </div>
         </div>
         <div >
             @if (filteredItems != null) {

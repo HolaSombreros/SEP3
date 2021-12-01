@@ -47,7 +47,6 @@ namespace SEP3UI.Data {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
-            Console.WriteLine("customerservice");
             Item added = await restService.PutAsync<Item, Item>(item, $"customers/{customerId}/shoppingbasket");
             return added;
         }
@@ -66,6 +65,10 @@ namespace SEP3UI.Data {
         }
         public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
             return await restService.GetAsync<List<Customer>>($"customers/all?index={index}");
+        }
+
+        public async Task<IList<Order>> GetOrdersByCustomer(int customerId, int index) {
+            return await restService.GetAsync<IList<Order>>($"Customers/{customerId}/order?index={index}");
         }
     }
 }

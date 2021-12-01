@@ -1,5 +1,6 @@
 package mediator.message;
 
+import model.Customer;
 import model.Order;
 
 import java.util.List;
@@ -36,4 +37,5 @@ public class OrderMessage extends Message {
     public void setOrder(Order order) {
         this.order = order;
     }
+
 }

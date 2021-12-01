@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
-using Telerik.OpenAccess;
 
 namespace SEP3WebAPI.Data {
     public class RestService : IRestService {
@@ -228,7 +227,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/sth"
+                ImageName = "Images/" + itemModel.ImageName
             };
             return await client.AddItemAsync(i);
         }
@@ -247,7 +246,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/Booklala",
+                ImageName = "Images/" + itemModel.ImageName,
                 Isbn = itemModel.Isbn,
                 Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {
@@ -317,12 +316,20 @@ namespace SEP3WebAPI.Data {
             return await client.GetOrdersAsync(index);
         }
 
+        public async Task<Order> GetOrderAsync(int orderId) {
+            return await client.GetOrderAsync(orderId);
+        }
+
         public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
             return await client.GetItemsByPriceAsync(orderBy, index);
         }
-        
+
         public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
             return await client.GetCustomersByIndexAsync(index);
+        }
+
+        public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
+            return await client.GetOrdersByCustomerAsync(customerId, index);
         }
     }
 }

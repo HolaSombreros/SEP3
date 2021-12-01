@@ -2,8 +2,10 @@
 @using SEP3UI.Data
 @using SEP3Library.Models
 @using SEP3UI.Authentication
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@using System.Security.Claims
 @inject IOrderService orderService
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 
 <div class="container-fluid px-4 text-center">
     <h2 class="mt-3 mb-3">Orders</h2>
@@ -19,7 +21,9 @@
                 <th scope="col">Order ID</th>
                 <th scope="col">Items</th>
                 <th scope="col">Total</th>
-                <th scope="col">Customer ID</th>
+                <AuthorizeView Policy="@Policies.IsAdmin">
+                   <th>Customer ID</th>
+                </AuthorizeView>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Address</th>
@@ -33,7 +37,9 @@
                     <td>@order.Id</td>
                     <td>@GetAmount(order)</td>
                     <td>@GetTotal(order)</td>
+                    <AuthorizeView Policy="@Policies.IsAdmin">
                     <td>@(order.CustomerId == 0 ? "Not Registered" : order.CustomerId)</td>
+                    </AuthorizeView>
                     <td>@order.FirstName @order.LastName</td>
                     <td>@order.Email</td>
                     <td>@order.Address.ToString()</td>
@@ -53,8 +59,16 @@
     private IList<Order> orders;
     private int orderIndex;
     private string hidden;
-    
+    private Customer customer;
+
     protected override async Task OnInitializedAsync() {
+        customer = await customerService.GetCustomerAsync(int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id")));
+        if (customer.Role.ToLower().Equals("administrator")) {
+            orders = await orderService.GetOrdersAsync(orderIndex);
+        }
+        else {
+            orders = await customerService.GetOrdersByCustomer(customer.Id, orderIndex);
+        }
         orderIndex = 0;
         orders = await orderService.GetOrdersAsync(orderIndex);
         hidden = "";

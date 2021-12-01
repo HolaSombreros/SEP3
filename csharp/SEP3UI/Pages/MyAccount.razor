@@ -10,7 +10,7 @@
 @if (oldCustomer == null) {
     <em>Loading...</em>
 } else {
-    <div class="offset-md-3 col-md-6 col-sm-12">
+    <div class=" mt-3 offset-md-3 col-md-6 col-sm-12">
         <h2>Personal details</h2>
         <hr/>
         <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClickedAsync">
@@ -162,7 +162,7 @@
                 <span class="@resultColor">@resultMessage</span>
             </div>
             <div class="text-center">
-                <button class="btn btn-primary" type="submit" disabled="@IsDataUnchanged()">Update account</button>
+                <button class="btn btn-primary" disabled="@IsDataUnchanged()">Update account</button>
             </div>
         </EditForm>
     </div>
