@@ -3,7 +3,7 @@
 @using SEP3Library.Models
 @using SEP3UI.Authentication
 @using System.Security.Claims
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@* @attribute [Authorize(Policy = Policies.IsAdmin)] *@
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
@@ -21,7 +21,9 @@
                 <th>Order ID</th>
                 <th>Items</th>
                 <th>Total</th>
+                <AuthorizeView Policy="@Policies.IsAdmin">
                 <th>Customer ID</th>
+                </AuthorizeView>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Address</th>
@@ -35,7 +37,9 @@
                     <td>@order.Id</td>
                     <td>@GetAmount(order)</td>
                     <td>@GetTotal(order)</td>
+                    <AuthorizeView Policy="@Policies.IsAdmin">
                     <td>@(order.CustomerId == 0 ? "Not Registered" : order.CustomerId)</td>
+                    </AuthorizeView>
                     <td>@order.FirstName @order.LastName</td>
                     <td>@order.Email</td>
                     <td>@order.Address.ToString()</td>
@@ -63,7 +67,7 @@
             orders = await orderService.GetOrdersAsync(orderIndex);
         }
         else {
-            // orders = await orderService.
+            orders = await customerService.GetOrdersByCustomer(customer.Id, orderIndex);
         }
         orderIndex = 0;
         
