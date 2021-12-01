@@ -2,9 +2,11 @@
 @using SEP3UI.Data
 @using SEP3Library.Models
 @using SEP3UI.Authentication
+@using System.Security.Claims
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject IOrderService orderService
-
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 <div class="container-fluid px-4">
     <h1>Orders</h1>
     @if (orders == null || !orders.Any()) {
@@ -53,10 +55,18 @@
     private IList<Order> orders;
     private int orderIndex;
     private string hidden;
+    private Customer customer;
     
     protected override async Task OnInitializedAsync() {
+        customer = await customerService.GetCustomerAsync(int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id")));
+        if (customer.Role.ToLower().Equals("administrator")) {
+            orders = await orderService.GetOrdersAsync(orderIndex);
+        }
+        else {
+            // orders = await orderService.
+        }
         orderIndex = 0;
-        orders = await orderService.GetOrdersAsync(orderIndex);
+        
         hidden = "";
     }
 

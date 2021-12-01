@@ -77,7 +77,15 @@ public class OrderDAOService implements OrderDAO {
     }
 
     @Override
-    public List<Order> readAll() {
-        return null;
+    public List<Order> readAllOrdersByCustomer(int customerId, int index) {
+        try{
+            List<Order> orders = databaseHelper.mapList(new OrderMapper(), "SELECT * FROM purchase JOIN (SELECT * from address JOIN city USING (zip_code))a USING (address_id) WHERE customer_id = ? ORDER BY purchase_id DESC LIMIT 21 OFFSET 21 * ?", customerId, index);
+            for (Order order : orders) {
+                order.setItems(itemDAOService.readAllFromOrder(order.getId()));
+            }
+            return orders;
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 }

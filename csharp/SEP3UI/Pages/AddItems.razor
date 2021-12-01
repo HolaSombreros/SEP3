@@ -242,7 +242,6 @@
             Book book;
             Item item;
             if (CategoryName.Equals("Book")) {
-                bookModel = new BookModel();
                 book = await itemService.GetBookAsync(Id);
                 bookModel.Name = book.Name;
                 bookModel.Description = book.Description;

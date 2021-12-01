@@ -3,6 +3,7 @@ package database.daomodel;
 import model.Address;
 import model.Customer;
 import model.Item;
+import model.Order;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public interface CustomerDAO {
     Customer read(String email);
     Customer update(Customer customer);
     void delete(Customer customer);
+
 }
