@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
+using Telerik.OpenAccess;
 
 namespace SEP3WebAPI.Data {
     public class RestService : IRestService {
@@ -70,6 +70,7 @@ namespace SEP3WebAPI.Data {
             updated.Address.City = customer.City;
             updated.PhoneNumber = customer.PhoneNumber;
             updated.Password = customer.Password;
+            updated.Role = customer.Role;
 
             await client.UpdateCustomerAsync(updated);
             return updated;
@@ -318,6 +319,10 @@ namespace SEP3WebAPI.Data {
 
         public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
             return await client.GetItemsByPriceAsync(orderBy, index);
+        }
+        
+        public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
+            return await client.GetCustomersByIndexAsync(index);
         }
     }
 }

@@ -33,6 +33,22 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        
+        [HttpGet]
+        [Route("all")]
+        public async Task<ActionResult<IList<Customer>>> GetCustomersByIndexAsync([FromQuery] int index) {
+            try {
+                IList<Customer> customers = await service.GetCustomersByIndexAsync(index);
+                return Ok(customers);
+            } 
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult<Customer>> AddCustomerAsync([FromBody] CustomerModel customer) {
@@ -67,7 +83,6 @@ namespace SEP3WebAPI.Controllers {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
-            
             try {
                 Customer updated = await service.UpdateCustomerAsync(customerId, customer);
                 return Ok(updated);

@@ -6,7 +6,7 @@
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 
 <div class="container w-50">
-    <h3>Add new item category</h3>
+    <h2>Add new item category</h2>
     <EditForm Model="category" OnValidSubmit="AddCategoryAsync">
         <DataAnnotationsValidator/>
         <div class="form-group">

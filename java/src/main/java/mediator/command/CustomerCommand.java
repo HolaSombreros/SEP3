@@ -20,6 +20,8 @@ public class CustomerCommand implements Command {
         methods.put("login", this::login);
         methods.put("register", this::register);
         methods.put("update", this::update);
+        methods.put("getCustomersByIndex", this::getCustomersByIndex);
+        methods.put("updateRole", this::updateRole);
     }
 
     @Override public Message execute(Message request) {
@@ -50,7 +52,14 @@ public class CustomerCommand implements Command {
     }
 
     private void update() {
-        Customer customer = request.getCustomer();
-        reply.setCustomer(databaseManager.getCustomerDAOService().update(customer));
+        reply.setCustomer(databaseManager.getCustomerDAOService().update(request.getCustomer()));
+    }
+
+    private void getCustomersByIndex() {
+        reply.setCustomers(databaseManager.getCustomerDAOService().readByIndex(request.getIndex()));
+    }
+
+    private void updateRole() {
+        reply.setCustomer(databaseManager.getCustomerDAOService().updateRole(request.getCustomer()));
     }
 }

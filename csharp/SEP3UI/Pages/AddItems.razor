@@ -10,12 +10,12 @@
 <header>
 
 @if (categories != null) {
-    <div class="overlay">
+    <div>
         @if (CategoryName != null) {
-            <h1>Edit Items</h1>
+            <h2>Edit Items</h2>
         }
         else {
-            <h1>Add Items</h1>
+            <h2>Add Items</h2>
         }
         @if ((itemModel != null && CategoryName == null && !itemModel.Category.Name.Equals("Book")) || (CategoryName != null && !CategoryName.Equals("Book"))) {
             <EditForm Model="@itemModel" OnValidSubmit="AddItemAsync">
@@ -259,7 +259,6 @@
                     book.PublicationDate.Minute, book.PublicationDate.Second);
                 foreach(Genre g in book.Genre)
                     selectedGenres.Add(g);
-                // genres = bookModel.Genre;
             }
             else {
                 itemModel = new ItemModel();
