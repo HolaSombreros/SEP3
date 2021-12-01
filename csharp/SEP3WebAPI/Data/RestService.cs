@@ -316,6 +316,10 @@ namespace SEP3WebAPI.Data {
             return await client.GetOrdersAsync(index);
         }
 
+        public async Task<Order> GetOrderAsync(int orderId) {
+            return await client.GetOrderAsync(orderId);
+        }
+
         public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
             return await client.GetItemsByPriceAsync(orderBy, index);
         }

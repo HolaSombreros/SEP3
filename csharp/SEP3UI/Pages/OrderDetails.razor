@@ -1,7 +1,163 @@
-﻿@page "/OrderDetails"
+﻿@page "/orders/{id:int}"
+@using SEP3UI.Authentication
+@using SEP3Library.Models
+@using SEP3UI.Data
+@attribute [Authorize]
+@inject IOrderService orderService
 
-<h3>OrderDetails</h3>
+@if (order == null) {
+    <em>Loading...</em>
+} else {
+    <EditForm Model="@order">
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-lg-4 col-md-12 mb-md-4">
+                    <h4 class="text-center">Order information</h4>
+                    <hr/>
+                    <div class="form-group mb-3">
+                        <label><strong>Order Id</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-key"></span>
+                                </div>
+                            </div>
+                            <InputNumber class="form-control" readonly @bind-Value="order.Id"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label><strong>First name</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-person"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="order.FirstName"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label><strong>Last name</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-person"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="order.LastName"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label><strong>Email address</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-envelope-closed"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="order.Email"/>
+                        </div>
+                    </div>
+
+                    <h4 class="text-center mt-5">Delivery address</h4>
+                    <hr/>
+                    <div class="form-group mb-3">
+                        <label><strong>Street name</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-home"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="order.Address.Street"/>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label><strong>Street number</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-home"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="order.Address.Number"/>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label><strong>Zip code</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-home"></span>
+                                </div>
+                            </div>
+                            <InputNumber class="form-control" @bind-Value="order.Address.ZipCode"/>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label><strong>City</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-home"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="order.Address.City"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-12">
+                    <h4 class="text-center mb-3 mt-5 mt-md-0">Items ordered</h4>
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (Item item in order.Items) {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@Math.Round(item.Price, 2, MidpointRounding.ToEven) DKK</td>
+                                <td>@Math.Round(item.Price * item.Quantity, 2, MidpointRounding.ToEven) DKK</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>@Math.Round(totalPrice, 2, MidpointRounding.ToEven) DKK</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
 
 @code {
-    
+    [Parameter]
+    public int Id { get; set; }
+
+    private Order order;
+    private decimal totalPrice;
+
+    protected override async Task OnInitializedAsync() {
+        order = await orderService.GetOrderAsync(Id);
+        totalPrice = order.Items.Sum(i => i.Price * i.Quantity);
+    }
 }
