@@ -432,14 +432,14 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
-            CustomerMessage request = new CustomerMessage() {
+            OrderMessage request = new OrderMessage() {
                 Type = "getAllByCustomer",
-                Service = "customer",
+                Service = "order",
                 CustomerId = customerId,
                 Index = index
             };
             Send(request);
-            return ((CustomerMessage)reply).Orders;
+            return ((OrderMessage)reply).Orders;
         }
 
         public async Task<Order> UpdateOrderAsync(Order order) {

@@ -21,6 +21,7 @@ public class OrderCommand implements Command {
         methods.put("getAll", this::getAll);
         methods.put("get", this::get);
         methods.put("update",this::update);
+        methods.put("getAllByCustomer",this::getAllOrdersByCustomer);
     }
 
     @Override public Message execute(Message request) {
@@ -52,5 +53,8 @@ public class OrderCommand implements Command {
 
     private void update(){
         reply.setOrder(databaseManager.getOrderDAOService().update(request.getOrder()));
+    }
+    private void getAllOrdersByCustomer(){
+        reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
     }
 }

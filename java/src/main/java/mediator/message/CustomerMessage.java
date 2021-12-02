@@ -11,7 +11,7 @@ public class CustomerMessage extends Message {
     private Customer customer;
     private List<Customer> customers;
     private List<Order> orders;
-    private int customerId;
+
 
 
     public CustomerMessage(String service, String type) {
@@ -51,11 +51,5 @@ public class CustomerMessage extends Message {
         this.orders = orders;
     }
 
-    public int getCustomerId() {
-        return customerId;
-    }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
 }
