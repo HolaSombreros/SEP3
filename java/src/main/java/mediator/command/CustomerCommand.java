@@ -21,8 +21,10 @@ public class CustomerCommand implements Command {
         methods.put("register", this::register);
         methods.put("update", this::update);
         methods.put("getNotifications", this::getNotifications);
+        methods.put("getNotification", this::getNotification);
         methods.put("getAdmins", this::getAdmins);
         methods.put("sendNotification", this::sendNotification);
+        methods.put("updateSeenNotification", this:: updateSeenNotification);
         methods.put("getCustomersByIndex", this::getCustomersByIndex);
         methods.put("updateRole", this::updateRole);
         methods.put("getAllByCustomer",this::getAllOrdersByCustomer);
@@ -72,13 +74,21 @@ public class CustomerCommand implements Command {
         reply.setNotifications(databaseManager.getNotificationDAOService().readAll(request.getCustomer().getId(), request.getIndex()));
     }
 
+    private void getNotification() {
+        reply.setNotification(databaseManager.getNotificationDAOService().read(request.getNotification().getId(), request.getCustomer().getId()));
+    }
+
     private void getAdmins() {
         reply.setCustomers(databaseManager.getCustomerDAOService().readAdmins());
     }
 
     private void sendNotification() {
-        databaseManager.getNotificationDAOService()
-            .create(request.getCustomer().getId(), request.getNotification().getText(), request.getNotification().getTime(), request.getNotification().getStatus());
+        reply.setNotification(databaseManager.getNotificationDAOService()
+            .create(request.getCustomer().getId(), request.getNotification().getText(), request.getNotification().getTime(), request.getNotification().getStatus()));
+    }
+
+    private void updateSeenNotification() {
+        reply.setNotification(databaseManager.getNotificationDAOService().update(request.getCustomer().getId(), request.getNotification()));
     }
 
     private void getAllOrdersByCustomer(){

@@ -209,6 +209,17 @@ namespace SEP3WebAPI.Data {
             return await client.GetNotificationsAsync(customerId, index);
         }
 
+        public async Task<Notification> UpdateSeenNotificationAsync(int customerId, int notificationId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+
+            Notification notification = await client.GetSpecificNotificationAsync(customer, notificationId);
+            if (notification == null) throw new NullReferenceException($"No such notification found with id: {notificationId} for the customer: {customerId}");
+
+            notification.Status = "Read";
+            return await client.UpdateSeenNotificationAsync(customer, notification);
+        }
+
         public async Task<Book> GetBookAsync(int id) {
             return await client.GetBookAsync(id);
         }

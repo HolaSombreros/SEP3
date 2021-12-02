@@ -18,9 +18,16 @@ public class NotificationDAOService implements NotificationDAO {
 
     @Override public Notification create(int customerId, String text, MyDateTime dateTime, String status) {
         try {
-            List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO notification(text, date_time, customer_id, status) VALUES (?,?,?,?::notification_status);", text,
-                dateTime.getLocalDateTime(), customerId, status);
-            return read(keys.get(0));
+            if (!isNotification(text,dateTime)) {
+                List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO notification(message, date_time) VALUES (?,?);", text, dateTime.getLocalDateTime());
+                databaseHelper.executeUpdate("INSERT INTO customer_notification(notification_id, customer_id, status) VALUES (?,?,?::notification_status);", keys.get(0), customerId, status);
+                return read(keys.get(0), customerId);
+            }
+            else {
+                Notification not = read(text, dateTime);
+                databaseHelper.executeUpdate("INSERT INTO customer_notification(notification_id, customer_id, status) VALUES (?,?,?::notification_status);", not.getId(), customerId, status);
+                return read(not.getId(), customerId);
+            }
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -29,8 +36,34 @@ public class NotificationDAOService implements NotificationDAO {
 
     @Override public Notification read(int id) {
         try {
-            Notification notification = databaseHelper.mapObject(new NotificationMapper(), "SELECT * FROM notification WHERE notification_id = ?", id);
-            return notification;
+            return databaseHelper.mapObject(new NotificationMapper(), "SELECT * FROM notification JOIN customer_notification USING (notification_id) WHERE notification_id = ?", id);
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public Notification read (int id, int customerId) {
+        try {
+            return databaseHelper.mapObject(new NotificationMapper(), "SELECT * FROM notification JOIN customer_notification USING (notification_id) WHERE notification_id = ? AND customer_id = ?", id, customerId);
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public Notification read(String text, MyDateTime time) {
+        try {
+            return databaseHelper.mapObject(new NotificationMapper(),"SELECT * FROM notification JOIN customer_notification USING (notification_id) WHERE message = ? AND date_time = ?", text, time.getLocalDateTime());
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public boolean isNotification(String text, MyDateTime time) {
+        try {
+            return databaseHelper.executeQuery(databaseHelper.getConnection(),"SELECT * FROM notification WHERE message = ? AND date_time = ?", text, time.getLocalDateTime()).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -39,9 +72,8 @@ public class NotificationDAOService implements NotificationDAO {
 
     @Override public List<Notification> readAll(int customerId, int index) {
         try {
-            List<Notification> notifications = databaseHelper.mapList(new NotificationMapper(),
-                "SELECT * FROM notification WHERE customer_id = ? ORDER BY notification_id DESC LIMIT 5 OFFSET 5 * ?", customerId, index);
-            return notifications;
+            return databaseHelper.mapList(new NotificationMapper(),
+                "SELECT * FROM notification JOIN customer_notification USING (notification_id) WHERE customer_id = ? ORDER BY notification_id DESC LIMIT 5 OFFSET 5 * ?;", customerId, index);
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -53,9 +85,9 @@ public class NotificationDAOService implements NotificationDAO {
             if (read(notification.getId()) == null)
                 return create(customerId, notification.getText(), notification.getTime(), notification.getStatus());
             else {
-                databaseHelper.executeUpdate("UPDATE notification SET text = ?, date_time = ?, status = ?::notification_status, customer_id = ? WHERE notification_id = ?;", notification.getText(),
-                    notification.getTime().getLocalDateTime(), notification.getStatus(), customerId, notification.getId());
-                return read(notification.getId());
+                databaseHelper.executeUpdate("UPDATE notification SET message = ?, date_time = ? WHERE notification_id = ?;", notification.getText(), notification.getTime().getLocalDateTime(), notification.getId());
+                databaseHelper.executeUpdate("UPDATE customer_notification SET status = ?::notification_status WHERE notification_id = ? AND customer_id = ?;", notification.getStatus(), notification.getId(), customerId);
+                return read(notification.getId(), customerId);
             }
         }
         catch (SQLException e) {

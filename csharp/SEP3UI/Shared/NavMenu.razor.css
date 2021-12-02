@@ -118,10 +118,21 @@ nav {
     z-index:2;
 }
 
+.notification {
+    color: red;
+}
     
-    .navbar-nav button {
-        border-radius: 20px;
-        margin-left: 1.25rem;
-        padding: 0 1.75rem;
-    }
+.hidden {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+.navbar-nav button {
+    border-radius: 20px;
+    margin-left: 1.25rem;
+    padding: 0 1.75rem; 
+}
 

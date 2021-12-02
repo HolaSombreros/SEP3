@@ -29,24 +29,28 @@
                 <Authorized>
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link text-center" @onclick="ToggleNotificationDropdownMenuAsync">
-                            <span class="oi oi-bell" aria-hidden="true"></span>
+                            <span class="oi oi-bell @notificationClass" aria-hidden="true"></span>
                         </NavLink>
                         @if (!collapseNotificationDropdownMenu) {
                             @if (notifications == null || !notifications.Any()) {
-                                <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                                <div class="d-block dropdown-menu dropdown-menu-right">
                                     <div class="dropdown-item">Loading...</div>
                                 </div>
                             }
                             else {
-                                <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
+                                <div class="d-block dropdown-menu dropdown-menu-right">
                                     @foreach (Notification notification in notifications) {
-                                        <div class="dropdown-item">
-                                            @notification.Text
-                                            @notification.Time
+                                        <div class="dropdown-item border">
+                                            <div>
+                                                <span>@notification.Time</span>
+                                            </div>
+                                            <div>
+                                                <span>@notification.Text</span>
+                                            </div>
                                         </div>
                                     }
-                                    <div class="text-center">
-                                        <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMoreAsync">Load more</button>
+                                    <div class="text-center @hiddenClass">
+                                        <button class="btn btn-md btn-dark order-button" @onclick="LoadMoreAsync">Load more</button>
                                     </div>
                                 </div>
                             }
@@ -133,34 +137,42 @@
 
     private int notificationIndex;
     private IList<Notification> notifications;
-    private string hidden;
+    private string hiddenClass = "";
+    private string notificationClass;
     private int customerId;
 
     protected override async Task OnInitializedAsync() {
-        NavBarEvent.AddAction(Load);
+        NavBarEvent.AddAction(LoadAsync);
     }
     
-    private async void Load() {
+    private async void LoadAsync() {
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
         } catch (Exception e) {
             customerId = -1;
         }
+        notificationClass = "";
         notificationIndex = 0;
-        if (customerId != -1)
+        if (customerId != -1) {
             notifications = await customerService.GetNotificationsAsync(customerId, notificationIndex);
-        hidden = "";
+            if (notifications != null)
+                if (notifications.Any(n => n.Status.Equals("Unread")))
+                    notificationClass = "notification";
+        }
+        hiddenClass = "";
     }
 
     private async Task LoadMoreAsync() {
         notificationIndex++;
         IList<Notification> newList = await customerService.GetNotificationsAsync(customerId, notificationIndex);
         if (newList.Count == 0) {
-            hidden = "display: none";
+            hiddenClass = "hidden";
             notificationIndex--;
         }
         foreach (Notification notification in newList) {
             notifications.Add(notification);
+            if (notification.Status.Equals("Unread"))
+                await customerService.UpdateSeenNotificationAsync(customerId, notification);
         }
     }
 
@@ -189,6 +201,13 @@
         collapseAdminDropdownMenu = true;
         collapseAccountDropdownMenu = true;
         collapseNotificationDropdownMenu = !collapseNotificationDropdownMenu;
+        notificationClass = "";
+        hiddenClass = "hidden";
+        foreach (Notification notification in notifications) {
+                if (notification.Status.Equals("Unread"))
+                await customerService.UpdateSeenNotificationAsync(customerId, notification);
+            }
+        hiddenClass = "show";
     }
 
     private void CollapseDropdownMenus() {

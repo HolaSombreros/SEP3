@@ -16,7 +16,6 @@ public class CustomerMessage extends Message {
     private List<Order> orders;
     private int customerId;
 
-
     public CustomerMessage(String service, String type) {
         super(service, type);
         customers = new ArrayList<>();
@@ -43,9 +42,6 @@ public class CustomerMessage extends Message {
         return customer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
     public List<Order> getOrders() {
         return orders;
     }
@@ -62,19 +58,23 @@ public class CustomerMessage extends Message {
         this.customerId = customerId;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-    
+
     public List<Notification> getNotifications() {
-            return notifications;
-        }
-    
-        public void setNotifications(List<Notification> notifications) {
-            this.notifications = notifications;
-        }
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+    public Notification getNotification() {
+        return notification;
+    }
+
+    public void setNotification(Notification notification) {
+        this.notification = notification;
+    }
 }
