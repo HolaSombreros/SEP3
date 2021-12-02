@@ -1,5 +1,4 @@
 ﻿@page "/orders/{id:int}"
-@using SEP3UI.Authentication
 @using SEP3Library.Models
 @using SEP3UI.Data
 @attribute [Authorize]
@@ -22,7 +21,7 @@
                                     <span class="oi oi-key"></span>
                                 </div>
                             </div>
-                            <InputNumber class="form-control" readonly @bind-Value="order.Id"/>
+                            <span class="form-control">@order.Id</span>
                         </div>
                     </div>
 
@@ -62,6 +61,30 @@
                         </div>
                     </div>
 
+                    <div class="form-group mb-3">
+                        <label><strong>Time of purchase</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-clock"></span>
+                                </div>
+                            </div>
+                            <span class="form-control">@order.DateTime.ToString()</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label><strong>Status</strong></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-warning"></span>
+                                </div>
+                            </div>
+                            <span class="form-control">@order.OrderStatus.ToString()</span>
+                        </div>
+                    </div>
+
                     <h4 class="text-center mt-5">Delivery address</h4>
                     <hr/>
                     <div class="form-group mb-3">
@@ -69,7 +92,7 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <span class="oi oi-home"></span>
+                                    <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
                             <InputText class="form-control" @bind-Value="order.Address.Street"/>
@@ -81,7 +104,7 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <span class="oi oi-home"></span>
+                                    <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
                             <InputText class="form-control" @bind-Value="order.Address.Number"/>
@@ -93,7 +116,7 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <span class="oi oi-home"></span>
+                                    <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
                             <InputNumber class="form-control" @bind-Value="order.Address.ZipCode"/>
@@ -105,7 +128,7 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <span class="oi oi-home"></span>
+                                    <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
                             <InputText class="form-control" @bind-Value="order.Address.City"/>
@@ -130,8 +153,8 @@
                                 <td>@item.Id</td>
                                 <td>@item.Name</td>
                                 <td>@item.Quantity</td>
-                                <td>@Math.Round(item.Price, 2, MidpointRounding.ToEven) DKK</td>
-                                <td>@Math.Round(item.Price * item.Quantity, 2, MidpointRounding.ToEven) DKK</td>
+                                <td>@item.PriceIncludingDiscount DKK</td>
+                                <td>@Math.Round(item.PriceIncludingDiscount * item.Quantity, 2, MidpointRounding.ToEven) DKK</td>
                             </tr>
                         }
                         <tr>
@@ -139,7 +162,7 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td>@Math.Round(totalPrice, 2, MidpointRounding.ToEven) DKK</td>
+                            <td><strong>@Math.Round(totalPrice, 2, MidpointRounding.ToEven) DKK</strong></td>
                         </tr>
                         </tbody>
                     </table>
@@ -158,6 +181,6 @@
 
     protected override async Task OnInitializedAsync() {
         order = await orderService.GetOrderAsync(Id);
-        totalPrice = order.Items.Sum(i => i.Price * i.Quantity);
+        totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity);
     }
 }

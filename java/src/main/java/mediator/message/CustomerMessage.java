@@ -4,57 +4,23 @@ import model.Customer;
 import model.Order;
 import model.Notification;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerMessage extends Message {
-
+    private int index;
     private Customer customer;
     private List<Customer> customers;
     private Notification notification;
     private List<Notification> notifications;
     private List<Order> orders;
-    private int index;
     private int customerId;
 
 
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
-    public int getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
-    private List<Customer> customers;
-    private Notification notification;
-    private List<Notification> notifications;
-    private int index;
-
     public CustomerMessage(String service, String type) {
         super(service, type);
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public List<Notification> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<Notification> notifications) {
-        this.notifications = notifications;
+        customers = new ArrayList<>();
+        orders = new ArrayList<>();
     }
 
     public int getIndex() {
@@ -73,11 +39,42 @@ public class CustomerMessage extends Message {
         this.customers = customers;
     }
 
-    public Notification getNotification() {
-        return notification;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setNotification(Notification notification) {
-        this.notification = notification;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+    
+    public List<Notification> getNotifications() {
+            return notifications;
+        }
+    
+        public void setNotifications(List<Notification> notifications) {
+            this.notifications = notifications;
+        }
 }

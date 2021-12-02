@@ -66,6 +66,16 @@ public class CustomerDAOService implements CustomerDAO {
         }
     }
 
+    @Override
+    public List<Customer> readByIndex(int index) {
+        try {
+            return databaseHelper.mapList(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) ORDER BY customer_id ASC LIMIT 21 OFFSET 21 * ?", index);
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
     @Override public Customer update(Customer customer) {
         try {
             Address address = addressDAOService.read(customer.getAddress().getStreet(),
@@ -83,6 +93,17 @@ public class CustomerDAOService implements CustomerDAO {
 
             return customer;
         } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public Customer updateRole(Customer customer) {
+        try {
+            databaseHelper.executeUpdate("UPDATE customer SET role = ?::user_role WHERE customer_id = ?",customer.getRole(), customer.getId());
+            return customer;
+        }
+        catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

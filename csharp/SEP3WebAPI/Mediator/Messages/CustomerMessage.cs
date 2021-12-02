@@ -10,5 +10,6 @@ namespace SEP3WebAPI.Mediator.Messages {
         public int Index { get; set; }
         public int CustomerId { get; set; }
         public IList<Order> Orders { get; set; }
+
     }
 }

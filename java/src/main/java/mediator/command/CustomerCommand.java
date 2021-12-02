@@ -23,6 +23,8 @@ public class CustomerCommand implements Command {
         methods.put("getNotifications", this::getNotifications);
         methods.put("getAdmins", this::getAdmins);
         methods.put("sendNotification", this::sendNotification);
+        methods.put("getCustomersByIndex", this::getCustomersByIndex);
+        methods.put("updateRole", this::updateRole);
         methods.put("getAllByCustomer",this::getAllOrdersByCustomer);
     }
 
@@ -55,8 +57,15 @@ public class CustomerCommand implements Command {
     }
 
     private void update() {
-        Customer customer = request.getCustomer();
-        reply.setCustomer(databaseManager.getCustomerDAOService().update(customer));
+        reply.setCustomer(databaseManager.getCustomerDAOService().update(request.getCustomer()));
+    }
+
+    private void getCustomersByIndex() {
+        reply.setCustomers(databaseManager.getCustomerDAOService().readByIndex(request.getIndex()));
+    }
+
+    private void updateRole() {
+        reply.setCustomer(databaseManager.getCustomerDAOService().updateRole(request.getCustomer()));
     }
 
     private void getNotifications() {

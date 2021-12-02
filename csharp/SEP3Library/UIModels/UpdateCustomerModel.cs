@@ -60,5 +60,7 @@ namespace SEP3Library.UIModels {
             }
         }
         private string confirmPassword;
+        
+        public string Role { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
@@ -70,6 +69,7 @@ namespace SEP3WebAPI.Data {
             updated.Address.City = customer.City;
             updated.PhoneNumber = customer.PhoneNumber;
             updated.Password = customer.Password;
+            updated.Role = customer.Role;
 
             await client.UpdateCustomerAsync(updated);
             return updated;
@@ -104,7 +104,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = item.Quantity;
             toUpdate.Status = item.Status;
             toUpdate.Discount = item.Discount;
-            toUpdate.ImageName = "Item/haha";
+            toUpdate.ImageName = item.ImageName;
             
             await client.UpdateItemAsync(toUpdate);
             return toUpdate;
@@ -121,7 +121,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = book.Quantity;
             toUpdate.Status = book.Status;
             toUpdate.Discount = book.Discount;
-            toUpdate.ImageName = "Item/haha";
+            toUpdate.ImageName = book.ImageName;
             toUpdate.Authors = book.Authors;
             toUpdate.Genre = book.Genre;
             toUpdate.Isbn = book.Isbn;
@@ -234,7 +234,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/" + itemModel.ImageName
+                ImageName = itemModel.ImageName
             };
             return await client.AddItemAsync(i);
         }
@@ -253,7 +253,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/" + itemModel.ImageName,
+                ImageName = itemModel.ImageName,
                 Isbn = itemModel.Isbn,
                 Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {
@@ -347,6 +347,10 @@ namespace SEP3WebAPI.Data {
 
         public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
             return await client.GetItemsByPriceAsync(orderBy, index);
+        }
+
+        public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
+            return await client.GetCustomersByIndexAsync(index);
         }
 
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {

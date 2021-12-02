@@ -12,7 +12,9 @@ public interface CustomerDAO {
     Customer read(int id);
     Customer read(String email);
     List<Customer> readAdmins();
+    List<Customer> readByIndex(int index);
     Customer update(Customer customer);
+    Customer updateRole(Customer customer);
     void delete(Customer customer);
 
 }

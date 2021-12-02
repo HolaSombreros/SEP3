@@ -1,5 +1,4 @@
 package mediator.command;
-
 import database.daomodel.DatabaseManager;
 import mediator.message.ItemMessage;
 import mediator.message.Message;
