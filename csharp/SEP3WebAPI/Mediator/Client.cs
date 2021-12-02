@@ -259,11 +259,21 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Customer> UpdateCustomerAsync(Customer customer) {
-            CustomerMessage req = new CustomerMessage() {
-                Type = "update",
-                Service = "customer",
-                Customer = customer
-            };
+            CustomerMessage req = null;
+            if (customer.Role != null) {
+                 req = new CustomerMessage() {
+                    Type = "updateRole",
+                    Service = "customer",
+                    Customer = customer
+                };
+            }
+            else {
+                 req = new CustomerMessage() {
+                    Type = "update",
+                    Service = "customer",
+                    Customer = customer
+                };
+            }
             Send(req);
             return ((CustomerMessage)reply).Customer;
         }
@@ -301,7 +311,6 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
-            Console.WriteLine("client");
             ItemMessage req = new ItemMessage() {
                 Type = "addShoppingCart",
                 Service = "item",
@@ -341,6 +350,16 @@ namespace SEP3WebAPI.Mediator {
                 Item = item
             };
             Send(req);
+        }
+
+        public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "getCustomersByIndex",
+                Service = "customer",
+                Index = index
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Customers;
         }
 
         public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {

@@ -16,6 +16,8 @@ namespace SEP3WebAPI.Mediator {
         Task<IList<Item>> GetShoppingCartAsync(Customer customer);
         Task<Item> UpdateShoppingCartAsync(Item item, Customer customer);
         Task RemoveFromShoppingCartAsync(Item item, Customer customer);
+        Task<IList<Customer>> GetCustomersByIndexAsync(int index);
         Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index);
+
     }
 }

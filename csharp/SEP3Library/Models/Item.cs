@@ -7,9 +7,12 @@ namespace SEP3Library.Models {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        
+
+        [JsonIgnore]
+        public decimal PriceIncludingDiscount => Math.Round(price * ((decimal) (100 - Discount) / 100), 2, MidpointRounding.ToEven);
+
         public decimal Price {
-            get => price - price * ((decimal) Discount / 100);
+            get => price;
             set => price = value;
         }
         private decimal price;
