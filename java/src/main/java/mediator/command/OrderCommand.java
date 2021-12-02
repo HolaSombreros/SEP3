@@ -20,6 +20,7 @@ public class OrderCommand implements Command {
         methods.put("purchase",this::purchase);
         methods.put("getAll", this::getAll);
         methods.put("get", this::get);
+        methods.put("update",this::update);
     }
 
     @Override public Message execute(Message request) {
@@ -47,5 +48,9 @@ public class OrderCommand implements Command {
 
     private void get() {
         reply.setOrder(databaseManager.getOrderDAOService().read(request.getOrder().getId()));
+    }
+
+    private void update(){
+        reply.setOrder(databaseManager.getOrderDAOService().update(request.getOrder()));
     }
 }

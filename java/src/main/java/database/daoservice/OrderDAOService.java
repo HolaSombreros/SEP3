@@ -67,8 +67,15 @@ public class OrderDAOService implements OrderDAO {
     }
 
     @Override
-    public void update(Order order) {
-
+    public Order update(Order order) {
+        try{
+            System.out.println(order.getId());
+            Address address = addressDAOService.create(order.getAddress().getStreet(),order.getAddress().getNumber(),order.getAddress().getZipCode(),order.getAddress().getCity());
+            databaseHelper.executeUpdate("UPDATE purchase SET address_id = ?, first_name = ?, last_name = ?, email = ? WHERE purchase_id = ? AND customer_id = ?;",address.getId(),order.getFirstName(),order.getLastName(),order.getEmail(),order.getId(),order.getCustomerId());
+            return read(order.getId());
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     @Override

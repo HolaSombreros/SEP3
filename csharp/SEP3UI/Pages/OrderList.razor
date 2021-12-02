@@ -3,7 +3,7 @@
 @using SEP3Library.Models
 @using SEP3UI.Authentication
 @using System.Security.Claims
-@* @attribute [Authorize(Policy = Policies.IsAdmin)] *@
+@attribute [Authorize]
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
