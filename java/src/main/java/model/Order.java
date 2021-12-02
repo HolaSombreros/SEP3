@@ -16,9 +16,6 @@ public class Order {
     private MyDateTime dateTime;
     private OrderStatus orderStatus;
 
-    public Order() {
-        items = new ArrayList<>();
-    }
 
     public Order(List<Item> items, String firstName, String lastName, String email, int id, Address address, MyDateTime dateTime, OrderStatus orderStatus, int customerId) {
         this.items = items;

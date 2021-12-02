@@ -7,5 +7,6 @@ namespace SEP3WebAPI.Mediator {
         Task<Order> CreateOrderAsync(Order order);
         Task<IList<Order>> GetOrdersAsync(int index);
         Task<Order> GetOrderAsync(int orderId);
+        Task<Order> UpdateOrderAsync(Order order);
     }
 }
