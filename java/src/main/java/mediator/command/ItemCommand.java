@@ -3,6 +3,7 @@ import database.daomodel.DatabaseManager;
 import mediator.message.ItemMessage;
 import mediator.message.Message;
 import model.Category;
+import model.Review;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class ItemCommand implements Command {
         methods.put("updateItem", this::updateItem);
         methods.put("updateBook", this::updateBook);
         methods.put("getAllByPrice",this::getALlByPrice);
+        methods.put("getItemReviews", this::getItemReviews);
     }
 
     @Override public Message execute(Message request) {
@@ -155,5 +157,9 @@ public class ItemCommand implements Command {
 
     private void getALlByPrice(){
         reply.setItems(databaseManager.getItemDAOService().readAllByPrice(request.getOrderBy(), request.getIndex()));
+    }
+
+    private void getItemReviews(){
+        reply.setReviews(databaseManager.getReviewDAOService().readByItem(request.getItem().getId(), request.getIndex()));
     }
 }

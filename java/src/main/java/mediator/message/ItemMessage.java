@@ -16,12 +16,14 @@ public class ItemMessage extends Message {
     private Customer customer;
     private int[] itemsIds;
     private String orderBy;
+    private List<Review> reviews;
 
     public ItemMessage(String service, String type) {
         super(service, type);
         items = new ArrayList<>();
         categories = new ArrayList<>();
         genres = new ArrayList<>();
+        reviews = new ArrayList<>();
     }
 
     public List<Genre> getGenres() {
@@ -94,5 +96,21 @@ public class ItemMessage extends Message {
 
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

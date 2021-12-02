@@ -1,5 +1,6 @@
 package database.daoservice;
 
+import database.daomodel.AddressDAO;
 import database.daomodel.CustomerDAO;
 import database.daoservice.mapper.CustomerMapper;
 import database.daoservice.mapper.ItemMapper;
@@ -15,7 +16,7 @@ import java.util.List;
 public class CustomerDAOService implements CustomerDAO {
 
     private DatabaseHelper<Customer> databaseHelper;
-    private AddressDAOService addressDAOService;
+    private AddressDAO addressDAOService;
 
     public CustomerDAOService(String url, String username, String password) {
         this.databaseHelper = new DatabaseHelper<>(url, username, password);

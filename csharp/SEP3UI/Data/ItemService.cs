@@ -64,5 +64,9 @@ namespace SEP3UI.Data {
         public Task<IList<Item>> GetItemsByPrice(string orderBy, int index) {
             return restService.GetAsync<IList<Item>>($"Items?index={index}&orderBy={orderBy}");
         }
+
+        public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
+            return await restService.GetAsync<IList<Review>>($"items/{item.Id}/reviews?index={index}");
+        }
     }
 }

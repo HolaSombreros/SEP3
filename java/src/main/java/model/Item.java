@@ -3,6 +3,8 @@ package model;
 import model.enums.ItemStatus;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Item {
 
@@ -15,7 +17,7 @@ public class Item {
     private ItemStatus status;
     private int discount;
     private String imageName;
-
+    private List<Review> reviews;
 
     public Item() {
 
@@ -32,6 +34,7 @@ public class Item {
         this.status = ItemStatus.INSTOCK;
         this.discount = 0;
         this.imageName = imgFilepath;
+        this.reviews = new ArrayList<>();
     }
 
     public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, ItemStatus status, int discount, String imgFilepath) {
@@ -44,6 +47,14 @@ public class Item {
         this.status = status;
         this.discount = discount;
         this.imageName = imgFilepath;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     public String getImageName() {
