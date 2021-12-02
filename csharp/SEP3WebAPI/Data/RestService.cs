@@ -331,8 +331,7 @@ namespace SEP3WebAPI.Data {
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
             return await client.GetOrdersByCustomerAsync(customerId, index);
         }
-
-        //Change so that it takes an updateOrderModel
+        
         public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
