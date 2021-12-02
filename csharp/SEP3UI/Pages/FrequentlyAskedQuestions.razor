@@ -1,13 +1,35 @@
 ﻿@page "/faqs/all"
 @using SEP3Library.Models
 @using SEP3UI.Data
+@using AccordionComponent
 @inject IFAQService faqService
-<h3>FrequentlyAskedQuestions</h3>
+
+<div class="container mt-3">
+    @if (faqs == null) {
+        <em>Loading...</em>
+    } else if (!faqs.Any()) {
+        <em>No Frequently Asked Questions have been added yet</em>
+    } else {
+        <h3 class="text-center mb-3">Frequently Asked Questions</h3>
+        @foreach (var category in faqs) {
+            <div class="mb-4">
+                <h4 class="mb-2">@category.Key</h4>
+                @foreach (var faq in category) {
+                    <Accordion Question="@faq.Question">@faq.Answer</Accordion>
+                }
+            </div>
+        }
+    }
+</div>
 
 @code {
-    private IList<FAQ> faqs;
+    private IList<IGrouping<string, FAQ>> faqs;
 
     protected override async Task OnInitializedAsync() {
-        faqs = await faqService.GetFrequentlyAskedQuestions();
+        IList<FAQ> faqs = await faqService.GetFrequentlyAskedQuestions();
+        this.faqs = faqs.OrderBy(f => f.Category)
+            .GroupBy(f => f.Category)
+            .ToList();
     }
+
 }
