@@ -331,5 +331,9 @@ namespace SEP3WebAPI.Data {
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
             return await client.GetOrdersByCustomerAsync(customerId, index);
         }
+
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestions() {
+            return await client.GetFrequentlyAskedQuestions();
+        }
     }
 }

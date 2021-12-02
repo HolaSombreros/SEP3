@@ -2,10 +2,7 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.daomodel.DatabaseManager;
-import mediator.command.Command;
-import mediator.command.CustomerCommand;
-import mediator.command.ItemCommand;
-import mediator.command.OrderCommand;
+import mediator.command.*;
 import mediator.message.*;
 
 
@@ -39,6 +36,7 @@ public class ClientHandler implements Runnable {
         service.put("item", this::itemServiceRun);
         service.put("order", this::orderServiceRun);
         service.put("customer", this::customerServiceRun);
+        service.put("faq", this::faqServiceRun);
     }
 
     public void run() {
@@ -78,6 +76,11 @@ public class ClientHandler implements Runnable {
     private void customerServiceRun() {
         reply = gson.fromJson(received, CustomerMessage.class);
         command = new CustomerCommand(databaseManager);
+    }
+
+    private void faqServiceRun() {
+        reply = gson.fromJson(received, FAQMessage.class);
+        command = new FAQCommand(databaseManager);
     }
 
     private void sendReply(Message reply) {

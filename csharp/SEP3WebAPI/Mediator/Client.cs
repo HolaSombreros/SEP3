@@ -43,6 +43,12 @@ namespace SEP3WebAPI.Mediator {
                             reply = JsonSerializer.Deserialize<CustomerMessage>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
                             break;
+                        case "faq":
+                            reply = JsonSerializer.Deserialize<FAQMessage>(result,
+                                new JsonSerializerOptions() {
+                                    PropertyNameCaseInsensitive = true
+                                });
+                            break;
                         case "error":
                             reply = JsonSerializer.Deserialize<ErrorMessage>(result,
                                 new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
@@ -438,6 +444,15 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(request);
             return ((CustomerMessage)reply).Orders;
+        }
+
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestions() {
+            Message request = new FAQMessage() {
+                Type = "getAll",
+                Service = "faq"
+            };
+            Send(request);
+            return ((FAQMessage) reply).FAQs;
         }
     }
 }

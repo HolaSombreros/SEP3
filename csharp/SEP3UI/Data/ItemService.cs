@@ -56,13 +56,12 @@ namespace SEP3UI.Data {
             return await restService.PutAsync<BookModel,Book>(item, $"items/books/{id}");
         }
         
-
         public async Task<Category> AddCategoryAsync(Category category) {
             return await restService.PostAsync<Category, Category>(category, "items/categories");
         }
 
-        public Task<IList<Item>> GetItemsByPrice(string orderBy, int index) {
-            return restService.GetAsync<IList<Item>>($"Items?index={index}&orderBy={orderBy}");
+        public async Task<IList<Item>> GetItemsByPrice(string orderBy, int index) {
+            return await restService.GetAsync<IList<Item>>($"Items?index={index}&orderBy={orderBy}");
         }
     }
 }

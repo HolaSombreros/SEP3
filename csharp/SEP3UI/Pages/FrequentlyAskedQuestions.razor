@@ -1,0 +1,13 @@
+﻿@page "/faqs/all"
+@using SEP3Library.Models
+@using SEP3UI.Data
+@inject IFAQService faqService
+<h3>FrequentlyAskedQuestions</h3>
+
+@code {
+    private IList<FAQ> faqs;
+
+    protected override async Task OnInitializedAsync() {
+        faqs = await faqService.GetFrequentlyAskedQuestions();
+    }
+}
