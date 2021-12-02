@@ -14,7 +14,7 @@ namespace SEP3Library.Models {
             get {
                 decimal p = 0;
                 foreach (var i in Items) {
-                    p += i.Price * i.Quantity;
+                    p += i.PriceIncludingDiscount * i.Quantity;
                 }
                 return p;
             } 

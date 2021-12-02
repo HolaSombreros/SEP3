@@ -10,9 +10,10 @@
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject IItemService itemService
 @inject IWebHostEnvironment Environment
+@inject NavigationManager nav
 
 @if (categories != null) {
-    <div>
+    <div class="mt-3">
         @if (CategoryName != null) {
             <div class="text-center">
                 <h2>Edit Items</h2>
@@ -29,8 +30,9 @@
                     <DataAnnotationsValidator/>
                     <div class="row">
                         <div class="col-md-4 mr-3">
-                            <div>
-                                <label class="simple-customised"> Select category:</label>
+                            <div class="text-center">
+                                <img class="img-thumbnail rounded w-50 mb-2" src="@itemModel.ImageName" alt="Image of @itemModel.Name"/>
+                                <label class="simple-customised d-block"> Select category:</label>
                                 @foreach (var category in categories) {
                                     <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
                                 }
@@ -87,7 +89,8 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="">
-                                <label class="simple-customised"> Select category:</label>
+                                <img class="img-thumbnail rounded w-50 mb-2" src="@bookModel.ImageName" alt="Image of @bookModel.Name"/>
+                                <label class="simple-customised d-block"> Select category:</label>
                                 @foreach (var category in categories) {
                                     <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
                                 }
@@ -262,6 +265,7 @@
                 bookModel.Authors = book.Authors;
                 bookModel.Genre = book.Genre;
                 bookModel.Language = book.Language;
+                bookModel.ImageName = book.ImageName;
                 bookModel.PublicationDate = new DateTime(book.PublicationDate.Year, book.PublicationDate.Month, book.PublicationDate.Day, book.PublicationDate.Hour,
                     book.PublicationDate.Minute, book.PublicationDate.Second);
                 foreach(Genre g in book.Genre)
@@ -277,6 +281,7 @@
                 itemModel.Price = item.Price;
                 itemModel.Status = item.Status;
                 itemModel.Quantity = item.Quantity;
+                itemModel.ImageName = item.ImageName;
             }
         }
         else {
@@ -296,15 +301,22 @@
 
     private void SetInputFile(InputFileChangeEventArgs args) {
         errorMessage = "";
-        if (!args.File.ContentType.Split("/")[1].Equals("png")) {
-            errorMessage = "You can only upload png files";
+        IList<string> fileTypes = new List<string>() {
+            "jpg",
+            "jpeg",
+            "png"
+        };
+        if (!fileTypes.Any(ft => ft.Equals(args.File.ContentType.Split("/")[1]))) {
+            errorMessage = "You can only upload jpg, jpeg and png files";
+            uploadedFile = null;
         } else {
             uploadedFile = args.File;
         }
     }
 
     private async Task UploadFile() {
-        long maxFileSize = long.MaxValue;
+        long maxFileSize = 5000000;
+        
         var path = Path.Combine(Environment.ContentRootPath, @"wwwroot\Images", uploadedFile.Name);
         await using FileStream fs = new(path, FileMode.Create);
         await uploadedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
@@ -319,13 +331,13 @@
                         throw new Exception("Please input a genre or author");
                     }
                     else {
-                        if (uploadedFile != null) bookModel.ImageName = uploadedFile.Name;
+                        if (uploadedFile != null) bookModel.ImageName = "Images/" + uploadedFile.Name;
                         await itemService.UpdateBookAsync(Id, bookModel);
                         errorMessage = "Successful item edited";
                     }
                 }
                 else {
-                    if (uploadedFile != null) itemModel.ImageName = uploadedFile.Name;
+                    if (uploadedFile != null) itemModel.ImageName = "Images/" + uploadedFile.Name;
                     await itemService.UpdateItemAsync(Id, itemModel);
                     errorMessage = "Successful item edited";
                 }
@@ -336,13 +348,13 @@
                     if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1)
                         throw new Exception("Please input a genre or author");
                     else {
-                        if (uploadedFile != null) bookModel.ImageName = uploadedFile.Name;
+                        if (uploadedFile != null) bookModel.ImageName = "Images/" + uploadedFile.Name;
                         await itemService.AddBookAsync(bookModel);
                         errorMessage = "Successful item added";
                     }
                 }
                 else {
-                    if (uploadedFile != null) itemModel.ImageName = uploadedFile.Name;
+                    if (uploadedFile != null) itemModel.ImageName = "Images/" + uploadedFile.Name;
                     await itemService.AddItemAsync(itemModel);
                     errorMessage = "Successful item added";
                 }
@@ -350,6 +362,9 @@
 
             if (uploadedFile != null) {
                 await UploadFile();
+                if (CategoryName != null) {
+                    nav.NavigateTo(nav.Uri, true);
+                }
             }
         }
         catch (Exception e) {
