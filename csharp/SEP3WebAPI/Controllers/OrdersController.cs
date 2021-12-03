@@ -33,9 +33,9 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Order>>> GetOrdersAsync([FromQuery] int index) {
+        public async Task<ActionResult<IList<Order>>> GetOrdersAsync([FromQuery] int index, [FromQuery] int id, [FromQuery] string status) {
             try {
-                IList<Order> orders = await service.GetOrdersAsync(index);
+                IList<Order> orders = await service.GetOrdersAsync(index, id, status);
                 return Ok(orders);
             }
             catch (NullReferenceException e) {

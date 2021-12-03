@@ -7,7 +7,7 @@ using SEP3Library.UIModels;
 namespace SEP3WebAPI.Data {
     public interface IOrderDAO {
         Task<Order> CreateOrderAsync(OrderModel orderModel);
-        Task<IList<Order>> GetOrdersAsync(int index);
+        Task<IList<Order>> GetOrdersAsync(int index, int id, string status);
         Task<Order> GetOrderAsync(int orderId);
         Task<Order> UpdateOrderAsync(UpdateOrderModel order);
     }
