@@ -13,11 +13,11 @@
     <h2>Loading</h2>
 }
 else {
-    <div class="text-center">
+    <div class="text-center mb-3">
         <h2>Item details</h2>
     </div>
     <div class="container">
-        <div class="card row ">
+        <div class="card row">
             <div class="row border-top border-bottom">
                 <div class="col-md-6">
                     <div class="img-responsive m-3 text-center mt-5">
@@ -27,13 +27,14 @@ else {
                 <div class="col-md-6">
                     <div class="pt-5 pl-5">
                         <AuthorizeView>
-                            <div class="text-right">
+                            <div class="text-right mr-5">
                                 @if (favorite) {
-                                    <i class="favorite oi oi-heart mr-5" @onclick="PerformUnfavoriteAsync"></i>
+                                    <i class="favorite oi oi-heart" @onclick="PerformUnfavoriteAsync"></i>
                                 }
                                 else {
-                                    <i class="notfavorite oi oi-heart mr-5" @onclick="PerformFavoriteAsync"></i>
+                                    <i class="non-favorite oi oi-heart" @onclick="PerformFavoriteAsync"></i>
                                 }
+                                <i class="non-favorite icons oi oi-comment-square ml-3"></i>
                             </div>
                         </AuthorizeView>
                         <h2 class="mb-4">
@@ -94,17 +95,16 @@ else {
                             </label>
                             @if (item.Quantity == 0) {
                                 <span class="text-danger"> Out of stock</span>
-                            } else {
+                            }
+                            else {
                                 <span class="text-success"> In stock</span>
                             }
                         </div>
-                        <div class="mt-5">
-                            <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">
-                                <i class="fa fa-shopping-cart"></i> Add to Shopping Cart
-                            </button>
+                        <div class="mt-2">
+                            <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">Add to Shopping Cart</button>
                             <AuthorizeView Policy="@Policies.IsAdmin">
                                 <button class="btn btn-round btn-dark" @onclick="(() => View(item.Id, item.Category.Name))">
-                                    <i class="fa fa-shopping-cart"></i> Edit Item
+                                    Edit Item
                                 </button>
                             </AuthorizeView>
                         </div>
@@ -112,21 +112,88 @@ else {
                 </div>
             </div>
         </div>
+        @foreach (Review review in reviews) {
+            <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                <h5 class="mb-1">All Ratings and Reviews</h5>
+                <div class="reviews-members pt-4 pb-4">
+                    <div class="media">
+                        <div class="media-body">
+                            <div class="reviews-members-header">
+                                <span class="star-rating float-right"></span>
+                                <h6 class="mb-1"><a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a></h6>
+                                <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
+                            </div>
+                            <div class="reviews-members-body">
+                                <p>@review.Comment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        }
+        <div class="text-center">
+            <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
+        </div>
+        <div class="container text-center text-danger">
+            <div>@errorMessage</div>
+        </div>
+        <AuthorizeView>
+            <div class=" rounded shadow-sm p-4 mb-5 container">
+                <div class="card">
+                    <h5 class="mb-4">Leave a comment</h5>
+                    <p class="mb-2">Rate the item</p>
+                    <div class="mb-4">
+                        <span class="star-rating">
+                            <a href="#">
+                                <i class="icofont-ui-rating icofont-2x"></i>
+                            </a>
+                            <a href="#">
+                                <i class="icofont-ui-rating icofont-2x"></i>
+                            </a>
+                            <a href="#">
+                                <i class="icofont-ui-rating icofont-2x"></i>
+                            </a>
+                            <a href="#">
+                                <i class="icofont-ui-rating icofont-2x"></i>
+                            </a>
+                            <a href="#">
+                                <i class="icofont-ui-rating icofont-2x"></i>
+                            </a>
+                        </span>
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label>Your Comment</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-round btn-dark"> Submit Comment </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </AuthorizeView>
     </div>
 }
 
 @code {
+
     [Parameter]
     public int Id { get; set; }
-
+    private int index { get; set; }
     private int customerId;
     private Item item;
     private Book book;
     private bool isDisabled;
     private bool favorite = true;
+    private IList<Review> reviews;
+    private string errorMessage;
+    private string loadMore = "";
 
     protected override async Task OnInitializedAsync() {
+        index = 0;
         item = await itemService.GetItemAsync(Id);
+        reviews = await itemService.GetItemReviewsAsync(index,item);
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
@@ -134,13 +201,27 @@ else {
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             customerId = -1;
         }
 
         if (customerId != -1) {
             IList<Item> wishlist = await customerService.GetCustomerWishlistAsync(customerId);
             favorite = wishlist.FirstOrDefault(i => i.Id == item.Id) != null;
+        }
+    }
+    private async Task LoadMoreAsync() {
+        index++;
+        IList<Review> newList = await itemService.GetItemReviewsAsync(index,item);
+        if (newList.Count == 0) {
+            loadMore = "display: none";
+            index--;
+        }
+        else {
+            foreach (Review r in reviews) {
+                reviews.Add(r);
+            }
         }
     }
 
@@ -156,7 +237,7 @@ else {
         if (customerId != -1)
             await customerService.AddToShoppingCartAsync(i, customerId);
     }
-    
+
     private void View(int id, String categoryName) {
         navigationManager.NavigateTo($"EditItem/{id}/{categoryName}");
     }
@@ -170,4 +251,5 @@ else {
         favorite = true;
         await customerService.AddToWishlistAsync(customerId, item);
     }
+
 }

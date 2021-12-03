@@ -1,5 +1,6 @@
 package database.daoservice;
 
+import database.daomodel.ItemDAO;
 import database.daomodel.OrderDAO;
 import database.daoservice.mapper.ItemMapper;
 import database.daoservice.mapper.OrderMapper;
@@ -13,7 +14,7 @@ public class OrderDAOService implements OrderDAO {
 
     private DatabaseHelper<Order> databaseHelper;
     private AddressDAOService addressDAOService;
-    private ItemDAOService itemDAOService;
+    private ItemDAO itemDAOService;
 
     public OrderDAOService(String url, String username, String password) {
         this.databaseHelper = new DatabaseHelper<>(url, username, password);
