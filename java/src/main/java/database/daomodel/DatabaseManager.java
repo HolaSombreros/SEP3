@@ -17,6 +17,7 @@ public class DatabaseManager {
     private AddressDAO addressDAOService;
     private ReviewDAO reviewDAOService;
     private FAQDAO faqDAOService;
+    private NotificationDAO notificationDAOService;
 
     public DatabaseManager() {
         itemDAOService = new ItemDAOService(URL, USERNAME, PASSWORD);
@@ -29,6 +30,7 @@ public class DatabaseManager {
         addressDAOService = new AddressDAOService(URL, USERNAME, PASSWORD);
         faqDAOService = new FAQDAOService(URL, USERNAME, PASSWORD);
         reviewDAOService = new ReviewDAOService(URL,USERNAME,PASSWORD);
+        notificationDAOService = new NotificationDAOService(URL, USERNAME, PASSWORD);
     }
 
     public GenreDAO getGenreDAOService() {
@@ -69,5 +71,9 @@ public class DatabaseManager {
 
     public ReviewDAO getReviewDAOService() {
         return reviewDAOService;
+    }
+
+    public NotificationDAO getNotificationDAOService() {
+        return notificationDAOService;
     }
 }

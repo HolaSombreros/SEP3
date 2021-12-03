@@ -59,6 +59,14 @@ public class CustomerDAOService implements CustomerDAO {
         }
     }
 
+    @Override public List<Customer> readAdmins() {
+        try {
+            return databaseHelper.mapList(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) WHERE role = ?::user_role", "Administrator");
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
     @Override
     public List<Customer> readByIndex(int index) {
         try {

@@ -202,6 +202,24 @@ namespace SEP3WebAPI.Data {
             await client.RemoveFromShoppingCartAsync(item, customer);
         }
 
+        public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+
+            return await client.GetNotificationsAsync(customerId, index);
+        }
+
+        public async Task<Notification> UpdateSeenNotificationAsync(int customerId, int notificationId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+
+            Notification notification = await client.GetSpecificNotificationAsync(customer, notificationId);
+            if (notification == null) throw new NullReferenceException($"No such notification found with id: {notificationId} for the customer: {customerId}");
+
+            notification.Status = "Read";
+            return await client.UpdateSeenNotificationAsync(customer, notification);
+        }
+
         public async Task<Book> GetBookAsync(int id) {
             return await client.GetBookAsync(id);
         }
@@ -283,6 +301,24 @@ namespace SEP3WebAPI.Data {
 
                     throw new InvalidDataException(
                         $"Item {orderModel.Items[i].Name} amount exceeds the amount available. Only this amount is available {items[i].Quantity}");
+                }
+
+                if (items[i].Quantity > 50 && items[i].Quantity - orderModel.Items[i].Quantity <= 50) {
+                    Notification notification = new Notification() {
+                        Text = $"The Item {items[i].Name} is low on stock",
+                        Status = "Unread",
+                        Time = new MyDateTime() {
+                            Year = DateTime.Now.Year,
+                            Month = DateTime.Now.Month,
+                            Day = DateTime.Now.Day,
+                            Hour = DateTime.Now.Hour,
+                            Minute = DateTime.Now.Minute,
+                            Second = DateTime.Now.Second
+                        }
+                    };
+                    foreach (Customer customer in await client.GetAdminsAsync()) {
+                        await client.SendNotificationAsync(customer, notification);
+                    }
                 }
             }
 

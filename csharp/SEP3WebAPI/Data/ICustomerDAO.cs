@@ -17,6 +17,8 @@ namespace SEP3WebAPI.Data {
         Task<IList<Item>> GetShoppingCartAsync(int customerId);
         Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId);
         Task RemoveFromShoppingCartAsync(int itemId, int customerId);
+        Task<IList<Notification>> GetNotificationsAsync(int customerId, int index);
+        Task<Notification> UpdateSeenNotificationAsync(int customerId, int notificationId);
         Task<IList<Customer>> GetCustomersByIndexAsync(int index);
         Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index);
     }

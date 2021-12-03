@@ -7,7 +7,6 @@ import model.Customer;
 import java.util.HashMap;
 
 public class CustomerCommand implements Command {
-
     private CustomerMessage request;
     private CustomerMessage reply;
     private DatabaseManager databaseManager;
@@ -20,6 +19,11 @@ public class CustomerCommand implements Command {
         methods.put("login", this::login);
         methods.put("register", this::register);
         methods.put("update", this::update);
+        methods.put("getNotifications", this::getNotifications);
+        methods.put("getNotification", this::getNotification);
+        methods.put("getAdmins", this::getAdmins);
+        methods.put("sendNotification", this::sendNotification);
+        methods.put("updateSeenNotification", this:: updateSeenNotification);
         methods.put("getCustomersByIndex", this::getCustomersByIndex);
         methods.put("updateRole", this::updateRole);
 
@@ -48,8 +52,9 @@ public class CustomerCommand implements Command {
 
     private void register() {
         Customer customer = request.getCustomer();
-        reply.setCustomer(databaseManager.getCustomerDAOService().create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
-            customer.getRole(), customer.getAddress(), customer.getPhoneNumber()));
+        reply.setCustomer(databaseManager.getCustomerDAOService()
+            .create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(), customer.getRole(), customer.getAddress(),
+                customer.getPhoneNumber()));
     }
 
     private void update() {
@@ -64,5 +69,28 @@ public class CustomerCommand implements Command {
         reply.setCustomer(databaseManager.getCustomerDAOService().updateRole(request.getCustomer()));
     }
 
+    private void getNotifications() {
+        reply.setNotifications(databaseManager.getNotificationDAOService().readAll(request.getCustomer().getId(), request.getIndex()));
+    }
 
+    private void getNotification() {
+        reply.setNotification(databaseManager.getNotificationDAOService().read(request.getNotification().getId(), request.getCustomer().getId()));
+    }
+
+    private void getAdmins() {
+        reply.setCustomers(databaseManager.getCustomerDAOService().readAdmins());
+    }
+
+    private void sendNotification() {
+        reply.setNotification(databaseManager.getNotificationDAOService()
+            .create(request.getCustomer().getId(), request.getNotification().getText(), request.getNotification().getTime(), request.getNotification().getStatus()));
+    }
+
+    private void updateSeenNotification() {
+        reply.setNotification(databaseManager.getNotificationDAOService().update(request.getCustomer().getId(), request.getNotification()));
+    }
+
+    private void getAllOrdersByCustomer(){
+        reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
+    }
 }

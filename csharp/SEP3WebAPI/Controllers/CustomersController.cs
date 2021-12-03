@@ -230,7 +230,32 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        
+        [HttpGet]
+        [Route( "{customerId:int}/notifications")]
+        public async Task<ActionResult<IList<Notification>>> GetNotificationsAsync([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Notification> notifications = await service.GetNotificationsAsync(customerId, index);
+                return Ok(notifications);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
 
-       
+        [HttpPut]
+        [Route("{customerId:int}/notifications/{notificationId:int}")]
+        public async Task<ActionResult<Notification>> UpdateSeenNotificationAsync([FromBody] Notification notification, [FromRoute] int customerId, [FromRoute] int notificationId) {
+            try {
+                Notification notification1 = await service.UpdateSeenNotificationAsync(customerId, notificationId);
+                Console.WriteLine(notification1.Text);
+                return Ok(notification1);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

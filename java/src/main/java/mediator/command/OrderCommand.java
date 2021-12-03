@@ -8,7 +8,6 @@ import model.Order;
 import java.util.HashMap;
 
 public class OrderCommand implements Command {
-
     private OrderMessage request;
     private OrderMessage reply;
     private DatabaseManager databaseManager;
@@ -54,6 +53,7 @@ public class OrderCommand implements Command {
     private void update(){
         reply.setOrder(databaseManager.getOrderDAOService().update(request.getOrder()));
     }
+    
     private void getAllOrdersByCustomer(){
         reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
     }

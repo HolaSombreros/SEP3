@@ -54,6 +54,7 @@
     private IList<Item> items;
     
     protected override async Task OnInitializedAsync() {
+        NavBarEvent.Invoke();
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
         items = await customerService.GetCustomerWishlistAsync(customerId);
     }

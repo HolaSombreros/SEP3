@@ -64,6 +64,7 @@
     private Customer customer;
 
     protected override async Task OnInitializedAsync() {
+        NavBarEvent.Invoke();
         customer = await customerService.GetCustomerAsync(int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id")));
         if (customer.Role.ToLower().Equals("administrator")) {
             orders = await orderService.GetOrdersAsync(orderIndex);

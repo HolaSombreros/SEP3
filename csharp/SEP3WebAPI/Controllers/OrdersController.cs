@@ -18,7 +18,7 @@ namespace SEP3WebAPI.Controllers {
         public OrdersController(IRestService service) {
             this.service = service;
         }
-        
+
         [HttpPost]
         // Endpoint = /orders
         public async Task<ActionResult> CreateOrderAsync([FromBody] OrderModel orderModel) {
@@ -37,7 +37,7 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Order> orders = await service.GetOrdersAsync(index);
                 return Ok(orders);
-            } 
+            }
             catch (NullReferenceException e) {
                 return NotFound(e.Message);
             }

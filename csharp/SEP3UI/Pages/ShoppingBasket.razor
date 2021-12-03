@@ -80,6 +80,7 @@
     private bool isDisabled;
     
     protected override async Task OnInitializedAsync() {
+        NavBarEvent.Invoke();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
         } catch (Exception e) {
