@@ -90,7 +90,5 @@ public class CustomerCommand implements Command {
         reply.setNotification(databaseManager.getNotificationDAOService().update(request.getCustomer().getId(), request.getNotification()));
     }
 
-    private void getAllOrdersByCustomer(){
-        reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
-    }
+
 }
