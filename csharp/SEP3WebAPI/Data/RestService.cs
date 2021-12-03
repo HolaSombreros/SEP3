@@ -375,7 +375,19 @@ namespace SEP3WebAPI.Data {
         public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
             return await client.GetFrequentlyAskedQuestionsAsync();
         }
-        
+
+        public async Task<FAQ> GetFrequentlyAskedQuestionAsync(int id) {
+            return await client.GetFrequentlyAskedQuestionAsync(id);
+        }
+
+        public async Task<FAQ> AddFrequentlyAskedQuestionAsync(FAQ faq) {
+            return await client.AddFrequentlyAskedQuestionAsync(faq);
+        }
+
+        public async Task DeleteFrequentlyAskedQuestionAsync(int id) {
+            await client.DeleteFrequentlyAskedQuestionAsync(id);
+        }
+
         public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
