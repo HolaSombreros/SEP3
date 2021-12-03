@@ -523,7 +523,7 @@ namespace SEP3WebAPI.Mediator {
             return ((OrderMessage)reply).Order;
         }
 
-        public async Task<IList<FAQ>> GetFrequentlyAskedQuestions() {
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
             Message request = new FAQMessage() {
                 Type = "getAll",
                 Service = "faq"

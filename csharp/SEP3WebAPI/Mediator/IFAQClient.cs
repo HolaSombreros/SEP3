@@ -4,6 +4,6 @@ using SEP3Library.Models;
 
 namespace SEP3WebAPI.Mediator {
     public interface IFAQClient {
-        Task<IList<FAQ>> GetFrequentlyAskedQuestions();
+        Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync();
     }
 }
