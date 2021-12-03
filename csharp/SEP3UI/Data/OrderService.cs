@@ -27,5 +27,10 @@ namespace SEP3UI.Data {
             Order order = await restService.GetAsync<Order>($"orders/{orderId}");
             return order;
         }
+
+        public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
+            Order order = await restService.PutAsync<UpdateOrderModel,Order>(orderModel,$"orders/{orderModel.CustomerId}/{orderModel.OrderId}");
+            return order;
+        }
     }
 }

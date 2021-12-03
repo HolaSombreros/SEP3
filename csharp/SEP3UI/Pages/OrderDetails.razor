@@ -1,20 +1,25 @@
-﻿@page "/orders/{id:int}"
+﻿@page "/orders/{customerId:int}/{id:int}"
 @using SEP3Library.Models
+@using SEP3Library.UIModels
 @using SEP3UI.Data
 @attribute [Authorize]
 @inject IOrderService orderService
 
 @if (order == null) {
     <em>Loading...</em>
-} else {
-    <EditForm Model="@order">
+}
+else {
+    <EditForm Model="@orderModel" OnValidSubmit="@UpdateOrderAsync">
+        <DataAnnotationsValidator/>
         <div class="container mt-3">
             <div class="row">
                 <div class="col-lg-4 col-md-12 mb-md-4">
                     <h4 class="text-center">Order information</h4>
                     <hr/>
                     <div class="form-group mb-3">
-                        <label><strong>Order Id</strong></label>
+                        <label>
+                            <strong>Order Id</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
@@ -26,43 +31,54 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label><strong>First name</strong></label>
+                        <label>
+                            <strong>First name</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <span class="oi oi-person"></span>
                                 </div>
                             </div>
-                            <InputText class="form-control" @bind-Value="order.FirstName"/>
+                            <InputText class="form-control" @bind-Value="orderModel.FirstName"/>
                         </div>
+                        <ValidationMessage For="@(() => orderModel.FirstName)"/>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label><strong>Last name</strong></label>
+                        <label>
+                            <strong>Last name</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <span class="oi oi-person"></span>
                                 </div>
                             </div>
-                            <InputText class="form-control" @bind-Value="order.LastName"/>
+                            <InputText class="form-control" @bind-Value="orderModel.LastName"/>
                         </div>
+                        <ValidationMessage For="@(() => orderModel.LastName)"/>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label><strong>Email address</strong></label>
+                        <label>
+                            <strong>Email address</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <span class="oi oi-envelope-closed"></span>
                                 </div>
                             </div>
-                            <InputText class="form-control" @bind-Value="order.Email"/>
+                            <InputText class="form-control" @bind-Value="orderModel.Email"/>
                         </div>
+                        <ValidationMessage For="@(() => orderModel.Email)"/>
                     </div>
 
                     <div class="form-group mb-3">
-                        <label><strong>Time of purchase</strong></label>
+                        <label>
+                            <strong>Time of purchase</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
@@ -74,7 +90,9 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label><strong>Status</strong></label>
+                        <label>
+                            <strong>Status</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
@@ -88,51 +106,63 @@
                     <h4 class="text-center mt-5">Delivery address</h4>
                     <hr/>
                     <div class="form-group mb-3">
-                        <label><strong>Street name</strong></label>
+                        <label>
+                            <strong>Street name</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
-                            <InputText class="form-control" @bind-Value="order.Address.Street"/>
+                            <InputText class="form-control" @bind-Value="orderModel.Street"/>
                         </div>
+                        <ValidationMessage For="@(() => orderModel.Street)"/>
                     </div>
-                    
+
                     <div class="form-group mb-3">
-                        <label><strong>Street number</strong></label>
+                        <label>
+                            <strong>Street number</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
-                            <InputText class="form-control" @bind-Value="order.Address.Number"/>
+                            <InputText class="form-control" @bind-Value="orderModel.Number"/>
                         </div>
+                        <ValidationMessage For="@(() => orderModel.Number)"/>
                     </div>
-                    
+
                     <div class="form-group mb-3">
-                        <label><strong>Zip code</strong></label>
+                        <label>
+                            <strong>Zip code</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
-                            <InputNumber class="form-control" @bind-Value="order.Address.ZipCode"/>
+                            <InputNumber class="form-control" @bind-Value="orderModel.ZipCode"/>
                         </div>
+                        <ValidationMessage For="@(() => orderModel.ZipCode)"/>
                     </div>
-                    
+
                     <div class="form-group mb-3">
-                        <label><strong>City</strong></label>
+                        <label>
+                            <strong>City</strong>
+                        </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
-                            <InputText class="form-control" @bind-Value="order.Address.City"/>
+                            <InputText class="form-control" @bind-Value="orderModel.City"/>
                         </div>
+                        <ValidationMessage For="@(() => orderModel.City)"/>
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-12">
@@ -162,7 +192,9 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td><strong>@Math.Round(totalPrice, 2, MidpointRounding.ToEven) DKK</strong></td>
+                            <td>
+                                <strong>@Math.Round(totalPrice, 2, MidpointRounding.ToEven) DKK</strong>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -170,17 +202,59 @@
             </div>
         </div>
     </EditForm>
+    <div class="form-group d-flex justify-content-center">
+        <button @onclick="UpdateOrderAsync" class="btn btn-primary" disabled="@isDisabled">Update Order</button>
+    </div>
+    <div class="card d-flex align-items-center text-danger">
+        <div>@errorMessage</div>
+    </div>
 }
 
 @code {
+
     [Parameter]
     public int Id { get; set; }
 
+    [Parameter]
+    public int CustomerId { get; set; }
+
     private Order order;
     private decimal totalPrice;
+    private UpdateOrderModel orderModel;
+    private string errorMessage;
+    private bool isDisabled;
 
     protected override async Task OnInitializedAsync() {
         order = await orderService.GetOrderAsync(Id);
         totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity);
+        orderModel = new UpdateOrderModel() {
+            Email = order.Email,
+            FirstName = order.FirstName,
+            LastName = order.LastName,
+            Street = order.Address.Street,
+            Number = order.Address.Number,
+            ZipCode = order.Address.ZipCode,
+            City = order.Address.City,
+            OrderId = order.Id,
+            CustomerId = order.CustomerId
+        };
+        SetDisabledState();
     }
+
+    private async Task UpdateOrderAsync() {
+        try {
+            order = await orderService.UpdateOrderAsync(orderModel);
+            errorMessage = "Successfully updated!";
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private void SetDisabledState() {
+        if (orderModel.CustomerId != CustomerId) {
+            isDisabled = true;
+        }
+    }
+
 }
