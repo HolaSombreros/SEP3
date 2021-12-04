@@ -364,6 +364,10 @@ namespace SEP3WebAPI.Data {
             return await client.GetItemReviewsAsync(index,item);
         }
 
+        public async Task<Review> AddReviewAsync(Review review) {
+            return await client.AddReviewAsync(review);
+        }
+
         public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
             return await client.GetCustomersByIndexAsync(index);
         }

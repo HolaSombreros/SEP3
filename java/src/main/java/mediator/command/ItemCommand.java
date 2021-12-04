@@ -44,6 +44,7 @@ public class ItemCommand implements Command {
         methods.put("updateBook", this::updateBook);
         methods.put("getAllByPrice",this::getALlByPrice);
         methods.put("getItemReviews", this::getItemReviews);
+        methods.put("addReview", this::addReview);
     }
 
     @Override public Message execute(Message request) {
@@ -159,7 +160,13 @@ public class ItemCommand implements Command {
         reply.setItems(databaseManager.getItemDAOService().readAllByPrice(request.getOrderBy(), request.getIndex()));
     }
 
-    private void getItemReviews(){
+    private void getItemReviews() {
         reply.setReviews(databaseManager.getReviewDAOService().readByItem(request.getItem().getId(), request.getIndex()));
+    }
+
+    private void addReview() {
+        Review review = request.getReviews().get(0);
+        reply.getReviews().add(databaseManager.getReviewDAOService().create(request.getCustomer().getId(), request.getItem().getId(),review.getRating(),
+                review.getComment(), review.getDateTime()));
     }
 }

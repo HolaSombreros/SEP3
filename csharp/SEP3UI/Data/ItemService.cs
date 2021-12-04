@@ -67,5 +67,9 @@ namespace SEP3UI.Data {
         public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
             return await restService.GetAsync<IList<Review>>($"items/{item.Id}/reviews?index={index}");
         }
+
+        public async Task<Review> AddReviewAsync(Review review) {
+            return await restService.PostAsync<Review, Review>(review, $"{review.ItemId}/reviews");
+        }
     }
 }

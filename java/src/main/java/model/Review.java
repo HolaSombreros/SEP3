@@ -3,18 +3,28 @@ package model;
 import java.time.LocalDate;
 
 public class Review {
+    private int id;
     private int rating;
     private String comment;
     private Customer customer;
     private int itemId;
     private MyDateTime dateTime;
 
-    public Review(int rating, String comment, Customer customer, int itemId, LocalDate dateTime){
+    public Review(int id,int rating, String comment, Customer customer, int itemId, LocalDate dateTime) {
+        this.id = id;
         this.rating = rating;
         this.comment = comment;
         this.itemId = itemId;
         this.customer = customer;
         this.dateTime = new MyDateTime(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 0, 0, 0);;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public MyDateTime getDateTime() {
