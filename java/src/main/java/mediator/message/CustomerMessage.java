@@ -1,7 +1,6 @@
 package mediator.message;
 
 import model.Customer;
-import model.Order;
 import model.Notification;
 
 import java.util.ArrayList;
