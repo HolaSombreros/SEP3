@@ -1,6 +1,97 @@
 ﻿@page "/faqs/new"
-<h3>AddFrequentlyAskedQuestion</h3>
+@using SEP3Library.Models
+@using SEP3UI.Data
+@inject IFAQService faqService
+
+@if (categories == null) {
+    <em>Loading...</em>
+} else {
+    <div class="container w-75 my-3">
+        <h2 class="text-center">Add new FAQ</h2>
+        <EditForm Model="faq" OnValidSubmit="AddFAQBtnClickedAsync">
+            <DataAnnotationsValidator/>
+            <div class="row mt-3">
+                <div class="col-md-5 col-sm-12">
+                    @if (categories.Any()) {
+                        <div class="form-group">
+                            <label>Category</label>
+                            <InputSelect class="form-control" @bind-Value="faq.Category">
+                                <option selected hidden>Select a category</option>
+                                @foreach (string category in categories) {
+                                    <option>@category</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => faq.Category)"/>
+                        </div>
+                    }
+                </div>
+                <div class="col-md-7 col-sm-12">
+                    <div class="form-group">
+                        <label>Or add new category</label>
+                        <InputText class="form-control mb-2" @bind-Value="@newCategory"/>
+                        <button type="button" class="btn btn-outline-primary mb-2" @onclick="AddNewCategoryBtnClicked">Add Category</button>
+                        <span class="d-block text-danger">@categoryErrorMessage</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Question</label>
+                <InputTextArea class="form-control" @bind-Value="faq.Question" style="min-height: 100px;"/>
+                <ValidationMessage For="@(() => faq.Question)"/>
+            </div>
+            
+            <div class="form-group">
+                <label>Answer</label>
+                <InputTextArea class="form-control" @bind-Value="faq.Answer" style="min-height: 100px;"/>
+                <ValidationMessage For="@(() => faq.Answer)"/>
+            </div>
+            
+            <div class="form-group text-center">
+                <span class="mb-2 d-block @errorMessageColor">@errorMessage</span>
+                <button class="btn btn-primary" type="submit">Create FAQ</button>
+            </div>
+        </EditForm>
+    </div>
+}
 
 @code {
-    
+    private FAQ faq = new FAQ();
+    private IList<string> categories;
+    private string newCategory = "";
+    private string categoryErrorMessage = "";
+    private string errorMessage = "";
+    private string errorMessageColor = "";
+
+    protected override async Task OnInitializedAsync() {
+        categories = (await faqService.GetFrequentlyAskedQuestionsAsync())
+            .Select(f => f.Category)
+            .Distinct()
+            .ToList();
+    }
+
+    private void AddNewCategoryBtnClicked() {
+        if (newCategory.Length < 3 || newCategory.Length > 50) {
+            categoryErrorMessage = "Please specify a category between 3 and 50 characters";
+        } else if (categories.Any(c => c.ToLower().Equals(newCategory.ToLower()))) {
+            categoryErrorMessage = "That category already exists";
+        } else {
+            categories.Add(newCategory);
+            faq.Category = newCategory;
+            newCategory = "";
+            categoryErrorMessage = "";
+        }
+    }
+
+    private async Task AddFAQBtnClickedAsync() {
+        try {
+            await faqService.AddFrequentlyAskedQuestionAsync(faq);
+            errorMessage = "Frequently asked question successfully created!";
+            errorMessageColor = "text-success";
+            faq = new FAQ();
+        } catch (Exception e) {
+            errorMessage = e.Message;
+            errorMessageColor = "text-danger";
+        }
+    }
 }
