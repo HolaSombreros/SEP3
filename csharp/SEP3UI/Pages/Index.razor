@@ -6,11 +6,11 @@
 @inject IItemService itemService
 @inject IOrderService orderService
 @inject ICustomerService customerService
-@inject AuthenticationStateProvider authStateProvider
+@inject AuthenticationStateProvider authStateProvider 
 
 <div class="row">
-    <div id="sidebar" class="col-md-3 d-block">
-        @if (categories != null) {
+    <div id="sidebar" class="col-xl-2 d-block">
+        @if (categories != null) { 
             <nav class="sidebar-nav" role="navigation">
                 <ul class="nav sidebar-nav">
                     <div class="sidebar-header">
@@ -20,7 +20,7 @@
                     </div>
                     <li class="category">
                         <a @onclick="@LoadAllItemsAsync">All</a>
-                    </li>
+                    </li>  
                     @foreach (Category category in categories) {
                         <li>
                             <a @onclick="(() => LoadItemsByCategoryAsync(category))">@category.Name</a>
@@ -51,7 +51,7 @@
             </nav>
         }
     </div>
-    <div class="d-block col-md-9">
+    <div class="d-block offset-lg-1 col-xl-9">
         <div>
             <div class="search-bar">
                 <input type="search" name="search" pattern=".*\S.*" required @bind-value="searchItem" placeholder="Type To Search..."/>
@@ -73,9 +73,9 @@
                     </div>
                 }
                 else {
-                    <div id="productsWrapper" class="row">
+                    <div id="productsWrapper" class="row px-4"> 
                         @foreach (Item item in filteredItems) {
-                            <div class="card col-sm-3 m-3">
+                            <div class="card col-xl-3 col-lg-5 m-3" style="min-width: 400px">
                                 <div @onclick="@(() => NavigateToItemDetails(item))">
                                     <a asp-route-id="@item.Id" title="Order @item.Name">
                                         <div>
@@ -124,7 +124,6 @@
 
 
     protected override async Task OnInitializedAsync() {
-        NavBarEvent.Invoke();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
         }
@@ -137,6 +136,7 @@
         categories = await itemService.GetCategoriesAsync();
         hidden = "";
         orderBy = "";
+        NavBarEvent.Invoke();
     }
     
     private bool GetDisabledState(Item item) {
@@ -173,6 +173,8 @@
 
     private async Task LoadItemsByCategoryAsync(Category category) {
         filteredItems = await itemService.GetItemsByCategoriesAsync(category, itemIndex);
+        hidden = "";
+        itemIndex = 0;
     }
 
     private async Task LoadAllItemsAsync() {
@@ -183,13 +185,16 @@
         orderBy = "ascending";
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
-
+        hidden = "";
+        itemIndex = 0;
     }
 
     private async Task FilterByPriceDescendingAsync() {
         orderBy = "descending";
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsByPrice(orderBy, itemIndex);
+        hidden = "";
+        itemIndex = 0;
     }
     private void ToggleDropdownMenu() {
         collapseDropdownMenu = !collapseDropdownMenu;

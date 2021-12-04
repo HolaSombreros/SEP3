@@ -7,7 +7,7 @@ namespace SEP3UI.Data {
     public interface IOrderService {
         ShoppingCart ShoppingCart { get; init; }
         Task<Order> CreateOrderAsync(OrderModel order);
-        Task<IList<Order>> GetOrdersAsync(int index);
+        Task<IList<Order>> GetOrdersAsync(int index, int id, string status);
         Task<Order> GetOrderAsync(int orderId);
         Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel);
     }

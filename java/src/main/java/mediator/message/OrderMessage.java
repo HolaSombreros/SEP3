@@ -10,6 +10,7 @@ public class OrderMessage extends Message {
     private Order order;
     private List<Order> orders;
     private int customerId;
+    private String status;
 
     public OrderMessage(String service, String type) {
         super(service, type);
@@ -46,4 +47,11 @@ public class OrderMessage extends Message {
         this.customerId = customerId;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }
