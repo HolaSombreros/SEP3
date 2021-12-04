@@ -79,8 +79,7 @@ namespace SEP3WebAPI.Controllers {
         [HttpPost]
         [Route("{id:int}/reviews")]
         public async Task<ActionResult<Review>> AddReviewAsync([FromRoute] int id, [FromBody] Review review) {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
+            // if (!ModelState.IsValid) return BadRequest(ModelState);
             try {
                 Review created = await service.AddReviewAsync(review);
                 return Created($"/{created.Id}", created);

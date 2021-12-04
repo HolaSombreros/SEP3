@@ -120,7 +120,7 @@ else {
                         <div class="media-body">
                             <div class="reviews-members-header">
                                 <span class="star-rating float-right"></span>
-                                <h6 class="mb-1"><a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a></h6>
+                                <h6 class="mb-1"><a class="text-black" href="#">@review.CustomerFirstName @review.CustomerLastName</a></h6>
                                 <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
                             </div>
                             <div class="reviews-members-body">
@@ -138,40 +138,20 @@ else {
             <div>@errorMessage</div>
         </div>
         <AuthorizeView>
-            <div class=" rounded shadow-sm p-4 mb-5 container">
-                <div class="card">
-                    <h5 class="mb-4">Leave a comment</h5>
-                    <p class="mb-2">Rate the item</p>
-                    <div class="mb-4">
-                        <span class="star-rating">
-                            <a href="#">
-                                <i class="icofont-ui-rating icofont-2x"></i>
-                            </a>
-                            <a href="#">
-                                <i class="icofont-ui-rating icofont-2x"></i>
-                            </a>
-                            <a href="#">
-                                <i class="icofont-ui-rating icofont-2x"></i>
-                            </a>
-                            <a href="#">
-                                <i class="icofont-ui-rating icofont-2x"></i>
-                            </a>
-                            <a href="#">
-                                <i class="icofont-ui-rating icofont-2x"></i>
-                            </a>
-                        </span>
-                    </div>
+            <EditForm Model="review" Context="editForm">
+                <div class=" rounded shadow-sm p-4 mb-5 container">
                     <form>
                         <div class="form-group">
+                            <h5 class="mb-4">Leave a comment</h5>
                             <label>Your Comment</label>
-                            <Textarea class="form-control" bind-Value="@review.Comment"></Textarea>
+                            <textarea class="form-control" @bind="@review.Comment"></textarea>
                         </div>
-                        <div class="form-group">
-                            <button class="btn btn-round btn-dark"> Submit Comment</button>
+                        <div class="form-group text-center">
+                            <button class="btn btn-round btn-dark" @onclick="() => AddReview()"> Submit Comment</button>
                         </div>
                     </form>
                 </div>
-            </div>
+            </EditForm>
         </AuthorizeView>
     </div>
 }
@@ -190,8 +170,10 @@ else {
     private Review review;
     private string errorMessage;
     private string loadMore = "";
+    private string comment = "";
 
     protected override async Task OnInitializedAsync() {
+        review = new Review();
         index = 0;
         item = await itemService.GetItemAsync(Id);
         reviews = await itemService.GetItemReviewsAsync(index,item);
@@ -252,5 +234,24 @@ else {
         favorite = true;
         await customerService.AddToWishlistAsync(customerId, item);
     }
+
+    private async Task AddReview() {
+        review.DateTime = new MyDateTime() {
+            Day = DateTime.Now.Day,
+            Month = DateTime.Now.Month,
+            Year = DateTime.Now.Year
+        };
+        // review.Comment = comment;
+        review.CustomerId = customerId;
+        review.ItemId = Id;
+        Customer customer = await customerService.GetCustomerAsync(customerId);
+        review.CustomerFirstName = customer.FirstName;
+        review.CustomerLastName = customer.LastName;
+        Console.WriteLine(review.DateTime);
+        Console.WriteLine(review.ItemId);
+        Console.WriteLine(review.Comment);
+        Console.WriteLine(review.CustomerFirstName);
+        await itemService.AddReviewAsync(review);
+    } 
 
 }

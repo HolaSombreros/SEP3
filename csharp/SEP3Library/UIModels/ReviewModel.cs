@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SEP3Library.Models;
 
-namespace SEP3Library.Models {
-    public class Review {
+namespace SEP3Library.UIModels {
+    public class ReviewModel {
         public int Id { get; set; }
         [Required]
         public int CustomerId { get; set; }

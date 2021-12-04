@@ -69,7 +69,7 @@ namespace SEP3UI.Data {
         }
 
         public async Task<Review> AddReviewAsync(Review review) {
-            return await restService.PostAsync<Review, Review>(review, $"{review.ItemId}/reviews");
+            return await restService.PostAsync<Review, Review>(review, $"items/{review.ItemId}/reviews");
         }
     }
 }

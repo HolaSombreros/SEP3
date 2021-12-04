@@ -6,17 +6,37 @@ public class Review {
     private int id;
     private int rating;
     private String comment;
-    private Customer customer;
+    private int customerId;
+    private String customerFirstName;
+    private String customerLastName;
     private int itemId;
     private MyDateTime dateTime;
 
-    public Review(int id,int rating, String comment, Customer customer, int itemId, LocalDate dateTime) {
+    public Review(int id,int rating, String comment, int customerId, int itemId, String customerFirstName, String customerLastName, LocalDate dateTime) {
         this.id = id;
         this.rating = rating;
         this.comment = comment;
         this.itemId = itemId;
-        this.customer = customer;
+        this.customerId = customerId;
+        this.customerFirstName =customerFirstName;
+        this.customerLastName = customerLastName;
         this.dateTime = new MyDateTime(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 0, 0, 0);;
+    }
+
+    public String getCustomerFirstName() {
+        return customerFirstName;
+    }
+
+    public void setCustomerFirstName(String customerFirstName) {
+        this.customerFirstName = customerFirstName;
+    }
+
+    public String getCustomerLastName() {
+        return customerLastName;
+    }
+
+    public void setCustomerLastName(String customerLastName) {
+        this.customerLastName = customerLastName;
     }
 
     public int getId() {
@@ -51,12 +71,12 @@ public class Review {
         this.comment = comment;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public int getItemId() {
