@@ -138,7 +138,8 @@ else {
             <div>@errorMessage</div>
         </div>
         <AuthorizeView>
-            <EditForm Model="review" Context="editForm">
+            <EditForm Model="review" Context="addReview">
+                <DataAnnotationsValidator/>
                 <div class=" rounded shadow-sm p-4 mb-5 container">
                     <form>
                         <div class="form-group">
@@ -146,8 +147,9 @@ else {
                             <label>Your Comment</label>
                             <textarea class="form-control" @bind="@review.Comment"></textarea>
                         </div>
+                        <ValidationMessage For="@(() => review.Comment)"/>
                         <div class="form-group text-center">
-                            <button class="btn btn-round btn-dark" @onclick="() => AddReview()"> Submit Comment</button>
+                            <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
                         </div>
                     </form>
                 </div>
@@ -241,17 +243,13 @@ else {
             Month = DateTime.Now.Month,
             Year = DateTime.Now.Year
         };
-        // review.Comment = comment;
         review.CustomerId = customerId;
         review.ItemId = Id;
         Customer customer = await customerService.GetCustomerAsync(customerId);
         review.CustomerFirstName = customer.FirstName;
         review.CustomerLastName = customer.LastName;
-        Console.WriteLine(review.DateTime);
-        Console.WriteLine(review.ItemId);
-        Console.WriteLine(review.Comment);
-        Console.WriteLine(review.CustomerFirstName);
         await itemService.AddReviewAsync(review);
+        // OnInitializedAsync();
     } 
 
 }
