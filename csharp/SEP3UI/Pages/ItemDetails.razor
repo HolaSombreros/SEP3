@@ -120,7 +120,9 @@ else {
                         <div class="media-body">
                             <div class="reviews-members-header">
                                 <span class="star-rating float-right"></span>
-                                <h6 class="mb-1"><a class="text-black" href="#">@review.CustomerFirstName @review.CustomerLastName</a></h6>
+                                <h6 class="mb-1">
+                                    <a class="text-black" href="#">@review.CustomerFirstName @review.CustomerLastName</a>
+                                </h6>
                                 <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
                             </div>
                             <div class="reviews-members-body">
@@ -129,7 +131,7 @@ else {
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
         }
         <div class="text-center">
             <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
@@ -164,6 +166,7 @@ else {
 
     [Parameter]
     public int Id { get; set; }
+
     private int index { get; set; }
     private int customerId;
     private Item item;
@@ -202,16 +205,17 @@ else {
                 show = "d-none";
         }
     }
+
     private async Task LoadMoreAsync() {
         index++;
-        IList<Review> newList = await itemService.GetItemReviewsAsync(index,item);
+        IList<Review> newList = await itemService.GetItemReviewsAsync(index, item);
         if (newList.Count == 0) {
             loadMore = "display: none";
             index--;
         }
         else {
-            foreach (Review r in reviews) {
-                reviews.Add(r);
+            foreach (Review r in newList.ToList()) {
+                    reviews.Add(r);
             }
         }
     }
@@ -256,7 +260,5 @@ else {
         review.CustomerLastName = customer.LastName;
         await itemService.AddReviewAsync(review);
     }
-
-} 
 
 }
