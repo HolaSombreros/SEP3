@@ -134,27 +134,29 @@ else {
         <div class="text-center">
             <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
         </div>
+        <div class="@show">
+            <AuthorizeView>
+                <EditForm Model="review" Context="addReview">
+                    <DataAnnotationsValidator/>
+                    <div class=" rounded shadow-sm p-4 mb-5 container">
+                        <form>
+                            <div class="form-group">
+                                <h5 class="mb-4">Leave a comment</h5>
+                                <label>Your Comment</label>
+                                <textarea class="form-control" @bind="@review.Comment"></textarea>
+                            </div>
+                            <ValidationMessage For="@(() => review.Comment)"/>
+                            <div class="form-group text-center">
+                                <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
+                            </div>
+                        </form>
+                    </div>
+                </EditForm>
+            </AuthorizeView>
+        </div>
         <div class="container text-center text-danger">
             <div>@errorMessage</div>
         </div>
-        <AuthorizeView>
-            <EditForm Model="review" Context="addReview">
-                <DataAnnotationsValidator/>
-                <div class=" rounded shadow-sm p-4 mb-5 container">
-                    <form>
-                        <div class="form-group">
-                            <h5 class="mb-4">Leave a comment</h5>
-                            <label>Your Comment</label>
-                            <textarea class="form-control" @bind="@review.Comment"></textarea>
-                        </div>
-                        <ValidationMessage For="@(() => review.Comment)"/>
-                        <div class="form-group text-center">
-                            <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
-                        </div>
-                    </form>
-                </div>
-            </EditForm>
-        </AuthorizeView>
     </div>
 }
 
@@ -173,6 +175,7 @@ else {
     private string errorMessage;
     private string loadMore = "";
     private string comment = "";
+    private string show = "";
 
     protected override async Task OnInitializedAsync() {
         review = new Review();
@@ -182,7 +185,6 @@ else {
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
-
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -194,6 +196,10 @@ else {
         if (customerId != -1) {
             IList<Item> wishlist = await customerService.GetCustomerWishlistAsync(customerId);
             favorite = wishlist.FirstOrDefault(i => i.Id == item.Id) != null;
+        }
+        foreach (Review r in reviews) {
+            if (r.CustomerId == customerId)
+                show = "d-none";
         }
     }
     private async Task LoadMoreAsync() {
@@ -249,7 +255,8 @@ else {
         review.CustomerFirstName = customer.FirstName;
         review.CustomerLastName = customer.LastName;
         await itemService.AddReviewAsync(review);
-        // OnInitializedAsync();
-    } 
+    }
+
+} 
 
 }
