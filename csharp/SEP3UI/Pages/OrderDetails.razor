@@ -232,7 +232,7 @@ else {
         try {
             order = await orderService.GetOrderAsync(Id);
         
-            totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity);
+            totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity) + orderService.ShoppingCart.ShippingPrice;
             orderModel = new UpdateOrderModel() {
                 Email = order.Email,
                 FirstName = order.FirstName,
