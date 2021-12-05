@@ -514,7 +514,7 @@ namespace SEP3WebAPI.Mediator {
             Send(request);
             return ((OrderMessage) reply).Orders;
         }
-
+        
         public async Task<Order> UpdateOrderAsync(Order order) {
             OrderMessage request = new OrderMessage() {
                 Type = "update",
@@ -524,7 +524,7 @@ namespace SEP3WebAPI.Mediator {
             Send(request);
             return ((OrderMessage)reply).Order;
         }
-
+        
         public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
             Message request = new FAQMessage() {
                 Type = "getAll",
@@ -532,6 +532,35 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(request);
             return ((FAQMessage) reply).FAQs;
+        }
+        
+        public async Task<FAQ> GetFrequentlyAskedQuestionAsync(int id) {
+            Message request = new FAQMessage() {
+                Type = "get",
+                Service = "faq",
+                Id = id
+            };
+            Send(request);
+            return ((FAQMessage) reply).FAQ;
+        }
+        
+        public async Task<FAQ> AddFrequentlyAskedQuestionAsync(FAQ faq) {
+            Message request = new FAQMessage() {
+                Type = "add",
+                Service = "faq",
+                FAQ = faq
+            };
+            Send(request);
+            return ((FAQMessage) reply).FAQ;
+        }
+        
+        public async Task DeleteFrequentlyAskedQuestionAsync(int id) {
+            Message request = new FAQMessage() {
+                Type = "delete",
+                Service = "faq",
+                Id = id
+            };
+            Send(request);
         }
     }
 }

@@ -24,5 +24,35 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<FAQ>> AddFrequentlyAskedQuestionAsync([FromBody] FAQ faq) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            
+            try {
+                FAQ created = await service.AddFrequentlyAskedQuestionAsync(faq);
+                return Created($"/{created.Id}", created);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult> DeleteFrequentlyAskedQuestionAsync([FromRoute] int id) {
+            try {
+                FAQ faq = await service.GetFrequentlyAskedQuestionAsync(id);
+                if (faq == null) {
+                    return NotFound($"No such FAQ found with id {id}");
+                }
+                
+                await service.DeleteFrequentlyAskedQuestionAsync(id);
+                return Ok();
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

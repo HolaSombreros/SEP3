@@ -18,6 +18,9 @@ public class FAQCommand implements Command {
         this.databaseManager = databaseManager;
         methods = new HashMap<>();
         methods.put("getAll", this::getAll);
+        methods.put("get", this::get);
+        methods.put("add", this::add);
+        methods.put("delete", this::delete);
     }
 
     @Override public Message execute(Message request) {
@@ -34,6 +37,21 @@ public class FAQCommand implements Command {
 
     private void getAll() {
         List<FAQ> faqs = databaseManager.getFAQDAOService().readAll();
-        reply.setFaqs(faqs);
+        reply.setFAQs(faqs);
+    }
+
+    private void get() {
+        FAQ faq = databaseManager.getFAQDAOService().read(request.getId());
+        reply.setFAQ(faq);
+    }
+
+    private void add() {
+        FAQ faq = request.getFAQ();
+        FAQ created = databaseManager.getFAQDAOService().add(faq.getCategory(), faq.getQuestion(), faq.getAnswer());
+        reply.setFAQ(created);
+    }
+
+    private void delete() {
+        databaseManager.getFAQDAOService().delete(request.getId());
     }
 }
