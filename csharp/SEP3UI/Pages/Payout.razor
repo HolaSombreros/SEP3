@@ -3,6 +3,7 @@
 @using SEP3Library.UIModels
 @using SEP3UI.Data
 @using System.Security.Claims
+@using System.Threading
 @using SEP3Library.Models
 @inject NavigationManager NavigationManager
 @inject IOrderService orderService
@@ -131,9 +132,10 @@
                 foreach (Item item in orderService.ShoppingCart.Items)
                 await customerService.RemoveFromShoppingCartAsync(item.Id, customerId);
             }
-            await orderService.CreateOrderAsync(orderModel);
+            Order order =  await orderService.CreateOrderAsync(orderModel);
             orderService.ShoppingCart.EmptyShoppingCart();
             errorMessage = "Successful purchase!";
+            NavigationManager.NavigateTo($"/orders/{order.Id}");
         }
         catch (Exception e) {
             errorMessage = e.Message;

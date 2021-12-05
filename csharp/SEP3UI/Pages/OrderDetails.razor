@@ -1,9 +1,13 @@
-﻿@page "/orders/{customerId:int}/{id:int}"
+﻿@page "/orders/{id:int}"
 @using SEP3Library.Models
 @using SEP3Library.UIModels
 @using SEP3UI.Data
-@attribute [Authorize]
+@using System.Security.Claims
+@using SEP3UI.Authentication
+@* @attribute [Authorize] *@
 @inject IOrderService orderService
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 
 @if (order == null) {
     <em>Loading...</em>
@@ -202,20 +206,20 @@ else {
             </div>
         </div>
     </EditForm>
-    <div class="form-group d-flex justify-content-center">
+    <AuthorizeView>
+        <div class="form-group d-flex justify-content-center">
         <button @onclick="UpdateOrderAsync" class="btn btn-primary" disabled="@isDisabled">Update Order</button>
     </div>
     <div class="card d-flex align-items-center text-danger">
         <div>@errorMessage</div>
     </div>
+    </AuthorizeView>
 }
 
 @code {
 
     [Parameter]
     public int Id { get; set; }
-
-    [Parameter]
     public int CustomerId { get; set; }
 
     private Order order;
@@ -225,20 +229,28 @@ else {
     private bool isDisabled;
 
     protected override async Task OnInitializedAsync() {
-        order = await orderService.GetOrderAsync(Id);
-        totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity);
-        orderModel = new UpdateOrderModel() {
-            Email = order.Email,
-            FirstName = order.FirstName,
-            LastName = order.LastName,
-            Street = order.Address.Street,
-            Number = order.Address.Number,
-            ZipCode = order.Address.ZipCode,
-            City = order.Address.City,
-            OrderId = order.Id,
-            CustomerId = order.CustomerId
-        };
+        try {
+            order = await orderService.GetOrderAsync(Id);
+        
+            totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity);
+            orderModel = new UpdateOrderModel() {
+                Email = order.Email,
+                FirstName = order.FirstName,
+                LastName = order.LastName,
+                Street = order.Address.Street,
+                Number = order.Address.Number,
+                ZipCode = order.Address.ZipCode,
+                City = order.Address.City,
+                OrderId = order.Id,
+                CustomerId = order.CustomerId
+            };
+            CustomerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+            
+        }catch (Exception e) {
+            CustomerId = -1;
+        }
         SetDisabledState();
+       
     }
 
     private async Task UpdateOrderAsync() {
@@ -252,7 +264,7 @@ else {
     }
 
     private void SetDisabledState() {
-        if (orderModel.CustomerId != CustomerId) {
+        if (orderModel.CustomerId != CustomerId || CustomerId == -1) {
             isDisabled = true;
         }
     }
