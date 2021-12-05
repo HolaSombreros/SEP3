@@ -120,73 +120,40 @@ else {
                         <div class="media-body">
                             <div class="reviews-members-header">
                                 <span class="star-rating float-right"></span>
-                                <h6 class="mb-1">
-                                    <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
-                                </h6>
+                                <h6 class="mb-1"><a class="text-black" href="#">@review.CustomerFirstName @review.CustomerLastName</a></h6>
                                 <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
                             </div>
                             <div class="reviews-members-body">
                                 <p>@review.Comment</p>
                             </div>
-                            <div class="">
-                                @for (int i = 0; i < review.Rating; i++) {
-                                    <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
-                                }
-                                @for (int i = 0; i < 5 - review.Rating; i++) {
-                                    <i class="icons oi oi-star" style="color:grey;" id="star1"></i>
-                                }
-                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
         }
-        @if (reviews.Any()) {
-            <div class="text-center">
-                <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
-            </div>
-        }
+        <div class="text-center">
+            <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
+        </div>
         <div class="container text-center text-danger">
             <div>@errorMessage</div>
         </div>
         <AuthorizeView>
-            <div class=" rounded shadow-sm p-4 mb-5 container">
-                <div class="card">
-                    <h5 class="mb-4">Leave a comment</h5>
-                    <p class="mb-2">Rate the item</p>
-                    <div class="rating">
-                        <input type="radio" name="test" id="one" checked/>
-                        <label for="one">
-                            <i class="oi oi-star"></i>
-                        </label>
-                        <input type="radio" name="test" id="two"/>
-                        <label for="two">
-                            <i class="oi oi-star"></i>
-                        </label>
-                        <input type="radio" name="test" id="three"/>
-                        <label for="three">
-                            <i class="oi oi-star"></i>
-                        </label>
-                        <input type="radio" name="test" id="four"/>
-                        <label for="four">
-                            <i class="oi oi-star"></i>
-                        </label>
-                        <input type="radio" name="test" id="five"/>
-                        <label for="five">
-                            <i class="oi oi-star"></i>
-                        </label>
-                    </div>
+            <EditForm Model="review" Context="addReview">
+                <DataAnnotationsValidator/>
+                <div class=" rounded shadow-sm p-4 mb-5 container">
                     <form>
                         <div class="form-group">
+                            <h5 class="mb-4">Leave a comment</h5>
                             <label>Your Comment</label>
-                            <textarea class="form-control"></textarea>
+                            <textarea class="form-control" @bind="@review.Comment"></textarea>
                         </div>
-                        <div class="form-group">
-                            <button class="btn btn-round btn-dark"> Submit Comment </button>
+                        <ValidationMessage For="@(() => review.Comment)"/>
+                        <div class="form-group text-center">
+                            <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
                         </div>
                     </form>
                 </div>
-            </div>
+            </EditForm>
         </AuthorizeView>
     </div>
 }
@@ -195,7 +162,6 @@ else {
 
     [Parameter]
     public int Id { get; set; }
-
     private int index { get; set; }
     private int customerId;
     private Item item;
@@ -203,13 +169,16 @@ else {
     private bool isDisabled;
     private bool favorite = true;
     private IList<Review> reviews;
+    private Review review;
     private string errorMessage;
     private string loadMore = "";
+    private string comment = "";
 
     protected override async Task OnInitializedAsync() {
+        review = new Review();
         index = 0;
         item = await itemService.GetItemAsync(Id);
-        reviews = await itemService.GetItemReviewsAsync(index, item);
+        reviews = await itemService.GetItemReviewsAsync(index,item);
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
@@ -227,10 +196,9 @@ else {
             favorite = wishlist.FirstOrDefault(i => i.Id == item.Id) != null;
         }
     }
-
     private async Task LoadMoreAsync() {
         index++;
-        IList<Review> newList = await itemService.GetItemReviewsAsync(index, item);
+        IList<Review> newList = await itemService.GetItemReviewsAsync(index,item);
         if (newList.Count == 0) {
             loadMore = "display: none";
             index--;
@@ -269,7 +237,19 @@ else {
         await customerService.AddToWishlistAsync(customerId, item);
     }
 
-    private void Rate(int i) {
-    }
+    private async Task AddReview() {
+        review.DateTime = new MyDateTime() {
+            Day = DateTime.Now.Day,
+            Month = DateTime.Now.Month,
+            Year = DateTime.Now.Year
+        };
+        review.CustomerId = customerId;
+        review.ItemId = Id;
+        Customer customer = await customerService.GetCustomerAsync(customerId);
+        review.CustomerFirstName = customer.FirstName;
+        review.CustomerLastName = customer.LastName;
+        await itemService.AddReviewAsync(review);
+        // OnInitializedAsync();
+    } 
 
 }
