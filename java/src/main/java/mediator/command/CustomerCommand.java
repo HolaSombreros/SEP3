@@ -26,7 +26,6 @@ public class CustomerCommand implements Command {
         methods.put("updateSeenNotification", this:: updateSeenNotification);
         methods.put("getCustomersByIndex", this::getCustomersByIndex);
         methods.put("updateRole", this::updateRole);
-
     }
 
     @Override public Message execute(Message request) {
@@ -89,6 +88,4 @@ public class CustomerCommand implements Command {
     private void updateSeenNotification() {
         reply.setNotification(databaseManager.getNotificationDAOService().update(request.getCustomer().getId(), request.getNotification()));
     }
-
-
 }

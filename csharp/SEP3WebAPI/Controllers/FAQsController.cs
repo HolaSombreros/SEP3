@@ -16,9 +16,9 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<FAQ>>> GetFrequentlyAskedQuestions() {
+        public async Task<ActionResult<IList<FAQ>>> GetFrequentlyAskedQuestionsAsync() {
             try {
-                IList<FAQ> faqs = await service.GetFrequentlyAskedQuestions();
+                IList<FAQ> faqs = await service.GetFrequentlyAskedQuestionsAsync();
                 return Ok(faqs);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);

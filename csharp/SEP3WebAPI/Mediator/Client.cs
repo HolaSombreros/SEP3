@@ -206,11 +206,13 @@ namespace SEP3WebAPI.Mediator {
             return ((OrderMessage)reply).Order;
         }
 
-        public async Task<IList<Order>> GetOrdersAsync(int index) {
+        public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
             OrderMessage req = new OrderMessage() {
                 Service = "order",
                 Type = "getAll",
-                Index = index
+                Index = index,
+                CustomerId = id,
+                Status = status
             };
             Send(req);
             return ((OrderMessage) reply).Orders;
@@ -523,7 +525,7 @@ namespace SEP3WebAPI.Mediator {
             return ((OrderMessage)reply).Order;
         }
 
-        public async Task<IList<FAQ>> GetFrequentlyAskedQuestions() {
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
             Message request = new FAQMessage() {
                 Type = "getAll",
                 Service = "faq"

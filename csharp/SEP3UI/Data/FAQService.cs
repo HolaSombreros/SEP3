@@ -10,7 +10,7 @@ namespace SEP3UI.Data {
             this.restService = restService;
         }
         
-        public async Task<IList<FAQ>> GetFrequentlyAskedQuestions() {
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
             return await restService.GetAsync<IList<FAQ>>("faqs");
         }
     }

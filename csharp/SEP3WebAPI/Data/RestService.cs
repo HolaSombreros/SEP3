@@ -348,8 +348,8 @@ namespace SEP3WebAPI.Data {
             return await client.CreateOrderAsync(order);
         }
 
-        public async Task<IList<Order>> GetOrdersAsync(int index) {
-            return await client.GetOrdersAsync(index);
+        public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
+            return await client.GetOrdersAsync(index, id, status);
         }
 
         public async Task<Order> GetOrderAsync(int orderId) {
@@ -372,8 +372,8 @@ namespace SEP3WebAPI.Data {
             return await client.GetOrdersByCustomerAsync(customerId, index);
         }
 
-        public async Task<IList<FAQ>> GetFrequentlyAskedQuestions() {
-            return await client.GetFrequentlyAskedQuestions();
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
+            return await client.GetFrequentlyAskedQuestionsAsync();
         }
         
         public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {

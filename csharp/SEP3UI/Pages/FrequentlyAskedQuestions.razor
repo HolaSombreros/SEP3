@@ -26,7 +26,7 @@
     private IList<IGrouping<string, FAQ>> faqs;
 
     protected override async Task OnInitializedAsync() {
-        IList<FAQ> faqs = await faqService.GetFrequentlyAskedQuestions();
+        IList<FAQ> faqs = await faqService.GetFrequentlyAskedQuestionsAsync();
         this.faqs = faqs.OrderBy(f => f.Category)
             .GroupBy(f => f.Category)
             .ToList();
