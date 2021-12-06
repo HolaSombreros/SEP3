@@ -1,5 +1,5 @@
 ﻿namespace SEP3WebAPI.Data {
-    public interface IRestService : IItemDAO, IOrderDAO, ICustomerDAO {
+    public interface IRestService : IItemDAO, IOrderDAO, ICustomerDAO, IFAQDAO {
         
     }
 }

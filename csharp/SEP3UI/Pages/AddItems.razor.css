@@ -69,11 +69,6 @@ header {
     overflow: hidden;
 }
 
-h1 {
-    font-family: 'Dancing Script', cursive;
-    font-size: 30px;
-    margin-bottom: 30px;
-}
 button {
     border: none;
     outline: none;

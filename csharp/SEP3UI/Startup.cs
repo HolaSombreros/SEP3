@@ -30,6 +30,7 @@ namespace SEP3UI {
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IFAQService, FAQService>();
             services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
             services.AddAuthorization(options => {
                 options.AddPolicy(Policies.IsAdmin, Policies.FollowAdminPolicy());

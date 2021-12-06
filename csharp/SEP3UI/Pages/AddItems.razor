@@ -5,17 +5,24 @@
 @using SEP3Library.UIModels
 @using SEP3UI.Data
 @using System.ComponentModel.DataAnnotations
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
 @attribute [Authorize(Policy = Policies.IsAdmin)]
 @inject IItemService itemService
-<header>
+@inject IWebHostEnvironment Environment
+@inject NavigationManager nav
 
 @if (categories != null) {
-    <div class="overlay">
+    <div class="mt-3">
         @if (CategoryName != null) {
-            <h1>Edit Items</h1>
+            <div class="text-center">
+                <h2>Edit Items</h2>
+            </div>
         }
         else {
-            <h1>Add Items</h1>
+            <div class="text-center">
+                <h2>Add Items</h2>
+            </div>
         }
         @if ((itemModel != null && CategoryName == null && !itemModel.Category.Name.Equals("Book")) || (CategoryName != null && !CategoryName.Equals("Book"))) {
             <EditForm Model="@itemModel" OnValidSubmit="AddItemAsync">
@@ -23,12 +30,12 @@
                     <DataAnnotationsValidator/>
                     <div class="row">
                         <div class="col-md-4 mr-3">
-                            <div>
-                                <label class="simple-customised"> Select category:</label>
+                            <div class="text-center">
+                                <img class="img-thumbnail rounded w-50 mb-2" src="@itemModel.ImageName" alt="Image of @itemModel.Name"/>
+                                <label class="simple-customised d-block"> Select category:</label>
                                 @foreach (var category in categories) {
                                     <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
                                 }
-                                <button type="button" class="list-group-item list-group-item-action">Other</button>
                             </div>
                             <div class="mt-3">
                                 <input @bind-value="itemModel.Name" type="text" data-mdb-showcounter="true" maxlength="100" id="name"/>
@@ -44,7 +51,7 @@
                         <div class="col-md-4 mr-3">
                             <div>
                                 <label for="controlFile">Upload an image:</label>
-                                <input type="file" id="controlFile">
+                                <InputFile id="controlFile" OnChange="@((args) => SetInputFile(args))"/>
                             </div>
                             <div class="mt-3 inputs">
                                 <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price"/>
@@ -82,7 +89,8 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="">
-                                <label class="simple-customised"> Select category:</label>
+                                <img class="img-thumbnail rounded w-50 mb-2" src="@bookModel.ImageName" alt="Image of @bookModel.Name"/>
+                                <label class="simple-customised d-block"> Select category:</label>
                                 @foreach (var category in categories) {
                                     <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
                                 }
@@ -102,7 +110,7 @@
                         <div class="col-md-4">
                             <div>
                                 <label for="controlFile">Upload an image:</label>
-                                <input type="file" id="controlFile">
+                                <InputFile id="controlFile" OnChange="@((args) => SetInputFile(args))"/>
                             </div>
                             <div class="mt-3 inputs">
                                 <input @bind-value="bookModel.Price" type="number" data-mdb-showcounter="true" id="price"/>
@@ -120,99 +128,100 @@
                             </div>
                             <ValidationMessage For="@(() => bookModel.Discount)"/>
                         </div>
-                            <div class="col-md-4">
-                                <div>
-                                    <input @bind-value="bookModel.Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn"/>
-                                    <label class="label-customised" for="bookIsbn">Book isbn:</label>
-                                </div>
-                                <ValidationMessage For="@(() => bookModel.Isbn)"/>
-
-                                <div>
-                                    <input @bind-value="authorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName"/>
-                                    <label class="label-customised" for="authorFName">Author first name:</label>
-                                </div>
-                                
-                                <div>
-                                    <input @bind-value="authorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLname"/>
-                                    <label class="label-customised" for="authorLname">Author last name:</label>
-                                </div>
-                                
-                                <i @onclick="() => AddAuthorsClicked()" class="btn btn-outline-primary ">Add author</i>
-                                <table class="table table-striped mt-3">
-                                    <thead>
-                                    <tr>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Remove</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach (Author author in bookModel.Authors) {
-                                        <tr class="family-row">
-                                            <td>@author.FirstName</td>
-                                            <td>@author.LastName</td>
-                                            <td>
-                                                <i @onclick="@(() => RemoveAuthorClicked(author))" class="oi oi-trash" style="color:red"></i>
-                                            </td>
-                                        </tr>
-                                    }
-                                    </tbody>
-                                </table>
-
-                                <div class="mt-1">
-                                    <input @bind-value="bookModel.Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language"/>
-                                    <label class="label-customised" for="language">Book language:</label>
-                                </div>
-                                <ValidationMessage For="@(() => bookModel.Language)"/>
-
-                                <div>
-                                    <label id="problematic-label">Date:</label>
-                                    <InputDate @bind-Value="bookModel.PublicationDate"/>
-                                </div>
-                                <div>
-                                    <select class="form-select" aria-label="Genre" @onchange="@((args) => SetSelectedGenre(args))">
-                                        <option selected hidden>Select a genre</option>
-                                        @foreach (Genre g in genres) {
-                                            <option value="@g.Name">@g.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Remove</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach (Genre g in selectedGenres) {
-                                        <tr class="family-row">
-                                            <td>@g.Name</td>
-                                            <td>
-                                                <i @onclick="@(() => RemoveGenreClicked(g))" class="oi oi-trash" style="color:red"></i>
-                                            </td>
-                                        </tr>
-                                    }
-                                    </tbody>
-                                </table>
-                                <ValidationMessage For="@(() => bookModel.Genre)"/>
+                        <div class="col-md-4">
+                            <div>
+                                <input @bind-value="bookModel.Isbn" type="text" data-mdb-showcounter="true" maxlength="100" id="bookIsbn"/>
+                                <label class="label-customised" for="bookIsbn">Book isbn:</label>
                             </div>
-                    </div>
-                    </div>
-                    <div class="form-group d-flex text-center justify-content-center">
-                        <label class="control-label"></label>
-                        <div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <ValidationMessage For="@(() => bookModel.Isbn)"/>
+
+                            <div>
+                                <input @bind-value="authorFirstName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorFName"/>
+                                <label class="label-customised" for="authorFName">Author first name:</label>
+                            </div>
+                                
+                            <div>
+                                <input @bind-value="authorLastName" type="text" data-mdb-showcounter="true" maxlength="100" id="authorLname"/>
+                                <label class="label-customised" for="authorLname">Author last name:</label>
+                            </div>
+                                
+                            <i @onclick="() => AddAuthorsClicked()" class="btn btn-outline-primary ">Add author</i>
+                            <table class="table table-striped mt-3">
+                                <thead>
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Remove</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (Author author in bookModel.Authors) {
+                                    <tr class="family-row">
+                                        <td>@author.FirstName</td>
+                                        <td>@author.LastName</td>
+                                        <td>
+                                            <i @onclick="@(() => RemoveAuthorClicked(author))" class="oi oi-trash" style="color:red"></i>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+
+                            <div class="mt-1">
+                                <input @bind-value="bookModel.Language" type="text" data-mdb-showcounter="true" maxlength="100" id="language"/>
+                                <label class="label-customised" for="language">Book language:</label>
+                            </div>
+                            <ValidationMessage For="@(() => bookModel.Language)"/>
+
+                            <div>
+                                <label id="problematic-label">Date:</label>
+                                <InputDate @bind-Value="bookModel.PublicationDate"/>
+                            </div>
+                            <div>
+                                <select class="form-select" aria-label="Genre" @onchange="@((args) => SetSelectedGenre(args))">
+                                    <option selected hidden>Select a genre</option>
+                                    @foreach (Genre g in genres) {
+                                        <option value="@g.Name">@g.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Remove</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (Genre g in selectedGenres) {
+                                    <tr class="family-row">
+                                        <td>@g.Name</td>
+                                        <td>
+                                            <i @onclick="@(() => RemoveGenreClicked(g))" class="oi oi-trash" style="color:red"></i>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                            <ValidationMessage For="@(() => bookModel.Genre)"/>
                         </div>
                     </div>
-                    <div class="card d-flex align-items-center text-danger">
-                        <div>@errorMessage</div>
+                </div>
+                <div class="form-group d-flex text-center justify-content-center">
+                    <label class="control-label"></label>
+                    <div>
+                        <button class="btn btn-primary">Submit</button>
                     </div>
+                </div>
+                <div class="card d-flex align-items-center text-danger">
+                    <div>@errorMessage</div>
+                </div>
             </EditForm>
         }
-        </div>
-        }
-        </header>
+    </div>
+}
+
+
 @code {
     [Parameter]
     public int Id { get; set; }
@@ -226,7 +235,8 @@
     private ItemModel itemModel;
     private BookModel bookModel;
     private string errorMessage;
-    
+    private IBrowserFile uploadedFile;
+
     [MaxLength(50, ErrorMessage = "The first name cannot exceed 50 characters")]
     [Required(ErrorMessage = "Please enter a first name for the author")]
     public string authorFirstName { get; private set; }
@@ -255,9 +265,11 @@
                 bookModel.Authors = book.Authors;
                 bookModel.Genre = book.Genre;
                 bookModel.Language = book.Language;
+                bookModel.ImageName = book.ImageName;
                 bookModel.PublicationDate = new DateTime(book.PublicationDate.Year, book.PublicationDate.Month, book.PublicationDate.Day, book.PublicationDate.Hour,
                     book.PublicationDate.Minute, book.PublicationDate.Second);
-                genres = bookModel.Genre;
+                foreach(Genre g in book.Genre)
+                    selectedGenres.Add(g);
             }
             else {
                 itemModel = new ItemModel();
@@ -269,6 +281,7 @@
                 itemModel.Price = item.Price;
                 itemModel.Status = item.Status;
                 itemModel.Quantity = item.Quantity;
+                itemModel.ImageName = item.ImageName;
             }
         }
         else {
@@ -286,21 +299,45 @@
         }
     }
 
+    private void SetInputFile(InputFileChangeEventArgs args) {
+        errorMessage = "";
+        IList<string> fileTypes = new List<string>() {
+            "jpg",
+            "jpeg",
+            "png"
+        };
+        if (!fileTypes.Any(ft => ft.Equals(args.File.ContentType.Split("/")[1]))) {
+            errorMessage = "You can only upload jpg, jpeg and png files";
+            uploadedFile = null;
+        } else {
+            uploadedFile = args.File;
+        }
+    }
+
+    private async Task UploadFile() {
+        long maxFileSize = 5000000;
+        
+        var path = Path.Combine(Environment.ContentRootPath, @"wwwroot\Images", uploadedFile.Name);
+        await using FileStream fs = new(path, FileMode.Create);
+        await uploadedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+    }
+
     private async Task AddItemAsync() {
         try {
             if (CategoryName != null) {
                 if ((bookModel != null && bookModel.Category.Name.Equals("Book"))) {
                     bookModel.Genre = selectedGenres;
                     if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1) {
-                        errorMessage = "Please input a genre or author";
-
+                        throw new Exception("Please input a genre or author");
                     }
                     else {
+                        if (uploadedFile != null) bookModel.ImageName = "Images/" + uploadedFile.Name;
                         await itemService.UpdateBookAsync(Id, bookModel);
                         errorMessage = "Successful item edited";
                     }
                 }
                 else {
+                    if (uploadedFile != null) itemModel.ImageName = "Images/" + uploadedFile.Name;
                     await itemService.UpdateItemAsync(Id, itemModel);
                     errorMessage = "Successful item edited";
                 }
@@ -309,30 +346,41 @@
                 if (itemModel.Category.Name.Equals("Book")) {
                     bookModel.Genre = selectedGenres;
                     if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1)
-                        errorMessage = "Please input a genre or author";
-                    else
+                        throw new Exception("Please input a genre or author");
+                    else {
+                        if (uploadedFile != null) bookModel.ImageName = "Images/" + uploadedFile.Name;
                         await itemService.AddBookAsync(bookModel);
+                        errorMessage = "Successful item added";
+                    }
                 }
                 else {
+                    if (uploadedFile != null) itemModel.ImageName = "Images/" + uploadedFile.Name;
                     await itemService.AddItemAsync(itemModel);
+                    errorMessage = "Successful item added";
                 }
-                errorMessage = "Successful item added";
-
             }
-            
+
+            if (uploadedFile != null) {
+                await UploadFile();
+                if (CategoryName != null) {
+                    nav.NavigateTo(nav.Uri, true);
+                }
+            }
         }
         catch (Exception e) {
-            Console.WriteLine(e.StackTrace);
             errorMessage = e.Message;
+            uploadedFile = null;
         }
     }
 
     private void SetSelectedGenre(ChangeEventArgs args) {
         selectedGenreName = args.Value.ToString();
-        Console.WriteLine(selectedGenreName);
-        selectedGenres.Add(new Genre() {
+        Genre g = new Genre() {
             Name = selectedGenreName
-        });
+        };
+        Genre found = selectedGenres.FirstOrDefault(i => i.Name.ToLower().Equals(g.Name.ToLower()));
+        if(found == null)
+            selectedGenres.Add(g);
         bookModel.Genre = selectedGenres;
         selectedGenreName = null;
     }

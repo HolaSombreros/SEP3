@@ -16,13 +16,21 @@ namespace SEP3UI.Data {
         }
         
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
-            Order newOrder = await restService.PostAsync<OrderModel, Order>(orderModel, "orders");
-            return newOrder;
+            return await restService.PostAsync<OrderModel, Order>(orderModel, "orders");
         }
 
-        public async Task<IList<Order>> GetOrdersAsync(int index) {
-            IList<Order> orders = await restService.GetAsync<IList<Order>>($"orders?index={index}");
-            return orders;
+        public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
+            return await restService.GetAsync<IList<Order>>($"orders?index={index}&id={id}&status={status}");
+        }
+
+        public async Task<Order> GetOrderAsync(int orderId) {
+            Order order = await restService.GetAsync<Order>($"orders/{orderId}");
+            return order;
+        }
+
+        public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
+            Order order = await restService.PutAsync<UpdateOrderModel,Order>(orderModel,$"orders/{orderModel.CustomerId}/{orderModel.OrderId}");
+            return order;
         }
     }
 }

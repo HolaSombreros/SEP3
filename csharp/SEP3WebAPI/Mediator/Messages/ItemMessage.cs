@@ -12,5 +12,6 @@ namespace SEP3WebAPI.Mediator.Messages {
         public Customer Customer { get; set; }
         public int[] ItemsIds { get; set; }
         public string OrderBy { get; set; }
+        public IList<Review> Reviews { get; set; }
     }
 }

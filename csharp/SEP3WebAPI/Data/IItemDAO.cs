@@ -18,5 +18,7 @@ namespace SEP3WebAPI.Data {
         Task<Item> UpdateItemAsync(int id, ItemModel item);
         Task<Book> UpdateBookAsync(int id, BookModel book);
         Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index);
+        Task<IList<Review>> GetItemReviewsAsync(int index, Item item);
+        Task<Review> AddReviewAsync(Review review);
     }
 }

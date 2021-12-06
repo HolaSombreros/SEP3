@@ -9,13 +9,109 @@
     color: lightgray;
 }
 
-.notfavorite {
+.non-favorite {
     font-size: 1.5em;
     color: lightgray;
     transition: .3s;
 }
 
-.notfavorite:hover {
+.non-favorite:hover {
     cursor: pointer;
     color: red;
+}
+.icons {
+    font-size: 1.4em;
+}
+.rating-box {
+    width: 130px;
+    height: 130px;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #FBC02D;
+    color: #fff
+}
+
+.rating-label {
+    font-weight: bold
+}
+
+.rating-bar {
+    width: 300px;
+    padding: 8px;
+    border-radius: 5px
+}
+
+.bar-container {
+    width: 100%;
+    background-color: #f1f1f1;
+    text-align: center;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 5px
+}
+
+.star-active {
+    color: #FBC02D;
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+.star-active:hover {
+    color: #F9A825;
+    cursor: pointer
+}
+
+.star-inactive {
+    color: #CFD8DC;
+    margin-top: 10px;
+    margin-bottom: 10px
+}
+
+.blue-text {
+    color: #0091EA
+}
+
+.content {
+    font-size: 18px
+}
+
+.vote {
+    cursor: pointer
+}
+
+/*rating*/
+input[type="radio"] {
+    position: fixed;
+    top: 0;
+    right: 100%;
+}
+
+.rating label {
+    font-size: 1.3em;
+    padding-right: 0.3em;
+    margin: 0;
+    float: left;
+    cursor: pointer;
+}
+
+input[type="radio"]:checked ~ input + label {
+    background: none;
+    color: #aaa;
+}
+
+input + label {
+    background: #fff;
+    color: darkred;
+    margin: 0 0 1em 0;
+}
+
+input + label:first-of-type {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+input:checked + label {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
@@ -41,7 +42,13 @@ namespace SEP3WebAPI.Mediator {
                             break;
                         case "customer":
                             reply = JsonSerializer.Deserialize<CustomerMessage>(result,
-                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            break;
+                        case "faq":
+                            reply = JsonSerializer.Deserialize<FAQMessage>(result,
+                                new JsonSerializerOptions() {
+                                    PropertyNameCaseInsensitive = true
+                                });
                             break;
                         case "error":
                             reply = JsonSerializer.Deserialize<ErrorMessage>(result,
@@ -51,6 +58,7 @@ namespace SEP3WebAPI.Mediator {
                             throw new ConnectionAbortedException();
                     }
                 }
+
                 Monitor.Pulse(lock1);
             }
         }
@@ -190,7 +198,6 @@ namespace SEP3WebAPI.Mediator {
         }
         
         public async Task<Order> CreateOrderAsync(Order order) {
-            // TODO json too long problem
             OrderMessage req = new OrderMessage() {
                 Service = "order", 
                 Type = "purchase", 
@@ -200,16 +207,30 @@ namespace SEP3WebAPI.Mediator {
             return ((OrderMessage)reply).Order;
         }
 
-        public async Task<IList<Order>> GetOrdersAsync(int index) {
+        public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
             OrderMessage req = new OrderMessage() {
                 Service = "order",
                 Type = "getAll",
-                Index = index
+                Index = index,
+                CustomerId = id,
+                Status = status
             };
             Send(req);
             return ((OrderMessage) reply).Orders;
         }
-        
+
+        public async Task<Order> GetOrderAsync(int orderId) {
+            OrderMessage request = new OrderMessage() {
+                Service = "order",
+                Type = "get",
+                Order = new Order() {
+                    Id = orderId
+                }
+            };
+            Send(request);
+            return ((OrderMessage) reply).Order;
+        }
+
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "login",
@@ -246,17 +267,26 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Customer> UpdateCustomerAsync(Customer customer) {
-            CustomerMessage req = new CustomerMessage() {
-                Type = "update",
-                Service = "customer",
-                Customer = customer
-            };
+            CustomerMessage req = null;
+            if (customer.Role != null) {
+                 req = new CustomerMessage() {
+                    Type = "updateRole",
+                    Service = "customer",
+                    Customer = customer
+                };
+            }
+            else {
+                 req = new CustomerMessage() {
+                    Type = "update",
+                    Service = "customer",
+                    Customer = customer
+                };
+            }
             Send(req);
             return ((CustomerMessage) reply).Customer;
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(Customer customer) {
-            // TODO json too long problem
             ItemMessage req = new ItemMessage() {
                 Type = "getWishlist",
                 Service = "item",
@@ -288,7 +318,6 @@ namespace SEP3WebAPI.Mediator {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, Customer customer) {
-            Console.WriteLine("client");
             ItemMessage req = new ItemMessage() {
                 Type = "addShoppingCart",
                 Service = "item",
@@ -330,6 +359,72 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
         }
 
+        public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "getNotifications",
+                Service = "customer",
+                Index = index,
+                Customer = new Customer() {
+                    Id = customerId
+                }
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Notifications;
+        }
+
+        public async Task<IList<Customer>> GetAdminsAsync() {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "getAdmins",
+                Service = "customer"
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Customers;
+        }
+
+        public async Task<Notification> GetSpecificNotificationAsync(Customer customer, int notificationId) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "getNotification",
+                Service = "customer",
+                Customer = customer,
+                Notification = new Notification() {
+                    Id = notificationId
+                }
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Notification;
+        }
+
+        public async Task SendNotificationAsync(Customer customer, Notification notification) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "sendNotification",
+                Service = "customer",
+                Customer = customer,
+                Notification = notification
+            };
+            Send(req);
+        }
+
+        public async Task<Notification> UpdateSeenNotificationAsync(Customer customer, Notification notification) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "updateSeenNotification",
+                Service = "customer",
+                Customer = customer,
+                Notification = notification
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Notification;
+        }
+
+        public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "getCustomersByIndex",
+                Service = "customer",
+                Index = index
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Customers;
+        }
+
         public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
             ItemMessage req = new ItemMessage() {
                 Type = "searchByName",
@@ -364,7 +459,6 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemMessage) reply).Item;
-
         }
 
         public async Task<Book> UpdateBookAsync(Book book) {
@@ -384,7 +478,7 @@ namespace SEP3WebAPI.Mediator {
                 Categories = new List<Category>()
             };
             req.Categories.Add(category);
-            
+
             Send(req);
             return ((ItemMessage) reply).Categories[0];
         }
@@ -398,6 +492,87 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(request);
             return ((ItemMessage)reply).Items;
+        }
+
+        public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
+            ItemMessage req = new ItemMessage() {
+                Type = "getItemReviews",
+                Service = "item",
+                Index = index,
+                Item = item
+            };
+            Send(req);
+            return ((ItemMessage) reply).Reviews;
+        }
+
+        public async Task<Review> AddReviewAsync(Review review) {
+            ItemMessage req = new ItemMessage() {
+                Type = "addReview",
+                Service = "item",
+                Reviews = new List<Review>()
+            };
+            req.Reviews.Add(review);
+            Send(req);
+            return ((ItemMessage) reply).Reviews[0];
+        }
+
+        public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
+            OrderMessage request = new OrderMessage() {
+                Type = "getAllByCustomer",
+                Service = "order",
+                CustomerId = customerId,
+                Index = index
+            };
+            Send(request);
+            return ((OrderMessage) reply).Orders;
+        }
+        
+        public async Task<Order> UpdateOrderAsync(Order order) {
+            OrderMessage request = new OrderMessage() {
+                Type = "update",
+                Service = "order",
+                Order = order
+            };
+            Send(request);
+            return ((OrderMessage)reply).Order;
+        }
+        
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
+            Message request = new FAQMessage() {
+                Type = "getAll",
+                Service = "faq"
+            };
+            Send(request);
+            return ((FAQMessage) reply).FAQs;
+        }
+        
+        public async Task<FAQ> GetFrequentlyAskedQuestionAsync(int id) {
+            Message request = new FAQMessage() {
+                Type = "get",
+                Service = "faq",
+                Id = id
+            };
+            Send(request);
+            return ((FAQMessage) reply).FAQ;
+        }
+        
+        public async Task<FAQ> AddFrequentlyAskedQuestionAsync(FAQ faq) {
+            Message request = new FAQMessage() {
+                Type = "add",
+                Service = "faq",
+                FAQ = faq
+            };
+            Send(request);
+            return ((FAQMessage) reply).FAQ;
+        }
+        
+        public async Task DeleteFrequentlyAskedQuestionAsync(int id) {
+            Message request = new FAQMessage() {
+                Type = "delete",
+                Service = "faq",
+                Id = id
+            };
+            Send(request);
         }
     }
 }

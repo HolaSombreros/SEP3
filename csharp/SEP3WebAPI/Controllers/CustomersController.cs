@@ -5,23 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Data;
+using SEP3WebAPI.Mediator.Messages;
 
 namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class CustomersController : ControllerBase {
         private IRestService service;
-        
+
         public CustomersController(IRestService service) {
             this.service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<Customer>> GetCustomerAsync([FromQuery] string email, [FromQuery] string password) {
+        public async Task<ActionResult<Customer>> GetCustomerAsync([FromQuery] string email,
+            [FromQuery] string password) {
             try {
                 if (email == null || password == null) {
                     return BadRequest("Input both email and password!");
                 }
+
                 Customer customer = await service.GetCustomerAsync(email, password);
                 if (customer == null)
                     return NotFound("Email not registered");
@@ -30,6 +33,22 @@ namespace SEP3WebAPI.Controllers {
                 return NotFound("Wrong password");
             }
             catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpGet]
+        [Route("all")]
+        public async Task<ActionResult<IList<Customer>>> GetCustomersByIndexAsync([FromQuery] int index) {
+            try {
+                IList<Customer> customers = await service.GetCustomersByIndexAsync(index);
+                return Ok(customers);
+            } 
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -47,33 +66,52 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
-        
+
         [HttpGet]
         [Route("{customerId:int}")]
         public async Task<ActionResult<Customer>> GetCustomerAsync([FromRoute] int customerId) {
             try {
                 Customer customer = await service.GetCustomerAsync(customerId);
                 return Ok(customer);
-            } catch (NullReferenceException e) {
+            }
+            catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpGet]
+        [Route("{customerId:int}/order")]
+        public async Task<ActionResult<IList<Order>>> GetAllOrdersByCustomer([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Order> orders = await service.GetOrdersByCustomerAsync(customerId, index);
+                return Ok(orders);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
 
         [HttpPut]
         [Route("{customerId:int}")]
-        public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId, [FromBody] UpdateCustomerModel customer) {
+        public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId,
+            [FromBody] UpdateCustomerModel customer) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
-            
             try {
                 Customer updated = await service.UpdateCustomerAsync(customerId, customer);
                 return Ok(updated);
-            } catch (NullReferenceException e) {
+            }
+            catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -84,9 +122,11 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Item> wishlist = await service.GetCustomerWishlistAsync(customerId);
                 return Ok(wishlist);
-            } catch (NullReferenceException e) {
+            }
+            catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -97,19 +137,106 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item item = await service.AddToWishlistAsync(customerId, itemId);
                 return Ok(item);
-            } catch (NullReferenceException e) {
+            }
+            catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
-        
+
         [HttpDelete]
         [Route("{customerId:int}/wishlist/{itemId:int}")]
         public async Task<ActionResult> RemoveWishlistedItemAsync([FromRoute] int customerId, [FromRoute] int itemId) {
             try {
                 await service.RemoveWishlistedItemAsync(customerId, itemId);
                 return Ok();
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("{customerId:int}/shoppingbasket")]
+        public async Task<ActionResult<Item>> AddShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            try {
+                Item item1 = await service.AddToShoppingCartAsync(item, customerId);
+                return Ok(item1);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("{customerId:int}/shoppingbasket")]
+        public async Task<ActionResult> GetShoppingCartAsync([FromRoute] int customerId) {
+            try {
+                IList<Item> shoppingCart = await service.GetShoppingCartAsync(customerId);
+                return Ok(shoppingCart);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        public async Task<ActionResult<Item>> EditShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId,
+            [FromRoute] int itemId) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            try {
+                Item item1 = await service.UpdateShoppingCartAsync(item, itemId, customerId);
+                return Ok(item);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        public async Task<ActionResult>
+            RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
+            try {
+                await service.RemoveFromShoppingCartAsync(itemId, customerId);
+                return Ok();
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpGet]
+        [Route( "{customerId:int}/notifications")]
+        public async Task<ActionResult<IList<Notification>>> GetNotificationsAsync([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Notification> notifications = await service.GetNotificationsAsync(customerId, index);
+                return Ok(notifications);
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
@@ -118,57 +245,12 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpPut]
-        [Route("{customerId:int}/shoppingbasket")]
-        public async Task<ActionResult<Item>> AddShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId) {
-            Console.WriteLine("customercontroller");
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            }
+        [Route("{customerId:int}/notifications/{notificationId:int}")]
+        public async Task<ActionResult<Notification>> UpdateSeenNotificationAsync([FromBody] Notification notification, [FromRoute] int customerId, [FromRoute] int notificationId) {
             try {
-                Item item1 = await service.AddToShoppingCartAsync(item, customerId);
-                return Ok(item1);
-            } catch (NullReferenceException e) {
-                return NotFound(e.Message);
-            } catch (Exception e) {
-                return StatusCode(500, e.Message);
-            }
-        }
-        
-        [HttpGet]
-        [Route("{customerId:int}/shoppingbasket")]
-        public async Task<ActionResult> GetShoppingCartAsync([FromRoute] int customerId) {
-            try {
-                IList<Item> shoppingCart = await service.GetShoppingCartAsync(customerId);
-                return Ok(shoppingCart);
-            } catch (NullReferenceException e) {
-                return NotFound(e.Message);
-            } catch (Exception e) {
-                return StatusCode(500, e.Message);
-            }
-        }
-        
-        [HttpPut]
-        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
-        public async Task<ActionResult<Item>> EditShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId, [FromRoute] int itemId) {
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
-            }
-            try {
-                Item item1 = await service.UpdateShoppingCartAsync(item, itemId, customerId);
-                return Ok(item);
-            } catch (NullReferenceException e) {
-                return NotFound(e.Message);
-            } catch (Exception e) {
-                return StatusCode(500, e.Message);
-            }
-        }
-        
-        [HttpDelete]
-        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
-        public async Task<ActionResult> RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
-            try {
-                await service.RemoveFromShoppingCartAsync(itemId, customerId);
-                return Ok();
+                Notification notification1 = await service.UpdateSeenNotificationAsync(customerId, notificationId);
+                Console.WriteLine(notification1.Text);
+                return Ok(notification1);
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {

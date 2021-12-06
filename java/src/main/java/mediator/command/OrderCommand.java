@@ -8,7 +8,6 @@ import model.Order;
 import java.util.HashMap;
 
 public class OrderCommand implements Command {
-
     private OrderMessage request;
     private OrderMessage reply;
     private DatabaseManager databaseManager;
@@ -19,6 +18,9 @@ public class OrderCommand implements Command {
         methods = new HashMap<>();
         methods.put("purchase",this::purchase);
         methods.put("getAll", this::getAll);
+        methods.put("get", this::get);
+        methods.put("update",this::update);
+        methods.put("getAllByCustomer",this::getAllOrdersByCustomer);
     }
 
     @Override public Message execute(Message request) {
@@ -41,6 +43,18 @@ public class OrderCommand implements Command {
     }
 
     private void getAll() {
-        reply.setOrders(databaseManager.getOrderDAOService().readByIndex(request.getIndex()));
+        reply.setOrders(databaseManager.getOrderDAOService().readByIndex(request.getIndex(), request.getCustomerId(), request.getStatus()));
+    }
+
+    private void get() {
+        reply.setOrder(databaseManager.getOrderDAOService().read(request.getOrder().getId()));
+    }
+
+    private void update(){
+        reply.setOrder(databaseManager.getOrderDAOService().update(request.getOrder()));
+    }
+    
+    private void getAllOrdersByCustomer(){
+        reply.setOrders(databaseManager.getOrderDAOService().readAllOrdersByCustomer(request.getCustomerId(), request.getIndex()));
     }
 }

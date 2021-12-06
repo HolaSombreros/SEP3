@@ -16,5 +16,9 @@ namespace SEP3UI.Data {
         public Task<IList<Item>> GetShoppingCartAsync(int customerId);
         public Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId);
         public Task RemoveFromShoppingCartAsync(int itemId, int customerId);
+        Task<IList<Notification>> GetNotificationsAsync(int customerId, int index);
+        Task<Notification> UpdateSeenNotificationAsync(int customerId, Notification notification);
+        Task<IList<Customer>> GetCustomersByIndexAsync(int index);
+        Task<IList<Order>> GetOrdersByCustomer(int customerId, int index);
     }
 }

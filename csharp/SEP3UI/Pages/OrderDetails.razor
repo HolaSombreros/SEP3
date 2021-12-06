@@ -1,7 +1,272 @@
-﻿@page "/OrderDetails"
+﻿@page "/orders/{id:int}"
+@using SEP3Library.Models
+@using SEP3Library.UIModels
+@using SEP3UI.Data
+@using System.Security.Claims
+@using SEP3UI.Authentication
+@* @attribute [Authorize] *@
+@inject IOrderService orderService
+@inject ICustomerService customerService
+@inject AuthenticationStateProvider authStateProvider
 
-<h3>OrderDetails</h3>
+@if (order == null) {
+    <em>Loading...</em>
+}
+else {
+    <EditForm Model="@orderModel" OnValidSubmit="@UpdateOrderAsync">
+        <DataAnnotationsValidator/>
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-lg-4 col-md-12 mb-md-4">
+                    <h4 class="text-center">Order information</h4>
+                    <hr/>
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Order Id</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-key"></span>
+                                </div>
+                            </div>
+                            <span class="form-control">@order.Id</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>First name</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-person"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="orderModel.FirstName"/>
+                        </div>
+                        <ValidationMessage For="@(() => orderModel.FirstName)"/>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Last name</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-person"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="orderModel.LastName"/>
+                        </div>
+                        <ValidationMessage For="@(() => orderModel.LastName)"/>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Email address</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-envelope-closed"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="orderModel.Email"/>
+                        </div>
+                        <ValidationMessage For="@(() => orderModel.Email)"/>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Time of purchase</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-clock"></span>
+                                </div>
+                            </div>
+                            <span class="form-control">@order.DateTime.ToString()</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Status</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-warning"></span>
+                                </div>
+                            </div>
+                            <span class="form-control">@order.OrderStatus.ToString()</span>
+                        </div>
+                    </div>
+
+                    <h4 class="text-center mt-5">Delivery address</h4>
+                    <hr/>
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Street name</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-map-marker"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="orderModel.Street"/>
+                        </div>
+                        <ValidationMessage For="@(() => orderModel.Street)"/>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Street number</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-map-marker"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="orderModel.Number"/>
+                        </div>
+                        <ValidationMessage For="@(() => orderModel.Number)"/>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>Zip code</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-map-marker"></span>
+                                </div>
+                            </div>
+                            <InputNumber class="form-control" @bind-Value="orderModel.ZipCode"/>
+                        </div>
+                        <ValidationMessage For="@(() => orderModel.ZipCode)"/>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>
+                            <strong>City</strong>
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <span class="oi oi-map-marker"></span>
+                                </div>
+                            </div>
+                            <InputText class="form-control" @bind-Value="orderModel.City"/>
+                        </div>
+                        <ValidationMessage For="@(() => orderModel.City)"/>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-12">
+                    <h4 class="text-center mb-3 mt-5 mt-md-0">Items ordered</h4>
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (Item item in order.Items) {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.PriceIncludingDiscount DKK</td>
+                                <td>@Math.Round(item.PriceIncludingDiscount * item.Quantity, 2, MidpointRounding.ToEven) DKK</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <strong>@Math.Round(totalPrice, 2, MidpointRounding.ToEven) DKK</strong>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+    <AuthorizeView>
+        <div class="form-group d-flex justify-content-center">
+        <button @onclick="UpdateOrderAsync" class="btn btn-primary" disabled="@isDisabled">Update Order</button>
+    </div>
+    <div class="card d-flex align-items-center text-danger">
+        <div>@errorMessage</div>
+    </div>
+    </AuthorizeView>
+}
 
 @code {
-    
+
+    [Parameter]
+    public int Id { get; set; }
+    public int CustomerId { get; set; }
+
+    private Order order;
+    private decimal totalPrice;
+    private UpdateOrderModel orderModel;
+    private string errorMessage;
+    private bool isDisabled;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            order = await orderService.GetOrderAsync(Id);
+        
+            totalPrice = order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity) + orderService.ShoppingCart.ShippingPrice;
+            orderModel = new UpdateOrderModel() {
+                Email = order.Email,
+                FirstName = order.FirstName,
+                LastName = order.LastName,
+                Street = order.Address.Street,
+                Number = order.Address.Number,
+                ZipCode = order.Address.ZipCode,
+                City = order.Address.City,
+                OrderId = order.Id,
+                CustomerId = order.CustomerId
+            };
+            CustomerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+            
+        }catch (Exception e) {
+            CustomerId = -1;
+        }
+        SetDisabledState();
+       
+    }
+
+    private async Task UpdateOrderAsync() {
+        try {
+            order = await orderService.UpdateOrderAsync(orderModel);
+            errorMessage = "Successfully updated!";
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private void SetDisabledState() {
+        if (orderModel.CustomerId != CustomerId || CustomerId == -1) {
+            isDisabled = true;
+        }
+    }
+
 }

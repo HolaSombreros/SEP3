@@ -1,8 +1,14 @@
 ﻿@using SEP3UI.Authentication
+@using System.Collections
+@using System.Security.Claims
+@using SEP3Library.Models
+@using SEP3UI.Data
 @inject NavigationManager nav
+@inject ICustomerService customerService 
+@inject AuthenticationStateProvider authStateProvider
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="/">    
+    <a class="navbar-brand" href="/" @onclick="CollapseDropdownMenus">    
         <img src="Images/undercoverslogo.png" alt="Under Covers logo" style="height: 50px"/>
     </a>
     <button class="navbar-toggler ml-auto" @onclick="ToggleNavMenu">
@@ -16,11 +22,45 @@
                     <span class="oi oi-cart" aria-hidden="true"></span> Cart
                 </NavLink>
             </li>
+            <li class="nav-item">
+                <NavLink class="nav-link text-center" href="/faqs/all" @onclick="CollapseDropdownMenus">
+                    <span class="oi oi-question-mark" aria-hidden="true"></span> FAQs
+                </NavLink>
+            </li>
             <AuthorizeView>
                 <NotAuthorized>
                     <button class="btn btn-info" @onclick="NavigateToLogin">Login</button>
                 </NotAuthorized>
                 <Authorized>
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link text-center" @onclick="ToggleNotificationDropdownMenuAsync">
+                            <span class="oi oi-bell @notificationClass" aria-hidden="true"></span>
+                        </NavLink>
+                        @if (!collapseNotificationDropdownMenu) {
+                            @if (notifications == null || !notifications.Any()) {
+                                <div class="d-block dropdown-menu dropdown-menu-right">
+                                    <div class="dropdown-item">You don't have any notifications...</div>
+                                </div>
+                            }
+                            else {
+                                <div class="d-block dropdown-menu dropdown-menu-right">
+                                    @foreach (Notification notification in notifications) {
+                                        <div class="dropdown-item border">
+                                            <div>
+                                                <span>@notification.Time</span>
+                                            </div>
+                                            <div>
+                                                <span>@notification.Text</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="text-center @hiddenClass">
+                                        <button class="btn btn-md btn-dark order-button" @onclick="LoadMoreAsync">Load more</button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </li>
                     <li class="nav-item dropdown">
                         <NavLink class="nav-link dropdown-toggle text-center" @onclick="ToggleAccountDropdownMenu">
                             <span class="oi oi-person" aria-hidden="true"></span> Account
@@ -29,6 +69,9 @@
                             <div class="d-block dropdown-menu dropdown-menu-right bg-dark">
                                 <NavLink class="nav-link dropdown-item text-center text-md-left" href="/wishlist" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-list" aria-hidden="true"></span> My Wishlist
+                                </NavLink>
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span> My Orders
                                 </NavLink>
                                 <NavLink class="nav-link dropdown-item text-center text-md-left" href="/account" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-person" aria-hidden="true"></span> My Account
@@ -56,6 +99,9 @@
                             </NavLink>
                             <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
+                            </NavLink>
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/CustomerList" @onclick="CollapseDropdownMenus">
+                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Customers
                             </NavLink>
                         </div>
                     }
@@ -87,6 +133,48 @@
     private bool collapseNavMenu = true;
     private bool collapseAccountDropdownMenu = true;
     private bool collapseAdminDropdownMenu = true;
+    private bool collapseNotificationDropdownMenu = true;
+
+    private int notificationIndex;
+    private IList<Notification> notifications;
+    private string hiddenClass = "";
+    private string notificationClass;
+    private int customerId;
+
+    protected override async Task OnInitializedAsync() {
+        NavBarEvent.AddAction(LoadAsync);
+    }
+    
+    private async void LoadAsync() {
+        try {
+            customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        } catch (Exception e) {
+            customerId = -1;
+        }
+        notificationClass = "";
+        notificationIndex = 0;
+        if (customerId != -1) {
+            notifications = await customerService.GetNotificationsAsync(customerId, notificationIndex);
+            if (notifications != null)
+                if (notifications.Any(n => n.Status.Equals("Unread")))
+                    notificationClass = "notification";
+        }
+        hiddenClass = "";
+    }
+
+    private async Task LoadMoreAsync() {
+        notificationIndex++;
+        IList<Notification> newList = await customerService.GetNotificationsAsync(customerId, notificationIndex);
+        if (newList.Count == 0) {
+            hiddenClass = "hidden";
+            notificationIndex--;
+        }
+        foreach (Notification notification in newList) {
+            notifications.Add(notification);
+            if (notification.Status.Equals("Unread"))
+                await customerService.UpdateSeenNotificationAsync(customerId, notification);
+        }
+    }
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -94,21 +182,38 @@
         collapseNavMenu = !collapseNavMenu;
         collapseAccountDropdownMenu = true;
         collapseAdminDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
     }
 
     private void ToggleAccountDropdownMenu() {
         collapseAccountDropdownMenu = !collapseAccountDropdownMenu;
         collapseAdminDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
     }
 
     private void ToggleAdminDropdownMenu() {
         collapseAdminDropdownMenu = !collapseAdminDropdownMenu;
         collapseAccountDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
+    }
+    
+    private async void ToggleNotificationDropdownMenuAsync() {
+        collapseAdminDropdownMenu = true;
+        collapseAccountDropdownMenu = true;
+        collapseNotificationDropdownMenu = !collapseNotificationDropdownMenu;
+        notificationClass = "";
+        hiddenClass = "hidden";
+        foreach (Notification notification in notifications) {
+                if (notification.Status.Equals("Unread"))
+                await customerService.UpdateSeenNotificationAsync(customerId, notification);
+            }
+        hiddenClass = "show";
     }
 
     private void CollapseDropdownMenus() {
         collapseAccountDropdownMenu = true;
         collapseAdminDropdownMenu = true;
+        collapseNotificationDropdownMenu = true;
     }
 
     private void NavigateToLogin() {

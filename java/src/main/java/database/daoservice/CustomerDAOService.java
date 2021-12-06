@@ -1,11 +1,14 @@
 package database.daoservice;
 
+import database.daomodel.AddressDAO;
 import database.daomodel.CustomerDAO;
 import database.daoservice.mapper.CustomerMapper;
 import database.daoservice.mapper.ItemMapper;
+import database.daoservice.mapper.OrderMapper;
 import model.Address;
 import model.Customer;
 import model.Item;
+import model.Order;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.List;
 public class CustomerDAOService implements CustomerDAO {
 
     private DatabaseHelper<Customer> databaseHelper;
-    private AddressDAOService addressDAOService;
+    private AddressDAO addressDAOService;
 
     public CustomerDAOService(String url, String username, String password) {
         this.databaseHelper = new DatabaseHelper<>(url, username, password);
@@ -56,6 +59,24 @@ public class CustomerDAOService implements CustomerDAO {
         }
     }
 
+    @Override public List<Customer> readAdmins() {
+        try {
+            return databaseHelper.mapList(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) WHERE role = ?::user_role", "Administrator");
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Customer> readByIndex(int index) {
+        try {
+            return databaseHelper.mapList(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) ORDER BY customer_id ASC LIMIT 21 OFFSET 21 * ?", index);
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
     @Override public Customer update(Customer customer) {
         try {
             Address address = addressDAOService.read(customer.getAddress().getStreet(),
@@ -77,6 +98,17 @@ public class CustomerDAOService implements CustomerDAO {
         }
     }
 
+    @Override
+    public Customer updateRole(Customer customer) {
+        try {
+            databaseHelper.executeUpdate("UPDATE customer SET role = ?::user_role WHERE customer_id = ?",customer.getRole(), customer.getId());
+            return customer;
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
     @Override public void delete(Customer customer) {
 
     }
@@ -88,4 +120,6 @@ public class CustomerDAOService implements CustomerDAO {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+
 }

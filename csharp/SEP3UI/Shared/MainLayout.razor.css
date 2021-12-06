@@ -8,18 +8,8 @@
     flex: 1;
 }
 
-.main > div {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    padding-bottom: 1.5rem !important;
-}
-
 @media (min-width: 641px) {
     .page {
         flex-direction: row;
-    }
-
-    .main > div {
-        padding-right: 1.5rem !important;
     }
 }

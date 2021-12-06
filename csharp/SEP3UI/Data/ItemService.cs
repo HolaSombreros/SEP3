@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -56,13 +57,20 @@ namespace SEP3UI.Data {
             return await restService.PutAsync<BookModel,Book>(item, $"items/books/{id}");
         }
         
-
         public async Task<Category> AddCategoryAsync(Category category) {
             return await restService.PostAsync<Category, Category>(category, "items/categories");
         }
 
-        public Task<IList<Item>> GetItemsByPrice(string orderBy, int index) {
-            return restService.GetAsync<IList<Item>>($"Items?index={index}&orderBy={orderBy}");
+        public async Task<IList<Item>> GetItemsByPrice(string orderBy, int index) {
+            return await restService.GetAsync<IList<Item>>($"Items?index={index}&orderBy={orderBy}");
+        }
+
+        public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
+            return await restService.GetAsync<IList<Review>>($"items/{item.Id}/reviews?index={index}");
+        }
+
+        public async Task<Review> AddReviewAsync(Review review) {
+            return await restService.PostAsync<Review, Review>(review, $"items/{review.ItemId}/reviews");
         }
     }
 }

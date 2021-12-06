@@ -30,11 +30,12 @@
                             <div class="row">@item.Name</div>
                         </div>
                         <div class="col">
-                            <a @onclick="(() => DecreaseQuantity(item))"> - </a> 
+                            <a @onclick="(() => DecreaseQuantity(item))"> - </a>
                             <span class="border">@item.Quantity</span>
                             <a @onclick="(() => IncreaseQuantity(item))"> + </a>
                         </div>
-                        <div class="col"> @(item.Price * item.Quantity) DKK 
+                        <div class="col">
+                            @Math.Round(item.PriceIncludingDiscount * item.Quantity, 2, MidpointRounding.ToEven) DKK
                             <a class="close" @onclick="(() => RemoveItemFromShoppingCart(item))">&#10005;</a>
                         </div>
                     </div>
@@ -43,7 +44,9 @@
         </div>
         <div class="col-md-4 summary">
             <div>
-                <h5><b>Summary</b></h5>
+                <h5>
+                    <b>Summary</b>
+                </h5>
             </div>
             <hr>
             <div class="row mt-3">
@@ -55,7 +58,7 @@
                 <div class="col text-right">@orderService.ShoppingCart.ShippingPrice DKK</div>
             </div>
             <div class="row mt-3">
-                <div>Discount code:</div> 
+                <div>Discount code:</div>
             </div>
             <input class="mt-3" placeholder="Enter your code">
             <div class="row mt-3">
@@ -78,11 +81,13 @@
 @code {
     private int customerId;
     private bool isDisabled;
-    
+
     protected override async Task OnInitializedAsync() {
+        NavBarEvent.Invoke();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             customerId = -1;
         }
         SetDisabledState();
@@ -97,14 +102,14 @@
         if (item.Quantity > 1) {
             Item i = orderService.ShoppingCart.RemoveQuantityFromShoppingCart(item);
             if (customerId != -1)
-                customerService.UpdateShoppingCartAsync(i,i.Id,customerId);
+                customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
         }
     }
-    
+
     private void IncreaseQuantity(Item item) {
         Item i = orderService.ShoppingCart.IncreaseQuantity(item);
         if (customerId != -1)
-            customerService.UpdateShoppingCartAsync(i,i.Id,customerId);
+            customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
     }
 
     private void RemoveItemFromShoppingCart(Item item) {
@@ -116,23 +121,26 @@
     private int GetItemsBasedOnQuantity() {
         return orderService.ShoppingCart.FinalQuantity;
     }
-    
+
     /*
      * Method returns the total of the shopping cart, but not the shipping rate
      * Yes, we need 2 methods :)
      */
+
     private decimal GetFinalPrice() {
         return orderService.ShoppingCart.Total;
     }
-    
+
     /*
      * Method returns the total of the shopping cart plus the shipping rate
      */
+
     private decimal GetTotalOrderPrice() {
         return orderService.ShoppingCart.TotalOrderPrice();
     }
-    
+
     private void NavigateToComponent() {
         NavigationManager.NavigateTo("Payout/");
     }
+
 }

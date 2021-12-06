@@ -6,14 +6,8 @@
 
 <div class="card" style="max-width:100% !important ">
     <div class="row border-top border-bottom align-items-center">
-        <!-- logo box -->
-
-        <div class="col-4">
-            <img src="Images/Under Covers.png" class="img-fluid" alt="Under Covers Logo" style="height: 100%; width: 100%"/>
-        </div>
-
         <!-- field box -->
-        <div class="col-6">
+        <div class="col-lg-8">
             <div class="form-group d-flex justify-content-center">
                 <h2 class="retroshd">Become an Under Covers supporter</h2>
             </div>
@@ -125,12 +119,15 @@
                     </div>
                 </fieldset>
                 <div class="form-group d-flex justify-content-center">
-                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button class="btn btn-primary">Register</button>
                 </div>
                 <div class="card d-flex" style="color:red">@errorMessage</div>
             </EditForm>
             <!-- register link -->
-
+        </div>
+         <!-- logo box -->
+        <div class="col-lg-4">
+            <img src="Images/Under Covers.png" class="img-fluid" alt="Under Covers Logo" style="height: 100%; width: 100%"/>
         </div>
     </div>
 </div>
@@ -146,7 +143,6 @@
             navigationManager.NavigateTo("/Login");
         }
         catch (Exception e) {
-            Console.WriteLine(e.StackTrace);
             errorMessage = e.Message;
         }
     }

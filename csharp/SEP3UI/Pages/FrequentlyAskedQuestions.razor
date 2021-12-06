@@ -1,0 +1,76 @@
+﻿@page "/faqs/all"
+
+@using SEP3Library.Models
+@using SEP3UI.Data
+@using AccordionComponent
+@using SEP3UI.Authentication
+
+@inject IFAQService faqService
+@inject NavigationManager nav
+
+<div class="container py-3">
+    <h2 class="text-center mb-3">Frequently Asked Questions</h2>
+    @if (groupedFAQs == null) {
+        <em class="text-center">Loading...</em>
+    } else if (!groupedFAQs.Any()) {
+        <div class="text-center">
+            <em class="d-block mb-2">No Frequently Asked Questions have been added yet</em>
+            <AuthorizeView Policy="@Policies.IsAdmin">
+                <button class="btn btn-primary" @onclick="AddNewFAQBtnClicked">Add New FAQ</button>
+            </AuthorizeView>
+        </div>
+    } else {
+        @foreach (var category in groupedFAQs) {
+            <div class="mb-4">
+                <h4 class="mb-2">@category.Key</h4>
+                @foreach (var faq in category) {
+                    <div class="row">
+                        <div class="col-11">
+                            <Accordion Question="@faq.Question">@faq.Answer</Accordion>
+                        </div>
+                        <div class="col-1 mt-3">
+                            <AuthorizeView Policy="@Policies.IsAdmin">
+                                <button class="btn btn-danger btn-sm" @onclick="@(() => DeleteAsync(faq.Id))">Delete</button>
+                            </AuthorizeView>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        <span class="text-danger mb-2">@errorMessage</span>
+        <AuthorizeView Policy="@Policies.IsAdmin">
+            <div class="text-center">
+                <button class="btn btn-primary" @onclick="AddNewFAQBtnClicked">Add New FAQ</button>
+            </div>
+        </AuthorizeView>
+    }
+</div>
+
+@code {
+    private IList<IGrouping<string, FAQ>> groupedFAQs;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync() {
+        await LoadAndGroupFAQsAsync();
+    }
+
+    private async Task LoadAndGroupFAQsAsync() {
+        IList<FAQ> faqs = await faqService.GetFrequentlyAskedQuestionsAsync();
+        groupedFAQs = faqs.OrderBy(f => f.Category)
+            .GroupBy(f => f.Category)
+            .ToList();
+    }
+    
+    private void AddNewFAQBtnClicked() {
+        nav.NavigateTo("/faqs/new");
+    }
+
+    private async Task DeleteAsync(int id) {
+        try {
+            await faqService.DeleteFrequentlyAskedQuestionAsync(id);
+            await LoadAndGroupFAQsAsync();
+        } catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+}

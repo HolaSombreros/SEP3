@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Mediator;
@@ -70,6 +69,7 @@ namespace SEP3WebAPI.Data {
             updated.Address.City = customer.City;
             updated.PhoneNumber = customer.PhoneNumber;
             updated.Password = customer.Password;
+            updated.Role = customer.Role;
 
             await client.UpdateCustomerAsync(updated);
             return updated;
@@ -104,7 +104,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = item.Quantity;
             toUpdate.Status = item.Status;
             toUpdate.Discount = item.Discount;
-            toUpdate.ImageName = "Item/haha";
+            toUpdate.ImageName = item.ImageName;
             
             await client.UpdateItemAsync(toUpdate);
             return toUpdate;
@@ -121,7 +121,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = book.Quantity;
             toUpdate.Status = book.Status;
             toUpdate.Discount = book.Discount;
-            toUpdate.ImageName = "Item/haha";
+            toUpdate.ImageName = book.ImageName;
             toUpdate.Authors = book.Authors;
             toUpdate.Genre = book.Genre;
             toUpdate.Isbn = book.Isbn;
@@ -202,6 +202,24 @@ namespace SEP3WebAPI.Data {
             await client.RemoveFromShoppingCartAsync(item, customer);
         }
 
+        public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+
+            return await client.GetNotificationsAsync(customerId, index);
+        }
+
+        public async Task<Notification> UpdateSeenNotificationAsync(int customerId, int notificationId) {
+            Customer customer = await client.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+
+            Notification notification = await client.GetSpecificNotificationAsync(customer, notificationId);
+            if (notification == null) throw new NullReferenceException($"No such notification found with id: {notificationId} for the customer: {customerId}");
+
+            notification.Status = "Read";
+            return await client.UpdateSeenNotificationAsync(customer, notification);
+        }
+
         public async Task<Book> GetBookAsync(int id) {
             return await client.GetBookAsync(id);
         }
@@ -227,7 +245,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/sth"
+                ImageName = itemModel.ImageName
             };
             return await client.AddItemAsync(i);
         }
@@ -246,7 +264,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = "Images/Booklala",
+                ImageName = itemModel.ImageName,
                 Isbn = itemModel.Isbn,
                 Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {
@@ -284,6 +302,24 @@ namespace SEP3WebAPI.Data {
                     throw new InvalidDataException(
                         $"Item {orderModel.Items[i].Name} amount exceeds the amount available. Only this amount is available {items[i].Quantity}");
                 }
+
+                if (items[i].Quantity > 50 && items[i].Quantity - orderModel.Items[i].Quantity <= 50) {
+                    Notification notification = new Notification() {
+                        Text = $"The Item {items[i].Name} is low on stock",
+                        Status = "Unread",
+                        Time = new MyDateTime() {
+                            Year = DateTime.Now.Year,
+                            Month = DateTime.Now.Month,
+                            Day = DateTime.Now.Day,
+                            Hour = DateTime.Now.Hour,
+                            Minute = DateTime.Now.Minute,
+                            Second = DateTime.Now.Second
+                        }
+                    };
+                    foreach (Customer customer in await client.GetAdminsAsync()) {
+                        await client.SendNotificationAsync(customer, notification);
+                    }
+                }
             }
 
             Order order = new Order() {
@@ -312,12 +348,68 @@ namespace SEP3WebAPI.Data {
             return await client.CreateOrderAsync(order);
         }
 
-        public async Task<IList<Order>> GetOrdersAsync(int index) {
-            return await client.GetOrdersAsync(index);
+        public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
+            return await client.GetOrdersAsync(index, id, status);
+        }
+
+        public async Task<Order> GetOrderAsync(int orderId) {
+            return await client.GetOrderAsync(orderId);
         }
 
         public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
             return await client.GetItemsByPriceAsync(orderBy, index);
+        }
+
+        public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
+            return await client.GetItemReviewsAsync(index,item);
+        }
+
+        public async Task<Review> AddReviewAsync(Review review) {
+            return await client.AddReviewAsync(review);
+        }
+
+        public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
+            return await client.GetCustomersByIndexAsync(index);
+        }
+
+        public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
+            return await client.GetOrdersByCustomerAsync(customerId, index);
+        }
+
+        public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
+            return await client.GetFrequentlyAskedQuestionsAsync();
+        }
+
+        public async Task<FAQ> GetFrequentlyAskedQuestionAsync(int id) {
+            return await client.GetFrequentlyAskedQuestionAsync(id);
+        }
+
+        public async Task<FAQ> AddFrequentlyAskedQuestionAsync(FAQ faq) {
+            return await client.AddFrequentlyAskedQuestionAsync(faq);
+        }
+
+        public async Task DeleteFrequentlyAskedQuestionAsync(int id) {
+            await client.DeleteFrequentlyAskedQuestionAsync(id);
+        }
+
+        public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
+            if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
+            if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
+            Order order = new Order() {
+                FirstName = orderModel.FirstName,
+                LastName = orderModel.LastName,
+                Email = orderModel.Email,
+                Address = new Address() {
+                    Street = orderModel.Street,
+                    Number = orderModel.Number,
+                    City = orderModel.City,
+                    ZipCode = orderModel.ZipCode
+                },
+                OrderStatus = OrderStatus.Pending,
+                CustomerId = orderModel.CustomerId,
+                Id = orderModel.OrderId
+            };
+            return await client.UpdateOrderAsync(order);
         }
     }
 }

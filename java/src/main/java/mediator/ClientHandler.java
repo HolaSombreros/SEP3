@@ -2,10 +2,7 @@ package mediator;
 
 import com.google.gson.Gson;
 import database.daomodel.DatabaseManager;
-import mediator.command.Command;
-import mediator.command.CustomerCommand;
-import mediator.command.ItemCommand;
-import mediator.command.OrderCommand;
+import mediator.command.*;
 import mediator.message.*;
 
 
@@ -39,13 +36,14 @@ public class ClientHandler implements Runnable {
         service.put("item", this::itemServiceRun);
         service.put("order", this::orderServiceRun);
         service.put("customer", this::customerServiceRun);
+        service.put("faq", this::faqServiceRun);
     }
 
     public void run() {
         while (running) {
             try {
                 received = in.readLine();
-                System.out.println(received);
+//                System.out.println(received);
                 Message request = gson.fromJson(received, Message.class);
                 if (request != null) {
                     service.get(request.getService()).run();
@@ -80,17 +78,16 @@ public class ClientHandler implements Runnable {
         command = new CustomerCommand(databaseManager);
     }
 
+    private void faqServiceRun() {
+        reply = gson.fromJson(received, FAQMessage.class);
+        command = new FAQCommand(databaseManager);
+    }
+
     private void sendReply(Message reply) {
         String replyGson = gson.toJson(reply);
-//        out.println(replyGson.length());
-//        System.out.println("----- " + replyGson.length());
-//        try {
-//            Thread.sleep(500);
-//        }
-//        catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        out.println(replyGson.length());
+        System.out.println(">>>>> " + replyGson.length());
         out.println(replyGson);
-        System.out.println("> " + replyGson);
+        System.out.println(replyGson);
     }
 }

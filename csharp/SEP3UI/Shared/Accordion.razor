@@ -1,0 +1,28 @@
+﻿@namespace AccordionComponent
+@using SEP3UI.Authentication
+@using SEP3UI.Data
+@inject IFAQService faqService
+
+<button class="btn btn-light w-100 p-3 text-left" @onclick="Toggle">
+    <span class="oi @ChevronCssClass mr-2" style="top: 3px;"></span>
+    @Question
+</button>
+<div class="p-3 @CollapseCssClass">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public string Question { get; set; }
+    
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    private string CollapseCssClass => isCollapsed ? "d-none" : "d-block";
+    private string ChevronCssClass => isCollapsed ? "oi-plus" : "oi-minus";
+    private bool isCollapsed = true;
+
+    private void Toggle() {
+        isCollapsed = !isCollapsed;
+    }
+}

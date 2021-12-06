@@ -61,6 +61,34 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        [HttpGet]
+        [Route("{id:int}/reviews")]
+        public async Task<ActionResult<IList<Review>>> GetItemReviewsAsync([FromQuery] int index, [FromRoute] int id) {
+            try {
+                Item item = await service.GetItemAsync(id);
+                if (item == null) 
+                    return NotFound($"No item found with id {id}");
+                IList<Review> reviews = await service.GetItemReviewsAsync(index,item);
+                return Ok(reviews);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+        [HttpPost]
+        [Route("{id:int}/reviews")]
+        public async Task<ActionResult<Review>> AddReviewAsync([FromRoute] int id, [FromBody] Review review) {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            try {
+                Review created = await service.AddReviewAsync(review);
+                return Created($"/{created.ItemId}/{created.Customer.Id}", created);
+            } catch (InvalidDataException e) {
+                return Conflict(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
         
         [HttpGet]
         [Route("Books/{id:int}")]

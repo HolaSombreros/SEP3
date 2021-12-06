@@ -19,7 +19,7 @@ namespace SEP3Library.UIModels {
 
         [Phone(ErrorMessage = "Please enter a valid phone number")]
         [StringLength(30, MinimumLength = 8, ErrorMessage = "The password must be between {2} and {1} characters")]
-        public string PhoneNumber {
+        public string PhoneNumber { 
             get => phoneNumber;
             set {
                 phoneNumber = value;
@@ -60,5 +60,7 @@ namespace SEP3Library.UIModels {
             }
         }
         private string confirmPassword;
+        
+        public string Role { get; set; }
     }
 }

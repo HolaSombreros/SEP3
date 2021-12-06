@@ -15,7 +15,7 @@ namespace SEP3Library.UIModels {
         
         [Required(ErrorMessage = "Please enter a description")]
         [MaxLength(500, ErrorMessage = "The description cannot exceed 500 characters")]
-        [MinLength(25,ErrorMessage = "The description has to be longer than 25")]
+        [MinLength(10,ErrorMessage = "The description has to be longer than 10 characters")]
         public string Description { get; set; }
         
         [Required(ErrorMessage = "Please enter a price")]
@@ -36,6 +36,6 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please select a category")]
         public Category Category { get; set; }
 
-
+        public string ImageName { get; set; }
     }
 }
