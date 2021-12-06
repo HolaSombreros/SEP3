@@ -111,10 +111,12 @@ else {
                 </div>
             </div>
         </div>
-        @foreach (Review review in reviews) {
-            <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
-                <h5 class="mb-1">All Ratings and Reviews</h5>
-                <div class="reviews-members pt-4 pb-4">
+        <div class="text-center mb-3 mt-3">
+            <h2 class="mb-1">All Ratings and Reviews</h2>
+        </div>
+            @foreach (Review review in reviews) {
+                <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                    <div class="reviews-members pt-4 pb-4">
                     <div class="media">
                         <div class="media-body">
                             <div class="reviews-members-header">
@@ -132,7 +134,7 @@ else {
                 </div>
             </div>
         }
-        <div class="text-center">
+            <div class="text-center">
             <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
         </div>
         <div class="@show">
@@ -144,7 +146,7 @@ else {
                             <div class="form-group">
                                 <h5 class="mb-4">Leave a comment</h5>
                                 <label>Your Comment</label>
-                                <textarea class="form-control" @bind="@review.Comment"></textarea>
+                                <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
                             </div>
                             <ValidationMessage For="@(() => review.Comment)"/>
                             <div class="form-group text-center">
@@ -247,24 +249,30 @@ else {
     }
 
     private async Task AddReview() {
-        review.DateTime = new MyDateTime() {
-            Day = DateTime.Now.Day,
-            Month = DateTime.Now.Month,
-            Year = DateTime.Now.Year
-        };
-        Customer customer = await customerService.GetCustomerAsync(customerId);
-        review.Customer = new Customer() {
-            Id = customer.Id,
-            FirstName = customer.FirstName,
-            LastName = customer.LastName,
-            Address = customer.Address,
-            Email = customer.Email,
-            Password = customer.Password,
-            Role = customer.Role,
-            PhoneNumber = customer.PhoneNumber
-        };
-        review.ItemId = Id;
-        await itemService.AddReviewAsync(review);
+        try {
+            review.DateTime = new MyDateTime() {
+                Day = DateTime.Now.Day,
+                Month = DateTime.Now.Month,
+                Year = DateTime.Now.Year
+            };
+            Customer customer = await customerService.GetCustomerAsync(customerId);
+            review.Customer = new Customer() {
+                Id = customer.Id,
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Address = customer.Address,
+                Email = customer.Email,
+                Password = customer.Password,
+                Role = customer.Role,
+                PhoneNumber = customer.PhoneNumber
+            };
+            review.ItemId = Id;
+            await itemService.AddReviewAsync(review);
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+        
     }
 
 }
