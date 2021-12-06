@@ -10,6 +10,7 @@ public class ReviewMapper implements DataMapper<Review>{
     @Override
     public Review map(ResultSet resultSet) throws SQLException {
         return new Review(resultSet.getInt("rating"),resultSet.getString("comment"),
-               new Customer(resultSet.getInt("customer_id"), resultSet.getString("first_name"), resultSet.getString("last_name")),resultSet.getInt("item_id"),resultSet.getDate("date_time").toLocalDate());
+                resultSet.getInt("item_id"),new Customer(resultSet.getInt("customer_id"), resultSet.getString("first_name"), resultSet.getString("last_name")),resultSet.getDate("date_time").toLocalDate());
     }
 }
+

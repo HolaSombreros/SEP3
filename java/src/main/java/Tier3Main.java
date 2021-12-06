@@ -6,17 +6,16 @@ import model.Category;
 import model.Genre;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 public class Tier3Main {
     public static void main(String[] args) {
         DatabaseManager databaseManager = new DatabaseManager();
+
         System.out.println("Database Started  ^-^ ");
-//        ArrayList<Genre> genres = new ArrayList<>();
-//        genres.add(new Genre("Romance", 1));
+        ArrayList<Genre> genres = new ArrayList<>();
+        genres.add(new Genre("Romance", 1));
 //        databaseManager.getCustomerDAOService().create("Maria","Magdalena","mariamgd@gmail.com","password","Customer", new Address("Old Tavern","Holly Trinity",1234,"Jerusalim",1),"12345678");
 //        databaseManager.getBookDAOService()
 //            .create("Solo Leveling", "A light Novel", new BigDecimal(12.50), new Category(1, "Book"), 15, "Images/solo_leveling_vol1.jpg", "9781975319274", new ArrayList<>(Arrays.asList(new Author("Chu", "Gong"))), "English", genres,

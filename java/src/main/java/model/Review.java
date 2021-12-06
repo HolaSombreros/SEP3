@@ -9,12 +9,20 @@ public class Review {
     private int itemId;
     private MyDateTime dateTime;
 
-    public Review(int rating, String comment, Customer customer, int itemId, LocalDate dateTime){
+    public Review(int rating, String comment, int itemId, Customer customer, LocalDate dateTime) {
         this.rating = rating;
         this.comment = comment;
         this.itemId = itemId;
         this.customer = customer;
         this.dateTime = new MyDateTime(dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth(), 0, 0, 0);;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public MyDateTime getDateTime() {
@@ -39,14 +47,6 @@ public class Review {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     public int getItemId() {

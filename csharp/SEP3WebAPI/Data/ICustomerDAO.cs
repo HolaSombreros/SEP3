@@ -20,6 +20,6 @@ namespace SEP3WebAPI.Data {
         Task<IList<Notification>> GetNotificationsAsync(int customerId, int index);
         Task<Notification> UpdateSeenNotificationAsync(int customerId, int notificationId);
         Task<IList<Customer>> GetCustomersByIndexAsync(int index);
-        Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index);
+
     }
 }

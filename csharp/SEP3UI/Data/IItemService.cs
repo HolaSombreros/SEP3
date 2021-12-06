@@ -19,5 +19,6 @@ namespace SEP3UI.Data {
         Task<Book> UpdateBookAsync(int id, BookModel item);
         Task<IList<Item>> GetItemsByPrice(string orderBy, int index);
         Task<IList<Review>> GetItemReviewsAsync(int index, Item item);
+        Task<Review> AddReviewAsync(Review review);
     }
 }

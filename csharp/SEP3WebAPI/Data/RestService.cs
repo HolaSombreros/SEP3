@@ -348,8 +348,8 @@ namespace SEP3WebAPI.Data {
             return await client.CreateOrderAsync(order);
         }
 
-        public async Task<IList<Order>> GetOrdersAsync(int index) {
-            return await client.GetOrdersAsync(index);
+        public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
+            return await client.GetOrdersAsync(index, id, status);
         }
 
         public async Task<Order> GetOrderAsync(int orderId) {
@@ -362,6 +362,10 @@ namespace SEP3WebAPI.Data {
 
         public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
             return await client.GetItemReviewsAsync(index,item);
+        }
+
+        public async Task<Review> AddReviewAsync(Review review) {
+            return await client.AddReviewAsync(review);
         }
 
         public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
