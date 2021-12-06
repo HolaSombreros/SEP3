@@ -15,5 +15,7 @@ namespace SEP3Library.Models {
         [Required(ErrorMessage = "Please specify the answer")]
         [StringLength(500, MinimumLength = 10, ErrorMessage = "Please specify an answer between {2} and {1} characters")]
         public string Answer { get; set; }
+
+        public int CreatorId { get; set; }
     }
 }

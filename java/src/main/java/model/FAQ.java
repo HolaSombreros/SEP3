@@ -5,6 +5,7 @@ public class FAQ {
     private String category;
     private String question;
     private String answer;
+    private int creatorId;
 
     public FAQ(int id, String category, String question, String answer) {
         this.id = id;
@@ -43,5 +44,13 @@ public class FAQ {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
     }
 }

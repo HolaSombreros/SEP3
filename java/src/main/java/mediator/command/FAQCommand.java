@@ -47,7 +47,7 @@ public class FAQCommand implements Command {
 
     private void add() {
         FAQ faq = request.getFAQ();
-        FAQ created = databaseManager.getFAQDAOService().add(faq.getCategory(), faq.getQuestion(), faq.getAnswer());
+        FAQ created = databaseManager.getFAQDAOService().add(faq.getCategory(), faq.getQuestion(), faq.getAnswer(), faq.getCreatorId());
         reply.setFAQ(created);
     }
 
