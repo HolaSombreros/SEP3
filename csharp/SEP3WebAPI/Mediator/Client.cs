@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
@@ -502,6 +503,17 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(req);
             return ((ItemMessage) reply).Reviews;
+        }
+
+        public async Task<Review> AddReviewAsync(Review review) {
+            ItemMessage req = new ItemMessage() {
+                Type = "addReview",
+                Service = "item",
+                Reviews = new List<Review>()
+            };
+            req.Reviews.Add(review);
+            Send(req);
+            return ((ItemMessage) reply).Reviews[0];
         }
 
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {

@@ -10,6 +10,7 @@ import model.MyDateTime;
 import model.Review;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ReviewDAOService implements ReviewDAO {
@@ -24,7 +25,7 @@ public class ReviewDAOService implements ReviewDAO {
         customerDAOService = new CustomerDAOService(url, username, password);
     }
     @Override
-    public Review create(int customer_id, int item_id, int rating, String comment, MyDateTime dateTime) {
+    public Review create(int customer_id, int item_id, int rating, String comment, LocalDate dateTime) {
         try {
             Item item = itemDAOService.read(item_id);
             Customer customer = customerDAOService.read(customer_id);
