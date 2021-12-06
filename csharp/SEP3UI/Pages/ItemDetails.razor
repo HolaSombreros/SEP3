@@ -112,53 +112,90 @@ else {
                 </div>
             </div>
         </div>
-        @foreach (Review review in reviews) {
-            <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
-                <h5 class="mb-1">All Ratings and Reviews</h5>
-                <div class="reviews-members pt-4 pb-4">
-                    <div class="media">
-                        <div class="media-body">
-                            <div class="reviews-members-header">
-                                <span class="star-rating float-right"></span>
-                                <h6 class="mb-1">
-                                    <a class="text-black" href="#">@review.CustomerFirstName @review.CustomerLastName</a>
-                                </h6>
-                                <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
-                            </div>
-                            <div class="reviews-members-body">
-                                <p>@review.Comment</p>
-                            </div>
+    </div>
+    @foreach (Review review in reviews) {
+        <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+            <h5 class="mb-1">All Ratings and Reviews</h5>
+            <div class="reviews-members pt-4 pb-4">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="reviews-members-header">
+                            <span class="star-rating float-right"></span>
+                            <h6 class="mb-1">
+                                <a class="text-black" href="#">@review.CustomerFirstName @review.CustomerLastName</a>
+                            </h6>
+                            <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
+                        </div>
+                        <div class="reviews-members-body">
+                            <p>@review.Comment</p>
+                        </div>
+                        <div class="">
+                            @for (int i = 0; i < review.Rating; i++) {
+                                <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
+                            }
+                            @for (int i = 0; i < 5 - review.Rating; i++) {
+                                <i class="icons oi oi-star" style="color:grey;" id="star1"></i>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
-        }
-        <div class="text-center">
-            <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
         </div>
-        <div class="@show">
-            <AuthorizeView>
-                <EditForm Model="review" Context="addReview">
-                    <DataAnnotationsValidator/>
-                    <div class=" rounded shadow-sm p-4 mb-5 container">
-                        <form>
-                            <div class="form-group">
-                                <h5 class="mb-4">Leave a comment</h5>
-                                <label>Your Comment</label>
-                                <textarea class="form-control" @bind="@review.Comment"></textarea>
-                            </div>
-                            <ValidationMessage For="@(() => review.Comment)"/>
-                            <div class="form-group text-center">
-                                <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
-                            </div>
-                        </form>
-                    </div>
-                </EditForm>
-            </AuthorizeView>
-        </div>
-        <div class="container text-center text-danger">
-            <div>@errorMessage</div>
-        </div>
+    }
+    <div class="text-center">
+        <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
+    </div>
+    <div class="@show">
+        <AuthorizeView>
+            <EditForm Model="review" Context="addReview">
+                <DataAnnotationsValidator/>
+                <div class=" rounded shadow-sm p-4 mb-5 container">
+                    <form>
+                        <div class="form-group">
+                            <h5 class="mb-4">Leave a comment</h5>
+                            <label>Your Comment</label>
+                            <textarea class="form-control" @bind="@review.Comment"></textarea>
+                        </div>
+                        <ValidationMessage For="@(() => review.Comment)"/>
+                        <p class="mb-2">Rate the item</p>
+                        <div class="rating">
+                            @* @for (int i = 1; i <= 5; i++) { *@
+                            @*     <input type="radio" name="test" id="@GetNameFromNumber(i)" onclick="@AddRating(i)"/> *@
+                            @*     <label for="@GetNameFromNumber(i)"> *@
+                            @*         <i class="oi oi-star"></i> *@
+                            @*     </label> *@
+                            @* } *@
+                            <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
+                            <label for="one">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                            <label for="two">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                            <label for="three">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                            <label for="four">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                            <label for="five">
+                                <i class="oi oi-star"></i>
+                            </label>
+                        </div>
+                        <div class="form-group text-center">
+                            <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
+                        </div>
+                    </form>
+                </div>
+            </EditForm>
+        </AuthorizeView>
+    </div>
+    <div class="container text-center text-danger">
+        <div>@errorMessage</div>
     </div>
 }
 
@@ -184,10 +221,11 @@ else {
         review = new Review();
         index = 0;
         item = await itemService.GetItemAsync(Id);
-        reviews = await itemService.GetItemReviewsAsync(index,item);
+        reviews = await itemService.GetItemReviewsAsync(index, item);
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
+
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -215,7 +253,7 @@ else {
         }
         else {
             foreach (Review r in newList.ToList()) {
-                    reviews.Add(r);
+                reviews.Add(r);
             }
         }
     }
@@ -259,6 +297,29 @@ else {
         review.CustomerFirstName = customer.FirstName;
         review.CustomerLastName = customer.LastName;
         await itemService.AddReviewAsync(review);
+    // OnInitializedAsync();
+    }
+
+
+    private int GetNumberFromString(string id) {
+        switch (id) {
+            case "one":
+                return 1;
+            case "two":
+                return 2;
+            case "three":
+                return 3;
+            case "four":
+                return 4;
+            case "five":
+                return 5;
+        }
+        return 0;
+    }
+
+    private void AddRating(int i) {
+        Console.WriteLine(i);
+        review.Rating = i;
     }
 
 }
