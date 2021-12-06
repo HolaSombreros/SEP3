@@ -1,6 +1,9 @@
 ﻿@namespace AccordionComponent
+@using SEP3UI.Authentication
+@using SEP3UI.Data
+@inject IFAQService faqService
 
-<button class="btn btn-light w-100 text-left" @onclick="Toggle" style="padding: 1rem;">
+<button class="btn btn-light w-100 p-3 text-left" @onclick="Toggle">
     <span class="oi @ChevronCssClass mr-2" style="top: 3px;"></span>
     @Question
 </button>
