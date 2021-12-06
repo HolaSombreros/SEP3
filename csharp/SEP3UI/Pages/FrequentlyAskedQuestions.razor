@@ -10,9 +10,9 @@
 
 <div class="container py-3">
     <h2 class="text-center mb-3">Frequently Asked Questions</h2>
-    @if (faqs == null) {
+    @if (groupedFAQs == null) {
         <em class="text-center">Loading...</em>
-    } else if (!faqs.Any()) {
+    } else if (!groupedFAQs.Any()) {
         <div class="text-center">
             <em class="d-block mb-2">No Frequently Asked Questions have been added yet</em>
             <AuthorizeView Policy="@Policies.IsAdmin">
@@ -20,9 +20,7 @@
             </AuthorizeView>
         </div>
     } else {
-        @foreach (var category in faqs.OrderBy(f => f.Category)
-                                                        .GroupBy(f => f.Category)
-                                                        .ToList()) {
+        @foreach (var category in groupedFAQs) {
             <div class="mb-4">
                 <h4 class="mb-2">@category.Key</h4>
                 @foreach (var faq in category) {
@@ -49,11 +47,18 @@
 </div>
 
 @code {
-    private IList<FAQ> faqs;
+    private IList<IGrouping<string, FAQ>> groupedFAQs;
     private string errorMessage;
 
     protected override async Task OnInitializedAsync() {
-        faqs = await faqService.GetFrequentlyAskedQuestionsAsync();
+        await LoadAndGroupFAQsAsync();
+    }
+
+    private async Task LoadAndGroupFAQsAsync() {
+        IList<FAQ> faqs = await faqService.GetFrequentlyAskedQuestionsAsync();
+        groupedFAQs = faqs.OrderBy(f => f.Category)
+            .GroupBy(f => f.Category)
+            .ToList();
     }
     
     private void AddNewFAQBtnClickedAsync() {
@@ -63,7 +68,7 @@
     private async Task DeleteAsync(int id) {
         try {
             await faqService.DeleteFrequentlyAskedQuestionAsync(id);
-            faqs = await faqService.GetFrequentlyAskedQuestionsAsync();
+            await LoadAndGroupFAQsAsync();
         } catch (Exception e) {
             errorMessage = e.Message;
         }
