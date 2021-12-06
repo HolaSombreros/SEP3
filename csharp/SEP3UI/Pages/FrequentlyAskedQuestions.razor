@@ -1,8 +1,10 @@
 ﻿@page "/faqs/all"
+
 @using SEP3Library.Models
 @using SEP3UI.Data
 @using AccordionComponent
 @using SEP3UI.Authentication
+
 @inject IFAQService faqService
 @inject NavigationManager nav
 
@@ -48,14 +50,10 @@
 
 @code {
     private IList<FAQ> faqs;
-    // private IList<IGrouping<string, FAQ>> faqGroups;
     private string errorMessage;
 
     protected override async Task OnInitializedAsync() {
         faqs = await faqService.GetFrequentlyAskedQuestionsAsync();
-        // faqGroups = faqs.OrderBy(f => f.Category)
-        //     .GroupBy(f => f.Category)
-        //     .ToList();
     }
     
     private void AddNewFAQBtnClickedAsync() {
@@ -65,6 +63,7 @@
     private async Task DeleteAsync(int id) {
         try {
             await faqService.DeleteFrequentlyAskedQuestionAsync(id);
+            faqs = await faqService.GetFrequentlyAskedQuestionsAsync();
         } catch (Exception e) {
             errorMessage = e.Message;
         }
