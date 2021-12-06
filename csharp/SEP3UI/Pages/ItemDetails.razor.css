@@ -79,3 +79,39 @@
 .vote {
     cursor: pointer
 }
+
+/*rating*/
+input[type="radio"] {
+    position: fixed;
+    top: 0;
+    right: 100%;
+}
+
+.rating label {
+    font-size: 1.3em;
+    padding-right: 0.3em;
+    margin: 0;
+    float: left;
+    cursor: pointer;
+}
+
+input[type="radio"]:checked ~ input + label {
+    background: none;
+    color: #aaa;
+}
+
+input + label {
+    background: #fff;
+    color: darkred;
+    margin: 0 0 1em 0;
+}
+
+input + label:first-of-type {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+input:checked + label {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
