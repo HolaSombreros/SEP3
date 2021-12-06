@@ -1,8 +1,6 @@
 package database.daoservice;
 
-import database.daoservice.mapper.CategoryMapper;
 import database.daoservice.mapper.DataMapper;
-import model.Category;
 
 import java.sql.*;
 import java.util.ArrayList;
