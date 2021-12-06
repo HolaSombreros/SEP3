@@ -23,6 +23,7 @@ else {
                     <div class="img-responsive m-3 text-center mt-5">
                         <img src="@item.ImageName"/>
                     </div>
+
                 </div>
                 <div class="col-md-6">
                     <div class="pt-5 pl-5">
@@ -59,7 +60,7 @@ else {
                             </div>
                             <div class="mt-2">
                                 <span>
-                                    <strong>Publication Date: </strong>@book.PublicationDate
+                                    <strong>Publication Date: </strong>@book.PublicationDate.DateToString()
                                 </span>
                             </div>
                             <div class="mt-2">
@@ -83,12 +84,14 @@ else {
                                 <span class="ml-2 text-danger">(@item.Discount% OFF)</span>
                             }
                         </div>
-                        <div class="form-group mt-2">
+                        <AuthorizeView Policy=@Policies.IsAdmin>
+                        <div class="mt-2">
                             <label>
                                 <strong>Quantity: </strong> @item.Quantity
                             </label>
                         </div>
-                        <div class="form-group mt-2">
+                        </AuthorizeView>
+                        <div class="mt-2">
                             <label>
                                 <strong>Status: </strong>
                             </label>
@@ -98,6 +101,11 @@ else {
                             else {
                                 <span class="text-success"> In stock</span>
                             }
+                        </div>
+                        <div class="mt-2">
+                            <label>
+                                <strong>Rating:</strong> @Math.Round(GetAverageReview(), 2, MidpointRounding.ToEven)
+                            </label>
                         </div>
                         <div class="mt-2">
                             <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">Add to Shopping Cart</button>
@@ -114,9 +122,9 @@ else {
         <div class="text-center mb-3 mt-3">
             <h2 class="mb-1">All Ratings and Reviews</h2>
         </div>
-            @foreach (Review review in reviews) {
-                <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
-                    <div class="reviews-members pt-4 pb-4">
+        @foreach (Review review in reviews) {
+            <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+                <div class="reviews-members pt-4 pb-4">
                     <div class="media">
                         <div class="media-body">
                             <div class="reviews-members-header">
@@ -129,12 +137,20 @@ else {
                             <div class="reviews-members-body">
                                 <p>@review.Comment</p>
                             </div>
+                            <div class="">
+                                @for (int i = 0; i < review.Rating; i++) {
+                                    <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
+                                }
+                                @for (int i = 0; i < 5 - review.Rating; i++) {
+                                    <i class="icons oi oi-star" style="color:grey;" id="star1"></i>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         }
-            <div class="text-center">
+        <div class="text-center">
             <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
         </div>
         <div class="@show">
@@ -149,6 +165,29 @@ else {
                                 <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
                             </div>
                             <ValidationMessage For="@(() => review.Comment)"/>
+                            <p class="mb-2">Rate the item</p>
+                            <div class="rating">
+                                <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
+                                <label for="one">
+                                    <i class="oi oi-star"></i>
+                                </label>
+                                <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                                <label for="two">
+                                    <i class="oi oi-star"></i>
+                                </label>
+                                <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                                <label for="three">
+                                    <i class="oi oi-star"></i>
+                                </label>
+                                <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                                <label for="four">
+                                    <i class="oi oi-star"></i>
+                                </label>
+                                <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                                <label for="five">
+                                    <i class="oi oi-star"></i>
+                                </label>
+                            </div>
                             <div class="form-group text-center">
                                 <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
                             </div>
@@ -185,10 +224,11 @@ else {
         review = new Review();
         index = 0;
         item = await itemService.GetItemAsync(Id);
-        reviews = await itemService.GetItemReviewsAsync(index,item);
+        reviews = await itemService.GetItemReviewsAsync(index, item);
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
+
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -216,7 +256,7 @@ else {
         }
         else {
             foreach (Review r in newList.ToList()) {
-                    reviews.Add(r);
+                reviews.Add(r);
             }
         }
     }
@@ -272,7 +312,21 @@ else {
         catch (Exception e) {
             errorMessage = e.Message;
         }
-        
+    }
+
+    private void AddRating(int i) {
+        Console.WriteLine(i);
+        review.Rating = i;
+    }
+
+    private decimal GetAverageReview() {
+        decimal average = 0;
+        foreach (Review review in reviews) {
+            average += review.Rating;
+        }
+        if(reviews.Count > 0) 
+            return average / reviews.Count;
+        return average;
     }
 
 }
