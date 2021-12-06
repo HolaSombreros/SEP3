@@ -63,7 +63,7 @@ public class GenreDAOService implements GenreDAO {
     public void updateBookGenre(Genre genre, int itemId) {
         try{
             Genre g = read(genre.getName());
-            if(!isGenre(g.getName()))
+            if(!isGenreInBookGenre(g.getId(), itemId))
                 databaseHelper.executeUpdateWithKeys("INSERT INTO book_genre VALUES (?,?)", itemId,g.getId());
         }
         catch (SQLException e){
@@ -98,6 +98,14 @@ public class GenreDAOService implements GenreDAO {
     private boolean isGenre(String genre) {
         try {
             return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM genre WHERE name = ?", genre).next();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    private boolean isGenreInBookGenre(int genreId, int itemId){
+        try {
+            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM book_genre WHERE genre_id = ? AND item_id = ?", genreId, itemId).next();
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
