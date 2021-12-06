@@ -2,11 +2,8 @@
 
 namespace SEP3Library.Models {
     public class Review {
-        public int Id { get; set; }
         [Required]
-        public int CustomerId { get; set; }
-        public string CustomerFirstName { get; set; }
-        public string CustomerLastName { get; set; }
+        public Customer Customer { get; set; }
         public int Rating { get; set; }
         
         [MaxLength(3000, ErrorMessage = "The comment cannot exceed 3000 characters")]

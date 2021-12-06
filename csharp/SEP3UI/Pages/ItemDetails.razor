@@ -34,7 +34,6 @@ else {
                                 else {
                                     <i class="non-favorite oi oi-heart" @onclick="PerformFavoriteAsync"></i>
                                 }
-                                <i class="non-favorite icons oi oi-comment-square ml-3"></i>
                             </div>
                         </AuthorizeView>
                         <h2 class="mb-4">
@@ -121,7 +120,7 @@ else {
                             <div class="reviews-members-header">
                                 <span class="star-rating float-right"></span>
                                 <h6 class="mb-1">
-                                    <a class="text-black" href="#">@review.CustomerFirstName @review.CustomerLastName</a>
+                                    <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
                                 </h6>
                                 <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
                             </div>
@@ -201,7 +200,7 @@ else {
             favorite = wishlist.FirstOrDefault(i => i.Id == item.Id) != null;
         }
         foreach (Review r in reviews) {
-            if (r.CustomerId == customerId)
+            if (r.Customer.Id == customerId)
                 show = "d-none";
         }
     }
@@ -253,11 +252,18 @@ else {
             Month = DateTime.Now.Month,
             Year = DateTime.Now.Year
         };
-        review.CustomerId = customerId;
-        review.ItemId = Id;
         Customer customer = await customerService.GetCustomerAsync(customerId);
-        review.CustomerFirstName = customer.FirstName;
-        review.CustomerLastName = customer.LastName;
+        review.Customer = new Customer() {
+            Id = customer.Id,
+            FirstName = customer.FirstName,
+            LastName = customer.LastName,
+            Address = customer.Address,
+            Email = customer.Email,
+            Password = customer.Password,
+            Role = customer.Role,
+            PhoneNumber = customer.PhoneNumber
+        };
+        review.ItemId = Id;
         await itemService.AddReviewAsync(review);
     }
 
