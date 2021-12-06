@@ -32,7 +32,7 @@ public class FAQDAOService implements FAQDAO {
         }
     }
 
-    @Override public FAQ add(String category, String question, String answer) {
+    @Override public FAQ add(String category, String question, String answer, int creatorId) {
         try {
             int categoryId;
             ResultSet rs = databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM faq_category "
@@ -46,8 +46,8 @@ public class FAQDAOService implements FAQDAO {
                 categoryId = rs.getInt("category_id");
             }
 
-            List<Integer> faqKeys = databaseHelper.executeUpdateWithKeys("INSERT INTO faq (category_id, question, answer) "
-                    + "VALUES (?, ?, ?);", categoryId, question, answer);
+            List<Integer> faqKeys = databaseHelper.executeUpdateWithKeys("INSERT INTO faq (category_id, question, answer, creator_id) "
+                    + "VALUES (?, ?, ?, ?);", categoryId, question, answer, creatorId);
             return new FAQ(faqKeys.get(0), category, question, answer);
         } catch (SQLException e) {
             throw new IllegalStateException(e.getMessage());

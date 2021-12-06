@@ -1,7 +1,14 @@
 ﻿@page "/faqs/new"
+
 @using SEP3Library.Models
 @using SEP3UI.Data
+@using System.Security.Claims
+@using SEP3UI.Authentication
+
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+
 @inject IFAQService faqService
+@inject AuthenticationStateProvider authState
 
 @if (categories == null) {
     <em>Loading...</em>
@@ -68,6 +75,9 @@
             .Select(f => f.Category)
             .Distinct()
             .ToList();
+        int adminId = int.Parse((await authState.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        Console.WriteLine(adminId);
+        faq.CreatorId = adminId;
     }
 
     private void AddNewCategoryBtnClicked() {

@@ -58,7 +58,7 @@ public class ReviewDAOService implements ReviewDAO {
     @Override
     public List<Review> readByItem(int item_id, int index) {
         try {
-            return databaseHelper.mapList(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE item_id =? ORDER BY customer_id ASC LIMIT 3 OFFSET 3 * ? ", item_id, index);
+            return databaseHelper.mapList(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE item_id =? ORDER BY customer_id DESC LIMIT 3 OFFSET 3 * ? ", item_id, index);
         }
         catch (SQLException e) {
             e.printStackTrace();

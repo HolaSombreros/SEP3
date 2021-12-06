@@ -9,6 +9,7 @@ public class FAQMessage extends Message {
     private List<FAQ> faqs;
     private int id;
     private FAQ faq;
+    private int creatorId;
 
     public FAQMessage(String service, String type) {
         super(service, type);
@@ -33,5 +34,9 @@ public class FAQMessage extends Message {
 
     public void setFAQ(FAQ faq) {
         this.faq = faq;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
     }
 }

@@ -30,7 +30,6 @@ namespace SEP3UI.Data {
          */
         public async Task<TOutput> PostAsync<TInput, TOutput>(TInput obj, string endpoint) {
             string json = JsonSerializer.Serialize(obj);
-            Console.WriteLine(json);
             using HttpClient client = new HttpClient();
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
