@@ -168,7 +168,7 @@ else {
     [Parameter]
     public int Id { get; set; }
 
-    private int index { get; set; }
+    private int Index { get; set; }
     private int customerId;
     private Item item;
     private Book book;
@@ -183,9 +183,9 @@ else {
 
     protected override async Task OnInitializedAsync() {
         review = new Review();
-        index = 0;
+        Index = 0;
         item = await itemService.GetItemAsync(Id);
-        reviews = await itemService.GetItemReviewsAsync(index,item);
+        reviews = await itemService.GetItemReviewsAsync(Index,item);
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
@@ -208,11 +208,11 @@ else {
     }
 
     private async Task LoadMoreAsync() {
-        index++;
-        IList<Review> newList = await itemService.GetItemReviewsAsync(index, item);
+        Index++;
+        IList<Review> newList = await itemService.GetItemReviewsAsync(Index, item);
         if (newList.Count == 0) {
             loadMore = "display: none";
-            index--;
+            Index--;
         }
         else {
             foreach (Review r in newList.ToList()) {
@@ -234,7 +234,7 @@ else {
             await customerService.AddToShoppingCartAsync(i, customerId);
     }
 
-    private void View(int id, String categoryName) {
+    private void View(int id, string categoryName) {
         navigationManager.NavigateTo($"EditItem/{id}/{categoryName}");
     }
 

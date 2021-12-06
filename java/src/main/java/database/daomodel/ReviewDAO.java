@@ -1,8 +1,6 @@
 package database.daomodel;
 
-import model.MyDateTime;
 import model.Review;
-
 import java.time.LocalDate;
 import java.util.List;
 
