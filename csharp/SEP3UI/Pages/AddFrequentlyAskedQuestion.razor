@@ -81,8 +81,8 @@
     }
 
     private void AddNewCategoryBtnClicked() {
-        if (newCategory.Length < 3 || newCategory.Length > 50) {
-            categoryErrorMessage = "Please specify a category between 3 and 50 characters";
+        if (newCategory.Length < 2 || newCategory.Length > 50) {
+            categoryErrorMessage = "Please specify a category between 2 and 50 characters";
         } else if (categories.Any(c => c.ToLower().Equals(newCategory.ToLower()))) {
             categoryErrorMessage = "That category already exists";
         } else {
