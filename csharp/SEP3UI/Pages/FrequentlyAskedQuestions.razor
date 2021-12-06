@@ -16,7 +16,7 @@
         <div class="text-center">
             <em class="d-block mb-2">No Frequently Asked Questions have been added yet</em>
             <AuthorizeView Policy="@Policies.IsAdmin">
-                <button class="btn btn-primary" @onclick="AddNewFAQBtnClickedAsync">Add New FAQ</button>
+                <button class="btn btn-primary" @onclick="AddNewFAQBtnClicked">Add New FAQ</button>
             </AuthorizeView>
         </div>
     } else {
@@ -40,7 +40,7 @@
         <span class="text-danger mb-2">@errorMessage</span>
         <AuthorizeView Policy="@Policies.IsAdmin">
             <div class="text-center">
-                <button class="btn btn-primary" @onclick="AddNewFAQBtnClickedAsync">Add New FAQ</button>
+                <button class="btn btn-primary" @onclick="AddNewFAQBtnClicked">Add New FAQ</button>
             </div>
         </AuthorizeView>
     }
@@ -61,7 +61,7 @@
             .ToList();
     }
     
-    private void AddNewFAQBtnClickedAsync() {
+    private void AddNewFAQBtnClicked() {
         nav.NavigateTo("/faqs/new");
     }
 
