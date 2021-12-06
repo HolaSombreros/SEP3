@@ -2,13 +2,11 @@ package database.daoservice;
 
 import database.daomodel.ItemDAO;
 import database.daomodel.OrderDAO;
-import database.daoservice.mapper.ItemMapper;
 import database.daoservice.mapper.OrderMapper;
 import model.*;
 import model.enums.OrderStatus;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAOService implements OrderDAO {
