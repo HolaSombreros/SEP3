@@ -49,8 +49,4 @@ public class FAQ {
     public int getCreatorId() {
         return creatorId;
     }
-
-    public void setCreatorId(int creatorId) {
-        this.creatorId = creatorId;
-    }
 }
