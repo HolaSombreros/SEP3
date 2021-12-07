@@ -275,6 +275,7 @@ else {
         if (loggedCustomerReview) {
             show = "d-none";
         }
+        FilterCustomerReview();
     }
 
     private async Task LoadMoreAsync() {
@@ -289,6 +290,7 @@ else {
                 reviews.Add(r);
             }
         }
+        FilterCustomerReview();
     }
 
     private void SetDisabledState() {
@@ -383,14 +385,19 @@ else {
         return  isEditing = isEditing ? false : true;
     }
 
+    /*
+     * This method filters through the review and finds the customers review
+     * Then it moves it to the first position in the list
+     * For making the editing and removal of a review easier
+     */
     private void FilterCustomerReview() {
         for (int i = 0; i < reviews.Count; i++) {
             if (reviews[i].Customer.Id == customerId) {
-                // int index = reviews.IndexOf(reviews[i]);
-                // reviews.RemoveAt(index);
-                reviews[0] = reviews[i];
+                Review rev = reviews[i];
+                Review first = reviews[0];
+                reviews[i] = first;
+                reviews[0] = rev;
             }
-            reviews[i] = reviews[i++];
         }
     }
 
