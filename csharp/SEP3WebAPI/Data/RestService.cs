@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -102,10 +103,30 @@ namespace SEP3WebAPI.Data {
             toUpdate.Category = item.Category;
             toUpdate.Price = item.Price;
             toUpdate.Quantity = item.Quantity;
-            toUpdate.Status = item.Status;
+            toUpdate.Status = item.Quantity != 0 ? ItemStatus.InStock : ItemStatus.OutOfStock;
             toUpdate.Discount = item.Discount;
             toUpdate.ImageName = item.ImageName;
-            
+
+
+            if ((await client.GetItemAsync(id)).Status.Equals(ItemStatus.OutOfStock) &&
+                toUpdate.Status.Equals(ItemStatus.InStock)) {
+                Notification notification = new Notification() {
+                    Text = $"The item {item.Name} in your wishlist is back on stock",
+                    Status = "Unread",
+                    Time = new MyDateTime() {
+                        Year = DateTime.Now.Year,
+                        Month = DateTime.Now.Month,
+                        Day = DateTime.Now.Day,
+                        Hour = DateTime.Now.Hour,
+                        Minute = DateTime.Now.Minute,
+                        Second = DateTime.Now.Second
+                    }
+                };
+                IList<Customer> customers = await client.GetCustomerWithWishlistItemAsync(id);
+                foreach (Customer customer in customers) {
+                    await client.SendNotificationAsync(customer, notification);
+                }
+            }
             await client.UpdateItemAsync(toUpdate);
             return toUpdate;
         }

@@ -415,6 +415,16 @@ namespace SEP3WebAPI.Mediator {
             return ((CustomerMessage) reply).Notification;
         }
 
+        public async Task<IList<Customer>> GetCustomerWithWishlistItemAsync(int itemId) {
+            CustomerMessage req = new CustomerMessage() {
+                Type = "customerWithWishlistItem",
+                Service = "customer",
+                ItemId = itemId
+            };
+            Send(req);
+            return ((CustomerMessage) reply).Customers;
+        }
+
         public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "getCustomersByIndex",
