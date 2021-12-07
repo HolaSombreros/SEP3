@@ -14,4 +14,5 @@ public interface OrderDAO {
     Order update(Order order);
     void delete(Order order);
     List<Order> readAllOrdersByCustomer(int customerId, int index);
+    void returnItems(Order order);
 }

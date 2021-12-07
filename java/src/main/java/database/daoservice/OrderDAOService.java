@@ -4,13 +4,13 @@ import database.daomodel.ItemDAO;
 import database.daomodel.OrderDAO;
 import database.daoservice.mapper.OrderMapper;
 import model.*;
+import model.enums.ItemStatus;
 import model.enums.OrderStatus;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class OrderDAOService implements OrderDAO {
-
     private DatabaseHelper<Order> databaseHelper;
     private AddressDAOService addressDAOService;
     private ItemDAO itemDAOService;
@@ -114,6 +114,21 @@ public class OrderDAOService implements OrderDAO {
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public void returnItems(Order order) {
+        try {
+            for (int i = 0; i < order.getItems().size(); i++) {
+                Item item = order.getItems().get(i);
+
+                if (item.getQuantity() > 0) {
+                    databaseHelper.executeUpdate("UPDATE purchase_item SET quantity = quantity - ? WHERE purchase_id = ? AND item_id = ?;", item.getQuantity(), order.getId(), item.getId());
+                    databaseHelper.executeUpdate("UPDATE item SET quantity = quantity + ?, status = ?::item_status WHERE item_id = ?;", item.getQuantity(), ItemStatus.INSTOCK.toString(), item.getId());
+                }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException(e.getMessage());
         }
     }
 }
