@@ -86,7 +86,6 @@ public class OrderDAOService implements OrderDAO {
 
     @Override public Order update(Order order) {
         try {
-            System.out.println(order.getId());
             Address address = addressDAOService.create(order.getAddress().getStreet(), order.getAddress().getNumber(), order.getAddress().getZipCode(),
                 order.getAddress().getCity());
             databaseHelper.executeUpdate("UPDATE purchase SET address_id = ?, first_name = ?, last_name = ?, email = ? WHERE purchase_id = ? AND customer_id = ?;", address.getId(),
@@ -96,10 +95,6 @@ public class OrderDAOService implements OrderDAO {
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    @Override public void delete(Order order) {
-
     }
 
     @Override public List<Order> readAllOrdersByCustomer(int customerId, int index) {

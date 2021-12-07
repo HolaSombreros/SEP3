@@ -128,6 +128,10 @@ else {
                     <div class="media">
                         <div class="media-body">
                             <div class="reviews-members-header">
+                                @if (customerId == review.Customer.Id) {
+                                    <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
+                                    <a class="oi oi-pencil" @onclick="(() => EditReview(review))"/>
+                                }
                                 <span class="star-rating float-right"></span>
                                 <h6 class="mb-1">
                                     <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
@@ -225,6 +229,7 @@ else {
         Index = 0;
         item = await itemService.GetItemAsync(Id);
         reviews = await itemService.GetItemReviewsAsync(Index,item);
+        
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
@@ -241,9 +246,10 @@ else {
             IList<Item> wishlist = await customerService.GetCustomerWishlistAsync(customerId);
             favorite = wishlist.FirstOrDefault(i => i.Id == item.Id) != null;
         }
-        foreach (Review r in reviews) {
-            if (r.Customer.Id == customerId)
-                show = "d-none";
+
+        bool loggedCustomerReview = await itemService.GetReviewAsync(Id, customerId);
+        if (loggedCustomerReview) {
+            show = "d-none";
         }
     }
 
@@ -311,6 +317,36 @@ else {
         }
         catch (Exception e) {
             errorMessage = e.Message;
+        }
+    }
+
+    private async Task RemoveReview(Review r) {
+        try {
+            await itemService.RemoveReviewAsync(r.ItemId, r.Customer.Id);
+            reviews.Remove(r);
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private async Task EditReview(Review r) {
+        try {
+            await itemService.UpdateReviewAsync(r);
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private void FilterCustomerReview() {
+        for (int i = 0; i < reviews.Count; i++) {
+            if (reviews[i].Customer.Id == customerId) {
+                // int index = reviews.IndexOf(reviews[i]);
+                // reviews.RemoveAt(index);
+                reviews[0] = reviews[i];
+            }
+            reviews[i] = reviews[i++];
         }
     }
 

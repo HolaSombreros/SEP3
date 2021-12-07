@@ -76,6 +76,19 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
+        [HttpGet]
+        [Route("{id:int}/reviews/{customerId:int}")]
+        public async Task<ActionResult<bool>> GetReviewAsync([FromRoute] int id, [FromRoute] int customerId) {
+            try {
+                Review review = await service.GetReviewAsync(customerId, id);
+                return Ok(review!=null);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
         [HttpPost]
         [Route("{id:int}/reviews")]
         public async Task<ActionResult<Review>> AddReviewAsync([FromRoute] int id, [FromBody] Review review) {
@@ -85,6 +98,41 @@ namespace SEP3WebAPI.Controllers {
                 return Created($"/{created.ItemId}/{created.Customer.Id}", created);
             } catch (InvalidDataException e) {
                 return Conflict(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("{id:int}/reviews")]
+        public async Task<ActionResult<Review>> UpdateReviewAsync([FromRoute] int id, [FromBody] Review review) {
+            try {
+                if (!ModelState.IsValid)
+                    throw new InvalidDataException("Please specify a review of proper format");
+                Review updated = await service.UpdateReviewAsync(review);
+                if (updated == null)
+                    throw new Exception($"The review of the item {id} does not exist");
+                return Ok(updated);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id:int}/reviews/{customerId:int}")]
+        public async Task<ActionResult> RemoveReviewAsync([FromRoute] int id, [FromRoute] int customerId) {
+            try {
+                Review review = await service.GetReviewAsync(customerId, id);
+                if (review == null)
+                    throw new Exception("The review does not exist");
+                await service.RemoveReviewAsync(id, customerId);
+                return Ok();
+            }
+            catch (InvalidDataException e) {
+                 return Conflict(e.Message);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
