@@ -128,18 +128,40 @@ else {
                     <div class="media">
                         <div class="media-body">
                             <div class="reviews-members-header">
-                                @if (customerId == review.Customer.Id) {
-                                    <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
-                                    <a class="oi oi-pencil" @onclick="(() => EditReview(review))"/>
-                                }
-                                <span class="star-rating float-right"></span>
                                 <h6 class="mb-1">
                                     <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
                                 </h6>
                                 <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
-                            </div>
-                            <div class="reviews-members-body">
-                                <p>@review.Comment</p>
+                                @if (customerId == review.Customer.Id) {
+                                    <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
+                                    <a class="close mr-3 oi oi-pencil " @onclick="() => ChangeToEdit()"/>
+                                    <div class="form-group">
+                                        <p>Your comment</p>
+                                        <div>@review.Comment</div>
+                                    </div>
+                                    if (isEditing) {
+                                        <EditForm Model="review" Context="EditYourOwnReview">
+                                            <DataAnnotationsValidator/>
+                                                <form>
+                                                    <div class="form-group">
+                                                        <h5 class="mb-4">Edit your own comment</h5>
+                                                        <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
+                                                    </div>
+                                                    <ValidationMessage For="@(() => review.Comment)"/>
+                                                </form>
+                                            <div class="text-center">
+                                                <button class="btn btn-md btn-dark order-button" @onclick="() => EditReview(review)">Edit comment</button>
+                                            </div>
+                                        </EditForm>
+                                    }
+                                }
+                                else {
+                                    <div class="reviews-members-body">
+                                        <p>@review.Comment</p>
+                                    </div>
+                                }
+                                <span class="star-rating float-right"></span>
+                                
                             </div>
                             <div class="">
                                 @for (int i = 0; i < review.Rating; i++) {
@@ -223,8 +245,10 @@ else {
     private string loadMore = "";
     private string comment = "";
     private string show = "";
+    private bool isEditing;
 
     protected override async Task OnInitializedAsync() {
+        isEditing = false;
         review = new Review();
         Index = 0;
         item = await itemService.GetItemAsync(Id);
@@ -332,11 +356,31 @@ else {
 
     private async Task EditReview(Review r) {
         try {
+            r.DateTime = new MyDateTime() {
+                Day = DateTime.Now.Day,
+                Month = DateTime.Now.Month,
+                Year = DateTime.Now.Year
+            };
+            Customer customer = await customerService.GetCustomerAsync(customerId);
+            r.Customer = new Customer() {
+                Id = customer.Id,
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Address = customer.Address,
+                Email = customer.Email,
+                Password = customer.Password,
+                Role = customer.Role,
+                PhoneNumber = customer.PhoneNumber
+            };
             await itemService.UpdateReviewAsync(r);
         }
         catch (Exception e) {
             errorMessage = e.Message;
         }
+    }
+
+    private bool ChangeToEdit() {
+        return  isEditing = isEditing ? false : true;
     }
 
     private void FilterCustomerReview() {
