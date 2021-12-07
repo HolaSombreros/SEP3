@@ -89,12 +89,21 @@ namespace SEP3WebAPI.Mediator {
             tcpClient.Close();
         }
         
-        public async Task<IList<Item>> GetItemsAsync(int index) {
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
             ItemMessage req = new ItemMessage() {
                 Service = "item",
                 Type = "getAll",
-                Index = index
+                Index = index,
+                PriceOrder = priceOrder,
+                RatingOrder = ratingOrder,
+                Item = new Item() {
+                    Name = search
+                },
+                Categories = new List<Category>()
             };
+            req.Categories.Add(new Category() {
+                Name = category
+            });
             Send(req);
             return ((ItemMessage)reply).Items;
         }
@@ -437,20 +446,7 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             return ((ItemMessage)reply).Items;
         }
-
-        public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
-            ItemMessage message = new ItemMessage() {
-                Type = "getAllByCategory",
-                Service = "item",
-                Item = new Item() {
-                    Name = category
-                },
-                Index = index
-            };
-            Send(message);
-            return ((ItemMessage)reply).Items;
-        }
-
+        
         public async Task<Item> UpdateItemAsync(Item item) {
             ItemMessage req = new ItemMessage() {
                 Type = "updateItem",
@@ -482,17 +478,7 @@ namespace SEP3WebAPI.Mediator {
             Send(req);
             return ((ItemMessage) reply).Categories[0];
         }
-
-        public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
-            ItemMessage request = new ItemMessage() {
-                Type = "getAllByPrice",
-                Service = "item",
-                OrderBy = orderBy,
-                Index = index
-            };
-            Send(request);
-            return ((ItemMessage)reply).Items;
-        }
+        
 
         public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
             ItemMessage req = new ItemMessage() {

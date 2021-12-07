@@ -137,14 +137,16 @@ else {
                             <div class="reviews-members-body">
                                 <p>@review.Comment</p>
                             </div>
-                            <div class="">
-                                @for (int i = 0; i < review.Rating; i++) {
-                                    <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
-                                }
-                                @for (int i = 0; i < 5 - review.Rating; i++) {
-                                    <i class="icons oi oi-star" style="color:grey;" id="star1"></i>
-                                }
-                            </div>
+                            @if (review.Rating != 0) {
+                                <div class="">
+                                    @for (int i = 0; i < review.Rating; i++) {
+                                        <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
+                                    }
+                                    @for (int i = 0; i < 5 - review.Rating; i++) {
+                                        <i class="icons oi oi-star" style="color:grey;" id="star1"></i>
+                                    }
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -167,23 +169,23 @@ else {
                             <ValidationMessage For="@(() => review.Comment)"/>
                             <p class="mb-2">Rate the item</p>
                             <div class="rating">
-                                <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
+                                <input type="radio" name="test" id="one" checked @onclick="@(() => AddRatingAsync(1))"/>
                                 <label for="one">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                                <input type="radio" name="test" id="two" @onclick="@(() => AddRatingAsync(2))"/>
                                 <label for="two">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                                <input type="radio" name="test" id="three" @onclick="@(() => AddRatingAsync(3))"/>
                                 <label for="three">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                                <input type="radio" name="test" id="four" @onclick="@(() => AddRatingAsync(4))"/>
                                 <label for="four">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                                <input type="radio" name="test" id="five" @onclick="@(() => AddRatingAsync(5))"/>
                                 <label for="five">
                                     <i class="oi oi-star"></i>
                                 </label>
@@ -222,6 +224,7 @@ else {
 
     protected override async Task OnInitializedAsync() {
         review = new Review();
+        review.Rating = 0;
         Index = 0;
         item = await itemService.GetItemAsync(Id);
         reviews = await itemService.GetItemReviewsAsync(Index,item);
@@ -304,7 +307,7 @@ else {
                 Email = customer.Email,
                 Password = customer.Password,
                 Role = customer.Role,
-                PhoneNumber = customer.PhoneNumber
+                PhoneNumber = customer.PhoneNumber,
             };
             review.ItemId = Id;
             await itemService.AddReviewAsync(review);
@@ -314,7 +317,7 @@ else {
         }
     }
 
-    private void AddRating(int i) {
+    private async Task AddRatingAsync(int i) {
         review.Rating = i;
     }
 

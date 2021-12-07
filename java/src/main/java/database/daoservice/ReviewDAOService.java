@@ -75,4 +75,16 @@ public class ReviewDAOService implements ReviewDAO {
     public Review delete(Review review) {
         return null;
     }
+
+    @Override
+    public Review updateRating(int rating, int item_id, int customer_id) {
+        try{
+            databaseHelper.executeUpdate("UPDATE review SET rating = ? WHERE item_id = ? AND customer_id = ?", rating, item_id,customer_id);
+            return read(customer_id, item_id);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 }

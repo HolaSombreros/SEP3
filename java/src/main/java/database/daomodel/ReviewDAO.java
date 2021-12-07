@@ -10,4 +10,5 @@ public interface ReviewDAO {
     List<Review> readByItem(int item_id, int index);
     Review update(Review review);
     Review delete(Review review);
+    Review updateRating(int rating, int item_id, int customer_id);
 }

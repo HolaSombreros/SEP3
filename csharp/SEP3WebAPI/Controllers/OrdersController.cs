@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3UI.Data;
+using SEP3WebAPI.Mediator.Messages;
 using IRestService = SEP3WebAPI.Data.IRestService;
 
 namespace SEP3WebAPI.Controllers {
@@ -64,9 +65,14 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpPut]
         [Route("{customerId:int}/{orderId:int}")]
-        public async Task<ActionResult<Order>> UpdateOrderAsync(UpdateOrderModel updateOrderModel) {
+        public async Task<ActionResult<Order>> UpdateOrderAsync([FromBody]UpdateOrderModel updateOrderModel) {
             try {
-                Order order = await service.UpdateOrderAsync(updateOrderModel);
+                Order order;
+                order = await service.GetOrderAsync(updateOrderModel.OrderId);
+                if (order == null) {
+                    return NotFound($"No order found with id {updateOrderModel}");
+                }
+                order = await service.UpdateOrderAsync(updateOrderModel);
                 return Ok(order);
             }
             catch (NullReferenceException e) {
