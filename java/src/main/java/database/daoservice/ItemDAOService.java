@@ -96,14 +96,14 @@ public class ItemDAOService implements ItemDAO {
             }
             if(ratingOrder != null){
                 if(ratingOrder.equalsIgnoreCase("ascending")){
-                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) LEFT JOIN review USING (item_id) " +
-                            "GROUP BY category.name, item.name, description, price, discount, quantity, status, image_filepath, rating, comment, customer_id, item_id, date_time " +
-                            "ORDER BY avg LIMIT 21 OFFSET 21 * ?", index);
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT description, price, discount, quantity, status,item_id, image_filepath,category_id,category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) Left JOIN review USING (item_id)\n" +
+                            "group by category.name, item.name, description, price, discount, quantity, status, image_filepath,item_id,category_id\n" +
+                            "ORDER BY avg  LIMIT 21 OFFSET 21 * ?", index);
                 }
                 else{
-                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) LEFT JOIN review USING (item_id) " +
-                            "group by category.name, item.name, description, price, discount, quantity, status, image_filepath, rating, comment, customer_id, item_id, date_time " +
-                                    "ORDER BY avg DESC LIMIT 21 OFFSET 21 * ?", index);
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT description, price, discount, quantity, status,item_id,category_id, image_filepath,category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) Left JOIN review USING (item_id)\n" +
+                            "group by category.name, item.name, description, price, discount, quantity, status, image_filepath,item_id,category_id\n" +
+                            "ORDER BY avg DESC LIMIT 21 OFFSET 21 * ?", index);
 
                 }
             }
