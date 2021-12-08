@@ -22,5 +22,6 @@ namespace SEP3WebAPI.Mediator {
         Task RemoveReviewAsync(int itemId, int customerId);
         Task<Review> GetReviewAsync(int customerId, int itemId);
         Task<Review> UpdateReviewAsync(Review review);
+        Task<double> GetAverageRatingAsync(int itemId);
     }
 }

@@ -1,6 +1,8 @@
 package database.daomodel;
 
 import model.Review;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -10,4 +12,5 @@ public interface ReviewDAO {
     List<Review> readByItem(int item_id, int index);
     Review update(Review review);
     void delete(Review review);
+    double getAverageRatingForItem(int itemId);
 }
