@@ -251,3 +251,13 @@ body, .search-bar {
     padding: 0;
     list-style: none;
 }
+
+#sidebar {
+    margin-left: -1rem;
+    /*margin-right: -2rem;*/
+    /*padding-right: -1rem;*/
+}
+/*.container-fluid {*/
+/*    padding-right:0;*/
+/*    margin-right:0;*/
+/*}*/

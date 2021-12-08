@@ -16,6 +16,22 @@ namespace SEP3WebAPI.Controllers {
         public ItemsController(IItemService service) {
             this.service = service;
         }
+        
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<Item>> GetItemAsync([FromRoute] int id) {
+            try {
+                Item item = await service.GetItemAsync(id);
+                return Ok(item);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
 
         [HttpGet]
         public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index,
@@ -34,21 +50,7 @@ namespace SEP3WebAPI.Controllers {
             }
         }
 
-        [HttpGet]
-        [Route("{id:int}")]
-        public async Task<ActionResult<Item>> GetItemAsync([FromRoute] int id) {
-            try {
-                Item item = await service.GetItemAsync(id);
-                return Ok(item);
-            }
-            catch (NullReferenceException e) {
-                return NotFound(e.Message);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.Message);
-                return StatusCode(500, e.Message);
-            }
-        }
+       
 
         [HttpGet]
         [Route("{id:int}/reviews")]

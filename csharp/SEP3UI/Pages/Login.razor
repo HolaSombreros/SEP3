@@ -9,55 +9,58 @@
 @inject IOrderService orderService;
 @inject AuthenticationStateProvider authenticationStateProvider
 
+
 <!-- main box -->
-<div class="card">
-    <div class="row align-items-center">
-        <!-- logo box -->
-        <div class="col-4">
-            <img src="Images/Under Covers.png" class="img-fluid"alt="Under Covers Logo"/>
-        </div>
+<div class="container">
+    <div class="card">
+        <div class="row align-items-center">
+            <!-- logo box -->
+            <div class="col-4">
+                <img src="Images/Under Covers.png" class="img-fluid"alt="Under Covers Logo"/>
+            </div>
 
-        <!-- field box -->
-        <div class="col">
-            <div class="form-group d-flex justify-content-center">
-                <h2 class="retroshd">Welcome Back</h2>
-            </div>
-            <!-- email box -->
-            <EditForm Model="@customerModel" OnValidSubmit="@LoginAsync">
-                <DataAnnotationsValidator/>
-                <fieldset>
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Email</label>
-                        <div class="col-md-4 input-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="@customerModel.Email" placeholder="E-mail" class="form-control"/>
+            <!-- field box -->
+            <div class="col">
+                <div class="form-group d-flex justify-content-center">
+                    <h2 class="retroshd">Welcome Back</h2>
+                </div>
+                <!-- email box -->
+                <EditForm Model="@customerModel" OnValidSubmit="@LoginAsync">
+                    <DataAnnotationsValidator/>
+                    <fieldset>
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Email</label>
+                            <div class="col-md-4 input-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"></span>
+                                    <InputText @bind-Value="@customerModel.Email" placeholder="E-mail" class="form-control"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.Email)"/>
                             </div>
-                            <ValidationMessage For="@(() => customerModel.Email)"/>
                         </div>
-                    </div>
-                    <!-- password box -->
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Password</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="@customerModel.Password" type="password" placeholder="Password" class="form-control"/>
+                        <!-- password box -->
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Password</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-addon"></span>
+                                    <InputText @bind-Value="@customerModel.Password" type="password" placeholder="Password" class="form-control"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.Password)"/>
                             </div>
-                            <ValidationMessage For="@(() => customerModel.Password)"/>
                         </div>
-                    </div>
-                </fieldset>
-            </EditForm>
-            <div class="form-group d-flex justify-content-center">
-                <button @onclick="LoginAsync" class="btn btn-primary">Log in</button>
+                    </fieldset>
+                </EditForm>
+                <div class="form-group d-flex justify-content-center">
+                    <button @onclick="LoginAsync" class="btn btn-primary">Log in</button>
+                </div>
+                <div class="text-center" style="color:red">@errorMessage</div>
+                <div class="form-group d-flex justify-content-center">
+                    Don't have an account? <a class="pl-2 text-primary" rel="tag" @onclick="GoToRegister" style="cursor: pointer">Register now!</a>
+                </div>
             </div>
-            <div class="text-center" style="color:red">@errorMessage</div>
-            <div class="form-group d-flex justify-content-center">
-                Don't have an account? <a class="pl-2 text-primary" rel="tag" @onclick="GoToRegister" style="cursor: pointer">Register now!</a>
-            </div>
-        </div>
 
+        </div>
     </div>
 </div>
 
@@ -75,16 +78,16 @@
 
     private async Task LoginAsync() {
         try {
-            await ((CustomAuthenticationStateProvider)authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
+            await ((CustomAuthenticationStateProvider) authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
             int customerId = int.Parse((await authenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-           
+
             IList<Item> items = await customerService.GetShoppingCartAsync(customerId);
             foreach (var i in orderService.ShoppingCart.Items) {
                 if (items.FirstOrDefault(it => it.Id == i.Id) == null)
                     await customerService.AddToShoppingCartAsync(i, customerId);
             }
             orderService.ShoppingCart.Items = await customerService.GetShoppingCartAsync(customerId);
-            
+
             navigationManager.NavigateTo("/");
         }
         catch (Exception e) {
