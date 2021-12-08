@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SEP3Library.Models;
 using SEP3WebAPI.Data;
 using SEP3WebAPI.Mediator;
 
@@ -33,10 +34,10 @@ namespace SEP3WebAPI {
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IFAQService, FAQService>();
             services.AddSingleton<IClient, Client>();
-            services.AddScoped<IItemClient, ItemClient>();
-            services.AddScoped<IOrderClient, OrderClient>();
-            services.AddScoped<IFAQClient, FAQClient>();
             services.AddScoped<ICustomerClient, CustomerClient>();
+            services.AddScoped<IFAQClient, FAQClient>();
+            services.AddScoped<IOrderClient, OrderClient>();
+            services.AddScoped<IItemClient, ItemClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

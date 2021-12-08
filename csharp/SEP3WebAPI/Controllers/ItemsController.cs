@@ -16,7 +16,38 @@ namespace SEP3WebAPI.Controllers {
         public ItemsController(IItemService service) {
             this.service = service;
         }
-        
+
+        [HttpGet]
+        [Route("{id:int}/rating")]
+        public async Task<ActionResult<double>> GetAverageReview([FromRoute] int id) {
+            try {
+                return await service.GetAverageReviewAsync(id);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index,
+            [FromQuery] string? search, [FromQuery] string? category, [FromQuery] string? priceOrder,
+            [FromQuery] string? ratingOrder, [FromQuery] string discountOrder, [FromQuery] string statusOrder) {
+            try {
+                IList<Item> items = await service.GetItemsAsync(index, category, priceOrder, ratingOrder, discountOrder, statusOrder, search);
+                return Ok(items);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet]
         [Route("{id:int}")]
         public async Task<ActionResult<Item>> GetItemAsync([FromRoute] int id) {
@@ -32,25 +63,6 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
-
-        [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index,
-            [FromQuery] string? search, [FromQuery] string? category, [FromQuery] string? priceOrder,
-            [FromQuery] string? ratingOrder) {
-            try {
-                IList<Item> items = await service.GetItemsAsync(index, category, priceOrder, ratingOrder, search);
-                return Ok(items);
-            }
-            catch (NullReferenceException e) {
-                return NotFound(e.Message);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.Message);
-                return StatusCode(500, e.Message);
-            }
-        }
-
-       
 
         [HttpGet]
         [Route("{id:int}/reviews")]

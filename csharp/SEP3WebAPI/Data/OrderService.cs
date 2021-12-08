@@ -119,7 +119,7 @@ namespace SEP3WebAPI.Data {
                     City = orderModel.City,
                     ZipCode = orderModel.ZipCode
                 },
-                OrderStatus = OrderStatus.Pending,
+                OrderStatus = orderModel.OrderStatus,
                 CustomerId = orderModel.CustomerId,
                 Id = orderModel.OrderId
             };

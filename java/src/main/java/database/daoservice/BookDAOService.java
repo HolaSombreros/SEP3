@@ -63,7 +63,6 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book read(String ISBN, int id) {
         try {
-            System.out.println(id);
             Book book = databaseHelper.mapObject(new BookMapper(),"SELECT *,item.name AS item_name, category.name AS category_name FROM book JOIN item USING(item_id) JOIN category USING(category_id) WHERE book.item_id = ? AND ISBN = ?", id,ISBN);
             book.setGenre(genreDAOService.getGenresOfBook(id));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(id));
@@ -77,7 +76,6 @@ public class BookDAOService implements BookDAO {
     public Book read(int id) {
         try{
             Book book = databaseHelper.mapObject(new BookMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM book JOIN item USING(item_id) JOIN category USING(category_id) WHERE item_id = ?", id);
-            System.out.println(book.getName());
             book.setGenre(genreDAOService.getGenresOfBook(id));
             book.setAuthors(authorDAOService.readAllAuthorsOfBook(id));
             return book;

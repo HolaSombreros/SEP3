@@ -5,7 +5,8 @@ using SEP3Library.UIModels;
 
 namespace SEP3WebAPI.Data {
     public interface IItemService {
-        Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search);
+        Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder,
+            string discountOrder, string statusOrder, string search);
         Task<Item> GetItemAsync(int id);
         Task<Book> GetBookAsync(int id);
         Task<IList<Category>> GetCategoriesAsync();
@@ -20,5 +21,6 @@ namespace SEP3WebAPI.Data {
         Task RemoveReviewAsync(int itemId, int customerId);
         Task<Review> GetReviewAsync(int customerId, int itemId);
         Task<Review> UpdateReviewAsync(Review review);
+        Task<double> GetAverageReviewAsync(int itemId);
     }
 }

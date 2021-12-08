@@ -7,116 +7,130 @@
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
-<div class="container-fluid">        
-    <div class="row">
-        <div  class="col-xl-2" id="sidebar">           
-            @if (categories != null) {
-                <nav class="sidebar-nav" role="navigation">
-                    <ul class="nav sidebar-nav">
-                        <div class="sidebar-header">
-                            <div class="sidebar-brand">
-                                <a>Categories</a>
-                            </div>
+<div class="container-fluid">
+<div class="row">
+    <div id="sidebar" class="col-xl-2 d-block">
+        @if (categories != null) {
+            <nav class="sidebar-nav" role="navigation">
+                <ul class="nav sidebar-nav">
+                    <div class="sidebar-header">
+                        <div class="sidebar-brand">
+                            <a>Categories</a>
                         </div>
-                        <li class="category">
-                            <a @onclick="@LoadAllItemsAsync">All</a>
-                        </li>
-                        @foreach (Category category in categories) {
-                            <li>
-                                <a @onclick="(() => LoadItemsByCategoryAsync(category))">@category.Name</a>
-                            </li>
-                        }
-                    </ul>
-                    <ul class="nav" id="filtering">
-                        <div class="sidebar-header">
-                            <div class="sidebar-brand">
-                                <a>Filter</a>
-                            </div>
-                        </div>
+                    </div>
+                    <li class="category">
+                        <a @onclick="@LoadAllItemsAsync">All</a>
+                    </li>
+                    @foreach (Category category in categories) {
                         <li>
-                            <div class="dropdown">
-                                <a class="btn btn-secondary dropdown-toggle text-center" @onclick="ToggleDropdownMenu">
-                                    Price
-                                </a>
-                                @if (!collapseDropdownMenu) {
-                                    <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
-                                        <a class="dropdown-item text-center" @onclick="@FilterByPriceAscendingAsync">Ascending</a>
-                                        <a class="dropdown-item text-center" @onclick="@FilterByPriceDescendingAsync">Descending</a>
-                                    </div>
-                                }
-                                <a class="btn btn-secondary dropdown-toggle text-center" @onclick="ToggleDropdownMenu">
-                                    Rating
-                                </a>
-                                @if (!collapseDropdownMenu) {
-                                    <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
-                                        <a class="dropdown-item text-center" @onclick="@FilterByRatingAscendingAsync">Ascending</a>
-                                        <a class="dropdown-item text-center" @onclick="@FilterByRatingDescendingAsync">Descending</a>
-                                    </div>
-                                }
-
-                            </div>
+                            <a @onclick="(() => LoadItemsByCategoryAsync(category))">@category.Name</a>
                         </li>
-                    </ul>
-                </nav>
-            }
-        </div>
-        <div class="d-block offset-lg-1 col-xl-9">
-            <div>
-                <div class="search-bar mt-3">
-                    <input type="search" name="search" pattern=".*\S.*" required @bind-value="searchItem" placeholder="Type To Search..."/>
-                    <button class="search-btn" @onclick="@SearchButtonPressedAsync"></button>
-                </div>
-            </div>
-            <div >
-                @if (filteredItems != null) {
-                    @if (!filteredItems.Any()) {
-                        <div class="container">
-                            <div class="d-block justify-content-center">
-                                <div class="text-center">
-                                    <strong>No items were found </strong>
-                                </div>
-                                <div class="text-center">
-                                    <img class="img-fluid image " src="Images/blazor_meme.jpg"/>
-                                </div>
-                            </div>
-                        </div>
                     }
-                    else {
-                        <div id="productsWrapper" class="row px-4">
-                            @foreach (Item item in filteredItems) {
-                                <div class="card col-xl-3 col-lg-5 m-3" style="min-width: 400px">
-                                    <div @onclick="@(() => NavigateToItemDetails(item))">
-                                        <a asp-route-id="@item.Id" title="Order @item.Name">
-                                            <div class="text-center">
-                                                <h3>@item.Name</h3>
-                                                <img class="product-image img-fluid img-thumbnail image" src="@item.ImageName" alt="Image of @item.Name"/>
-                                                <p class="card-text">@item.Description</p>
-                                            </div>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <p class="price float-left">@string.Format("{0:f}", item.PriceIncludingDiscount) DKK</p>
-                                        <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
-                                        @if (item.Discount > 0) {
-                                            <p style="color: darkred">
-                                                <strong> DISCOUNT: @item.Discount%</strong>
-                                            </p>
-                                        }
-                                    </div>
+                </ul>
+                <ul class="nav" id="filtering">
+                    <div class="sidebar-header">
+                        <div class="sidebar-brand">
+                            <a>Filter</a>
+                        </div>
+                    </div>
+                    <li>
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle text-center" @onclick="TogglePDropdownMenu">
+                                Price
+                            </a>
+                            @if (!collapsePDropdownMenu) {
+                                <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
+                                    <a class="dropdown-item text-center" @onclick="FilterByPriceAscendingAsync">Ascending</a>
+                                    <a class="dropdown-item text-center" @onclick="FilterByPriceDescendingAsync">Descending</a>
+                                </div>
+                            }
+                            <a class="btn btn-secondary dropdown-toggle text-center" @onclick="ToggleRDropdownMenu">
+                                Rating
+                            </a>
+                            @if (!collapseRDropdownMenu) {
+                                <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
+                                    <a class="dropdown-item text-center" @onclick="FilterByRatingAscendingAsync">Ascending</a>
+                                    <a class="dropdown-item text-center" @onclick="FilterByRatingDescendingAsync">Descending</a>
+                                </div>
+                            }
+                            
+                            <a class="btn btn-secondary dropdown-toggle text-center" @onclick="ToggleDDropdownMenu">Discount</a>
+                            @if (!collapseDDropdownMenu) {
+                                <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
+                                    <a class="dropdown-item text-center" @onclick="SortByDiscountAscAsync">Ascending</a>
+                                    <a class="dropdown-item text-center" @onclick="SortByDiscountDescAsync">Descending</a>
+                                </div>
+                            }
+                            
+                            <a class="btn btn-secondary dropdown-toggle text-center" @onclick="ToggleSDropdownMenu">Status</a>
+                            @if (!collapseSDropdownMenu) {
+                                <div class="d-block dropdown-menu dropdown-menu-right" style="cursor: pointer">
+                                    <a class="dropdown-item text-center" @onclick="SortByStatusInStockAsync">In stock</a>
+                                    <a class="dropdown-item text-center" @onclick="SortByStatusOutOfStockAsync">Out of stock</a>
                                 </div>
                             }
                         </div>
-                        <div class="text-center">
-                            <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMoreAsync">Load more</button>
-                        </div>
-                    }
-                }
-            </div>
-            
-        </div>
-        
+                    </li>
+                </ul>
+            </nav>
+        }
     </div>
-    
+    <div class="d-block offset-lg-1 col-xl-9">
+        <div>
+            <div class="search-bar">
+                <input type="search" name="search" pattern=".*\S.*" required @bind-value="searchItem" placeholder="Type To Search..."/>
+                <button class="search-btn" @onclick="@SearchButtonPressedAsync"></button>
+            </div>
+        </div>
+        <div >
+            @if (filteredItems != null) {
+                @if (!filteredItems.Any()) {
+                    <div class="container">
+                        <div class="d-block justify-content-center">
+                            <div class="text-center">
+                                <strong>No items were found </strong>
+                            </div>
+                            <div class="text-center">
+                                <img class="img-fluid image " src="Images/blazor_meme.jpg"/>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else {
+                    <div id="productsWrapper" class="row px-4">
+                        @foreach (Item item in filteredItems) {
+                            <div class="card col-xl-3 col-lg-5 m-3" style="min-width: 400px">
+                                <div @onclick="@(() => NavigateToItemDetails(item))">
+                                    <a asp-route-id="@item.Id" title="Order @item.Name">
+                                        <div class="text-center">
+                                            <h3>@item.Name</h3>
+                                            <img class="product-image img-fluid img-thumbnail image" src="@item.ImageName" alt="Image of @item.Name"/>
+                                            <p class="card-text">@item.Description</p>
+                                            <p class="card-text"> Rating: @item.AverageRating</p>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div>
+                                    <p class="price float-left">@string.Format("{0:f}", item.PriceIncludingDiscount) DKK</p>
+                                    <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                    @if (item.Discount > 0) {
+                                        <p style="color: darkred">
+                                            <strong> DISCOUNT: @item.Discount%</strong>
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-md btn-dark order-button" style="@hidden" @onclick="LoadMoreAsync">Load more</button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
 </div>
 
 @code {
@@ -128,11 +142,15 @@
     private string searchItem;
     private IList<Category> categories;
     private string priceOrder;
-    private bool collapseDropdownMenu = true;
+    private bool collapsePDropdownMenu = true;
+    private bool collapseRDropdownMenu = true;
+    private bool collapseDDropdownMenu = true;
+    private bool collapseSDropdownMenu = true;
     private string category;
     private string ratingOrder;
-
-
+    private string discountOrder;
+    private string statusOrder;
+    
     protected override async Task OnInitializedAsync() {
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -145,7 +163,10 @@
         category = null;
         ratingOrder = null;
         searchItem = null;
-        items = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, searchItem);
+        items = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, null, null, searchItem);
+        foreach (var item in items) {
+            await GetAverageReview(item);
+        }
         filteredItems = items;
         categories = await itemService.GetCategoriesAsync();
         hidden = "";
@@ -161,12 +182,13 @@
 
     private async Task LoadMoreAsync() {
         itemIndex++;
-        IList<Item> newList = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, searchItem);
+        IList<Item> newList = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, discountOrder, null, searchItem);
         if (newList.Count == 0) {
             hidden = "display: none";
             itemIndex--;
         }
         foreach (Item item in newList) {
+            await GetAverageReview(item);
             filteredItems.Add(item);
         }
     }
@@ -182,13 +204,18 @@
     }
 
     private async Task SearchButtonPressedAsync() {
-        Console.WriteLine(searchItem);
-        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, null, searchItem);
+        filteredItems = await itemService.GetItemsAsync(itemIndex,null,null,null, null, null, searchItem);
+        foreach (var item in filteredItems) {
+            await GetAverageReview(item);
+        }
     }
 
     private async Task LoadItemsByCategoryAsync(Category category) {
         this.category = category.Name;
-        filteredItems = await itemService.GetItemsAsync(itemIndex, this.category, null, null, null);
+        filteredItems = await itemService.GetItemsAsync(itemIndex, this.category, null, null, null, null, null);
+        foreach (var item in filteredItems) {
+            await GetAverageReview(item);
+        }
         hidden = "";
         itemIndex = 0;
     }
@@ -198,13 +225,19 @@
         category = null;
         ratingOrder = null;
         searchItem = null;
-        filteredItems = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, searchItem);
+        filteredItems = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, null, null, searchItem);
+        foreach (var item in filteredItems) {
+            await GetAverageReview(item);
+        }
     }
 
     private async Task FilterByPriceAscendingAsync() {
         priceOrder = "ascending";
         CollapseDropdownMenu();
-        filteredItems = await itemService.GetItemsAsync(itemIndex, null, priceOrder, null, null);
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, priceOrder, null, null, null, null);
+        foreach (var item in filteredItems) {
+            await GetAverageReview(item);
+        }
         hidden = "";
         itemIndex = 0;
     }
@@ -212,34 +245,88 @@
     private async Task FilterByPriceDescendingAsync() {
         priceOrder = "descending";
         CollapseDropdownMenu();
-        filteredItems = await itemService.GetItemsAsync(itemIndex, null, priceOrder, null, null);
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, priceOrder, null, null, null, null);
+        foreach (var item in filteredItems) {
+            await GetAverageReview(item);
+        }
         hidden = "";
         itemIndex = 0;
     }
-
+    
     private async Task FilterByRatingAscendingAsync() {
         ratingOrder = "ascending";
         CollapseDropdownMenu();
-        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, ratingOrder, null);
-        Console.WriteLine(ratingOrder);
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, ratingOrder, null, null, null);
+        foreach (var item in filteredItems) {
+            await GetAverageReview(item);
+        }
         hidden = "";
         itemIndex = 0;
     }
-
+    
     private async Task FilterByRatingDescendingAsync() {
         ratingOrder = "descending";
         CollapseDropdownMenu();
-        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, ratingOrder, null);
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, ratingOrder, null, null, null);
+        foreach (var item in filteredItems) {
+            await GetAverageReview(item);
+        }
         hidden = "";
         itemIndex = 0;
     }
 
-    private void ToggleDropdownMenu() {
-        collapseDropdownMenu = !collapseDropdownMenu;
+    private void TogglePDropdownMenu() {
+        CollapseDropdownMenu();
+        collapsePDropdownMenu = !collapsePDropdownMenu;
+    }
+
+    private void ToggleRDropdownMenu() {
+        CollapseDropdownMenu();
+        collapseRDropdownMenu = !collapseRDropdownMenu;
+    }
+
+    private void ToggleDDropdownMenu() {
+        CollapseDropdownMenu();
+        collapseDDropdownMenu = !collapseDDropdownMenu;
+    }
+
+    private void ToggleSDropdownMenu() {
+        CollapseDropdownMenu();
+        collapseSDropdownMenu = !collapseSDropdownMenu;
     }
 
     private void CollapseDropdownMenu() {
-        collapseDropdownMenu = true;
+        collapsePDropdownMenu = true;
+        collapseRDropdownMenu = true;
+        collapseDDropdownMenu = true;
+        collapseSDropdownMenu = true;
     }
 
+    private async Task GetAverageReview(Item item ) {
+        item.AverageRating =  await itemService.GetAverageRating(item.Id);
+    }
+
+    private async Task SortByDiscountAscAsync() {
+        discountOrder = "ASC";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, null, discountOrder, null, null);
+    }
+
+    private async Task SortByDiscountDescAsync() {
+        discountOrder = "DESC";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, null, discountOrder, null, null);
+    }
+
+    private async Task SortByStatusInStockAsync() {
+        statusOrder = "In Stock";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, null, null, statusOrder, null);
+    }
+
+    private async Task SortByStatusOutOfStockAsync() {
+        statusOrder = "Out of Stock";
+        CollapseDropdownMenu();
+        filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, null, null, statusOrder, null);
+    }
 }

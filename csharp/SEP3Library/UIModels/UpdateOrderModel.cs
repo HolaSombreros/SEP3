@@ -42,5 +42,7 @@ namespace SEP3Library.UIModels {
         public int CustomerId { get; set; }
         
         public int OrderId { get; set; }
+        
+        public OrderStatus OrderStatus { get; set; }
     }
 }

@@ -16,8 +16,8 @@ namespace SEP3WebAPI.Data {
             this.client = client;
         }
         
-        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
-            return await client.GetItemsAsync(index, category, priceOrder, ratingOrder, search);
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string discountOrder, string statusOrder, string search) {
+            return await client.GetItemsAsync(index, category, priceOrder, ratingOrder, discountOrder, statusOrder, search);
         }
 
         public async Task<Item> GetItemAsync(int id) {
@@ -34,6 +34,8 @@ namespace SEP3WebAPI.Data {
             return created;
         }
         
+        
+
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             if (item == null) throw new InvalidDataException("Please provide an item of the proper format");
             Item toUpdate = await client.GetItemAsync(id);
@@ -159,6 +161,9 @@ namespace SEP3WebAPI.Data {
 
         public async Task<Review> UpdateReviewAsync(Review review) {
             return await client.UpdateReviewAsync(review);
+        }
+        public async Task<double> GetAverageReviewAsync(int itemId) {
+            return await client.GetAverageRatingAsync(itemId);
         }
 
     }
