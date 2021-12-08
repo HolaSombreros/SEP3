@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class OrderDAOService implements OrderDAO {
-
     private DatabaseHelper<Order> databaseHelper;
     private AddressDAOService addressDAOService;
     private ItemDAO itemDAOService;
@@ -89,7 +88,6 @@ public class OrderDAOService implements OrderDAO {
 
     @Override public Order update(Order order) {
         try {
-            System.out.println(order.getId());
             Address address = addressDAOService.create(order.getAddress().getStreet(), order.getAddress().getNumber(), order.getAddress().getZipCode(),
                 order.getAddress().getCity());
             databaseHelper.executeUpdate("UPDATE purchase SET address_id = ?, first_name = ?, last_name = ?, email = ? WHERE purchase_id = ? AND customer_id = ?;", address.getId(),
@@ -99,10 +97,6 @@ public class OrderDAOService implements OrderDAO {
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    @Override public void delete(Order order) {
-
     }
 
     @Override public List<Order> readAllOrdersByCustomer(int customerId, int index) {
@@ -117,6 +111,21 @@ public class OrderDAOService implements OrderDAO {
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public void returnItems(Order order) {
+        try {
+            for (int i = 0; i < order.getItems().size(); i++) {
+                Item item = order.getItems().get(i);
+
+                if (item.getQuantity() > 0) {
+                    databaseHelper.executeUpdate("UPDATE purchase_item SET quantity = quantity - ? WHERE purchase_id = ? AND item_id = ?;", item.getQuantity(), order.getId(), item.getId());
+                    databaseHelper.executeUpdate("UPDATE item SET quantity = quantity + ?, status = ?::item_status WHERE item_id = ?;", item.getQuantity(), ItemStatus.INSTOCK.toString(), item.getId());
+                }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException(e.getMessage());
         }
     }
 }

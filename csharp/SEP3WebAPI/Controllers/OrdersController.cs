@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
-using SEP3UI.Data;
-using IRestService = SEP3WebAPI.Data.IRestService;
+using SEP3WebAPI.Data;
 
 namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class OrdersController : ControllerBase {
-        private IRestService service;
+        private IOrderService service;
 
-        public OrdersController(IRestService service) {
+        public OrdersController(IOrderService service) {
             this.service = service;
         }
 
@@ -74,6 +73,53 @@ namespace SEP3WebAPI.Controllers {
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpGet]
+        [Route("{customerId:int}/order")]
+        public async Task<ActionResult<IList<Order>>> GetAllOrdersByCustomer([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Order> orders = await service.GetOrdersByCustomerAsync(customerId, index);
+                return Ok(orders);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("{orderId:int}")]
+        public async Task<ActionResult<Order>> ReturnItemsAsync([FromBody] ReturnItemsModel model, [FromRoute] int orderId) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            
+            if (model.Items.All(i => i.Quantity < 1 )) {
+                return BadRequest("Please specify the items you want to return");
+            }
+            
+            try {
+                Order order = await service.GetOrderAsync(orderId);
+                if (order == null) {
+                    return NotFound($"No such order found with id: {model.OrderId}");
+                }
+
+                for (int i = 0; i < model.Items.Count; i++) {
+                    if (order.Items[i].Quantity < model.Items[i].Quantity) {
+                        throw new Exception("Please specify a proper quantity of the items you want to return");
+                    }
+                    
+                    order.Items[i].Quantity = model.Items[i].Quantity;
+                }
+
+                await service.UpdateOrderItemsAsync(order);
+                return Ok(order);
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }

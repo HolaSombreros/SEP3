@@ -10,5 +10,6 @@ namespace SEP3UI.Data {
         Task<IList<Order>> GetOrdersAsync(int index, int id, string status);
         Task<Order> GetOrderAsync(int orderId);
         Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel);
+        Task<Order> ReturnItemsAsync(ReturnItemsModel model);
     }
 }

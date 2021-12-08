@@ -28,6 +28,10 @@ namespace SEP3WebAPI {
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "SEP3WebAPI", Version = "v1"});
             });
+            services.AddSingleton<ICustomerService, CustomerService>();
+            services.AddSingleton<IItemService, ItemService>();
+            services.AddSingleton<IOrderService, OrderService>();
+            services.AddSingleton<IFAQService, FAQService>();
             services.AddSingleton<IClient, Client>();
         }
 

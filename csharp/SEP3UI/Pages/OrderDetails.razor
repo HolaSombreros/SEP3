@@ -168,7 +168,7 @@
                     <AuthorizeView Context="other">
                         @if (order.OrderStatus == OrderStatus.Pending) {
                             <div class="form-group text-center mb-3">
-                                @errorMessage
+                                <span class="d-block">@errorMessage</span>
                                 <button type="submit" class="btn btn-primary mt-3">Update Order</button>
                             </div>
                         }
@@ -192,39 +192,38 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @if (returnItemsModel.Items.Any()) {
-                            @for (int j = 0; j < order.Items.Count; j++) {
+                            @for (int i = 0; i < order.Items.Count; i++) {
+                                int j = i;
                                 <tr>
-                                    <td>@order.Items[j].Id</td>
-                                    <td>@order.Items[j].Name</td>
-                                    <td>@order.Items[j].Quantity</td>
-                                    <td>@order.Items[j].PriceIncludingDiscount DKK</td>
+                                    <td>@order.Items[i].Id</td>
+                                    <td>@order.Items[i].Name</td>
+                                    <td>@order.Items[i].Quantity</td>
+                                    <td>@order.Items[i].PriceIncludingDiscount DKK</td>
                                     @if (order.OrderStatus == OrderStatus.Finished) {
                                         <td>
-                                            <InputNumber class="form-control" @bind-Value="returnItemsModel.Items[j].Quantity" style="width: 50px;"/>
+                                            <InputNumber class="form-control" @bind-Value="returnItemsModel.Items[j].Quantity" style="width: 80px;"/>
                                         </td>
                                     }
-                                    <td>@Math.Round(order.Items[j].PriceIncludingDiscount * order.Items[j].Quantity, 2, MidpointRounding.ToEven) DKK</td>
+                                    <td>@Math.Round(order.Items[i].PriceIncludingDiscount * order.Items[i].Quantity, 2, MidpointRounding.ToEven) DKK</td>
                                 </tr>
                             }
-                        }
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            @if (order.OrderStatus == OrderStatus.Finished) {
+                            <tr>
                                 <td></td>
-                            }
-                            <td>
-                                <strong>@totalPrice DKK</strong>
-                            </td>
-                        </tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                @if (order.OrderStatus == OrderStatus.Finished) {
+                                    <td></td>
+                                }
+                                <td>
+                                    <strong>@totalPrice DKK</strong>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     @if (order.OrderStatus == OrderStatus.Finished) {
-                        <div class="text-center mt-2">
-                            <span>@returnItemsMessage</span>
+                        <div class="text-center">
+                            <span class="d-block mb-2">@returnItemsMessage</span>
                             <button class="btn btn-info">Return Items</button>
                         </div>
                     }
@@ -249,8 +248,7 @@
         order = await orderService.GetOrderAsync(Id);
         
         returnItemsModel = new ReturnItemsModel() {
-            Id = order.Id,
-            Items = new List<Item>()
+            OrderId = order.Id
         };
         foreach (Item item in order.Items) {
             returnItemsModel.Items.Add(new Item() {
@@ -286,6 +284,17 @@
 
     private async Task ReturnItems() {
         try {
+            if (returnItemsModel.Items.All(i => i.Quantity < 1 )) {
+                throw new Exception("Please specify the items you want to return");
+            }
+
+            for (int i = 0; i < returnItemsModel.Items.Count; i++) {
+                if (order.Items[i].Quantity < returnItemsModel.Items[i].Quantity) {
+                    throw new Exception("Please specify a proper quantity of the items you want to return");
+                }
+            }
+
+            order = await orderService.ReturnItemsAsync(returnItemsModel);
             returnItemsMessage = "Items successfully returned!";
         } catch (Exception e) {
             returnItemsMessage = e.Message;

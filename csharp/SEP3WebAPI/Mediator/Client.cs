@@ -42,7 +42,7 @@ namespace SEP3WebAPI.Mediator {
                             break;
                         case "customer":
                             reply = JsonSerializer.Deserialize<CustomerMessage>(result,
-                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                             break;
                         case "faq":
                             reply = JsonSerializer.Deserialize<FAQMessage>(result,
