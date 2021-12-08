@@ -17,6 +17,7 @@ public class ItemMessage extends Message {
     private String priceOrder;
     private List<Review> reviews;
     private String ratingOrder;
+    private Review review;
 
     public ItemMessage(String service, String type) {
         super(service, type);
@@ -24,6 +25,14 @@ public class ItemMessage extends Message {
         categories = new ArrayList<>();
         genres = new ArrayList<>();
         reviews = new ArrayList<>();
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 
     public List<Genre> getGenres() {

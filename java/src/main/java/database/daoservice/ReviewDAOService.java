@@ -6,7 +6,6 @@ import database.daomodel.ReviewDAO;
 import database.daoservice.mapper.ReviewMapper;
 import model.Customer;
 import model.Item;
-import model.MyDateTime;
 import model.Review;
 
 import java.sql.SQLException;
@@ -68,12 +67,26 @@ public class ReviewDAOService implements ReviewDAO {
 
     @Override
     public Review update(Review review) {
-        return null;
+        try {
+            databaseHelper.executeUpdate("UPDATE review SET rating = ?, comment = ?, date_time = ? WHERE customer_id =? AND item_id = ?",review.getRating(),review.getComment(),
+                    LocalDate.of(review.getDateTime().getYear(), review.getDateTime().getMonth(), review.getDateTime().getDay()),review.getCustomer().getId(), review.getItemId());
+            return read(review.getCustomer().getId(), review.getItemId());
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     @Override
-    public Review delete(Review review) {
-        return null;
+    public void delete(Review review) {
+        try {
+            databaseHelper.executeUpdate("DELETE FROM review WHERE item_id = ? AND customer_id = ?;", review.getItemId(), review.getCustomer().getId());
+        }
+        catch(SQLException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     @Override

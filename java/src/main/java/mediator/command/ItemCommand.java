@@ -43,6 +43,9 @@ public class ItemCommand implements Command {
         methods.put("updateBook", this::updateBook);
         methods.put("getItemReviews", this::getItemReviews);
         methods.put("addReview", this::addReview);
+        methods.put("removeReview", this::removeReview);
+        methods.put("getReview", this::getReview);
+        methods.put("updateReview", this::updateReview);
     }
 
     @Override public Message execute(Message request) {
@@ -165,4 +168,17 @@ public class ItemCommand implements Command {
         Review review = request.getReviews().get(0);
         reply.getReviews().add(databaseManager.getReviewDAOService().updateRating(review.getRating(), review.getItemId(), review.getCustomer().getId()));
     }
+
+    private void removeReview() {
+        databaseManager.getReviewDAOService().delete(request.getReview());
+    }
+
+    private void getReview() {
+        reply.setReview(databaseManager.getReviewDAOService().read(request.getReview().getCustomer().getId(), request.getReview().getItemId()));
+    }
+
+    private void updateReview() {
+        reply.setReview(databaseManager.getReviewDAOService().update(request.getReview()));
+    }
+
 }

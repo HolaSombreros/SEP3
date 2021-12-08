@@ -72,5 +72,15 @@ namespace SEP3UI.Data {
         public async Task<Review> AddReviewAsync(Review review) {
             return await restService.PostAsync<Review, Review>(review, $"items/{review.ItemId}/reviews");
         }
+        public async Task RemoveReviewAsync(int itemId, int customerId) {
+            await restService.DeleteAsync($"items/{itemId}/reviews/{customerId}");
+        }
+        public async Task<bool> GetReviewAsync(int itemId, int customerId) {
+            return await restService.GetAsync<bool>($"items/{itemId}/reviews/{customerId}");
+        }
+
+        public async Task<Review> UpdateReviewAsync(Review review) {
+            return await restService.PutAsync<Review, Review>(review,$"items/{review.ItemId}/reviews");
+        }
     }
 }

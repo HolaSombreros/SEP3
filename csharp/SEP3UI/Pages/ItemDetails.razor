@@ -128,14 +128,40 @@ else {
                     <div class="media">
                         <div class="media-body">
                             <div class="reviews-members-header">
-                                <span class="star-rating float-right"></span>
                                 <h6 class="mb-1">
                                     <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
                                 </h6>
                                 <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
-                            </div>
-                            <div class="reviews-members-body">
-                                <p>@review.Comment</p>
+                                @if (customerId == review.Customer.Id) {
+                                    <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
+                                    <a class="close mr-3 oi oi-pencil " @onclick="() => ChangeToEdit()"/>
+                                    <div class="form-group">
+                                        <p>Your comment</p>
+                                        <div>@review.Comment</div>
+                                    </div>
+                                    if (isEditing) {
+                                        <EditForm Model="review" Context="EditYourOwnReview">
+                                            <DataAnnotationsValidator/>
+                                                <form>
+                                                    <div class="form-group">
+                                                        <h5 class="mb-4">Edit your own comment</h5>
+                                                        <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
+                                                    </div>
+                                                    <ValidationMessage For="@(() => review.Comment)"/>
+                                                </form>
+                                            <div class="text-center">
+                                                <button class="btn btn-md btn-dark order-button" @onclick="() => EditReview(review)">Edit comment</button>
+                                            </div>
+                                        </EditForm>
+                                    }
+                                }
+                                else {
+                                    <div class="reviews-members-body">
+                                        <p>@review.Comment</p>
+                                    </div>
+                                }
+                                <span class="star-rating float-right"></span>
+
                             </div>
                             @if (review.Rating != 0) {
                                 <div class="">
@@ -221,13 +247,16 @@ else {
     private string loadMore = "";
     private string comment = "";
     private string show = "";
+    private bool isEditing;
 
     protected override async Task OnInitializedAsync() {
+        isEditing = false;
         review = new Review();
         review.Rating = 0;
         Index = 0;
         item = await itemService.GetItemAsync(Id);
         reviews = await itemService.GetItemReviewsAsync(Index,item);
+
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
@@ -244,10 +273,12 @@ else {
             IList<Item> wishlist = await customerService.GetCustomerWishlistAsync(customerId);
             favorite = wishlist.FirstOrDefault(i => i.Id == item.Id) != null;
         }
-        foreach (Review r in reviews) {
-            if (r.Customer.Id == customerId)
-                show = "d-none";
+
+        bool loggedCustomerReview = await itemService.GetReviewAsync(Id, customerId);
+        if (loggedCustomerReview) {
+            show = "d-none";
         }
+        FilterCustomerReview();
     }
 
     private async Task LoadMoreAsync() {
@@ -262,6 +293,7 @@ else {
                 reviews.Add(r);
             }
         }
+        FilterCustomerReview();
     }
 
     private void SetDisabledState() {
@@ -307,7 +339,7 @@ else {
                 Email = customer.Email,
                 Password = customer.Password,
                 Role = customer.Role,
-                PhoneNumber = customer.PhoneNumber,
+                PhoneNumber = customer.PhoneNumber
             };
             review.ItemId = Id;
             await itemService.AddReviewAsync(review);
@@ -318,6 +350,62 @@ else {
     }
 
     private async Task AddRatingAsync(int i) {
+    private async Task RemoveReview(Review r) {
+        try {
+            await itemService.RemoveReviewAsync(r.ItemId, r.Customer.Id);
+            reviews.Remove(r);
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private async Task EditReview(Review r) {
+        try {
+            r.DateTime = new MyDateTime() {
+                Day = DateTime.Now.Day,
+                Month = DateTime.Now.Month,
+                Year = DateTime.Now.Year
+            };
+            Customer customer = await customerService.GetCustomerAsync(customerId);
+            r.Customer = new Customer() {
+                Id = customer.Id,
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Address = customer.Address,
+                Email = customer.Email,
+                Password = customer.Password,
+                Role = customer.Role,
+                PhoneNumber = customer.PhoneNumber
+            };
+            await itemService.UpdateReviewAsync(r);
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private bool ChangeToEdit() {
+        return  isEditing = isEditing ? false : true;
+    }
+
+    /*
+     * This method filters through the review and finds the customers review
+     * Then it moves it to the first position in the list
+     * For making the editing and removal of a review easier
+     */
+    private void FilterCustomerReview() {
+        for (int i = 0; i < reviews.Count; i++) {
+            if (reviews[i].Customer.Id == customerId) {
+                Review rev = reviews[i];
+                Review first = reviews[0];
+                reviews[i] = first;
+                reviews[0] = rev;
+            }
+        }
+    }
+
+    private void AddRating(int i) {
         review.Rating = i;
     }
 

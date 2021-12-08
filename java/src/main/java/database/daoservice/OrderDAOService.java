@@ -97,10 +97,6 @@ public class OrderDAOService implements OrderDAO {
         }
     }
 
-    @Override public void delete(Order order) {
-
-    }
-
     @Override public List<Order> readAllOrdersByCustomer(int customerId, int index) {
         try {
             List<Order> orders = databaseHelper.mapList(new OrderMapper(),

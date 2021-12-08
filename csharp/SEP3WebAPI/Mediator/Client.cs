@@ -502,6 +502,46 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemMessage) reply).Reviews[0];
         }
 
+        public async Task RemoveReviewAsync(int itemId, int customerId) {
+            ItemMessage req = new ItemMessage() {
+                Type = "removeReview",
+                Service = "item",
+                Review = new Review() {
+                    Customer = new Customer() {
+                        Id = customerId
+                    },
+                    ItemId = itemId
+                }
+            };
+            Send(req);
+        }
+
+        public async Task<Review> GetReviewAsync(int customerId, int itemId) {
+            ItemMessage req = new ItemMessage() {
+                Type = "getReview",
+                Service = "item",
+                Review = new Review() {
+                    Customer = new Customer() {
+                        Id = customerId
+                    },
+                    ItemId = itemId
+                }
+            };
+            Send(req);
+            return ((ItemMessage) reply).Review;
+
+        }
+
+        public async Task<Review> UpdateReviewAsync(Review review) {
+            ItemMessage req = new ItemMessage() {
+                Type = "updateReview",
+                Service = "item",
+                Review = review
+            };
+            Send(req);
+            return ((ItemMessage) reply).Review;
+        }
+
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
             OrderMessage request = new OrderMessage() {
                 Type = "getAllByCustomer",
