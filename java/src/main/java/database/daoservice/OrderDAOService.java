@@ -90,8 +90,8 @@ public class OrderDAOService implements OrderDAO {
         try {
             Address address = addressDAOService.create(order.getAddress().getStreet(), order.getAddress().getNumber(), order.getAddress().getZipCode(),
                 order.getAddress().getCity());
-            databaseHelper.executeUpdate("UPDATE purchase SET address_id = ?, first_name = ?, last_name = ?, email = ? WHERE purchase_id = ? AND customer_id = ?;", address.getId(),
-                order.getFirstName(), order.getLastName(), order.getEmail(), order.getId(), order.getCustomerId());
+            databaseHelper.executeUpdate("UPDATE purchase SET address_id = ?, first_name = ?, last_name = ?, email = ?, status = ?::purchase_status WHERE purchase_id = ? AND customer_id = ?;", address.getId(),
+                order.getFirstName(), order.getLastName(), order.getEmail(), order.getOrderStatus().toString(), order.getId(), order.getCustomerId());
             return read(order.getId());
         }
         catch (SQLException e) {
