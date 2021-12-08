@@ -78,19 +78,38 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
-    @Override
-    public void delete(Item item) {
-        //TODO think about this
-    }
 
     @Override
-    public List<Item> readByCategory(Category category) {
-        return null;
-    }
-
-    @Override
-    public List<Item> readByIndex(int index) {
+    public List<Item> readByIndex(int index, String category, String priceOrder, String ratingOrder, String search) {
         try{
+            System.out.println(search);
+            if(search != null){
+                System.out.println("reached");
+                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",search, index);
+            }
+            if(category != null){
+               return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE category.name = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category, index);
+            }
+            if(priceOrder != null){
+                if(priceOrder.equalsIgnoreCase("ascending"))
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) LIMIT 21 OFFSET 21 * ?", index);
+                else
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) DESC LIMIT 21 OFFSET 21 * ?", index);
+            }
+            if(ratingOrder != null){
+                if(ratingOrder.equalsIgnoreCase("ascending")){
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) LEFT JOIN review USING (item_id) " +
+                            "GROUP BY category.name, item.name, description, price, discount, quantity, status, image_filepath, rating, comment, customer_id, item_id, date_time " +
+                            "ORDER BY avg LIMIT 21 OFFSET 21 * ?", index);
+                }
+                else{
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) LEFT JOIN review USING (item_id) " +
+                            "group by category.name, item.name, description, price, discount, quantity, status, image_filepath, rating, comment, customer_id, item_id, date_time " +
+                                    "ORDER BY avg DESC LIMIT 21 OFFSET 21 * ?", index);
+
+                }
+            }
+
             return databaseHelper.mapList(new ItemMapper(), "SELECT *, category.name as category_name, item.name AS item_name FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -200,29 +219,6 @@ public class ItemDAOService implements ItemDAO {
         try {
             databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId);
         } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Item> readAllByCategory(String category, int index) {
-        try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE category.name = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category, index);
-        }
-        catch (SQLException e){
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Item> readAllByPrice(String order, int index) {
-        try{
-            if(order.equalsIgnoreCase("ascending"))
-                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) LIMIT 21 OFFSET 21 * ?", index);
-            else
-                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) DESC LIMIT 21 OFFSET 21 * ?", index);
-        }
-        catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }

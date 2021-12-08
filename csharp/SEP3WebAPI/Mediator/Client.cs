@@ -29,7 +29,7 @@ namespace SEP3WebAPI.Mediator {
         public void Receive(string result) {
             lock (lock1) {
                 reply = JsonSerializer.Deserialize<Message>(result,
-                    new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+                    new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
                 if (reply != null) {
                     switch (reply.Service) {
                         case "item":
