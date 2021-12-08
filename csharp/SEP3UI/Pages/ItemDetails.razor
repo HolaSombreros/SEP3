@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @using SEP3Library.Models
 @using SEP3UI.Authentication
+@using System.Globalization
 @inject IItemService itemService
 @inject IOrderService orderService
 @inject ICustomerService customerService
@@ -104,7 +105,7 @@ else {
                         </div>
                         <div class="mt-2">
                             <label>
-                                <strong>Rating:</strong> @Math.Round(GetAverageReview(), 2, MidpointRounding.ToEven)
+                                <strong>Rating:</strong> @rating
                             </label>
                         </div>
                         <div class="mt-2">
@@ -195,23 +196,23 @@ else {
                             <ValidationMessage For="@(() => review.Comment)"/>
                             <p class="mb-2">Rate the item</p>
                             <div class="rating">
-                                <input type="radio" name="test" id="one" checked @onclick="@(() => AddRatingAsync(1))"/>
+                                <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
                                 <label for="one">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="two" @onclick="@(() => AddRatingAsync(2))"/>
+                                <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
                                 <label for="two">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="three" @onclick="@(() => AddRatingAsync(3))"/>
+                                <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
                                 <label for="three">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="four" @onclick="@(() => AddRatingAsync(4))"/>
+                                <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
                                 <label for="four">
                                     <i class="oi oi-star"></i>
                                 </label>
-                                <input type="radio" name="test" id="five" @onclick="@(() => AddRatingAsync(5))"/>
+                                <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
                                 <label for="five">
                                     <i class="oi oi-star"></i>
                                 </label>
@@ -248,6 +249,7 @@ else {
     private string comment = "";
     private string show = "";
     private bool isEditing;
+    private string rating;
 
     protected override async Task OnInitializedAsync() {
         isEditing = false;
@@ -260,7 +262,7 @@ else {
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
-
+        await GetAverageReviewAsync();
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -348,8 +350,8 @@ else {
             errorMessage = e.Message;
         }
     }
+    
 
-    private async Task AddRatingAsync(int i) {
     private async Task RemoveReview(Review r) {
         try {
             await itemService.RemoveReviewAsync(r.ItemId, r.Customer.Id);
@@ -408,16 +410,11 @@ else {
     private void AddRating(int i) {
         review.Rating = i;
     }
-
-    //TODO: Adriana - get this from the database :)
-    private decimal GetAverageReview() {
-        decimal average = 0;
-        foreach (Review review in reviews) {
-            average += review.Rating;
-        }
-        if(reviews.Count > 0) 
-            return average / reviews.Count;
-        return average;
+    
+    private async Task GetAverageReviewAsync() {
+        double r = await itemService.GetAverageRating(item.Id);
+        r = Math.Round(r, 2, MidpointRounding.ToEven);
+        rating = r.ToString();
     }
 
 }

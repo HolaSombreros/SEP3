@@ -15,5 +15,6 @@ namespace SEP3WebAPI.Mediator.Messages {
         public IList<Review> Reviews { get; set; }
         public string RatingOrder { get; set; }
         public Review Review { get; set; }
+        public double AverageRating { get; set; }
     }
 }

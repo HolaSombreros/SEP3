@@ -11,7 +11,12 @@ namespace SEP3UI.Data {
         public ItemService(IRestService restService) {
             this.restService = restService;
         }
-        
+
+        public async Task<double> GetAverageRating(int itemId) {
+            return await restService.GetAsync<double>($"Items/{itemId}/rating");
+
+        }
+
         public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
             IList<Item> items = await restService.GetAsync<IList<Item>>($"items?index={index}&category={category}&priceOrder={priceOrder}&ratingOrder={ratingOrder}&search={search}");
             return items;

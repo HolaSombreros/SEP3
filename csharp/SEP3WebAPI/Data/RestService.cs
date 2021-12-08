@@ -35,6 +35,10 @@ namespace SEP3WebAPI.Data {
             return customer;
         }
 
+        public async Task<double> GetAverageReviewAsync(int itemId) {
+            return await client.GetAverageRatingAsync(itemId);
+        }
+
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
             if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
             if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");

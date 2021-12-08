@@ -31,6 +31,9 @@ namespace SEP3Library.Models {
         public Review Review { get; set; }
         
         public string ImageName { get; set; }
+        
+        [JsonIgnore]
+        public double AverageRating { get; set; }
 
         public Item Copy() {
             return new Item (){

@@ -600,5 +600,17 @@ namespace SEP3WebAPI.Mediator {
             };
             Send(request);
         }
+
+        public async Task<double> GetAverageRatingAsync(int itemId) {
+            Message request = new ItemMessage() {
+                Type = "getAverageRating",
+                Service = "item",
+                Item = new Item() {
+                    Id = itemId
+                }
+            };
+            Send(request);
+            return ((ItemMessage)reply).AverageRating;
+        }
     }
 }

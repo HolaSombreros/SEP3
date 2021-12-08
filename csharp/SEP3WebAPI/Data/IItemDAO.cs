@@ -12,7 +12,6 @@ namespace SEP3WebAPI.Data {
         Task<IList<Genre>> GetGenresAsync();
         Task<Item> CreateItemAsync(ItemModel itemModel);
         Task<Book> CreateBookAsync(BookModel bookModel);
-        Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index);
         Task<Category> AddCategoryAsync(Category category);
         Task<Item> UpdateItemAsync(int id, ItemModel item);
         Task<Book> UpdateBookAsync(int id, BookModel book);
@@ -21,5 +20,6 @@ namespace SEP3WebAPI.Data {
         Task RemoveReviewAsync(int itemId, int customerId);
         Task<Review> GetReviewAsync(int customerId, int itemId);
         Task<Review> UpdateReviewAsync(Review review);
+        Task<double> GetAverageReviewAsync(int itemId);
     }
 }
