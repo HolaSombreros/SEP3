@@ -13,4 +13,5 @@ public interface OrderDAO {
     List<Order> readByIndex(int index, int id, String status);
     Order update(Order order);
     List<Order> readAllOrdersByCustomer(int customerId, int index);
+    void returnItems(Order order);
 }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using SEP3Library.Models;
 
 namespace SEP3WebAPI.Data {
-    public interface IFAQDAO {
+    public interface IFAQService {
         Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync();
         Task<FAQ> GetFrequentlyAskedQuestionAsync(int id);
         Task<FAQ> AddFrequentlyAskedQuestionAsync(FAQ faq);

@@ -11,9 +11,9 @@ namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class ItemsController : ControllerBase {
-        private IRestService service;
+        private IItemService service;
 
-        public ItemsController(IRestService service) {
+        public ItemsController(IItemService service) {
             this.service = service;
         }
 

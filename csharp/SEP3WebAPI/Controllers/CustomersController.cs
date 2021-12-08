@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
 using SEP3WebAPI.Data;
-using SEP3WebAPI.Mediator.Messages;
+
 
 namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class CustomersController : ControllerBase {
-        private IRestService service;
+        private ICustomerService service;
 
-        public CustomersController(IRestService service) {
+        public CustomersController(ICustomerService service) {
             this.service = service;
         }
 
@@ -82,20 +82,7 @@ namespace SEP3WebAPI.Controllers {
             }
         }
         
-        [HttpGet]
-        [Route("{customerId:int}/order")]
-        public async Task<ActionResult<IList<Order>>> GetAllOrdersByCustomer([FromRoute] int customerId, [FromQuery] int index) {
-            try {
-                IList<Order> orders = await service.GetOrdersByCustomerAsync(customerId, index);
-                return Ok(orders);
-            }
-            catch (NullReferenceException e) {
-                return NotFound(e.Message);
-            }
-            catch (Exception e) {
-                return StatusCode(500, e.Message);
-            }
-        }
+      
 
         [HttpPut]
         [Route("{customerId:int}")]

@@ -9,9 +9,9 @@ namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class FAQsController : ControllerBase {
-        private IRestService service;
+        private IFAQService service;
 
-        public FAQsController(IRestService service) {
+        public FAQsController(IFAQService service) {
             this.service = service;
         }
 

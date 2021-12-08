@@ -4,8 +4,8 @@ using SEP3Library.Models;
 using SEP3Library.UIModels;
 
 namespace SEP3WebAPI.Data {
-    public interface IItemDAO {
-        Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search);
+    public interface IItemService {
+        Task<IList<Item>> GetItemsAsync(int index);
         Task<Item> GetItemAsync(int id);
         Task<Book> GetBookAsync(int id);
         Task<IList<Category>> GetCategoriesAsync();
