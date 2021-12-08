@@ -52,7 +52,16 @@ namespace SEP3WebAPI.Mediator {
             };
             return ((OrderMessage) client.Send(req)).Orders;
         }
-        
+
+        public async Task UpdateOrderItemsAsync(Order order) {
+            OrderMessage req = new OrderMessage() {
+                Type = "returnItems",
+                Service = "order",
+                Order = order
+            };
+            client.Send(req);
+        }
+
         public async Task<Order> UpdateOrderAsync(Order order) {
             OrderMessage req = new OrderMessage() {
                 Type = "update",

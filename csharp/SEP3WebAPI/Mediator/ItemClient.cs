@@ -12,12 +12,21 @@ namespace SEP3WebAPI.Mediator {
             this.client = client;
         }
         
-        public async Task<IList<Item>> GetItemsAsync(int index) {
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
             ItemMessage req = new ItemMessage() {
                 Service = "item",
                 Type = "getAll",
-                Index = index
+                Index = index,
+                PriceOrder = priceOrder,
+                RatingOrder = ratingOrder,
+                Item = new Item() {
+                    Name = search
+                },
+                Categories = new List<Category>()
             };
+            req.Categories.Add(new Category() {
+                Name = category
+            });
             return ((ItemMessage) client.Send(req)).Items;
         }
 
@@ -109,30 +118,6 @@ namespace SEP3WebAPI.Mediator {
             };
             return ((ItemMessage) client.Send(req)).Book;
         }
-        
-        public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
-            ItemMessage req = new ItemMessage() {
-                Type = "searchByName",
-                Service = "item",
-                Item = new Item {
-                    Name = searchName
-                },
-                Index = index
-            };
-            return ((ItemMessage) client.Send(req)).Items;
-        }
-
-        public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
-            ItemMessage req = new ItemMessage() {
-                Type = "getAllByCategory",
-                Service = "item",
-                Item = new Item() {
-                    Name = category
-                },
-                Index = index
-            };
-            return ((ItemMessage) client.Send(req)).Items;
-        }
 
         public async Task<Item> UpdateItemAsync(Item item) {
             ItemMessage req = new ItemMessage() {
@@ -162,16 +147,6 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemMessage) client.Send(req)).Categories[0];
         }
 
-        public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
-            ItemMessage req = new ItemMessage() {
-                Type = "getAllByPrice",
-                Service = "item",
-                OrderBy = orderBy,
-                Index = index
-            };
-            return ((ItemMessage)client.Send(req)).Items;
-        }
-
         public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
             ItemMessage req = new ItemMessage() {
                 Type = "getItemReviews",
@@ -190,6 +165,44 @@ namespace SEP3WebAPI.Mediator {
             };
             req.Reviews.Add(review);
             return ((ItemMessage) client.Send(req)).Reviews[0];
+        }
+
+        public async Task RemoveReviewAsync(int itemId, int customerId) {
+            ItemMessage req = new ItemMessage() {
+                Type = "removeReview",
+                Service = "item",
+                Review = new Review() {
+                    Customer = new Customer() {
+                        Id = customerId
+                    },
+                    ItemId = itemId
+                }
+            };
+            client.Send(req);
+        }
+
+        public async Task<Review> GetReviewAsync(int customerId, int itemId) {
+            ItemMessage req = new ItemMessage() {
+                Type = "getReview",
+                Service = "item",
+                Review = new Review() {
+                    Customer = new Customer() {
+                        Id = customerId
+                    },
+                    ItemId = itemId
+                }
+            };
+            return ((ItemMessage) client.Send(req)).Review;
+
+        }
+
+        public async Task<Review> UpdateReviewAsync(Review review) {
+            ItemMessage req = new ItemMessage() {
+                Type = "updateReview",
+                Service = "item",
+                Review = review
+            };
+            return ((ItemMessage) client.Send(req)).Review;
         }
     }
 }
