@@ -80,11 +80,9 @@ public class ItemDAOService implements ItemDAO {
 
 
     @Override
-    public List<Item> readByIndex(int index, String category, String priceOrder, String ratingOrder, String search) {
+    public List<Item> readByIndex(int index, String category, String priceOrder, String ratingOrder, String discountOrder, String statusOrder, String search) {
         try{
-            System.out.println(search);
             if(search != null){
-                System.out.println("reached");
                 return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",search, index);
             }
             if(category != null){
@@ -107,6 +105,22 @@ public class ItemDAOService implements ItemDAO {
                             "group by category.name, item.name, description, price, discount, quantity, status, image_filepath, rating, comment, customer_id, item_id, date_time " +
                                     "ORDER BY avg DESC LIMIT 21 OFFSET 21 * ?", index);
 
+                }
+            }
+
+            if (discountOrder != null) {
+                if (discountOrder.equalsIgnoreCase("ASC")) {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY discount ASC LIMIT 21 OFFSET 21 * ?", index);
+                } else {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY discount DESC LIMIT 21 OFFSET 21 * ?", index);
+                }
+            }
+
+            if (statusOrder != null) {
+                if (statusOrder.equalsIgnoreCase("In Stock")) {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE status = 'In Stock' LIMIT 21 OFFSET 21 * ?", index);
+                } else {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE status = 'Out of Stock' LIMIT 21 OFFSET 21 * ?", index);
                 }
             }
 

@@ -5,7 +5,7 @@ using SEP3Library.UIModels;
 
 namespace SEP3UI.Data {
     public interface IItemService {
-        Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search);
+        Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string discountOrder, string statusOrder, string search);
         Task<Item> GetItemAsync(int id);
         Task<Book> GetBookAsync(int id);
         Task<IList<Genre>> GetGenresAsync();

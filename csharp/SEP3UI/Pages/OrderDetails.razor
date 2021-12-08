@@ -236,7 +236,7 @@
                     }
                     </AuthorizeView>
                 </EditForm>
-                <AuthorizeView Context = "other">
+                <AuthorizeView>
                 @if (order.OrderStatus == OrderStatus.Pending) {
                     <div class="text-center">
                         <button class="btn btn-md btn-dark order-button" @onclick="CancelOrder">Cancel Order</button>

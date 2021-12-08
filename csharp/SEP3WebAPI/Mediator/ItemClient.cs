@@ -12,13 +12,15 @@ namespace SEP3WebAPI.Mediator {
             this.client = client;
         }
         
-        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string discountOrder, string statusOrder, string search) {
             ItemMessage req = new ItemMessage() {
                 Service = "item",
                 Type = "getAll",
                 Index = index,
                 PriceOrder = priceOrder,
                 RatingOrder = ratingOrder,
+                DiscountOrder = discountOrder,
+                StatusOrder = statusOrder,
                 Item = new Item() {
                     Name = search
                 },

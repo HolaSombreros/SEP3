@@ -17,8 +17,8 @@ namespace SEP3UI.Data {
 
         }
 
-        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
-            IList<Item> items = await restService.GetAsync<IList<Item>>($"items?index={index}&category={category}&priceOrder={priceOrder}&ratingOrder={ratingOrder}&search={search}");
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string discountOrder, string statusOrder, string search) {
+            IList<Item> items = await restService.GetAsync<IList<Item>>($"items?index={index}&category={category}&priceOrder={priceOrder}&ratingOrder={ratingOrder}&discountOrder={discountOrder}&statusOrder={statusOrder}&search={search}");
             return items;
         }
         

@@ -6,13 +6,14 @@
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
 
-@if (items == null) {
-    <em>Loading...</em>
-} else if (!items.Any()) {
-    <em>You have no items in your wishlist!</em>
-} else {
-    <div class="container my-4">
-        <h2 class="mb-5 text-center">My Wishlist ♥</h2>
+
+<div class="container my-4">
+    <h2 class="mb-5 text-center">My Wishlist</h2>
+    @if (items == null) {
+        <em class="text-center">Loading...</em>
+    } else if (!items.Any()) {
+        <em class="text-center">You have no items in your wishlist!</em>
+    } else {
         @foreach (Item item in items) {
             <div class="row mb-5 align-items-center">
                 <div class="col-md-4 col-sm-12 row justify-content-center">
@@ -47,8 +48,8 @@
                 </div>
             </div>
         }
-    </div>
-}
+    }
+</div>
 
 @code {
     private int customerId;

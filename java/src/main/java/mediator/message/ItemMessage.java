@@ -20,6 +20,8 @@ public class ItemMessage extends Message {
     private String ratingOrder;
     private Review review;
     private double averageRating;
+    private String discountOrder;
+    private String statusOrder;
 
     public ItemMessage(String service, String type) {
         super(service, type);
@@ -131,5 +133,13 @@ public class ItemMessage extends Message {
 
     public void setRatingOrder(String ratingOrder) {
         this.ratingOrder = ratingOrder;
+    }
+
+    public String getDiscountOrder() {
+        return discountOrder;
+    }
+
+    public String getStatusOrder() {
+        return statusOrder;
     }
 }
