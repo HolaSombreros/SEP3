@@ -193,7 +193,6 @@ namespace SEP3WebAPI.Mediator {
                 }
             };
             return ((ItemMessage) client.Send(req)).Review;
-
         }
 
         public async Task<Review> UpdateReviewAsync(Review review) {
@@ -203,6 +202,17 @@ namespace SEP3WebAPI.Mediator {
                 Review = review
             };
             return ((ItemMessage) client.Send(req)).Review;
+        }
+
+        public async Task<double> GetAverageRatingAsync(int itemId) {
+            Message request = new ItemMessage() {
+                Type = "getAverageRating",
+                Service = "item",
+                Item = new Item() {
+                    Id = itemId
+                }
+            };
+            return ((ItemMessage)client.Send(request)).AverageRating;
         }
     }
 }
