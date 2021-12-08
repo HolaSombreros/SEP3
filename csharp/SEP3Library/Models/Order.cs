@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace SEP3Library.Models {
@@ -30,5 +32,12 @@ namespace SEP3Library.Models {
         [Required(ErrorMessage = "Please specify the status of the order")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public OrderStatus OrderStatus { get; set; }
+
+        [JsonIgnore]
+        public decimal Total {
+            get {
+                return Math.Round(Items.Sum(i => i.PriceIncludingDiscount * i.Quantity) + 25.00M, 2, MidpointRounding.ToEven);
+            }
+        }
     }
 }
