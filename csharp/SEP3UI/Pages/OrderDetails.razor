@@ -193,18 +193,18 @@
                         </thead>
                         <tbody>
                         @if (returnItemsModel.Items.Any()) {
-                            @for (int i = 0; i < order.Items.Count; i++) {
+                            @for (int j = 0; j < order.Items.Count; j++) {
                                 <tr>
-                                    <td>@order.Items[i].Id</td>
-                                    <td>@order.Items[i].Name</td>
-                                    <td>@order.Items[i].Quantity</td>
-                                    <td>@order.Items[i].PriceIncludingDiscount DKK</td>
+                                    <td>@order.Items[j].Id</td>
+                                    <td>@order.Items[j].Name</td>
+                                    <td>@order.Items[j].Quantity</td>
+                                    <td>@order.Items[j].PriceIncludingDiscount DKK</td>
                                     @if (order.OrderStatus == OrderStatus.Finished) {
                                         <td>
-                                            <InputNumber class="form-control" @bind-Value="returnItemsModel.Items[i].Quantity" style="width: 50px;"/>
+                                            <InputNumber class="form-control" @bind-Value="returnItemsModel.Items[j].Quantity" style="width: 50px;"/>
                                         </td>
                                     }
-                                    <td>@Math.Round(order.Items[i].PriceIncludingDiscount * order.Items[i].Quantity, 2, MidpointRounding.ToEven) DKK</td>
+                                    <td>@Math.Round(order.Items[j].PriceIncludingDiscount * order.Items[j].Quantity, 2, MidpointRounding.ToEven) DKK</td>
                                 </tr>
                             }
                         }

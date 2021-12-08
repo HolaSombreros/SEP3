@@ -127,8 +127,7 @@ namespace SEP3WebAPI.Data {
                     await client.SendNotificationAsync(customer, notification);
                 }
             }
-            await client.UpdateItemAsync(toUpdate);
-            return toUpdate;
+            return await client.UpdateItemAsync(toUpdate);
         }
 
         public async Task<Book> UpdateBookAsync(int id, BookModel book) {
@@ -140,7 +139,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Category = book.Category;
             toUpdate.Price = book.Price;
             toUpdate.Quantity = book.Quantity;
-            toUpdate.Status = book.Status;
+            toUpdate.Status = book.Quantity != 0 ? ItemStatus.InStock : ItemStatus.OutOfStock;
             toUpdate.Discount = book.Discount;
             toUpdate.ImageName = book.ImageName;
             toUpdate.Authors = book.Authors;
@@ -155,8 +154,28 @@ namespace SEP3WebAPI.Data {
                 Minute = book.PublicationDate.Minute,
                 Second = book.PublicationDate.Second
             };
-            await client.UpdateBookAsync(toUpdate);
-            return toUpdate;
+            
+            if ((await client.GetItemAsync(id)).Status.Equals(ItemStatus.OutOfStock) &&
+                toUpdate.Status.Equals(ItemStatus.InStock)) {
+                Notification notification = new Notification() {
+                    Text = $"The book {book.Name} in your wishlist is back on stock",
+                    Status = "Unread",
+                    Time = new MyDateTime() {
+                        Year = DateTime.Now.Year,
+                        Month = DateTime.Now.Month,
+                        Day = DateTime.Now.Day,
+                        Hour = DateTime.Now.Hour,
+                        Minute = DateTime.Now.Minute,
+                        Second = DateTime.Now.Second
+                    }
+                };
+                IList<Customer> customers = await client.GetCustomerWithWishlistItemAsync(id);
+                foreach (Customer customer in customers) {
+                    await client.SendNotificationAsync(customer, notification);
+                }
+            }
+            
+            return await client.UpdateBookAsync(toUpdate);
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
