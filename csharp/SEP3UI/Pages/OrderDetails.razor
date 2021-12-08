@@ -99,7 +99,7 @@
                                     <span class="oi oi-warning"></span>
                                 </div>
                             </div>
-                            <span class="form-control">@order.OrderStatus.ToString()</span>
+                            <span class="form-control">@orderModel.OrderStatus.ToString()</span>
                         </div>
                     </div>
 
@@ -180,54 +180,69 @@
                     <h4 class="mb-3 mt-5 mt-md-0 text-center">Items ordered</h4>
                     <table class="table">
                         <thead class="thead-light">
-                            <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                @if (order.OrderStatus == OrderStatus.Finished) {
-                                    <th>Return Item</th>
-                                }
-                                <th>Total Price</th>
-                            </tr>
+                        <tr>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <AuthorizeView Context = "other">
+                            @if (order.OrderStatus == OrderStatus.Finished) {
+                                <th>Return Item</th>
+                            }
+                            </AuthorizeView>
+                            <th>Total Price</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @for (int i = 0; i < order.Items.Count; i++) {
-                                int j = i;
-                                <tr>
-                                    <td>@order.Items[i].Id</td>
-                                    <td>@order.Items[i].Name</td>
-                                    <td>@order.Items[i].Quantity</td>
-                                    <td>@order.Items[i].PriceIncludingDiscount DKK</td>
+                        @for (int i = 0; i < order.Items.Count; i++) {
+                            int j = i;
+                            <tr>
+                                <td>@order.Items[i].Id</td>
+                                <td>@order.Items[i].Name</td>
+                                <td>@order.Items[i].Quantity</td>
+                                <td>@order.Items[i].PriceIncludingDiscount DKK</td>
+                                <AuthorizeView Context = "other">
                                     @if (order.OrderStatus == OrderStatus.Finished) {
                                         <td>
                                             <InputNumber class="form-control" @bind-Value="returnItemsModel.Items[j].Quantity" style="width: 80px;"/>
                                         </td>
                                     }
-                                    <td>@Math.Round(order.Items[i].PriceIncludingDiscount * order.Items[i].Quantity, 2, MidpointRounding.ToEven) DKK</td>
-                                </tr>
-                            }
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                </AuthorizeView>
+                                <td>@Math.Round(order.Items[i].PriceIncludingDiscount * order.Items[i].Quantity, 2, MidpointRounding.ToEven) DKK</td>
+                            </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <AuthorizeView Context = "other">
                                 @if (order.OrderStatus == OrderStatus.Finished) {
                                     <td></td>
                                 }
-                                <td>
-                                    <strong>@totalPrice DKK</strong>
-                                </td>
-                            </tr>
+                            </AuthorizeView>
+                            <td>
+                                <strong>@totalPrice DKK</strong>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
+                    <AuthorizeView Context = "other">
                     @if (order.OrderStatus == OrderStatus.Finished) {
                         <div class="text-center">
                             <span class="d-block mb-2">@returnItemsMessage</span>
                             <button class="btn btn-info">Return Items</button>
                         </div>
                     }
+                    </AuthorizeView>
                 </EditForm>
+                <AuthorizeView Context = "other">
+                @if (order.OrderStatus == OrderStatus.Pending) {
+                    <div class="text-center">
+                        <button class="btn btn-md btn-dark order-button" @onclick="CancelOrder">Cancel Order</button>
+                    </div>
+                }
+                </AuthorizeView>
             </div>
         </div>
     </div>
@@ -268,7 +283,8 @@
             ZipCode = order.Address.ZipCode,
             City = order.Address.City,
             OrderId = order.Id,
-            CustomerId = order.CustomerId
+            CustomerId = order.CustomerId,
+            OrderStatus = order.OrderStatus
         };
     }
 
@@ -297,6 +313,17 @@
             order = await orderService.ReturnItemsAsync(returnItemsModel);
             returnItemsMessage = "Items successfully returned!";
         } catch (Exception e) {
+            returnItemsMessage = e.Message;
+        }
+    }
+
+    private async Task CancelOrder() {
+        try {
+            orderModel.OrderStatus = OrderStatus.Cancelled;
+            await orderService.UpdateOrderAsync(orderModel);
+            order = await orderService.GetOrderAsync(Id);
+        }
+        catch (Exception e) {
             returnItemsMessage = e.Message;
         }
     }

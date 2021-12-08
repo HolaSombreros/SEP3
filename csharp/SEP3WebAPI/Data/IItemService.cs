@@ -4,7 +4,7 @@ using SEP3Library.Models;
 using SEP3Library.UIModels;
 
 namespace SEP3WebAPI.Data {
-    public interface IItemDAO {
+    public interface IItemService {
         Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search);
         Task<Item> GetItemAsync(int id);
         Task<Book> GetBookAsync(int id);
@@ -12,7 +12,6 @@ namespace SEP3WebAPI.Data {
         Task<IList<Genre>> GetGenresAsync();
         Task<Item> CreateItemAsync(ItemModel itemModel);
         Task<Book> CreateBookAsync(BookModel bookModel);
-        Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index);
         Task<Category> AddCategoryAsync(Category category);
         Task<Item> UpdateItemAsync(int id, ItemModel item);
         Task<Book> UpdateBookAsync(int id, BookModel book);

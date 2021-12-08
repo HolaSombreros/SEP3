@@ -164,11 +164,6 @@ public class ItemCommand implements Command {
                 review.getComment(), LocalDate.of(review.getDateTime().getYear(), review.getDateTime().getMonth(), review.getDateTime().getDay())));
     }
 
-    private void updateRating(){
-        Review review = request.getReviews().get(0);
-        reply.getReviews().add(databaseManager.getReviewDAOService().updateRating(review.getRating(), review.getItemId(), review.getCustomer().getId()));
-    }
-
     private void removeReview() {
         databaseManager.getReviewDAOService().delete(request.getReview());
     }

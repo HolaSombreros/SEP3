@@ -12,6 +12,7 @@ public class CustomerMessage extends Message {
     private List<Customer> customers;
     private Notification notification;
     private List<Notification> notifications;
+    private int itemId;
 
     public CustomerMessage(String service, String type) {
         super(service, type);
@@ -56,5 +57,13 @@ public class CustomerMessage extends Message {
 
     public void setNotification(Notification notification) {
         this.notification = notification;
+    }
+
+    public int getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(int itemId) {
+        this.itemId = itemId;
     }
 }

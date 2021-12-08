@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SEP3Library.Models;
 using SEP3WebAPI.Data;
 using SEP3WebAPI.Mediator;
 
@@ -28,7 +29,15 @@ namespace SEP3WebAPI {
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "SEP3WebAPI", Version = "v1"});
             });
-            services.AddSingleton<IRestService, RestService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IItemService, ItemService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IFAQService, FAQService>();
+            services.AddSingleton<IClient, Client>();
+            services.AddScoped<ICustomerClient, CustomerClient>();
+            services.AddScoped<IFAQClient, FAQClient>();
+            services.AddScoped<IOrderClient, OrderClient>();
+            services.AddScoped<IItemClient, ItemClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
