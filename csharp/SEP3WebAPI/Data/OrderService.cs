@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
-using SEP3UI.Data;
 using SEP3WebAPI.Mediator;
 
 namespace SEP3WebAPI.Data {

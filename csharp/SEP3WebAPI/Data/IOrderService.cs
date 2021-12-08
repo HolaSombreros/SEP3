@@ -12,5 +12,7 @@ namespace SEP3WebAPI.Data {
         Task<Order> UpdateOrderAsync(UpdateOrderModel order);
         Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index);
         Task UpdateOrderItemsAsync(Order order);
+        
+        
     }
 }
