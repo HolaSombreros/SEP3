@@ -77,6 +77,14 @@ public class CustomerDAOService implements CustomerDAO {
         }
     }
 
+    @Override public List<Customer> customerWithWishlistItem(int itemId) {
+        try {
+            return databaseHelper.mapList(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) JOIN wishlist_item USING (customer_id) WHERE item_id = ?;",itemId);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
     @Override public Customer update(Customer customer) {
         try {
             Address address = addressDAOService.read(customer.getAddress().getStreet(),

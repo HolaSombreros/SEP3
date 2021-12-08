@@ -76,7 +76,6 @@
             .Distinct()
             .ToList();
         int adminId = int.Parse((await authState.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        Console.WriteLine(adminId);
         faq.CreatorId = adminId;
     }
 
