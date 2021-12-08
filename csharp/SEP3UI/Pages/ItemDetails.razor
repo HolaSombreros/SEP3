@@ -135,10 +135,12 @@ else {
                                 @if (customerId == review.Customer.Id) {
                                     <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
                                     <a class="close mr-3 oi oi-pencil " @onclick="() => ChangeToEdit()"/>
-                                    <div class="form-group">
-                                        <p>Your comment</p>
-                                        <div>@review.Comment</div>
-                                    </div>
+                                    @if (!review.Comment.Equals("")) {
+                                        <div class="form-group">
+                                            <p>Your comment</p>
+                                            <div>@review.Comment</div>
+                                        </div>
+                                    }
                                     if (isEditing) {
                                         <EditForm Model="review" Context="EditYourOwnReview">
                                             <DataAnnotationsValidator/>
