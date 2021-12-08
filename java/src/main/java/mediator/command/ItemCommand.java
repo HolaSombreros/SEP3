@@ -38,11 +38,9 @@ public class ItemCommand implements Command {
         methods.put("editShoppingCart", this::updateShoppingCart);
         methods.put("removeShoppingCart", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
-        methods.put("getAllByCategory", this::getAllByCategory);
         methods.put("addCategory", this::addCategory);
         methods.put("updateItem", this::updateItem);
         methods.put("updateBook", this::updateBook);
-        methods.put("getAllByPrice",this::getALlByPrice);
         methods.put("getItemReviews", this::getItemReviews);
         methods.put("addReview", this::addReview);
         methods.put("removeReview", this::removeReview);
@@ -64,7 +62,8 @@ public class ItemCommand implements Command {
     }
 
     private void getAll() {
-        reply.setItems(databaseManager.getItemDAOService().readByIndex(request.getIndex()));
+        System.out.println(request.getItem().getName());
+        reply.setItems(databaseManager.getItemDAOService().readByIndex(request.getIndex(), request.getCategories().get(0).getName(),request.getPriceOrder(), request.getRatingOrder(), request.getItem().getName()));
     }
 
     private void getCategories() {
@@ -149,20 +148,12 @@ public class ItemCommand implements Command {
         databaseManager.getItemDAOService().removeFromShoppingCart(request.getItem(),request.getCustomer().getId());
     }
 
-    private void getAllByCategory() {
-        reply.setItems(databaseManager.getItemDAOService().readAllByCategory(request.getItem().getName(), request.getIndex()));
-    }
 
     private void addCategory() {
         List<Category> categories = new ArrayList<>();
         categories.add(databaseManager.getCategoryDAOService().createCategory(request.getCategories().get(0).getName()));
         reply.setCategories(categories);
     }
-
-    private void getALlByPrice(){
-        reply.setItems(databaseManager.getItemDAOService().readAllByPrice(request.getOrderBy(), request.getIndex()));
-    }
-
     private void getItemReviews() {
         reply.setReviews(databaseManager.getReviewDAOService().readByItem(request.getItem().getId(), request.getIndex()));
     }
@@ -171,6 +162,11 @@ public class ItemCommand implements Command {
         Review review = request.getReviews().get(0);
         reply.getReviews().add(databaseManager.getReviewDAOService().create(review.getCustomer().getId(), review.getItemId(),review.getRating(),
                 review.getComment(), LocalDate.of(review.getDateTime().getYear(), review.getDateTime().getMonth(), review.getDateTime().getDay())));
+    }
+
+    private void updateRating(){
+        Review review = request.getReviews().get(0);
+        reply.getReviews().add(databaseManager.getReviewDAOService().updateRating(review.getRating(), review.getItemId(), review.getCustomer().getId()));
     }
 
     private void removeReview() {

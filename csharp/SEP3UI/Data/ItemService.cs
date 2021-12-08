@@ -12,8 +12,8 @@ namespace SEP3UI.Data {
             this.restService = restService;
         }
         
-        public async Task<IList<Item>> GetItemsAsync(int index) {
-            IList<Item> items = await restService.GetAsync<IList<Item>>($"items?index={index}");
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
+            IList<Item> items = await restService.GetAsync<IList<Item>>($"items?index={index}&category={category}&priceOrder={priceOrder}&ratingOrder={ratingOrder}&search={search}");
             return items;
         }
         
@@ -45,10 +45,10 @@ namespace SEP3UI.Data {
             return await restService.PostAsync<ItemModel, Item>(itemModel, "items");
         }
 
-        public async Task<IList<Item>> GetItemsByCategoriesAsync(Category category, int index) {
-            return await restService.GetAsync<IList<Item>>(
-                $"Items?index={index}&category={category.Name}");
-        }
+        // public async Task<IList<Item>> GetItemsByCategoriesAsync(Category category, int index) {
+        //     return await restService.GetAsync<IList<Item>>(
+        //         $"Items?index={index}&category={category.Name}");
+        // }
 
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             return await restService.PutAsync<ItemModel,Item>(item, $"items/{id}");
@@ -61,9 +61,9 @@ namespace SEP3UI.Data {
             return await restService.PostAsync<Category, Category>(category, "items/categories");
         }
 
-        public async Task<IList<Item>> GetItemsByPrice(string orderBy, int index) {
-            return await restService.GetAsync<IList<Item>>($"Items?index={index}&orderBy={orderBy}");
-        }
+        // public async Task<IList<Item>> GetItemsByPrice(string orderBy, int index) {
+        //     return await restService.GetAsync<IList<Item>>($"Items?index={index}&orderBy={orderBy}");
+        // }
 
         public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
             return await restService.GetAsync<IList<Review>>($"items/{item.Id}/reviews?index={index}");

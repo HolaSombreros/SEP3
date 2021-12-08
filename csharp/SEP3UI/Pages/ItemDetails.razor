@@ -163,16 +163,18 @@ else {
                                     </div>
                                 }
                                 <span class="star-rating float-right"></span>
-                                
+
                             </div>
-                            <div class="">
-                                @for (int i = 0; i < review.Rating; i++) {
-                                    <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
-                                }
-                                @for (int i = 0; i < 5 - review.Rating; i++) {
-                                    <i class="icons oi oi-star" style="color:grey;" id="star1"></i>
-                                }
-                            </div>
+                            @if (review.Rating != 0) {
+                                <div class="">
+                                    @for (int i = 0; i < review.Rating; i++) {
+                                        <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
+                                    }
+                                    @for (int i = 0; i < 5 - review.Rating; i++) {
+                                        <i class="icons oi oi-star" style="color:grey;" id="star1"></i>
+                                    }
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -252,10 +254,11 @@ else {
     protected override async Task OnInitializedAsync() {
         isEditing = false;
         review = new Review();
+        review.Rating = 0;
         Index = 0;
         item = await itemService.GetItemAsync(Id);
         reviews = await itemService.GetItemReviewsAsync(Index,item);
-        
+
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
@@ -347,7 +350,7 @@ else {
             errorMessage = e.Message;
         }
     }
-
+    
     private async Task RemoveReview(Review r) {
         try {
             await itemService.RemoveReviewAsync(r.ItemId, r.Customer.Id);

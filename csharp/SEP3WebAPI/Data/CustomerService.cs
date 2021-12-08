@@ -11,7 +11,6 @@ namespace SEP3WebAPI.Data {
     public class CustomerService : ICustomerService {
         private ICustomerClient customerClient;
         private IItemClient itemClient;
-        
         public CustomerService(IItemClient itemClient, ICustomerClient customerClient) {
             this.itemClient = itemClient;
             this.customerClient = customerClient;

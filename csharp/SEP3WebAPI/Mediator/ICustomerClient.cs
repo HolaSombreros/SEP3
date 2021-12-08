@@ -22,5 +22,6 @@ namespace SEP3WebAPI.Mediator {
         Task<Notification> GetSpecificNotificationAsync(Customer customer, int notificationId);
         Task SendNotificationAsync(Customer customer, Notification notification);
         Task<Notification> UpdateSeenNotificationAsync(Customer customer, Notification notification);
+        Task<IList<Customer>> GetCustomerWithWishlistItemAsync(int itemId);
     }
 }

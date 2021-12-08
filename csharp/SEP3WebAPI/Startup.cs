@@ -32,6 +32,7 @@ namespace SEP3WebAPI {
             services.AddSingleton<IItemService, ItemService>();
             services.AddSingleton<IOrderService, OrderService>();
             services.AddSingleton<IFAQService, FAQService>();
+            services.AddSingleton<IClient, Client>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -16,19 +16,14 @@ namespace SEP3WebAPI.Data {
             this.client = client;
         }
         
-        public async Task<IList<Item>> GetItemsAsync(int index) {
-            return await client.GetItemsAsync(index);
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search) {
+            return await client.GetItemsAsync(index, category, priceOrder, ratingOrder, search);
         }
 
         public async Task<Item> GetItemAsync(int id) {
             return await client.GetItemAsync(id);
         }
-        
 
-        public Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
-            return client.GetItemsBySearchAsync(searchName, index);
-        }
-        
         public async Task<Category> AddCategoryAsync(Category category) {
             IList<Category> existing = await client.GetCategoriesAsync();
             if (existing.Any(c => c.Name.ToLower().Equals(category.Name.ToLower()))) {
@@ -38,11 +33,7 @@ namespace SEP3WebAPI.Data {
             Category created = await client.AddCategoryAsync(category);
             return created;
         }
-
-        public async Task<IList<Item>> GetItemsByCategoryAsync(string category, int index) {
-            return await client.GetItemsByCategoryAsync(category, index);
-        }
-
+        
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             if (item == null) throw new InvalidDataException("Please provide an item of the proper format");
             Item toUpdate = await client.GetItemAsync(id);
@@ -148,10 +139,6 @@ namespace SEP3WebAPI.Data {
                 Genre = itemModel.Genre
             };
             return await client.AddBookAsync(b);
-        }
-        
-        public async Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index) {
-            return await client.GetItemsByPriceAsync(orderBy, index);
         }
 
         public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {

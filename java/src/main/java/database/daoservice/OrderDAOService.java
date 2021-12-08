@@ -34,6 +34,8 @@ public class OrderDAOService implements OrderDAO {
                     item.getPrice());
                 Item item1 = itemDAOService.read(item.getId());
                 item1.setQuantity(item1.getQuantity() - item.getQuantity());
+                if (item1.getQuantity() == 0)
+                    item1.setStatus(ItemStatus.OUTOFSTOCK);
                 itemDAOService.update(item1);
             }
             return read(keys.get(0));
