@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,16 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
-using SEP3UI.Data;
-using IRestService = SEP3WebAPI.Data.IRestService;
+using SEP3WebAPI.Data;
 
 namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class OrdersController : ControllerBase {
-        private IRestService service;
+        private IOrderService service;
 
-        public OrdersController(IRestService service) {
+        public OrdersController(IOrderService service) {
             this.service = service;
         }
 
@@ -75,6 +73,21 @@ namespace SEP3WebAPI.Controllers {
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpGet]
+        [Route("{customerId:int}/order")]
+        public async Task<ActionResult<IList<Order>>> GetAllOrdersByCustomer([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Order> orders = await service.GetOrdersByCustomerAsync(customerId, index);
+                return Ok(orders);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }

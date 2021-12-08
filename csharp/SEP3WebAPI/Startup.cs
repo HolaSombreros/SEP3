@@ -28,7 +28,10 @@ namespace SEP3WebAPI {
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "SEP3WebAPI", Version = "v1"});
             });
-            services.AddSingleton<IRestService, RestService>();
+            services.AddSingleton<ICustomerService, CustomerService>();
+            services.AddSingleton<IItemService, ItemService>();
+            services.AddSingleton<IOrderService, OrderService>();
+            services.AddSingleton<IFAQService, FAQService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

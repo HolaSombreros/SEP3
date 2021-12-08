@@ -5,7 +5,7 @@ using SEP3Library.UIModels;
 using SEP3UI.Data;
 
 namespace SEP3WebAPI.Data {
-    public interface ICustomerDAO {
+    public interface ICustomerService {
         Task<Customer> GetCustomerAsync(string email, string password);
         Task<Customer> GetCustomerAsync(int customerId);
         Task<Customer> AddCustomerAsync(CustomerModel customer);
