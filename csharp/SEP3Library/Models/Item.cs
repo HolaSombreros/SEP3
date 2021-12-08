@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -28,7 +29,7 @@ namespace SEP3Library.Models {
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public ItemStatus Status { get; set; }
         
-        public Review Review { get; set; }
+        public List<Review> Reviews { get; set; }
         
         public string ImageName { get; set; }
         
@@ -44,7 +45,7 @@ namespace SEP3Library.Models {
                 Category = Category,
                 Discount = Discount,
                 Status = Status,
-                Review = Review,
+                Reviews = Reviews,
                 ImageName = ImageName,
                 Quantity = Quantity
             };

@@ -302,6 +302,7 @@
 
     private async Task GetAverageReview(Item item ) {
         item.AverageRating =  await itemService.GetAverageRating(item.Id);
+        item.AverageRating = Math.Round(item.AverageRating, 2, MidpointRounding.ToEven);
     }
 
     private async Task SortByDiscountAscAsync() {
