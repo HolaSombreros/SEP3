@@ -10,13 +10,13 @@ public class ItemMessage extends Message {
     private List<Item> items;
     private List<Category> categories;
     private List<Genre> genres;
-    private Category category;
     private Item item;
     private Book book;
     private Customer customer;
     private int[] itemsIds;
-    private String orderBy;
+    private String priceOrder;
     private List<Review> reviews;
+    private String ratingOrder;
     private Review review;
 
     public ItemMessage(String service, String type) {
@@ -99,20 +99,12 @@ public class ItemMessage extends Message {
         this.customer = customer;
     }
 
-    public String getOrderBy() {
-        return orderBy;
+    public String getPriceOrder() {
+        return priceOrder;
     }
 
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setPriceOrder(String priceOrder) {
+        this.priceOrder = priceOrder;
     }
 
     public List<Review> getReviews() {
@@ -121,5 +113,13 @@ public class ItemMessage extends Message {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getRatingOrder() {
+        return ratingOrder;
+    }
+
+    public void setRatingOrder(String ratingOrder) {
+        this.ratingOrder = ratingOrder;
     }
 }

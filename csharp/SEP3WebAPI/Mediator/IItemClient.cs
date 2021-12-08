@@ -4,7 +4,7 @@ using SEP3Library.Models;
 
 namespace SEP3WebAPI.Mediator {
     public interface IItemClient {
-        Task<IList<Item>> GetItemsAsync(int index);
+        Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string search);
         Task<Item> GetItemAsync(int id);
         Task<Book> GetBookAsync(int id);
         Task<IList<Item>> GetItemsByIdAsync(int[] itemIds);
@@ -14,12 +14,10 @@ namespace SEP3WebAPI.Mediator {
         Task<IList<Category>> GetCategoriesAsync();
         Task<IList<Genre>> GetGenresAsync();
         Task<Item> AddItemAsync(Item item);
-        Task<IList<Item>> GetItemsByCategoryAsync(string category, int index);
         Task<Book> AddBookAsync(Book book);
         Task<Category> AddCategoryAsync(Category category);
         Task<Item> UpdateItemAsync( Item item);
         Task<Book> UpdateBookAsync( Book book);
-        Task<IList<Item>> GetItemsByPriceAsync(string orderBy, int index);
         Task<IList<Review>> GetItemReviewsAsync(int index,Item item);
         Task<Review> AddReviewAsync(Review review);
         Task RemoveReviewAsync(int itemId, int customerId);
