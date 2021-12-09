@@ -3,6 +3,7 @@ import database.daomodel.DatabaseManager;
 import mediator.message.ItemMessage;
 import mediator.message.Message;
 import model.Category;
+import model.Item;
 import model.Review;
 
 import java.time.LocalDate;
@@ -46,6 +47,7 @@ public class ItemCommand implements Command {
         methods.put("removeReview", this::removeReview);
         methods.put("getReview", this::getReview);
         methods.put("updateReview", this::updateReview);
+        methods.put("getAverageRating", this::getAverageRating);
     }
 
     @Override public Message execute(Message request) {
@@ -62,8 +64,8 @@ public class ItemCommand implements Command {
     }
 
     private void getAll() {
-        System.out.println(request.getItem().getName());
-        reply.setItems(databaseManager.getItemDAOService().readByIndex(request.getIndex(), request.getCategories().get(0).getName(),request.getPriceOrder(), request.getRatingOrder(), request.getItem().getName()));
+        reply.setItems(databaseManager.getItemDAOService().readByIndex(request.getIndex(), request.getCategories().get(0).getName(),request.getPriceOrder(), request.getRatingOrder(), request.getDiscountOrder(),
+                request.getStatusOrder(), request.getItem().getName()));
     }
 
     private void getCategories() {
@@ -174,6 +176,10 @@ public class ItemCommand implements Command {
 
     private void updateReview() {
         reply.setReview(databaseManager.getReviewDAOService().update(request.getReview()));
+    }
+
+    private void getAverageRating(){
+        reply.setAverageRating(databaseManager.getReviewDAOService().getAverageRatingForItem(request.getItem().getId()));
     }
 
 }

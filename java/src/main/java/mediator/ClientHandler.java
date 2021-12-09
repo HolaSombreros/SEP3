@@ -85,8 +85,8 @@ public class ClientHandler implements Runnable {
     private void sendReply(Message reply) {
         String replyGson = gson.toJson(reply);
         out.println(replyGson.length());
-        System.out.println(">>>>> " + replyGson.length());
+//        System.out.println(">>>>> " + replyGson.length());
         out.println(replyGson);
-        System.out.println(replyGson);
+//        System.out.println(replyGson);
     }
 }

@@ -18,11 +18,25 @@ namespace SEP3WebAPI.Controllers {
         }
 
         [HttpGet]
+        [Route("{id:int}/rating")]
+        public async Task<ActionResult<double>> GetAverageReview([FromRoute] int id) {
+            try {
+                return await service.GetAverageReviewAsync(id);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
         public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index,
             [FromQuery] string? search, [FromQuery] string? category, [FromQuery] string? priceOrder,
-            [FromQuery] string? ratingOrder) {
+            [FromQuery] string? ratingOrder, [FromQuery] string discountOrder, [FromQuery] string statusOrder) {
             try {
-                IList<Item> items = await service.GetItemsAsync(index, category, priceOrder, ratingOrder, search);
+                IList<Item> items = await service.GetItemsAsync(index, category, priceOrder, ratingOrder, discountOrder, statusOrder, search);
                 return Ok(items);
             }
             catch (NullReferenceException e) {

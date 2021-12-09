@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @using SEP3Library.Models
 @using SEP3UI.Authentication
+@using System.Globalization
 @inject IItemService itemService
 @inject IOrderService orderService
 @inject ICustomerService customerService
@@ -17,152 +18,178 @@ else {
         <h2>Item details</h2>
     </div>
     <div class="container">
-        <div class="card row">
-            <div class="row border-top border-bottom">
-                <div class="col-md-6">
-                    <div class="img-responsive m-3 text-center mt-5">
-                        <img src="@item.ImageName"/>
-                    </div>
-
+    <div class="card row">
+        <div class="row border-top border-bottom">
+            <div class="col-md-6">
+                <div class="img-responsive m-3 text-center mt-5">
+                    <img src="@item.ImageName"/>
                 </div>
-                <div class="col-md-6">
-                    <div class="pt-5 pl-5">
-                        <AuthorizeView>
-                            <div class="text-right mr-5">
-                                @if (favorite) {
-                                    <i class="favorite oi oi-heart" @onclick="PerformUnfavoriteAsync"></i>
+
+            </div>
+            <div class="col-md-6">
+                <div class="pt-5 pl-5">
+                    <AuthorizeView>
+                        <div class="text-right mr-5">
+                            @if (favorite) {
+                                <i class="favorite oi oi-heart" @onclick="PerformUnfavoriteAsync"></i>
+                            }
+                            else {
+                                <i class="non-favorite oi oi-heart" @onclick="PerformFavoriteAsync"></i>
+                            }
+                        </div>
+                    </AuthorizeView>
+                    <h2 class="mb-4">
+                        <div class="retroshd">@item.Name</div>
+                    </h2>
+                    <div>
+                        <b>About:</b> @item.Description
+                    </div>
+                    <div class="mt-2">
+                        <span>
+                            <strong>Category:</strong>
+                            <a rel="tag" href="#">@item.Category.Name</a>
+                        </span>
+                    </div>
+                    @if (item.Category.Name.Equals("Book") && book != null) {
+                        <div class="mt-2">
+                            <span>
+                                <strong>Author:</strong>
+                                @foreach (Author author in book.Authors) {
+                                    <a rel="tag" href="#">@author.FirstName @author.LastName</a>
                                 }
-                                else {
-                                    <i class="non-favorite oi oi-heart" @onclick="PerformFavoriteAsync"></i>
-                                }
-                            </div>
-                        </AuthorizeView>
-                        <h2 class="mb-4">
-                            <div class="retroshd">@item.Name</div>
-                        </h2>
-                        <div>
-                            <b>About:</b> @item.Description
+                            </span>
                         </div>
                         <div class="mt-2">
                             <span>
-                                <strong>Category:</strong>
-                                <a rel="tag" href="#">@item.Category.Name</a>
+                                <strong>Publication Date: </strong>@book.PublicationDate.DateToString()
                             </span>
                         </div>
-                        @if (item.Category.Name.Equals("Book") && book != null) {
-                            <div class="mt-2">
-                                <span>
-                                    <strong>Author:</strong>
-                                    @foreach (Author author in book.Authors) {
-                                        <a rel="tag" href="#">@author.FirstName @author.LastName</a>
-                                    }
-                                </span>
-                            </div>
-                            <div class="mt-2">
-                                <span>
-                                    <strong>Publication Date: </strong>@book.PublicationDate.DateToString()
-                                </span>
-                            </div>
-                            <div class="mt-2">
-                                <span>
-                                    <strong>Language: </strong>
-                                    <a rel="tag" href="#">@book.Language</a>
-                                </span>
-                            </div>
-                            <div class="mt-2">
-                                <span>
-                                    <strong>Genre: </strong>
-                                    @foreach (Genre g in book.Genre) {
-                                        <a rel="tag" href="#">@g.Name</a>
-                                    }
-                                </span>
-                            </div>
-                        }
                         <div class="mt-2">
-                            <strong>Price: </strong> <span class="amount-old">@item.PriceIncludingDiscount DKK</span>
-                            @if (item.Discount > 0) {
-                                <span class="ml-2 text-danger">(@item.Discount% OFF)</span>
-                            }
+                            <span>
+                                <strong>Language: </strong>
+                                <a rel="tag" href="#">@book.Language</a>
+                            </span>
                         </div>
-                        <AuthorizeView Policy=@Policies.IsAdmin>
+                        <div class="mt-2">
+                            <span>
+                                <strong>Genre: </strong>
+                                @foreach (Genre g in book.Genre) {
+                                    <a rel="tag" href="#">@g.Name</a>
+                                }
+                            </span>
+                        </div>
+                    }
+                    <div class="mt-2">
+                        <strong>Price: </strong> <span class="amount-old">@item.PriceIncludingDiscount DKK</span>
+                        @if (item.Discount > 0) {
+                            <span class="ml-2 text-danger">(@item.Discount% OFF)</span>
+                        }
+                    </div>
+                    <AuthorizeView Policy=@Policies.IsAdmin>
                         <div class="mt-2">
                             <label>
                                 <strong>Quantity: </strong> @item.Quantity
                             </label>
                         </div>
+                    </AuthorizeView>
+                    <div class="mt-2">
+                        <label>
+                            <strong>Status: </strong>
+                        </label>
+                        @if (item.Quantity == 0) {
+                            <span class="text-danger"> Out of stock</span>
+                        }
+                        else {
+                            <span class="text-success"> In stock</span>
+                        }
+                    </div>
+                    <div class="mt-2">
+                        <label>
+                            <strong>Rating:</strong> @rating
+                        </label>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">Add to Shopping Cart</button>
+                        <AuthorizeView Policy="@Policies.IsAdmin">
+                            <button class="btn btn-round btn-dark" @onclick="(() => View(item.Id, item.Category.Name))">
+                                Edit Item
+                            </button>
                         </AuthorizeView>
-                        <div class="mt-2">
-                            <label>
-                                <strong>Status: </strong>
-                            </label>
-                            @if (item.Quantity == 0) {
-                                <span class="text-danger"> Out of stock</span>
-                            }
-                            else {
-                                <span class="text-success"> In stock</span>
-                            }
-                        </div>
-                        <div class="mt-2">
-                            <label>
-                                <strong>Rating:</strong> @Math.Round(GetAverageReview(), 2, MidpointRounding.ToEven)
-                            </label>
-                        </div>
-                        <div class="mt-2">
-                            <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">Add to Shopping Cart</button>
-                            <AuthorizeView Policy="@Policies.IsAdmin">
-                                <button class="btn btn-round btn-dark" @onclick="(() => View(item.Id, item.Category.Name))">
-                                    Edit Item
-                                </button>
-                            </AuthorizeView>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="text-center mb-3 mt-3">
-            <h2 class="mb-1">All Ratings and Reviews</h2>
-        </div>
-        @foreach (Review review in reviews) {
-            <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
-                <div class="reviews-members pt-4 pb-4">
-                    <div class="media">
-                        <div class="media-body">
-                            <div class="reviews-members-header">
-                                <h6 class="mb-1">
-                                    <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
-                                </h6>
-                                <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
-                                @if (customerId == review.Customer.Id) {
-                                    <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
-                                    <a class="close mr-3 oi oi-pencil " @onclick="() => ChangeToEdit()"/>
+    </div>
+    <div class="text-center mb-3 mt-3">
+        <h2 class="mb-1">All Ratings and Reviews</h2>
+    </div>
+    @foreach (Review review in reviews) {
+        <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+            <div class="reviews-members pt-4 pb-4">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="reviews-members-header">
+                            <h6 class="mb-1">
+                                <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
+                            </h6>
+                            <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
+                            @if (customerId == review.Customer.Id) {
+                                <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
+                                <a class="close mr-3 oi oi-pencil " @onclick="() => ChangeToEdit()"/>
+                                @if (!review.Comment.Equals("")) {
                                     <div class="form-group">
                                         <p>Your comment</p>
                                         <div>@review.Comment</div>
                                     </div>
-                                    if (isEditing) {
-                                        <EditForm Model="review" Context="EditYourOwnReview">
-                                            <DataAnnotationsValidator/>
-                                                <form>
-                                                    <div class="form-group">
-                                                        <h5 class="mb-4">Edit your own comment</h5>
-                                                        <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
-                                                    </div>
-                                                    <ValidationMessage For="@(() => review.Comment)"/>
-                                                </form>
-                                            <div class="text-center">
-                                                <button class="btn btn-md btn-dark order-button" @onclick="() => EditReview(review)">Edit comment</button>
+                                }
+                                if (isEditing) {
+                                    <EditForm Model="review" Context="EditYourOwnReview">
+                                        <DataAnnotationsValidator/>
+                                        <form>
+                                            <div class="form-group">
+                                                <h5 class="mb-4">Edit your own comment</h5>
+                                                <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
                                             </div>
-                                        </EditForm>
-                                    }
+                                            <ValidationMessage For="@(() => review.Comment)"/>
+                                            <p class="mb-2">Your rating: </p>
+                                            <div class="rating">
+                                                <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
+                                                <label for="one">
+                                                    <i class="oi oi-star"></i>
+                                                </label>
+                                                <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                                                <label for="two">
+                                                    <i class="oi oi-star"></i>
+                                                </label>
+                                                <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                                                <label for="three">
+                                                    <i class="oi oi-star"></i>
+                                                </label>
+                                                <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                                                <label for="four">
+                                                    <i class="oi oi-star"></i>
+                                                </label>
+                                                <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                                                <label for="five">
+                                                    <i class="oi oi-star"></i>
+                                                </label>
+                                            </div>
+                                        </form>
+                                        <div class="text-center">
+                                            <button class="btn btn-md btn-dark order-button" @onclick="() => EditReview(review)">Edit comment</button>
+                                        </div>
+                                    </EditForm>
                                 }
-                                else {
-                                    <div class="reviews-members-body">
-                                        <p>@review.Comment</p>
-                                    </div>
-                                }
-                                <span class="star-rating float-right"></span>
+                            }
+                            else {
+                                <div class="reviews-members-body">
+                                    <p>@review.Comment</p>
+                                </div>
+                            }
+                            <span class="star-rating float-right"></span>
 
-                            </div>
+                        </div>
+                        @if (!isEditing) {
                             @if (review.Rating != 0) {
                                 <div class="">
                                     @for (int i = 0; i < review.Rating; i++) {
@@ -173,60 +200,61 @@ else {
                                     }
                                 </div>
                             }
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
-        }
-        <div class="text-center">
-            <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
         </div>
-        <div class="@show">
-            <AuthorizeView>
-                <EditForm Model="review" Context="addReview">
-                    <DataAnnotationsValidator/>
-                    <div class=" rounded shadow-sm p-4 mb-5 container">
-                        <form>
-                            <div class="form-group">
-                                <h5 class="mb-4">Leave a comment</h5>
-                                <label>Your Comment</label>
-                                <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
-                            </div>
-                            <ValidationMessage For="@(() => review.Comment)"/>
-                            <p class="mb-2">Rate the item</p>
-                            <div class="rating">
-                                <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
-                                <label for="one">
-                                    <i class="oi oi-star"></i>
-                                </label>
-                                <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
-                                <label for="two">
-                                    <i class="oi oi-star"></i>
-                                </label>
-                                <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
-                                <label for="three">
-                                    <i class="oi oi-star"></i>
-                                </label>
-                                <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
-                                <label for="four">
-                                    <i class="oi oi-star"></i>
-                                </label>
-                                <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
-                                <label for="five">
-                                    <i class="oi oi-star"></i>
-                                </label>
-                            </div>
-                            <div class="form-group text-center">
-                                <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
-                            </div>
-                        </form>
-                    </div>
-                </EditForm>
-            </AuthorizeView>
-        </div>
-        <div class="container text-center text-danger">
-            <div>@errorMessage</div>
-        </div>
+    }
+    <div class="text-center">
+        <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
+    </div>
+    <div class="@show">
+        <AuthorizeView>
+            <EditForm Model="review" Context="addReview">
+                <DataAnnotationsValidator/>
+                <div class=" rounded shadow-sm p-4 mb-5 container">
+                    <form>
+                        <div class="form-group">
+                            <h5 class="mb-4">Leave a comment</h5>
+                            <label>Your Comment</label>
+                            <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
+                        </div>
+                        <ValidationMessage For="@(() => review.Comment)"/>
+                        <p class="mb-2">Rate the item</p>
+                        <div class="rating">
+                            <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
+                            <label for="one">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                            <label for="two">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                            <label for="three">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                            <label for="four">
+                                <i class="oi oi-star"></i>
+                            </label>
+                            <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                            <label for="five">
+                                <i class="oi oi-star"></i>
+                            </label>
+                        </div>
+                        <div class="form-group text-center">
+                            <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Comment</button>
+                        </div>
+                    </form>
+                </div>
+            </EditForm>
+        </AuthorizeView>
+    </div>
+    <div class="container text-center text-danger">
+        <div>@errorMessage</div>
+    </div>
     </div>
 }
 
@@ -248,6 +276,7 @@ else {
     private string comment = "";
     private string show = "";
     private bool isEditing;
+    private string rating;
 
     protected override async Task OnInitializedAsync() {
         isEditing = false;
@@ -255,12 +284,12 @@ else {
         review.Rating = 0;
         Index = 0;
         item = await itemService.GetItemAsync(Id);
-        reviews = await itemService.GetItemReviewsAsync(Index,item);
+        reviews = await itemService.GetItemReviewsAsync(Index, item);
 
         if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
         }
-
+        await GetAverageReviewAsync();
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -304,7 +333,7 @@ else {
     }
 
     private async Task AddToShoppingCart(Item itemToAdd) {
-        Item i = orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
+        Item i = orderService.ShoppingCart.Add(itemToAdd);
         if (customerId != -1)
             await customerService.AddToShoppingCartAsync(i, customerId);
     }
@@ -348,7 +377,7 @@ else {
             errorMessage = e.Message;
         }
     }
-    
+
     private async Task RemoveReview(Review r) {
         try {
             await itemService.RemoveReviewAsync(r.ItemId, r.Customer.Id);
@@ -377,6 +406,9 @@ else {
                 Role = customer.Role,
                 PhoneNumber = customer.PhoneNumber
             };
+            if (review.Rating > 0) {
+                 r.Rating = review.Rating;
+            }
             await itemService.UpdateReviewAsync(r);
         }
         catch (Exception e) {
@@ -385,7 +417,7 @@ else {
     }
 
     private bool ChangeToEdit() {
-        return  isEditing = isEditing ? false : true;
+        return isEditing = isEditing ? false : true;
     }
 
     /*
@@ -393,6 +425,7 @@ else {
      * Then it moves it to the first position in the list
      * For making the editing and removal of a review easier
      */
+
     private void FilterCustomerReview() {
         for (int i = 0; i < reviews.Count; i++) {
             if (reviews[i].Customer.Id == customerId) {
@@ -408,15 +441,10 @@ else {
         review.Rating = i;
     }
 
-    //TODO: Adriana - get this from the database :)
-    private decimal GetAverageReview() {
-        decimal average = 0;
-        foreach (Review review in reviews) {
-            average += review.Rating;
-        }
-        if(reviews.Count > 0) 
-            return average / reviews.Count;
-        return average;
+    private async Task GetAverageReviewAsync() {
+        double r = await itemService.GetAverageRating(item.Id);
+        r = Math.Round(r, 2, MidpointRounding.ToEven);
+        rating = r.ToString();
     }
 
 }

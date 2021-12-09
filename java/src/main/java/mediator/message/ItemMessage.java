@@ -2,6 +2,7 @@ package mediator.message;
 
 import model.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,9 @@ public class ItemMessage extends Message {
     private List<Review> reviews;
     private String ratingOrder;
     private Review review;
+    private double averageRating;
+    private String discountOrder;
+    private String statusOrder;
 
     public ItemMessage(String service, String type) {
         super(service, type);
@@ -25,6 +29,14 @@ public class ItemMessage extends Message {
         categories = new ArrayList<>();
         genres = new ArrayList<>();
         reviews = new ArrayList<>();
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
     }
 
     public Review getReview() {
@@ -121,5 +133,13 @@ public class ItemMessage extends Message {
 
     public void setRatingOrder(String ratingOrder) {
         this.ratingOrder = ratingOrder;
+    }
+
+    public String getDiscountOrder() {
+        return discountOrder;
+    }
+
+    public String getStatusOrder() {
+        return statusOrder;
     }
 }
