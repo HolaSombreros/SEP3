@@ -34,8 +34,6 @@ namespace SEP3WebAPI.Data {
             return created;
         }
         
-        
-
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             if (item == null) throw new InvalidDataException("Please provide an item of the proper format");
             Item toUpdate = await client.GetItemAsync(id);

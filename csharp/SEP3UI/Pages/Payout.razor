@@ -133,7 +133,7 @@
                 await customerService.RemoveFromShoppingCartAsync(item.Id, customerId);
             }
             Order order =  await orderService.CreateOrderAsync(orderModel);
-            orderService.ShoppingCart.EmptyShoppingCart();
+            orderService.ShoppingCart.Clear();
             errorMessage = "Successful purchase!";
             NavigationManager.NavigateTo($"/orders/{order.Id}");
         }

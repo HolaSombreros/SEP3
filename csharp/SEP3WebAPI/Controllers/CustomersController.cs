@@ -82,8 +82,6 @@ namespace SEP3WebAPI.Controllers {
             }
         }
         
-      
-
         [HttpPut]
         [Route("{customerId:int}")]
         public async Task<ActionResult<Customer>> UpdateCustomerAsync([FromRoute] int customerId,
@@ -204,8 +202,7 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpDelete]
         [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
-        public async Task<ActionResult>
-            RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
+        public async Task<ActionResult> RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
             try {
                 await service.RemoveFromShoppingCartAsync(itemId, customerId);
                 return Ok();

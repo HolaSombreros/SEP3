@@ -195,10 +195,10 @@
         NavigationManager.NavigateTo("ItemDetails/" + item.Id);
     }
 
-    private void AddToShoppingCart(Item item) {
-        Item i = orderService.ShoppingCart.AddToShoppingCart(item);
+    private async Task AddToShoppingCart(Item item) {
+        Item i = orderService.ShoppingCart.Add(item);
         if (customerId != -1)
-            customerService.AddToShoppingCartAsync(i, customerId);
+            await customerService.AddToShoppingCartAsync(i, customerId);
     }
 
     private async Task SearchButtonPressedAsync() {

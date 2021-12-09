@@ -333,7 +333,7 @@ else {
     }
 
     private async Task AddToShoppingCart(Item itemToAdd) {
-        Item i = orderService.ShoppingCart.AddToShoppingCart(itemToAdd);
+        Item i = orderService.ShoppingCart.Add(itemToAdd);
         if (customerId != -1)
             await customerService.AddToShoppingCartAsync(i, customerId);
     }

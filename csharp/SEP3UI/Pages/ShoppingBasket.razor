@@ -100,20 +100,20 @@
 
     private void DecreaseQuantity(Item item) {
         if (item.Quantity > 1) {
-            Item i = orderService.ShoppingCart.RemoveQuantityFromShoppingCart(item);
+            Item i = orderService.ShoppingCart.Remove(item);
             if (customerId != -1)
                 customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
         }
     }
 
     private void IncreaseQuantity(Item item) {
-        Item i = orderService.ShoppingCart.IncreaseQuantity(item);
+        Item i = orderService.ShoppingCart.Add(item);
         if (customerId != -1)
             customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
     }
 
     private void RemoveItemFromShoppingCart(Item item) {
-        orderService.ShoppingCart.RemoveItemFromShoppingCart(item);
+        orderService.ShoppingCart.RemoveAll(item);
         if (customerId != -1)
             customerService.RemoveFromShoppingCartAsync(item.Id, customerId);
     }
@@ -136,7 +136,7 @@
      */
 
     private decimal GetTotalOrderPrice() {
-        return orderService.ShoppingCart.TotalOrderPrice();
+        return orderService.ShoppingCart.TotalOrderPrice;
     }
 
     private void NavigateToComponent() {
