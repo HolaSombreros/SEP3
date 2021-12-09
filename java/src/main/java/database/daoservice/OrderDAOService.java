@@ -23,7 +23,6 @@ public class OrderDAOService implements OrderDAO {
 
     @Override public Order create(List<Item> items, Address address, MyDateTime dateTime, OrderStatus status, String firstName, String lastName, String email, int customerId) {
         try {
-            //TODO: decrease the quantity in item table after you place an order
             Address address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
             List<Integer> keys = databaseHelper.executeUpdateWithKeys(
                 "INSERT INTO purchase (address_id, date_time, status, first_name, last_name, email, customer_id) " + "VALUES (?,?,?::purchase_status,?,?,?,?);", address1.getId(),

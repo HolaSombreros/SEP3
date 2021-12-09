@@ -230,7 +230,7 @@
                     <AuthorizeView Context = "other">
                     @if (order.OrderStatus == OrderStatus.Finished) {
                         <div class="text-center">
-                            <span class="d-block mb-2">@returnItemsMessage</span>
+                            <span class="d-block mb-2">@displayMessage</span>
                             <button class="btn btn-info">Return Items</button>
                         </div>
                     }
@@ -257,7 +257,7 @@
     private UpdateOrderModel orderModel;
     private ReturnItemsModel returnItemsModel;
     private string errorMessage;
-    private string returnItemsMessage;
+    private string displayMessage;
 
     protected override async Task OnInitializedAsync() {
         order = await orderService.GetOrderAsync(Id);
@@ -311,20 +311,20 @@
             }
 
             order = await orderService.ReturnItemsAsync(returnItemsModel);
-            returnItemsMessage = "Items successfully returned!";
+            displayMessage = "Items successfully returned!";
         } catch (Exception e) {
-            returnItemsMessage = e.Message;
+            displayMessage = e.Message;
         }
     }
 
     private async Task CancelOrder() {
         try {
             orderModel.OrderStatus = OrderStatus.Cancelled;
-            await orderService.UpdateOrderAsync(orderModel);
             order = await orderService.GetOrderAsync(Id);
+            displayMessage = "The order has been cancelled";
         }
         catch (Exception e) {
-            returnItemsMessage = e.Message;
+            displayMessage = e.Message;
         }
     }
 }

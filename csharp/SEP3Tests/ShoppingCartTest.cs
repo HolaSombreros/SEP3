@@ -27,9 +27,9 @@ namespace SEP3Tests {
         }
 
         [Test]
-        public void AddSameItem_WhenCartHasItem_UpdatesItemQuantity() {
+        public void AddSameItem_WhenCartHasItem_DoesNotUpdateItemQuantity() {
             int expectedCartSize = 1;
-            int expectedItemQuantity = 2;
+            int expectedItemQuantity = 1;
             Item item = new Item() {
                 Id = 1
             };
@@ -63,7 +63,7 @@ namespace SEP3Tests {
 
         [Test]
         public void RemoveSameItem_WhenCartHasItemQuantityOne_CartIsEmpty() {
-            int expected = 0;
+            int expected = 1;
             Item item = new Item() {
                 Id = 1
             };
@@ -76,23 +76,8 @@ namespace SEP3Tests {
         }
 
         [Test]
-        public void RemoveSameItem_WhenCartHasItemQuantityTwo_ItemQuantityDecreases() {
-            int expected = 1;
-            Item item = new Item() {
-                Id = 1
-            };
-
-            cart.AddToShoppingCart(item);
-            cart.AddToShoppingCart(item);
-            cart.RemoveItemFromShoppingCart(item);
-
-            int actual = cart.Items[0].Quantity;
-            Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
         public void AddItem_WhenCartHasSameItem_UpdateTotal() {
-            decimal expected = 12.24M;
+            decimal expected = 6.12M;
             Item item = new Item() {
                 Id = 1,
                 Price = 6.12M

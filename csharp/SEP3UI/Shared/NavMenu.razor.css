@@ -3,7 +3,7 @@
 }
 
 nav {
-    padding: 0.5rem 1rem;
+    /*padding: 0.5rem 1rem;*/
 }
 
 .oi {
@@ -43,13 +43,6 @@ nav {
         transform: scale(1.25);
     }
 }
-
-
-
-
-
-
-
 
 .top_bar {
     width: 100%;
