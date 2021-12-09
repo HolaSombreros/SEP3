@@ -36,6 +36,6 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please select a category")]
         public Category Category { get; set; }
 
-        public string ImageName { get; set; }
+        public string FilePath { get; set; }
     }
 }

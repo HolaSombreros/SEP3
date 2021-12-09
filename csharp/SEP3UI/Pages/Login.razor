@@ -6,6 +6,7 @@
 @using System.Security.Claims
 @inject NavigationManager navigationManager
 @inject ICustomerService customerService;
+@inject IItemService itemService;
 @inject IOrderService orderService;
 @inject AuthenticationStateProvider authenticationStateProvider
 
@@ -81,12 +82,12 @@
             await ((CustomAuthenticationStateProvider) authenticationStateProvider).LoginAsync(customerModel.Email, customerModel.Password);
             int customerId = int.Parse((await authenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
 
-            IList<Item> items = await customerService.GetShoppingCartAsync(customerId);
+            IList<Item> items = await itemService.GetShoppingCartAsync(customerId);
             foreach (var i in orderService.ShoppingCart.Items) {
                 if (items.FirstOrDefault(it => it.Id == i.Id) == null)
-                    await customerService.AddToShoppingCartAsync(i, customerId);
+                    await itemService.AddToShoppingCartAsync(i, customerId);
             }
-            orderService.ShoppingCart.Items = await customerService.GetShoppingCartAsync(customerId);
+            orderService.ShoppingCart.Items = await itemService.GetShoppingCartAsync(customerId);
 
             navigationManager.NavigateTo("/");
         }

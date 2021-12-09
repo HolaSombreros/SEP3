@@ -3,7 +3,6 @@ import database.daomodel.DatabaseManager;
 import mediator.message.ItemMessage;
 import mediator.message.Message;
 import model.Category;
-import model.Item;
 import model.Review;
 
 import java.time.LocalDate;
@@ -22,8 +21,8 @@ public class ItemCommand implements Command {
         this.databaseManager = databaseManager;
         methods = new HashMap<>();
         methods.put("getAll", this::getAll);
-        methods.put("get", this::getItem);
-        methods.put("book", this::getBook);
+        methods.put("getItem", this::getItem);
+        methods.put("getBook", this::getBook);
         methods.put("getWishlist", this::getWishlist);
         methods.put("getAllById", this::getAllById);
         methods.put("addWishlist", this::addWishlist);
@@ -36,7 +35,7 @@ public class ItemCommand implements Command {
         methods.put("getBookBySpecifications", this::getBookBySpecifications);
         methods.put("addShoppingCart", this::addToShoppingCart);
         methods.put("getShoppingCart", this::getShoppingCart);
-        methods.put("editShoppingCart", this::updateShoppingCart);
+        methods.put("updateShoppingCart", this::updateShoppingCart);
         methods.put("removeShoppingCart", this::removeFromShoppingCart);
         methods.put("searchByName",this::getItemsBySearchName);
         methods.put("addCategory", this::addCategory);

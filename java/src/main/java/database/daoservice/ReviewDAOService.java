@@ -8,7 +8,6 @@ import model.Customer;
 import model.Item;
 import model.Review;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;

@@ -15,70 +15,7 @@ namespace SEP3WebAPI.Data {
             this.itemClient = itemClient;
             this.customerClient = customerClient;
         }
-        
-         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
-            Customer customer = await customerClient.GetCustomerAsync(customerId);
-            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
-            
-            return await customerClient.GetCustomerWishlistAsync(customer);
-        }
 
-        public async Task<Item> AddToWishlistAsync(int customerId, int itemId) {
-            Customer customer = await customerClient.GetCustomerAsync(customerId);
-            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
-            
-            Item item = await itemClient.GetItemAsync(itemId);
-            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
-            
-            return await customerClient.AddToWishlist(customerId, itemId);
-        }
-
-        public async Task RemoveWishlistedItemAsync(int customerId, int itemId) {
-            Customer customer = await customerClient.GetCustomerAsync(customerId);
-            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
-            
-            Item item = await itemClient.GetItemAsync(itemId);
-            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
-            
-            await customerClient.RemoveWishlistedItemAsync(customer, item);
-        }
-
-        public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
-            Customer customer = await customerClient.GetCustomerAsync(customerId);
-            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
-            
-            Item item1 = await itemClient.GetItemAsync(item.Id);
-            if (item1 == null) throw new NullReferenceException($"No such item found with id: {item.Id}");
-
-            return await customerClient.AddToShoppingCartAsync(item, customer);
-        }
-
-        public async Task<IList<Item>> GetShoppingCartAsync(int customerId) {
-            Customer customer = await customerClient.GetCustomerAsync(customerId);
-            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
-
-            return await customerClient.GetShoppingCartAsync(customer);
-        }
-
-        public async Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
-            Customer customer = await customerClient.GetCustomerAsync(customerId);
-            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
-            
-            Item item1 = await itemClient.GetItemAsync(itemId);
-            if (item1 == null) throw new NullReferenceException($"No such item found with id: {itemId}");
-
-            return await customerClient.UpdateShoppingCartAsync(item, customer);
-        }
-
-        public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
-            Customer customer = await customerClient.GetCustomerAsync(customerId);
-            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
-            
-            Item item = await itemClient.GetItemAsync(itemId);
-            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
-
-            await customerClient.RemoveFromShoppingCartAsync(item, customer);
-        }
 
         public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
             Customer customer = await customerClient.GetCustomerAsync(customerId);

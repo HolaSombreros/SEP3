@@ -32,38 +32,6 @@ namespace SEP3UI.Data {
             return updated;
         }
 
-        public async Task<Item> AddToWishlistAsync(int customerId, Item item) {
-            Item item1 = await restService.PutAsync<Item, Item>(item,$"customers/{customerId}/wishlist/{item.Id}");
-            return item;
-        }
-
-        public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
-            IList<Item> wishlist = await restService.GetAsync<List<Item>>($"customers/{customerId}/wishlist");
-            return wishlist;
-        }
-
-        public async Task RemoveWishlistedItem(int customerId, int itemId) {
-            await restService.DeleteAsync($"customers/{customerId}/wishlist/{itemId}");
-        }
-
-        public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
-            Item added = await restService.PutAsync<Item, Item>(item, $"customers/{customerId}/shoppingbasket");
-            return added;
-        }
-
-        public async Task<IList<Item>> GetShoppingCartAsync(int customerId) {
-            return await restService.GetAsync<List<Item>>($"customers/{customerId}/shoppingbasket");
-        }
-
-        public async Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
-            Item updated = await restService.PutAsync<Item, Item>(item, $"customers/{customerId}/shoppingbasket/{itemId}");
-            return updated;
-        }
-
-        public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
-            await restService.DeleteAsync($"customers/{customerId}/shoppingbasket/{itemId}");
-        }
-
         public async Task<Notification> UpdateSeenNotificationAsync(int customerId, Notification notification) {
             return await restService.PutAsync<Notification, Notification>(notification, $"customers/{customerId}/notifications/{notification.Id}");
         }

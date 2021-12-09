@@ -4,7 +4,6 @@ import model.*;
 import model.enums.OrderStatus;
 import model.MyDateTime;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface OrderDAO {

@@ -3,7 +3,7 @@
 @using System.Security.Claims
 @using SEP3Library.Models
 @inject IOrderService orderService
-@inject ICustomerService customerService
+@inject IItemService itemService
 @inject AuthenticationStateProvider authStateProvider
 
 
@@ -17,7 +17,7 @@
         @foreach (Item item in items) {
             <div class="row mb-5 align-items-center">
                 <div class="col-md-4 col-sm-12 row justify-content-center">
-                    <img src="@item.ImageName" alt="Image of @item.Name"/>
+                    <img src="@item.FilePath" alt="Image of @item.Name"/>
                 </div>
                 <div class="col-md-8 col-sm-12 row">
                     <h3 class="col-sm-12 mb-3">@item.Name</h3>
@@ -58,11 +58,11 @@
     protected override async Task OnInitializedAsync() {
         NavBarEvent.Invoke();
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        items = await customerService.GetCustomerWishlistAsync(customerId);
+        items = await itemService.GetCustomerWishlistAsync(customerId);
     }
 
     private async Task PerformUnfavoriteAsync(Item item) {
-        await customerService.RemoveWishlistedItem(customerId, item.Id);
+        await itemService.RemoveWishlistedItem(customerId, item.Id);
         items.Remove(item);
     }
 
@@ -70,9 +70,9 @@
         Item added = orderService.ShoppingCart.Add(item);
         
         if (added.Quantity == 1) {
-            await customerService.AddToShoppingCartAsync(added, customerId);
+            await itemService.AddToShoppingCartAsync(added, customerId);
         } else {
-            await customerService.UpdateShoppingCartAsync(added, added.Id, customerId);
+            await itemService.UpdateShoppingCartAsync(added, added.Id, customerId);
         }
     }
 }

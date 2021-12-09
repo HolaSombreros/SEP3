@@ -3,7 +3,6 @@
 @using System.Security.Claims
 @using SEP3Library.Models
 @using SEP3UI.Authentication
-@using System.Globalization
 @inject IItemService itemService
 @inject IOrderService orderService
 @inject ICustomerService customerService
@@ -22,7 +21,7 @@ else {
         <div class="row border-top border-bottom">
             <div class="col-md-6">
                 <div class="img-responsive m-3 text-center mt-5">
-                    <img src="@item.ImageName"/>
+                    <img src="@item.FilePath"/>
                 </div>
 
             </div>
@@ -299,7 +298,7 @@ else {
         }
 
         if (customerId != -1) {
-            IList<Item> wishlist = await customerService.GetCustomerWishlistAsync(customerId);
+            IList<Item> wishlist = await itemService.GetCustomerWishlistAsync(customerId);
             favorite = wishlist.FirstOrDefault(i => i.Id == item.Id) != null;
         }
 
@@ -335,7 +334,7 @@ else {
     private async Task AddToShoppingCart(Item itemToAdd) {
         Item i = orderService.ShoppingCart.Add(itemToAdd);
         if (customerId != -1)
-            await customerService.AddToShoppingCartAsync(i, customerId);
+            await itemService.AddToShoppingCartAsync(i, customerId);
     }
 
     private void View(int id, string categoryName) {
@@ -344,12 +343,12 @@ else {
 
     private async Task PerformUnfavoriteAsync() {
         favorite = false;
-        await customerService.RemoveWishlistedItem(customerId, item.Id);
+        await itemService.RemoveWishlistedItem(customerId, item.Id);
     }
 
     private async Task PerformFavoriteAsync() {
         favorite = true;
-        await customerService.AddToWishlistAsync(customerId, item);
+        await itemService.AddToWishlistAsync(customerId, item);
     }
 
     private async Task AddReview() {

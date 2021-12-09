@@ -3,12 +3,8 @@ package database.daoservice;
 import database.daomodel.AddressDAO;
 import database.daomodel.CustomerDAO;
 import database.daoservice.mapper.CustomerMapper;
-import database.daoservice.mapper.ItemMapper;
-import database.daoservice.mapper.OrderMapper;
 import model.Address;
 import model.Customer;
-import model.Item;
-import model.Order;
 
 import java.sql.SQLException;
 import java.util.List;

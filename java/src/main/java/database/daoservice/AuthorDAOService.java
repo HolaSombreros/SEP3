@@ -3,10 +3,7 @@ package database.daoservice;
 import database.daomodel.AuthorDAO;
 import database.daoservice.mapper.AuthorMapper;
 import model.Author;
-import model.Book;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorDAOService implements AuthorDAO {

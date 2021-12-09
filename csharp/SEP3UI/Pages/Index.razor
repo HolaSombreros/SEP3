@@ -5,7 +5,6 @@
 @inject NavigationManager NavigationManager
 @inject IItemService itemService
 @inject IOrderService orderService
-@inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
 <div class="container-fluid">
 <div class="row">
@@ -104,17 +103,17 @@
                                     <a asp-route-id="@item.Id" title="Order @item.Name">
                                         <div class="text-center">
                                             <h3>@item.Name</h3>
-                                            <img class="product-image img-fluid img-thumbnail image" src="@item.ImageName" alt="Image of @item.Name"/>
+                                            <img class="product-image img-fluid img-thumbnail image" src="@item.FilePath" alt="Image of @item.Name"/>
                                             <p class="card-text">@item.Description</p>
                                             <p class="card-text"> Rating: @item.AverageRating</p>
                                         </div>
                                     </a>
                                 </div>
                                 <div>
-                                    <p class="price float-left">@string.Format("{0:f}", item.PriceIncludingDiscount) DKK</p>
+                                    <p class="price">@string.Format("{0:f}", item.PriceIncludingDiscount) DKK</p>
                                     <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
                                     @if (item.Discount > 0) {
-                                        <p style="color: darkred">
+                                        <p style="color: darkred" class="d-block">
                                             <strong> DISCOUNT: @item.Discount%</strong>
                                         </p>
                                     }
@@ -201,9 +200,9 @@
         Item i = orderService.ShoppingCart.Add(item);
         if (customerId != -1)
             if (i.Quantity == 1) {
-                await customerService.AddToShoppingCartAsync(i, customerId);
+                await itemService.AddToShoppingCartAsync(i, customerId);
             } else {
-                await customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
+                await itemService.UpdateShoppingCartAsync(i, i.Id, customerId);
             }
     }
 

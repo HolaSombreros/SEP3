@@ -2,8 +2,6 @@ package database.daomodel;
 
 import model.Address;
 import model.Customer;
-import model.Item;
-import model.Order;
 
 import java.util.List;
 

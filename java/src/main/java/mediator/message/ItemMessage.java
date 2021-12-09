@@ -1,8 +1,6 @@
 package mediator.message;
 
 import model.*;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

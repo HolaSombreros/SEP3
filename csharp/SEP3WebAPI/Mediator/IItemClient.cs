@@ -23,5 +23,14 @@ namespace SEP3WebAPI.Mediator {
         Task<Review> GetReviewAsync(int customerId, int itemId);
         Task<Review> UpdateReviewAsync(Review review);
         Task<double> GetAverageRatingAsync(int itemId);
+        Task<Item> AddToWishlist(int customerId, int itemId);
+        Task RemoveWishlistedItemAsync(Customer customer, Item item);
+        Task<Item> AddToShoppingCartAsync(Item item, Customer customer);
+        Task<IList<Item>> GetShoppingCartAsync(Customer customer);
+        Task<Item> UpdateShoppingCartAsync(Item item, Customer customer);
+        Task RemoveFromShoppingCartAsync(Item item, Customer customer);
+        Task<IList<Item>> GetCustomerWishlistAsync(Customer customer);
+
+
     }
 }

@@ -10,10 +10,12 @@ using SEP3WebAPI.Mediator;
 namespace SEP3WebAPI.Data {
     
     public class ItemService : IItemService {
-        private IItemClient client; 
+        private IItemClient client;
+        private ICustomerClient customerClient;
         
-        public ItemService(IItemClient client) {
+        public ItemService(IItemClient client, ICustomerClient customerClient) {
             this.client = client;
+            this.customerClient = customerClient;
         }
         
         public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string discountOrder, string statusOrder, string search) {
@@ -45,7 +47,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = item.Quantity;
             toUpdate.Status = item.Status;
             toUpdate.Discount = item.Discount;
-            toUpdate.ImageName = item.ImageName;
+            toUpdate.FilePath = item.FilePath;
             
             await client.UpdateItemAsync(toUpdate);
             return toUpdate;
@@ -62,7 +64,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Quantity = book.Quantity;
             toUpdate.Status = book.Status;
             toUpdate.Discount = book.Discount;
-            toUpdate.ImageName = book.ImageName;
+            toUpdate.FilePath = book.FilePath;
             toUpdate.Authors = book.Authors;
             toUpdate.Genre = book.Genre;
             toUpdate.Isbn = book.Isbn;
@@ -105,7 +107,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = itemModel.ImageName
+                FilePath = itemModel.FilePath
             };
             return await client.AddItemAsync(i);
         }
@@ -124,7 +126,7 @@ namespace SEP3WebAPI.Data {
                 Price = itemModel.Price,
                 Status = ItemStatus.InStock,
                 Quantity = itemModel.Quantity,
-                ImageName = itemModel.ImageName,
+                FilePath = itemModel.FilePath,
                 Isbn = itemModel.Isbn,
                 Language = itemModel.Language,
                 PublicationDate = new MyDateTime() {
@@ -163,6 +165,70 @@ namespace SEP3WebAPI.Data {
         public async Task<double> GetAverageReviewAsync(int itemId) {
             return await client.GetAverageRatingAsync(itemId);
         }
+        
+          public async Task<Item> AddToWishlistAsync(int customerId, int itemId) {
+            Customer customer = await customerClient.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item = await client.GetItemAsync(itemId);
+            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+            
+            return await client.AddToWishlist(customerId, itemId);
+        }
+
+        public async Task RemoveWishlistedItemAsync(int customerId, int itemId) {
+            Customer customer = await customerClient.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item = await client.GetItemAsync(itemId);
+            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+            
+            await client.RemoveWishlistedItemAsync(customer, item);
+        }
+
+        public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
+            Customer customer = await customerClient.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item1 = await client.GetItemAsync(item.Id);
+            if (item1 == null) throw new NullReferenceException($"No such item found with id: {item.Id}");
+
+            return await client.AddToShoppingCartAsync(item, customer);
+        }
+
+        public async Task<IList<Item>> GetShoppingCartAsync(int customerId) {
+            Customer customer = await customerClient.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+
+            return await client.GetShoppingCartAsync(customer);
+        }
+
+        public async Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
+            Customer customer = await customerClient.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item1 = await client.GetItemAsync(itemId);
+            if (item1 == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+
+            return await client.UpdateShoppingCartAsync(item, customer);
+        }
+
+        public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
+            Customer customer = await customerClient.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            Item item = await client.GetItemAsync(itemId);
+            if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
+
+            await client.RemoveFromShoppingCartAsync(item, customer);
+        }
+        public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
+            Customer customer = await customerClient.GetCustomerAsync(customerId);
+            if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+            
+            return await client.GetCustomerWishlistAsync(customer);
+        }
+        
 
     }
     

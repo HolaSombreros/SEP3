@@ -1,11 +1,7 @@
 package database.daomodel;
 
 import model.Author;
-import model.Book;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface AuthorDAO {
     Author create(String firsName, String lastName);

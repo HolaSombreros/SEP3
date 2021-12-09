@@ -31,7 +31,7 @@ namespace SEP3Library.Models {
         
         public List<Review> Reviews { get; set; }
         
-        public string ImageName { get; set; }
+        public string FilePath { get; set; }
         
         [JsonIgnore]
         public double AverageRating { get; set; }
@@ -46,7 +46,7 @@ namespace SEP3Library.Models {
                 Discount = Discount,
                 Status = Status,
                 Reviews = Reviews,
-                ImageName = ImageName,
+                FilePath = FilePath,
                 Quantity = Quantity
             };
         }
