@@ -148,7 +148,7 @@ else {
                                         <form>
                                             <div class="form-group">
                                                 <h5 class="mb-4">Edit your own comment</h5>
-                                                <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
+                                                <textarea class="form-control" @bind="@review.Comment"></textarea>
                                             </div>
                                             <ValidationMessage For="@(() => review.Comment)"/>
                                             <p class="mb-2">Your rating: </p>
@@ -410,6 +410,8 @@ else {
                  r.Rating = review.Rating;
             }
             await itemService.UpdateReviewAsync(r);
+            isEditing = false;
+            errorMessage = "Review is successfully edited";
         }
         catch (Exception e) {
             errorMessage = e.Message;
