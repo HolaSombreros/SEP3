@@ -198,7 +198,11 @@
     private async Task AddToShoppingCart(Item item) {
         Item i = orderService.ShoppingCart.Add(item);
         if (customerId != -1)
-            await customerService.AddToShoppingCartAsync(i, customerId);
+            if (i.Quantity == 1) {
+                await customerService.AddToShoppingCartAsync(i, customerId);
+            } else {
+                await customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
+            }
     }
 
     private async Task SearchButtonPressedAsync() {
