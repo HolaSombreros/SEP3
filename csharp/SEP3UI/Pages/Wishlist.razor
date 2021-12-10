@@ -3,20 +3,21 @@
 @using System.Security.Claims
 @using SEP3Library.Models
 @inject IOrderService orderService
-@inject ICustomerService customerService
+@inject IItemService itemService
 @inject AuthenticationStateProvider authStateProvider
 
-@if (items == null) {
-    <em>Loading...</em>
-} else if (!items.Any()) {
-    <em>You have no items in your wishlist!</em>
-} else {
-    <div class="container my-4">
-        <h2 class="mb-5 text-center">My Wishlist ♥</h2>
+
+<div class="container my-4">
+    <h2 class="mb-5 text-center">My Wishlist</h2>
+    @if (items == null) {
+        <em class="text-center">Loading...</em>
+    } else if (!items.Any()) {
+        <em class="text-center">You have no items in your wishlist!</em>
+    } else {
         @foreach (Item item in items) {
             <div class="row mb-5 align-items-center">
                 <div class="col-md-4 col-sm-12 row justify-content-center">
-                    <img src="@item.ImageName" alt="Image of @item.Name"/>
+                    <img src="@item.FilePath" alt="Image of @item.Name"/>
                 </div>
                 <div class="col-md-8 col-sm-12 row">
                     <h3 class="col-sm-12 mb-3">@item.Name</h3>
@@ -47,8 +48,8 @@
                 </div>
             </div>
         }
-    </div>
-}
+    }
+</div>
 
 @code {
     private int customerId;
@@ -57,15 +58,21 @@
     protected override async Task OnInitializedAsync() {
         NavBarEvent.Invoke();
         customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        items = await customerService.GetCustomerWishlistAsync(customerId);
+        items = await itemService.GetCustomerWishlistAsync(customerId);
     }
 
     private async Task PerformUnfavoriteAsync(Item item) {
-        await customerService.RemoveWishlistedItem(customerId, item.Id);
+        await itemService.RemoveWishlistedItem(customerId, item.Id);
         items.Remove(item);
     }
 
-    private void PerformAddItemToCart(Item item) {
-        orderService.ShoppingCart.AddToShoppingCart(item);
+    private async Task PerformAddItemToCart(Item item) {
+        Item added = orderService.ShoppingCart.Add(item);
+        
+        if (added.Quantity == 1) {
+            await itemService.AddToShoppingCartAsync(added, customerId);
+        } else {
+            await itemService.UpdateShoppingCartAsync(added, added.Id, customerId);
+        }
     }
 }

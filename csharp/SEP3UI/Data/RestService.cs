@@ -34,7 +34,6 @@ namespace SEP3UI.Data {
             StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await client.PostAsync($"{uri}/{endpoint}", content);
-            Console.WriteLine(endpoint);
             string responseContent = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) throw new Exception($"{responseContent}");
 

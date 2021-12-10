@@ -10,8 +10,7 @@ public class Customer {
     private Address address;
     private String phoneNumber;
 
-    public Customer(int id, String firstName, String lastName, String email, String password, String role, Address address, String phoneNumber)
-    {
+    public Customer(int id, String firstName, String lastName, String email, String password, String role, Address address, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -21,6 +20,7 @@ public class Customer {
         this.address = address;
         this.phoneNumber = phoneNumber;
     }
+
     public Customer(int id, String firstName,String lastName) {
         this.id = id;
         this.firstName = firstName;

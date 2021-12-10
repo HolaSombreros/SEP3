@@ -1,10 +1,8 @@
 package model;
 
 import model.enums.ItemStatus;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Book extends Item{
@@ -15,16 +13,7 @@ public class Book extends Item{
     private List<Genre> genre;
     private MyDateTime publicationDate;
 
-    public Book(int id, String name, String description, BigDecimal price, Category category, int quantity, ItemStatus status, int discount, String filePath, String ISBN,List<Author> authors , String language, ArrayList<Genre> genre, MyDateTime publicationDate) {
-        super(id, name, description, price, category, quantity, status, discount,filePath);
-        this.isbn = ISBN;
-        this.authors = authors;
-        this.language = language;
-        this.genre = genre;
-        this.publicationDate = publicationDate;
-    }
-
-    public Book(int id, String name, String description, BigDecimal price, Category category, int quantity, ItemStatus status, int discount, String filePath, String ISBN, List<Author> authors, String language, ArrayList<Genre> genre, LocalDate publicationDate) {
+    public Book(int id, String name, String description, BigDecimal price, Category category, int quantity, ItemStatus status, int discount, String filePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
         super(id, name, description, price, category, quantity, status, discount,filePath);
         this.isbn = ISBN;
         this.authors = authors;
@@ -82,7 +71,9 @@ public class Book extends Item{
         for(int i = 0; i < authors.size(); i++)
             if(!authors.get(i).equals(other.getAuthors().get(i)))
                 return false;
-        return super.equals(other) && isbn.equals(other.isbn) && language.equals(other.language) && genre.equals(other.genre) && publicationDate.equals(other.publicationDate);
+        return super.equals(other) && isbn.equals(other.isbn) &&
+                language.equals(other.language) && genre.equals(other.genre)
+                && publicationDate.equals(other.publicationDate);
     }
 
 

@@ -4,68 +4,48 @@ using System.Linq;
 namespace SEP3Library.Models {
     public class ShoppingCart {
         public readonly decimal ShippingPrice = 25.00M;
-        public IList<Item> Items { get; set; }
-        
-        public ShoppingCart() {
-            Items = new List<Item>();
-        }
+        public IList<Item> Items { get; set; } = new List<Item>();
 
-        public decimal Total {
-            get {
-                decimal p = 0;
-                foreach (var i in Items) {
-                    p += i.PriceIncludingDiscount * i.Quantity;
-                }
-                return p;
-            } 
-        }
+        public decimal Total => Items.Sum(i => i.PriceIncludingDiscount * i.Quantity);
+        public decimal TotalOrderPrice => Total + ShippingPrice;
+        public int FinalQuantity => Items.Sum(i => i.Quantity);
 
-        public int FinalQuantity {
-            get {
-                int q = 0;
-                foreach (var i in Items) {
-                    q += i.Quantity;
-                }
-                return q;
+        public Item Add(Item item) {
+            Item exists = Items.FirstOrDefault(i => i.Id == item.Id);
+            
+            if (exists == null) {
+                Item copy = item.Copy();
+                copy.Quantity = 1;
+                Items.Add(copy);
+                return copy;
+            } else {
+                exists.Quantity++;
+                return exists;
             }
         }
 
-        public Item IncreaseQuantity(Item item) {
-            Item i = item.Copy();
-            Item test = Items.First(it => it.Id == item.Id);
-            test.Quantity++;
-            return test;
-        }
-
-        public Item AddToShoppingCart(Item item) {
-            Item item1 = item.Copy();
-            Item test = Items.FirstOrDefault(i => i.Id == item.Id);
-            if (test == null) {
-                item1.Quantity = 1;
-                Items.Add(item1);
-                return item1;
+        public Item Remove(Item item) {
+            Item exists = Items.FirstOrDefault(i => i.Id == item.Id);
+            
+            if (exists != null) {
+                if (exists.Quantity > 1) {
+                    exists.Quantity--;
+                } else {
+                    Items.Remove(exists);
+                }
             }
-            return null;
+
+            return exists;
         }
 
-        public Item RemoveQuantityFromShoppingCart(Item item) {
-            Item i = item.Copy();
-            Item test = Items.First(it => it.Id == item.Id);
-            test.Quantity--;
-            return test;
+        public void RemoveAll(Item item) {
+            Item exists = Items.FirstOrDefault(i => i.Id == item.Id);
+            
+            Items.Remove(exists);
         }
 
-        public void RemoveItemFromShoppingCart(Item item) {
-            Items.Remove(item);
-        }
-        
-        
-        public void EmptyShoppingCart() {
+        public void Clear() {
             Items.Clear();
-        }
-        
-        public decimal TotalOrderPrice() {
-            return Total + ShippingPrice;
         }
     }
 }

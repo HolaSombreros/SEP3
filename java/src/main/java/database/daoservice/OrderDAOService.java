@@ -4,13 +4,13 @@ import database.daomodel.ItemDAO;
 import database.daomodel.OrderDAO;
 import database.daoservice.mapper.OrderMapper;
 import model.*;
+import model.enums.ItemStatus;
 import model.enums.OrderStatus;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class OrderDAOService implements OrderDAO {
-
     private DatabaseHelper<Order> databaseHelper;
     private AddressDAOService addressDAOService;
     private ItemDAO itemDAOService;
@@ -23,7 +23,6 @@ public class OrderDAOService implements OrderDAO {
 
     @Override public Order create(List<Item> items, Address address, MyDateTime dateTime, OrderStatus status, String firstName, String lastName, String email, int customerId) {
         try {
-            //TODO: decrease the quantity in item table after you place an order
             Address address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
             List<Integer> keys = databaseHelper.executeUpdateWithKeys(
                 "INSERT INTO purchase (address_id, date_time, status, first_name, last_name, email, customer_id) " + "VALUES (?,?,?::purchase_status,?,?,?,?);", address1.getId(),
@@ -34,6 +33,8 @@ public class OrderDAOService implements OrderDAO {
                     item.getPrice());
                 Item item1 = itemDAOService.read(item.getId());
                 item1.setQuantity(item1.getQuantity() - item.getQuantity());
+                if (item1.getQuantity() == 0)
+                    item1.setStatus(ItemStatus.OUTOFSTOCK);
                 itemDAOService.update(item1);
             }
             return read(keys.get(0));
@@ -86,20 +87,15 @@ public class OrderDAOService implements OrderDAO {
 
     @Override public Order update(Order order) {
         try {
-            System.out.println(order.getId());
             Address address = addressDAOService.create(order.getAddress().getStreet(), order.getAddress().getNumber(), order.getAddress().getZipCode(),
                 order.getAddress().getCity());
-            databaseHelper.executeUpdate("UPDATE purchase SET address_id = ?, first_name = ?, last_name = ?, email = ? WHERE purchase_id = ? AND customer_id = ?;", address.getId(),
-                order.getFirstName(), order.getLastName(), order.getEmail(), order.getId(), order.getCustomerId());
+            databaseHelper.executeUpdate("UPDATE purchase SET address_id = ?, first_name = ?, last_name = ?, email = ?, status = ?::purchase_status WHERE purchase_id = ? AND customer_id = ?;", address.getId(),
+                order.getFirstName(), order.getLastName(), order.getEmail(), order.getOrderStatus().toString(), order.getId(), order.getCustomerId());
             return read(order.getId());
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    @Override public void delete(Order order) {
-
     }
 
     @Override public List<Order> readAllOrdersByCustomer(int customerId, int index) {
@@ -114,6 +110,21 @@ public class OrderDAOService implements OrderDAO {
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public void returnItems(Order order) {
+        try {
+            for (int i = 0; i < order.getItems().size(); i++) {
+                Item item = order.getItems().get(i);
+
+                if (item.getQuantity() > 0) {
+                    databaseHelper.executeUpdate("UPDATE purchase_item SET quantity = quantity - ? WHERE purchase_id = ? AND item_id = ?;", item.getQuantity(), order.getId(), item.getId());
+                    databaseHelper.executeUpdate("UPDATE item SET quantity = quantity + ?, status = ?::item_status WHERE item_id = ?;", item.getQuantity(), ItemStatus.INSTOCK.toString(), item.getId());
+                }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException(e.getMessage());
         }
     }
 }

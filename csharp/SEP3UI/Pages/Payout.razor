@@ -7,6 +7,7 @@
 @using SEP3Library.Models
 @inject NavigationManager NavigationManager
 @inject IOrderService orderService
+@inject IItemService itemService
 @inject AuthenticationStateProvider authStateProvider
 @inject ICustomerService customerService
 
@@ -130,10 +131,10 @@
             if (customerId != -1) {
                 orderModel.CustomerId = customerId;
                 foreach (Item item in orderService.ShoppingCart.Items)
-                await customerService.RemoveFromShoppingCartAsync(item.Id, customerId);
+                await itemService.RemoveFromShoppingCartAsync(item.Id, customerId);
             }
             Order order =  await orderService.CreateOrderAsync(orderModel);
-            orderService.ShoppingCart.EmptyShoppingCart();
+            orderService.ShoppingCart.Clear();
             errorMessage = "Successful purchase!";
             NavigationManager.NavigateTo($"/orders/{order.Id}");
         }

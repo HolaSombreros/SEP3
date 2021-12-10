@@ -27,18 +27,13 @@ namespace SEP3WebAPI.Mediator {
                         int bytesRead = stream.Read(response, 0, response.Length);
                         string result = Encoding.ASCII.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
-                        Console.WriteLine(">>>>> Length: " + result);
-                        Console.WriteLine(result);
                         
                         // Handle the actual data
                         response = new byte[int.Parse(result) + 2];
-                        Console.WriteLine(">>>>> Allocated: " + response.Length);
                         bytesRead = stream.Read(response, 0, response.Length);
                         
                         result = Encoding.ASCII.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
-                        Console.WriteLine(">>>>> Actual: " + result.Length);
-                        Console.WriteLine(result);
                         client.Receive(result);
                     }
                     catch (ConnectionAbortedException e) {

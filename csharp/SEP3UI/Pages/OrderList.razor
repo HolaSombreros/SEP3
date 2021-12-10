@@ -70,7 +70,7 @@
                     <tr @onclick="@(() => View(order.Id))" class="family-row">
                         <td>@order.Id</td>
                         <td>@GetAmount(order)</td>
-                        <td>@GetTotal(order)</td>
+                        <td>@order.Total</td>
                         <AuthorizeView Policy="@Policies.IsAdmin">
                             <td>@(order.CustomerId == 0 ? "Not Registered" : order.CustomerId)</td>
                         </AuthorizeView>
@@ -132,14 +132,6 @@
         return amount;
     }
 
-    private decimal GetTotal(Order order) {
-        decimal price = 0;
-        foreach (Item item in order.Items) {
-            price += item.PriceIncludingDiscount;
-        }
-        return price;
-    }
-    
     private void View(int orderId) {
         navigationManager.NavigateTo($"/orders/{orderId}");
     }

@@ -11,32 +11,34 @@ namespace SEP3WebAPI.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class ItemsController : ControllerBase {
-        private IRestService service;
+        private IItemService service;
 
-        public ItemsController(IRestService service) {
+        public ItemsController(IItemService service) {
             this.service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index, [FromQuery] string? searchName, [FromQuery] string? category, [FromQuery] string? orderBy) {
+        [Route("{id:int}/rating")]
+        public async Task<ActionResult<double>> GetAverageReview([FromRoute] int id) {
             try {
-                if (searchName != null) {
-                    IList<Item> items = await service.GetItemsBySearchAsync(searchName,index);
-                    return Ok(items);
-                }
-                if (category != null) {
-                    IList<Item> items = await service.GetItemsByCategoryAsync(category, index);
-                    return Ok(items);
-                }
-                if (orderBy != null) {
-                    IList<Item> items = await service.GetItemsByPriceAsync(orderBy, index);
-                    return Ok(items);
-                }
-                else {
-                    IList<Item> items = await service.GetItemsAsync(index);
-                    return Ok(items);
-                }
-            } 
+                return await service.GetAverageReviewAsync(id);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IList<Item>>> GetItemsAsync([FromQuery] int index,
+            [FromQuery] string? search, [FromQuery] string? category, [FromQuery] string? priceOrder,
+            [FromQuery] string? ratingOrder, [FromQuery] string discountOrder, [FromQuery] string statusOrder) {
+            try {
+                IList<Item> items = await service.GetItemsAsync(index, category, priceOrder, ratingOrder, discountOrder, statusOrder, search);
+                return Ok(items);
+            }
             catch (NullReferenceException e) {
                 return NotFound(e.Message);
             }
@@ -61,15 +63,30 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
         [HttpGet]
         [Route("{id:int}/reviews")]
         public async Task<ActionResult<IList<Review>>> GetItemReviewsAsync([FromQuery] int index, [FromRoute] int id) {
             try {
                 Item item = await service.GetItemAsync(id);
-                if (item == null) 
+                if (item == null)
                     return NotFound($"No item found with id {id}");
-                IList<Review> reviews = await service.GetItemReviewsAsync(index,item);
+                IList<Review> reviews = await service.GetItemReviewsAsync(index, item);
                 return Ok(reviews);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("{id:int}/reviews/{customerId:int}")]
+        public async Task<ActionResult<bool>> GetReviewAsync([FromRoute] int id, [FromRoute] int customerId) {
+            try {
+                Review review = await service.GetReviewAsync(customerId, id);
+                return Ok(review!=null);
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
@@ -83,13 +100,51 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Review created = await service.AddReviewAsync(review);
                 return Created($"/{created.ItemId}/{created.Customer.Id}", created);
-            } catch (InvalidDataException e) {
+            }
+            catch (InvalidDataException e) {
                 return Conflict(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
+        [HttpPut]
+        [Route("{id:int}/reviews")]
+        public async Task<ActionResult<Review>> UpdateReviewAsync([FromRoute] int id, [FromBody] Review review) {
+            try {
+                if (!ModelState.IsValid)
+                    throw new InvalidDataException("Please specify a review of proper format");
+                Review updated = await service.UpdateReviewAsync(review);
+                if (updated == null)
+                    throw new Exception($"The review of the item {id} does not exist");
+                return Ok(updated);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
-        
+
+        [HttpDelete]
+        [Route("{id:int}/reviews/{customerId:int}")]
+        public async Task<ActionResult> RemoveReviewAsync([FromRoute] int id, [FromRoute] int customerId) {
+            try {
+                Review review = await service.GetReviewAsync(customerId, id);
+                if (review == null)
+                    throw new Exception("The review does not exist");
+                await service.RemoveReviewAsync(id, customerId);
+                return Ok();
+            }
+            catch (InvalidDataException e) {
+                 return Conflict(e.Message);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet]
         [Route("Books/{id:int}")]
         public async Task<ActionResult<Book>> GetBookAsync([FromRoute] int id) {
@@ -146,9 +201,11 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Category created = await service.AddCategoryAsync(category);
                 return Created($"/{created.Id}", created);
-            } catch (InvalidDataException e) {
+            }
+            catch (InvalidDataException e) {
                 return Conflict(e.Message);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -167,12 +224,13 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
         [HttpPost]
         [Route("books")]
         public async Task<ActionResult<Book>> AddBookAsync([FromBody] BookModel itemModel) {
             try {
                 Book book = await service.CreateBookAsync(itemModel);
-                    return Created($"/{book.Id}", book);
+                return Created($"/{book.Id}", book);
             }
             catch (InvalidDataException e) {
                 return BadRequest(e.Message);
@@ -182,27 +240,162 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+
         [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<Item>> UpdateItemAsync([FromRoute] int id, [FromBody] ItemModel item) {
             try {
                 Item updated = await service.UpdateItemAsync(id, item);
                 return Ok(updated);
-            } catch (NullReferenceException e) {
+            }
+            catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
+
         [HttpPut]
         [Route("books/{id:int}")]
         public async Task<ActionResult<Book>> UpdateBookAsync([FromRoute] int id, [FromBody] BookModel item) {
             try {
-                Item updated = await service.UpdateBookAsync(id,item);
+                Item updated = await service.UpdateBookAsync(id, item);
                 return Ok(updated);
-            } catch (NullReferenceException e) {
+            }
+            catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+          [HttpPut]
+        [Route("{customerId:int}/wishlist/{itemId:int}")]
+        public async Task<ActionResult<Item>> AddToWishlist([FromRoute] int customerId, [FromRoute] int itemId) {
+            try {
+                Item item = await service.AddToWishlistAsync(customerId, itemId);
+                return Ok(item);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{customerId:int}/wishlist/{itemId:int}")]
+        public async Task<ActionResult> RemoveWishlistedItemAsync([FromRoute] int customerId, [FromRoute] int itemId) {
+            try {
+                await service.RemoveWishlistedItemAsync(customerId, itemId);
+                return Ok();
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("{customerId:int}/shoppingbasket")]
+        public async Task<ActionResult<Item>> AddShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            try {
+                Item item1 = await service.AddToShoppingCartAsync(item, customerId);
+                return Ok(item1);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("{customerId:int}/shoppingbasket")]
+        public async Task<ActionResult> GetShoppingCartAsync([FromRoute] int customerId) {
+            try {
+                IList<Item> shoppingCart = await service.GetShoppingCartAsync(customerId);
+                return Ok(shoppingCart);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpPut]
+        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        public async Task<ActionResult<Item>> EditShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId,
+            [FromRoute] int itemId) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            try {
+                Item item1 = await service.UpdateShoppingCartAsync(item, itemId, customerId);
+                return Ok(item);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        public async Task<ActionResult> RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
+            try {
+                await service.RemoveFromShoppingCartAsync(itemId, customerId);
+                return Ok();
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("categories/{categoryId:int}")]
+        public async Task<ActionResult> DeleteCategoryAsync([FromRoute] int categoryId) {
+            try {
+                await service.DeleteCategoryAsync(categoryId);
+                return Ok();
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("{customerId:int}/wishlist")]
+        public async Task<ActionResult<IList<Item>>> GetCustomerWishlistAsync([FromRoute] int customerId) {
+            try {
+                IList<Item> wishlist = await service.GetCustomerWishlistAsync(customerId);
+                return Ok(wishlist);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }

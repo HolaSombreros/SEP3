@@ -1,7 +1,6 @@
 package mediator.message;
 
 import model.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +9,17 @@ public class ItemMessage extends Message {
     private List<Item> items;
     private List<Category> categories;
     private List<Genre> genres;
-    private Category category;
     private Item item;
     private Book book;
     private Customer customer;
     private int[] itemsIds;
-    private String orderBy;
+    private String priceOrder;
     private List<Review> reviews;
+    private String ratingOrder;
+    private Review review;
+    private double averageRating;
+    private String discountOrder;
+    private String statusOrder;
 
     public ItemMessage(String service, String type) {
         super(service, type);
@@ -24,6 +27,22 @@ public class ItemMessage extends Message {
         categories = new ArrayList<>();
         genres = new ArrayList<>();
         reviews = new ArrayList<>();
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Review getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
     }
 
     public List<Genre> getGenres() {
@@ -90,20 +109,12 @@ public class ItemMessage extends Message {
         this.customer = customer;
     }
 
-    public String getOrderBy() {
-        return orderBy;
+    public String getPriceOrder() {
+        return priceOrder;
     }
 
-    public void setOrderBy(String orderBy) {
-        this.orderBy = orderBy;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setPriceOrder(String priceOrder) {
+        this.priceOrder = priceOrder;
     }
 
     public List<Review> getReviews() {
@@ -112,5 +123,21 @@ public class ItemMessage extends Message {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getRatingOrder() {
+        return ratingOrder;
+    }
+
+    public void setRatingOrder(String ratingOrder) {
+        this.ratingOrder = ratingOrder;
+    }
+
+    public String getDiscountOrder() {
+        return discountOrder;
+    }
+
+    public String getStatusOrder() {
+        return statusOrder;
     }
 }

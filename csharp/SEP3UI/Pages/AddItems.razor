@@ -31,7 +31,7 @@
                     <div class="row">
                         <div class="col-md-4 mr-3">
                             <div class="text-center">
-                                <img class="img-thumbnail rounded w-50 mb-2" src="@itemModel.ImageName" alt="Image of @itemModel.Name"/>
+                                <img class="img-thumbnail rounded w-50 mb-2" src="@itemModel.FilePath" alt="Image of @itemModel.Name"/>
                                 <label class="simple-customised d-block"> Select category:</label>
                                 @foreach (var category in categories) {
                                     <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
@@ -89,7 +89,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="">
-                                <img class="img-thumbnail rounded w-50 mb-2" src="@bookModel.ImageName" alt="Image of @bookModel.Name"/>
+                                <img class="img-thumbnail rounded w-50 mb-2" src="@bookModel.FilePath" alt="Image of @bookModel.Name"/>
                                 <label class="simple-customised d-block"> Select category:</label>
                                 @foreach (var category in categories) {
                                     <button type="button" @onclick="@(() => SetCategory(category))" class="list-group-item list-group-item-action"> @category.Name</button>
@@ -265,7 +265,7 @@
                 bookModel.Authors = book.Authors;
                 bookModel.Genre = book.Genre;
                 bookModel.Language = book.Language;
-                bookModel.ImageName = book.ImageName;
+                bookModel.FilePath = book.FilePath;
                 bookModel.PublicationDate = new DateTime(book.PublicationDate.Year, book.PublicationDate.Month, book.PublicationDate.Day, book.PublicationDate.Hour,
                     book.PublicationDate.Minute, book.PublicationDate.Second);
                 foreach(Genre g in book.Genre)
@@ -281,7 +281,7 @@
                 itemModel.Price = item.Price;
                 itemModel.Status = item.Status;
                 itemModel.Quantity = item.Quantity;
-                itemModel.ImageName = item.ImageName;
+                itemModel.FilePath = item.FilePath;
             }
         }
         else {
@@ -331,13 +331,13 @@
                         throw new Exception("Please input a genre or author");
                     }
                     else {
-                        if (uploadedFile != null) bookModel.ImageName = "Images/" + uploadedFile.Name;
+                        if (uploadedFile != null) bookModel.FilePath = "Images/" + uploadedFile.Name;
                         await itemService.UpdateBookAsync(Id, bookModel);
                         errorMessage = "Successful item edited";
                     }
                 }
                 else {
-                    if (uploadedFile != null) itemModel.ImageName = "Images/" + uploadedFile.Name;
+                    if (uploadedFile != null) itemModel.FilePath = "Images/" + uploadedFile.Name;
                     await itemService.UpdateItemAsync(Id, itemModel);
                     errorMessage = "Successful item edited";
                 }
@@ -348,13 +348,13 @@
                     if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1)
                         throw new Exception("Please input a genre or author");
                     else {
-                        if (uploadedFile != null) bookModel.ImageName = "Images/" + uploadedFile.Name;
+                        if (uploadedFile != null) bookModel.FilePath = "Images/" + uploadedFile.Name;
                         await itemService.AddBookAsync(bookModel);
                         errorMessage = "Successful item added";
                     }
                 }
                 else {
-                    if (uploadedFile != null) itemModel.ImageName = "Images/" + uploadedFile.Name;
+                    if (uploadedFile != null) itemModel.FilePath = "Images/" + uploadedFile.Name;
                     await itemService.AddItemAsync(itemModel);
                     errorMessage = "Successful item added";
                 }

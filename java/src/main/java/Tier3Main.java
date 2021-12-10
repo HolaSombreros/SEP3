@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class Tier3Main {
@@ -17,7 +16,7 @@ public class Tier3Main {
         DatabaseManager databaseManager = new DatabaseManager();
 
         System.out.println("Database Started  ^-^ ");
-//        ArrayList<Genre> genres = new ArrayList<>();
+        ArrayList<Genre> genres = new ArrayList<>();
 //        genres.add(new Genre("Romance", 1));
 //        databaseManager.getCustomerDAOService().create("Maria","Magdalena","mariamgd@gmail.com","password","Administrator", new Address("Old Tavern","Holly Trinity",1234,"Jerusalim",1),"12345678");
 //        databaseManager.getBookDAOService()

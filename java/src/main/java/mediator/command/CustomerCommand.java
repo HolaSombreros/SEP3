@@ -15,10 +15,10 @@ public class CustomerCommand implements Command {
     public CustomerCommand(DatabaseManager databaseManager) {
         this.databaseManager = databaseManager;
         methods = new HashMap<>();
-        methods.put("get", this::get);
+        methods.put("getCustomer", this::getCustomer);
         methods.put("login", this::login);
         methods.put("register", this::register);
-        methods.put("update", this::update);
+        methods.put("updateCustomer", this::updateCustomer);
         methods.put("getNotifications", this::getNotifications);
         methods.put("getNotification", this::getNotification);
         methods.put("getAdmins", this::getAdmins);
@@ -26,6 +26,7 @@ public class CustomerCommand implements Command {
         methods.put("updateSeenNotification", this:: updateSeenNotification);
         methods.put("getCustomersByIndex", this::getCustomersByIndex);
         methods.put("updateRole", this::updateRole);
+        methods.put("customerWithWishlistItem", this::getCustomerWithWishlistItem);
     }
 
     @Override public Message execute(Message request) {
@@ -41,7 +42,7 @@ public class CustomerCommand implements Command {
         }
     }
 
-    private void get() {
+    private void getCustomer() {
         reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getId()));
     }
 
@@ -56,7 +57,7 @@ public class CustomerCommand implements Command {
                 customer.getPhoneNumber()));
     }
 
-    private void update() {
+    private void updateCustomer() {
         reply.setCustomer(databaseManager.getCustomerDAOService().update(request.getCustomer()));
     }
 
@@ -87,5 +88,9 @@ public class CustomerCommand implements Command {
 
     private void updateSeenNotification() {
         reply.setNotification(databaseManager.getNotificationDAOService().update(request.getCustomer().getId(), request.getNotification()));
+    }
+
+    private void getCustomerWithWishlistItem() {
+        reply.setCustomers(databaseManager.getCustomerDAOService().customerWithWishlistItem(request.getItemId()));
     }
 }

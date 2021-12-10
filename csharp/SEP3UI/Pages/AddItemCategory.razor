@@ -19,12 +19,39 @@
             <span class="d-block mt-2 @resultMessageTextColor">@resultMessageText</span>
         </div>
     </EditForm>
+    
+    @if (categories!=null && categories.Any()) {
+        <table class="table table-striped mt-3">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (Category c in categories) {
+                <tr class="family-row">
+                    <td>@c.Id</td>
+                    <td>@c.Name</td>
+                    <td class="text-right"> <button class="btn oi oi-trash" @onclick="() => DeleteCategoryAsync(c.Id)" style="color:red"></button> </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
 </div>
 
 @code {
     private Category category = new Category();
     private string resultMessageText = "";
     private string resultMessageTextColor = "";
+    private IList<Category> categories;
+    private string displayMessage;
+
+    protected override async Task OnInitializedAsync() {
+        categories = await itemService.GetCategoriesAsync();
+    }
 
     private async Task AddCategoryAsync() {
         try {
@@ -32,9 +59,22 @@
             resultMessageText = $"\"{category.Name}\" category successfully added!";
             resultMessageTextColor = "text-success";
             category = new Category();
+            categories = await itemService.GetCategoriesAsync();
         } catch (Exception e) {
             resultMessageText = e.Message;
             resultMessageTextColor = "text-danger";
+        }
+    }
+
+    private async Task DeleteCategoryAsync(int id) {
+        try {
+            await itemService.DeleteCategoryAsync(id);
+            categories = await itemService.GetCategoriesAsync();
+            resultMessageText = "";
+        }
+        catch (Exception e) {
+            resultMessageTextColor = "text-danger";
+            resultMessageText = e.Message;
         }
     }
 }

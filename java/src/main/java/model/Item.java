@@ -1,13 +1,11 @@
 package model;
 
 import model.enums.ItemStatus;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Item {
-
     private int id;
     private String name;
     private String description;
@@ -16,15 +14,10 @@ public class Item {
     private int quantity;
     private ItemStatus status;
     private int discount;
-    private String imageName;
+    private String filePath;
     private List<Review> reviews;
 
-    public Item() {
-
-    }
-
-
-    public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, String imgFilepath) {
+    public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, String filePath) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,11 +26,11 @@ public class Item {
         this.quantity = quantity;
         this.status = ItemStatus.INSTOCK;
         this.discount = 0;
-        this.imageName = imgFilepath;
+        this.filePath = filePath;
         this.reviews = new ArrayList<>();
     }
 
-    public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, ItemStatus status, int discount, String imgFilepath) {
+    public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, ItemStatus status, int discount, String filePath) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -46,7 +39,7 @@ public class Item {
         this.quantity = quantity;
         this.status = status;
         this.discount = discount;
-        this.imageName = imgFilepath;
+        this.filePath = filePath;
     }
 
     public List<Review> getReviews() {
@@ -58,11 +51,11 @@ public class Item {
     }
 
     public String getImageName() {
-        return imageName;
+        return filePath;
     }
 
     public void setImageName(String imageName) {
-        this.imageName = imageName;
+        this.filePath = imageName;
     }
 
     public int getId() {
@@ -134,6 +127,6 @@ public class Item {
             return false;
         Item other = (Item) obj;
         return other.id == id  && name.equals(other.name) && description.equals(other.description) && price == other.price &&
-                category.equals(other.category) && quantity == other.quantity && status.equals(other.status) && discount == other.discount && imageName.equals(other.imageName);
+                category.equals(other.category) && quantity == other.quantity && status.equals(other.status) && discount == other.discount && filePath.equals(other.filePath);
     }
 }

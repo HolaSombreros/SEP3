@@ -203,10 +203,12 @@
         collapseNotificationDropdownMenu = !collapseNotificationDropdownMenu;
         notificationClass = "";
         hiddenClass = "hidden";
-        foreach (Notification notification in notifications) {
+        if (notifications != null) {
+            foreach (Notification notification in notifications) {
                 if (notification.Status.Equals("Unread"))
-                await customerService.UpdateSeenNotificationAsync(customerId, notification);
+                    await customerService.UpdateSeenNotificationAsync(customerId, notification);
             }
+        }
         hiddenClass = "show";
     }
 

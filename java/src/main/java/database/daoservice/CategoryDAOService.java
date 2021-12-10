@@ -53,4 +53,12 @@ public class CategoryDAOService implements CategoryDAO {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+    @Override public void delete(int id) {
+        try {
+            databaseHelper.executeUpdate("DELETE FROM category WHERE category_id = ?;", id);
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 }

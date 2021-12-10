@@ -51,10 +51,6 @@ public class Address {
         this.city = city;
     }
 
-    public Address copy() {
-        return new Address(street, number, zipCode, city, id);
-    }
-
     public boolean equals(Object obj) {
         if (!(obj instanceof Address))
             return false;

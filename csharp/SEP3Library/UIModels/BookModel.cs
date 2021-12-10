@@ -51,6 +51,6 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please enter at least a genre")]
         public List<Genre> Genre { get; set; }
 
-        public string ImageName { get; set; }
+        public string FilePath { get; set; }
     }
 }

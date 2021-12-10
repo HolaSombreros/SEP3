@@ -18,7 +18,7 @@ namespace SEP3Tests {
                 Quantity = 5
             };
 
-            cart.AddToShoppingCart(item);
+            cart.Add(item);
 
             int actualCartSize = cart.Items.Count;
             int actualItemQuantity = cart.Items[0].Quantity;
@@ -34,8 +34,8 @@ namespace SEP3Tests {
                 Id = 1
             };
 
-            cart.AddToShoppingCart(item);
-            cart.AddToShoppingCart(item);
+            cart.Add(item);
+            cart.Add(item);
 
             int actualCartSize = cart.Items.Count;
             Assert.AreEqual(expectedCartSize, actualCartSize);
@@ -54,8 +54,8 @@ namespace SEP3Tests {
                 Id = 2
             };
 
-            cart.AddToShoppingCart(first);
-            cart.AddToShoppingCart(second);
+            cart.Add(first);
+            cart.Add(second);
 
             int actual = cart.Items.Count;
             Assert.AreEqual(expected, actual);
@@ -68,8 +68,8 @@ namespace SEP3Tests {
                 Id = 1
             };
 
-            cart.AddToShoppingCart(item);
-            cart.RemoveItemFromShoppingCart(item);
+            cart.Add(item);
+            cart.Remove(item);
 
             int actual = cart.Items.Count;
             Assert.AreEqual(expected, actual);
@@ -82,9 +82,9 @@ namespace SEP3Tests {
                 Id = 1
             };
 
-            cart.AddToShoppingCart(item);
-            cart.AddToShoppingCart(item);
-            cart.RemoveItemFromShoppingCart(item);
+            cart.Add(item);
+            cart.Add(item);
+            cart.Remove(item);
 
             int actual = cart.Items[0].Quantity;
             Assert.AreEqual(expected, actual);
@@ -98,8 +98,8 @@ namespace SEP3Tests {
                 Price = 6.12M
             };
         
-            cart.AddToShoppingCart(item);
-            cart.AddToShoppingCart(item);
+            cart.Add(item);
+            cart.Add(item);
         
             decimal actual = cart.Total;
             Assert.AreEqual(expected, actual);
@@ -117,9 +117,24 @@ namespace SEP3Tests {
                 Price = 12.28M
             };
         
-            cart.AddToShoppingCart(first);
-            cart.AddToShoppingCart(second);
+            cart.Add(first);
+            cart.Add(second);
         
+            decimal actual = cart.Total;
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void AddDiscountedItem_WhenCartIsEmpty_UpdateTotal() {
+            decimal expected = 37.5M;
+            Item item = new Item() {
+                Id = 1,
+                Price = 50M,
+                Discount = 25
+            };
+
+            cart.Add(item);
+
             decimal actual = cart.Total;
             Assert.AreEqual(expected, actual);
         }

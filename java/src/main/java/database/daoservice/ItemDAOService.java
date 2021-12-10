@@ -78,19 +78,52 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
-    @Override
-    public void delete(Item item) {
-        //TODO think about this
-    }
 
     @Override
-    public List<Item> readByCategory(Category category) {
-        return null;
-    }
-
-    @Override
-    public List<Item> readByIndex(int index) {
+    public List<Item> readByIndex(int index, String category, String priceOrder, String ratingOrder, String discountOrder, String statusOrder, String search) {
         try{
+            if(search != null){
+                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",search, index);
+            }
+            if(category != null){
+               return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE category.name = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category, index);
+            }
+            if(priceOrder != null){
+                if(priceOrder.equalsIgnoreCase("ascending"))
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) LIMIT 21 OFFSET 21 * ?", index);
+                else
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) DESC LIMIT 21 OFFSET 21 * ?", index);
+            }
+            if(ratingOrder != null){
+                if(ratingOrder.equalsIgnoreCase("ascending")){
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT description, price, discount, quantity, status,item_id, image_filepath,category_id,category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) Left JOIN review USING (item_id)\n" +
+                            "group by category.name, item.name, description, price, discount, quantity, status, image_filepath,item_id,category_id\n" +
+                            "ORDER BY avg  LIMIT 21 OFFSET 21 * ?", index);
+                }
+                else{
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT description, price, discount, quantity, status,item_id,category_id, image_filepath,category.name AS category_name, item.name AS item_name,COALESCE(AVG(rating),0) AS avg FROM item JOIN category USING(category_id) Left JOIN review USING (item_id)\n" +
+                            "group by category.name, item.name, description, price, discount, quantity, status, image_filepath,item_id,category_id\n" +
+                            "ORDER BY avg DESC LIMIT 21 OFFSET 21 * ?", index);
+
+                }
+            }
+
+            if (discountOrder != null) {
+                if (discountOrder.equalsIgnoreCase("ASC")) {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY discount ASC LIMIT 21 OFFSET 21 * ?", index);
+                } else {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY discount DESC LIMIT 21 OFFSET 21 * ?", index);
+                }
+            }
+
+            if (statusOrder != null) {
+                if (statusOrder.equalsIgnoreCase("In Stock")) {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE status = 'In Stock' LIMIT 21 OFFSET 21 * ?", index);
+                } else {
+                    return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE status = 'Out of Stock' LIMIT 21 OFFSET 21 * ?", index);
+                }
+            }
+
             return databaseHelper.mapList(new ItemMapper(), "SELECT *, category.name as category_name, item.name AS item_name FROM item JOIN category USING (category_id) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",index);
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -200,29 +233,6 @@ public class ItemDAOService implements ItemDAO {
         try {
             databaseHelper.executeUpdate("DELETE FROM shopping_cart_item WHERE item_id = ? AND customer_id = ?;", item.getId(), customerId);
         } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Item> readAllByCategory(String category, int index) {
-        try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE category.name = ? ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?", category, index);
-        }
-        catch (SQLException e){
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<Item> readAllByPrice(String order, int index) {
-        try{
-            if(order.equalsIgnoreCase("ascending"))
-                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) LIMIT 21 OFFSET 21 * ?", index);
-            else
-                return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) ORDER BY (price - item.price*discount/100) DESC LIMIT 21 OFFSET 21 * ?", index);
-        }
-        catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }

@@ -1,8 +1,6 @@
 package model;
 
 import model.enums.OrderStatus;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Order {

@@ -3,12 +3,8 @@ package database.daoservice;
 import database.daomodel.AddressDAO;
 import database.daomodel.CustomerDAO;
 import database.daoservice.mapper.CustomerMapper;
-import database.daoservice.mapper.ItemMapper;
-import database.daoservice.mapper.OrderMapper;
 import model.Address;
 import model.Customer;
-import model.Item;
-import model.Order;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -73,6 +69,14 @@ public class CustomerDAOService implements CustomerDAO {
             return databaseHelper.mapList(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) ORDER BY customer_id ASC LIMIT 21 OFFSET 21 * ?", index);
         }
         catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override public List<Customer> customerWithWishlistItem(int itemId) {
+        try {
+            return databaseHelper.mapList(new CustomerMapper(), "SELECT * FROM customer JOIN (SELECT * FROM address JOIN city USING (zip_code)) a USING (address_id) JOIN wishlist_item USING (customer_id) WHERE item_id = ?;",itemId);
+        } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

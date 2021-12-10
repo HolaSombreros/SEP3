@@ -3,7 +3,7 @@
 @using SEP3Library.Models
 @using System.Security.Claims
 @inject IOrderService orderService
-@inject ICustomerService customerService
+@inject IItemService itemService
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider authStateProvider
 
@@ -23,7 +23,7 @@
                 <div class="row border-top border-bottom">
                     <div class="row main align-items-center">
                         <div class="col-2">
-                            <img class="img-fluid" src="@item.ImageName">
+                            <img class="img-fluid" src="@item.FilePath">
                         </div>
                         <div class="col">
                             <div class="row text-muted"></div>
@@ -100,22 +100,22 @@
 
     private void DecreaseQuantity(Item item) {
         if (item.Quantity > 1) {
-            Item i = orderService.ShoppingCart.RemoveQuantityFromShoppingCart(item);
+            Item i = orderService.ShoppingCart.Remove(item);
             if (customerId != -1)
-                customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
+                itemService.UpdateShoppingCartAsync(i, i.Id, customerId);
         }
     }
 
     private void IncreaseQuantity(Item item) {
-        Item i = orderService.ShoppingCart.IncreaseQuantity(item);
+        Item i = orderService.ShoppingCart.Add(item);
         if (customerId != -1)
-            customerService.UpdateShoppingCartAsync(i, i.Id, customerId);
+            itemService.UpdateShoppingCartAsync(i, i.Id, customerId);
     }
 
     private void RemoveItemFromShoppingCart(Item item) {
-        orderService.ShoppingCart.RemoveItemFromShoppingCart(item);
+        orderService.ShoppingCart.RemoveAll(item);
         if (customerId != -1)
-            customerService.RemoveFromShoppingCartAsync(item.Id, customerId);
+            itemService.RemoveFromShoppingCartAsync(item.Id, customerId);
     }
 
     private int GetItemsBasedOnQuantity() {
@@ -136,7 +136,7 @@
      */
 
     private decimal GetTotalOrderPrice() {
-        return orderService.ShoppingCart.TotalOrderPrice();
+        return orderService.ShoppingCart.TotalOrderPrice;
     }
 
     private void NavigateToComponent() {
