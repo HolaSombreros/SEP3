@@ -15,6 +15,7 @@ namespace SEP3WebAPI.Mediator {
         Task<Item> AddItemAsync(Item item);
         Task<Book> AddBookAsync(Book book);
         Task<Category> AddCategoryAsync(Category category);
+        Task DeleteCategoryAsync(int id);
         Task<Item> UpdateItemAsync( Item item);
         Task<Book> UpdateBookAsync( Book book);
         Task<IList<Review>> GetItemReviewsAsync(int index,Item item);

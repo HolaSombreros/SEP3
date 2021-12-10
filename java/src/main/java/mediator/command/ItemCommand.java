@@ -28,6 +28,7 @@ public class ItemCommand implements Command {
         methods.put("addWishlist", this::addWishlist);
         methods.put("removeWishlist", this::removeItemFromWishlist);
         methods.put("getCategories", this::getCategories);
+        methods.put("deleteCategory", this::deleteCategory);
         methods.put("getGenres", this::getGenres);
         methods.put("addItem", this::addItem);
         methods.put("addBook",this::addBook);
@@ -155,6 +156,11 @@ public class ItemCommand implements Command {
         categories.add(databaseManager.getCategoryDAOService().createCategory(request.getCategories().get(0).getName()));
         reply.setCategories(categories);
     }
+
+    private void deleteCategory() {
+        databaseManager.getCategoryDAOService().delete(request.getCategories().get(0).getId());
+    }
+
     private void getItemReviews() {
         reply.setReviews(databaseManager.getReviewDAOService().readByItem(request.getItem().getId(), request.getIndex()));
     }

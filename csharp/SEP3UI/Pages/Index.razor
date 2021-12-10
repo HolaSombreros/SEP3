@@ -111,7 +111,7 @@
                                 </div>
                                 <div>
                                     <p class="price">@string.Format("{0:f}", item.PriceIncludingDiscount) DKK</p>
-                                    <button class="btn btn-sm btn-dark order-button float-right" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
+                                    <button class="btn btn-sm btn-dark order-button float-right mb-2" disabled="@GetDisabledState(item)" @onclick="(() => AddToShoppingCart(item))"> Add to Shopping cart </button>
                                     @if (item.Discount > 0) {
                                         <p style="color: darkred" class="d-block">
                                             <strong> DISCOUNT: @item.Discount%</strong>

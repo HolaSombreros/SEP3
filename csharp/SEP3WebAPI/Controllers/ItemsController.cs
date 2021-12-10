@@ -369,7 +369,22 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
-        
+
+        [HttpDelete]
+        [Route("categories/{categoryId:int}")]
+        public async Task<ActionResult> DeleteCategoryAsync([FromRoute] int categoryId) {
+            try {
+                await service.DeleteCategoryAsync(categoryId);
+                return Ok();
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet]
         [Route("{customerId:int}/wishlist")]
         public async Task<ActionResult<IList<Item>>> GetCustomerWishlistAsync([FromRoute] int customerId) {

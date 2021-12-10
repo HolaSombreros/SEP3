@@ -28,34 +28,21 @@ namespace SEP3WebAPI.Mediator {
                 reply = JsonSerializer.Deserialize<Message>(result,
                     new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
                 if (reply != null) {
-                    switch (reply.Service) {
-                        case "item":
-                            reply = JsonSerializer.Deserialize<ItemMessage>(result,
-                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
-                            break;
-                        case "order":
-                            reply = JsonSerializer.Deserialize<OrderMessage>(result,
-                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
-                            break;
-                        case "customer":
-                            reply = JsonSerializer.Deserialize<CustomerMessage>(result,
-                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                            break;
-                        case "faq":
-                            reply = JsonSerializer.Deserialize<FAQMessage>(result,
-                                new JsonSerializerOptions() {
-                                    PropertyNameCaseInsensitive = true
-                                });
-                            break;
-                        case "error":
-                            reply = JsonSerializer.Deserialize<ErrorMessage>(result,
-                                new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
-                            break;
-                        case "connection_error":
-                            throw new ConnectionAbortedException();
-                    }
+                    reply = reply.Service switch {
+                        "item" => JsonSerializer.Deserialize<ItemMessage>(result,
+                            new JsonSerializerOptions {PropertyNameCaseInsensitive = true}),
+                        "order" => JsonSerializer.Deserialize<OrderMessage>(result,
+                            new JsonSerializerOptions {PropertyNameCaseInsensitive = true}),
+                        "customer" => JsonSerializer.Deserialize<CustomerMessage>(result,
+                            new JsonSerializerOptions {PropertyNameCaseInsensitive = true}),
+                        "faq" => JsonSerializer.Deserialize<FAQMessage>(result,
+                            new JsonSerializerOptions() {PropertyNameCaseInsensitive = true}),
+                        "error" => JsonSerializer.Deserialize<ErrorMessage>(result,
+                            new JsonSerializerOptions {PropertyNameCaseInsensitive = true}),
+                        "connection_error" => throw new ConnectionAbortedException(),
+                        _ => reply
+                    };
                 }
-
                 Monitor.Pulse(lock1);
             }
         }

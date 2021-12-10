@@ -34,12 +34,12 @@ namespace SEP3UI.Data {
             return await restService.PostAsync<BookModel, Book>(bookModel, "items/books");
         }
 
-        public async Task<IList<Item>> GetItemsBySearchAsync(string searchName, int index) {
-            return await restService.GetAsync<IList<Item>>($"items?index={index}&searchName={searchName}");
-        }
-
         public async Task<IList<Category>> GetCategoriesAsync() {
             return await restService.GetAsync <IList<Category>>($"items/categories");
+        }
+
+        public async Task DeleteCategoryAsync(int id) {
+            await restService.DeleteAsync($"items/categories/{id}");
         }
 
         public async Task<IList<Genre>> GetGenresAsync() {

@@ -122,6 +122,19 @@ namespace SEP3WebAPI.Mediator {
             return ((ItemMessage) client.Send(req)).Book;
         }
 
+        public async Task DeleteCategoryAsync(int id) {
+            ItemMessage req = new ItemMessage() {
+                Type = "deleteCategory",
+                Service = service,
+                Categories = new List<Category>() {
+                    new Category() {
+                        Id = id
+                    }
+                }
+            };
+            client.Send(req);
+        }
+
         public async Task<Item> UpdateItemAsync(Item item) {
             ItemMessage req = new ItemMessage() {
                 Type = "updateItem",

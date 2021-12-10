@@ -13,6 +13,7 @@ namespace SEP3UI.Data {
         Task<Book> AddBookAsync(BookModel bookModel);
         Task<Category> AddCategoryAsync(Category category);
         Task<IList<Category>> GetCategoriesAsync();
+        Task DeleteCategoryAsync(int id);
         Task<Item> UpdateItemAsync(int id, ItemModel item);
         Task<Book> UpdateBookAsync(int id, BookModel item);
         Task<IList<Review>> GetItemReviewsAsync(int index, Item item);
@@ -21,7 +22,6 @@ namespace SEP3UI.Data {
         Task<bool> GetReviewAsync(int itemId, int customerId);
         Task<Review> UpdateReviewAsync(Review review);
         Task<double> GetAverageRating(int itemId);
-        
         Task<Item> AddToWishlistAsync(int customerId, Item item);
         Task<IList<Item>> GetCustomerWishlistAsync(int customerId);
         Task RemoveWishlistedItem(int customerId, int itemId);

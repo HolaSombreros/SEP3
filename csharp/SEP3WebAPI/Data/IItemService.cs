@@ -14,6 +14,7 @@ namespace SEP3WebAPI.Data {
         Task<Item> CreateItemAsync(ItemModel itemModel);
         Task<Book> CreateBookAsync(BookModel bookModel);
         Task<Category> AddCategoryAsync(Category category);
+        Task DeleteCategoryAsync(int id);
         Task<Item> UpdateItemAsync(int id, ItemModel item);
         Task<Book> UpdateBookAsync(int id, BookModel book);
         Task<IList<Review>> GetItemReviewsAsync(int index, Item item);

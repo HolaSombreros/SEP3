@@ -9,4 +9,5 @@ public interface CategoryDAO {
     Category read(int categoryId);
     Category read(String categoryName);
     Category createCategory(String name);
+    void delete(int id);
 }

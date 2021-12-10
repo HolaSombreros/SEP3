@@ -35,7 +35,15 @@ namespace SEP3WebAPI.Data {
             Category created = await client.AddCategoryAsync(category);
             return created;
         }
-        
+
+        public async Task DeleteCategoryAsync(int id) {
+            string category = (await client.GetCategoriesAsync()).First(c => c.Id == id).Name;
+            if (!(await client.GetItemsAsync(0, category,
+                null, null, null, null, null)).Any())
+                await client.DeleteCategoryAsync(id);
+            else throw new InvalidDataException("The category cannot be removed as long as there are items with the specific category");
+        }
+
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             if (item == null) throw new InvalidDataException("Please provide an item of the proper format");
             Item toUpdate = await client.GetItemAsync(id);
