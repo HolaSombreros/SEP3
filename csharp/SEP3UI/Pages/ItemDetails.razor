@@ -135,7 +135,7 @@ else {
                             @if (customerId == review.Customer.Id) {
                                 <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
                                 <a class="close mr-3 oi oi-pencil " @onclick="() => ChangeToEdit()"/>
-                                @if (!review.Comment.Equals("")) {
+                                @if (review.Comment != null && !review.Comment.Equals("")) {
                                     <div class="form-group">
                                         <p>Your comment</p>
                                         <div>@review.Comment</div>

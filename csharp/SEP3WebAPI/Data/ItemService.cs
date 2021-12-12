@@ -53,12 +53,31 @@ namespace SEP3WebAPI.Data {
             toUpdate.Category = item.Category;
             toUpdate.Price = item.Price;
             toUpdate.Quantity = item.Quantity;
-            toUpdate.Status = item.Status;
+            toUpdate.Status = item.Quantity != 0 ? ItemStatus.InStock : ItemStatus.OutOfStock;
             toUpdate.Discount = item.Discount;
             toUpdate.FilePath = item.FilePath;
             
-            await client.UpdateItemAsync(toUpdate);
-            return toUpdate;
+            if ((await client.GetItemAsync(id)).Status.Equals(ItemStatus.OutOfStock) &&
+                toUpdate.Status.Equals(ItemStatus.InStock)) {
+                Notification notification = new Notification() {
+                    Text = $"The item {item.Name} in your wishlist is back on stock",
+                    Status = "Unread",
+                    Time = new MyDateTime() {
+                        Year = DateTime.Now.Year,
+                        Month = DateTime.Now.Month,
+                        Day = DateTime.Now.Day,
+                        Hour = DateTime.Now.Hour,
+                        Minute = DateTime.Now.Minute,
+                        Second = DateTime.Now.Second
+                    }
+                };
+                IList<Customer> customers = await customerClient.GetCustomerWithWishlistItemAsync(id);
+                foreach (Customer customer in customers) {
+                    await customerClient.SendNotificationAsync(customer, notification);
+                }
+            }
+
+            return await client.UpdateItemAsync(toUpdate);
         }
 
         public async Task<Book> UpdateBookAsync(int id, BookModel book) {
@@ -70,7 +89,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Category = book.Category;
             toUpdate.Price = book.Price;
             toUpdate.Quantity = book.Quantity;
-            toUpdate.Status = book.Status;
+            toUpdate.Status = book.Quantity != 0 ? ItemStatus.InStock : ItemStatus.OutOfStock;
             toUpdate.Discount = book.Discount;
             toUpdate.FilePath = book.FilePath;
             toUpdate.Authors = book.Authors;
@@ -85,8 +104,27 @@ namespace SEP3WebAPI.Data {
                 Minute = book.PublicationDate.Minute,
                 Second = book.PublicationDate.Second
             };
-            await client.UpdateBookAsync(toUpdate);
-            return toUpdate;
+            if ((await client.GetItemAsync(id)).Status.Equals(ItemStatus.OutOfStock) &&
+                toUpdate.Status.Equals(ItemStatus.InStock)) {
+                Notification notification = new Notification() {
+                    Text = $"The book {book.Name} in your wishlist is back on stock",
+                    Status = "Unread",
+                    Time = new MyDateTime() {
+                        Year = DateTime.Now.Year,
+                        Month = DateTime.Now.Month,
+                        Day = DateTime.Now.Day,
+                        Hour = DateTime.Now.Hour,
+                        Minute = DateTime.Now.Minute,
+                        Second = DateTime.Now.Second
+                    }
+                };
+                IList<Customer> customers = await customerClient.GetCustomerWithWishlistItemAsync(id);
+                foreach (Customer customer in customers) {
+                    await customerClient.SendNotificationAsync(customer, notification);
+                }
+            }
+
+            return await client.UpdateBookAsync(toUpdate);
         }
 
        

@@ -108,5 +108,19 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        [HttpGet]
+        [Route("{customerId:int}/order")]
+        public async Task<ActionResult<IList<Order>>> GetAllOrdersByCustomer([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Order> orders = await service.GetOrdersByCustomerAsync(customerId, index);
+                return Ok(orders);
+            }
+            catch (NullReferenceException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

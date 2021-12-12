@@ -38,7 +38,6 @@ public class ItemCommand implements Command {
         methods.put("getShoppingCart", this::getShoppingCart);
         methods.put("updateShoppingCart", this::updateShoppingCart);
         methods.put("removeShoppingCart", this::removeFromShoppingCart);
-        methods.put("searchByName",this::getItemsBySearchName);
         methods.put("addCategory", this::addCategory);
         methods.put("updateItem", this::updateItem);
         methods.put("updateBook", this::updateBook);
@@ -127,10 +126,7 @@ public class ItemCommand implements Command {
     private void getBookBySpecifications() {
         reply.setBook(databaseManager.getBookDAOService().read(request.getBook().getISBN()));
     }
-    
-    private void getItemsBySearchName(){
-        reply.setItems(databaseManager.getItemDAOService().readByItemName(request.getItem().getName(), request.getIndex()));
-    }
+
 
     private void addToShoppingCart() {
         databaseManager.getItemDAOService().addToShoppingCart(request.getItem(), request.getCustomer().getId());
