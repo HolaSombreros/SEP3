@@ -9,14 +9,8 @@ namespace SEP3Library.UIModels {
 
         [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please enter an email address")]
-        public string Email {
-            get => email;
-            set {
-                if (!new EmailAddressAttribute().IsValid(value)) throw new InvalidDataException("Please enter a valid email address");
-                email = value;
-            }
-        }
-        private string email;
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Please enter a first name")]
         [MaxLength(100, ErrorMessage = "The first name cannot exceed 100 characters")]

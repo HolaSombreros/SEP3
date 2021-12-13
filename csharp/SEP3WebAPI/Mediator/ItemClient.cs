@@ -7,11 +7,13 @@ namespace SEP3WebAPI.Mediator {
     public class ItemClient : IItemClient {
 
         private IClient client;
+        
         public ItemClient(IClient client) {
             this.client = client;
         }
         
-        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string discountOrder, string statusOrder, string search) {
+        public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder,
+            string discountOrder, string statusOrder, string search) {
             ItemMessage req = new ItemMessage() {
                 Type = "getAll",
                 Index = index,
@@ -19,14 +21,17 @@ namespace SEP3WebAPI.Mediator {
                 RatingOrder = ratingOrder,
                 DiscountOrder = discountOrder,
                 StatusOrder = statusOrder,
-                Item = new Item() {
+                Items = new List<Item>() {
+                    new() {
                     Name = search
+                    }
                 },
-                Categories = new List<Category>()
+                Categories = new List<Category>() {
+                    new() {
+                        Name = category
+                    }
+                }
             };
-            req.Categories.Add(new Category() {
-                Name = category
-            });
             return ((ItemMessage) client.Send(req)).Items;
         }
 
@@ -47,9 +52,9 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Item> AddItemAsync(Item item) {
             ItemMessage req = new ItemMessage() {
                 Type = "addItem",
-                Item = item
+                Items = new List<Item>() {item}
             };
-            return ((ItemMessage) client.Send(req)).Item;
+            return ((ItemMessage) client.Send(req)).Items[0];
         }
 
         public async Task<Book> AddBookAsync(Book book) {
@@ -63,13 +68,15 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Item> GetItemBySpecificationsAsync(string name, string description, Category category) {
             ItemMessage req = new ItemMessage() {
                 Type = "getItemBySpecifications",
-                Item = new Item() {
+                Items = new List<Item>() { 
+                    new() {
                     Name = name,
                     Description = description,
                     Category = category
+                    }
                 }
             };
-            return ((ItemMessage) client.Send(req)).Item;
+            return ((ItemMessage) client.Send(req)).Items[0];
         }
 
         public async Task<Book> GetBookBySpecificationsAsync(string isbn) {
@@ -93,18 +100,22 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Item> GetItemAsync(int id) {
             ItemMessage req = new ItemMessage() {
                 Type = "getItem",
-                Item = new Item() {
+                Items = new List<Item>() {
+                    new() {
                     Id = id
+                    }
                 }
             };
-           return ((ItemMessage) client.Send(req)).Item;
+           return ((ItemMessage) client.Send(req)).Items[0];
         }
 
         public async Task<Book> GetBookAsync(int id) {
             ItemMessage req = new ItemMessage() {
                 Type = "getBook",
-                Item = new Item() {
-                    Id = id
+                Items = new List<Item>() {
+                    new() {
+                        Id = id
+                    }
                 }
             };
             return ((ItemMessage) client.Send(req)).Book;
@@ -114,7 +125,7 @@ namespace SEP3WebAPI.Mediator {
             ItemMessage req = new ItemMessage() {
                 Type = "deleteCategory",
                 Categories = new List<Category>() {
-                    new Category() {
+                    new() {
                         Id = id
                     }
                 }
@@ -125,9 +136,9 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Item> UpdateItemAsync(Item item) {
             ItemMessage req = new ItemMessage() {
                 Type = "updateItem",
-                Item = item
+                Items = new List<Item>(){item}
             };
-            return ((ItemMessage) client.Send(req)).Item;
+            return ((ItemMessage) client.Send(req)).Items[0];
         }
 
         public async Task<Book> UpdateBookAsync(Book book) {
@@ -141,17 +152,18 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Category> AddCategoryAsync(Category category) {
             ItemMessage req = new ItemMessage() {
                 Type = "addCategory",
-                Categories = new List<Category>()
+                Categories = new List<Category>() {
+                    category
+                }
             };
-            req.Categories.Add(category);
             return ((ItemMessage) client.Send(req)).Categories[0];
         }
 
-        public async Task<IList<Review>> GetItemReviewsAsync(int index,Item item) {
+        public async Task<IList<Review>> GetItemReviewsAsync(int index, Item item) {
             ItemMessage req = new ItemMessage() {
                 Type = "getItemReviews",
                 Index = index,
-                Item = item
+                Items = new List<Item>(){item}
             };
             return ((ItemMessage) client.Send(req)).Reviews;
         }
@@ -159,20 +171,23 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Review> AddReviewAsync(Review review) {
             ItemMessage req = new ItemMessage() {
                 Type = "addReview",
-                Reviews = new List<Review>()
+                Reviews = new List<Review>() {
+                    review
+                }
             };
-            req.Reviews.Add(review);
             return ((ItemMessage) client.Send(req)).Reviews[0];
         }
 
         public async Task RemoveReviewAsync(int itemId, int customerId) {
             ItemMessage req = new ItemMessage() {
                 Type = "removeReview",
-                Review = new Review() {
+                Reviews = new List<Review>() {
+                    new() {
                     Customer = new Customer() {
                         Id = customerId
-                    },
+                        },
                     ItemId = itemId
+                    }
                 }
             };
             client.Send(req);
@@ -181,29 +196,33 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Review> GetReviewAsync(int customerId, int itemId) {
             ItemMessage req = new ItemMessage() {
                 Type = "getReview",
-                Review = new Review() {
+                Reviews = new List<Review>() { 
+                    new() {
                     Customer = new Customer() {
                         Id = customerId
                     },
                     ItemId = itemId
+                    }
                 }
             };
-            return ((ItemMessage) client.Send(req)).Review;
+            return ((ItemMessage) client.Send(req)).Reviews[0];
         }
 
         public async Task<Review> UpdateReviewAsync(Review review) {
             ItemMessage req = new ItemMessage() {
                 Type = "updateReview",
-                Review = review
+                Reviews = new List<Review>() {
+                    review
+                }
             };
-            return ((ItemMessage) client.Send(req)).Review;
+            return ((ItemMessage) client.Send(req)).Reviews[0];
         }
 
         public async Task<double> GetAverageRatingAsync(int itemId) {
             Message request = new ItemMessage() {
                 Type = "getAverageRating",
-                Item = new Item() {
-                    Id = itemId
+                Items = new List<Item>() {
+                    new() {Id = itemId}
                 }
             };
             return ((ItemMessage)client.Send(request)).AverageRating;
@@ -221,16 +240,20 @@ namespace SEP3WebAPI.Mediator {
             ItemMessage req = new ItemMessage() {
                 Type = "addWishlist",
                 Customer = new Customer() {Id = customerId},
-                Item = new Item() {Id = itemId}
+                Items = new List<Item>() {
+                    new() {Id = itemId}                
+                }
             };
-            return ((ItemMessage) client.Send(req)).Item;
+            return ((ItemMessage) client.Send(req)).Items[0];
         }
 
-        public async Task RemoveWishlistedItemAsync(Customer customer, Item item) {
+        public async Task RemoveWishlistItemAsync(Customer customer, Item item) {
             ItemMessage req = new ItemMessage() {
                 Type = "removeWishlist",
                 Customer = customer,
-                Item = item
+                Items = new List<Item>() {
+                    item
+                }
             };
             client.Send(req);
         }
@@ -239,9 +262,11 @@ namespace SEP3WebAPI.Mediator {
             ItemMessage req = new ItemMessage() {
                 Type = "addShoppingCart",
                 Customer = customer,
-                Item = item
+                Items = new List<Item>() {
+                    item
+                }
             };
-            return ((ItemMessage) client.Send(req)).Item;
+            return ((ItemMessage) client.Send(req)).Items[0];
         }
 
         public async Task<IList<Item>> GetShoppingCartAsync(Customer customer) {
@@ -256,16 +281,20 @@ namespace SEP3WebAPI.Mediator {
             ItemMessage req = new ItemMessage() {
                 Type = "updateShoppingCart",
                 Customer = customer,
-                Item = item
+                Items = new List<Item>() {
+                    item
+                }
             };
-            return ((ItemMessage) client.Send(req)).Item;
+            return ((ItemMessage) client.Send(req)).Items[0];
         }
 
         public async Task RemoveFromShoppingCartAsync(Item item, Customer customer) {
             ItemMessage req = new ItemMessage() {
                 Type = "removeShoppingCart",
                 Customer = customer,
-                Item = item
+                Items = new List<Item>() {
+                    item
+                }
             };
             client.Send(req);
         }

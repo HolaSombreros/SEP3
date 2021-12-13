@@ -62,14 +62,7 @@ namespace SEP3WebAPI.Data {
                 Notification notification = new Notification() {
                     Text = $"The item {item.Name} in your wishlist is back on stock",
                     Status = "Unread",
-                    Time = new MyDateTime() {
-                        Year = DateTime.Now.Year,
-                        Month = DateTime.Now.Month,
-                        Day = DateTime.Now.Day,
-                        Hour = DateTime.Now.Hour,
-                        Minute = DateTime.Now.Minute,
-                        Second = DateTime.Now.Second
-                    }
+                    Time = new MyDateTime(new DateTime())
                 };
                 IList<Customer> customers = await customerClient.GetCustomerWithWishlistItemAsync(id);
                 foreach (Customer customer in customers) {
@@ -109,14 +102,7 @@ namespace SEP3WebAPI.Data {
                 Notification notification = new Notification() {
                     Text = $"The book {book.Name} in your wishlist is back on stock",
                     Status = "Unread",
-                    Time = new MyDateTime() {
-                        Year = DateTime.Now.Year,
-                        Month = DateTime.Now.Month,
-                        Day = DateTime.Now.Day,
-                        Hour = DateTime.Now.Hour,
-                        Minute = DateTime.Now.Minute,
-                        Second = DateTime.Now.Second
-                    }
+                    Time = new MyDateTime(new DateTime())
                 };
                 IList<Customer> customers = await customerClient.GetCustomerWithWishlistItemAsync(id);
                 foreach (Customer customer in customers) {
@@ -222,14 +208,14 @@ namespace SEP3WebAPI.Data {
             return await client.AddToWishlist(customerId, itemId);
         }
 
-        public async Task RemoveWishlistedItemAsync(int customerId, int itemId) {
+        public async Task RemoveWishlistItemAsync(int customerId, int itemId) {
             Customer customer = await customerClient.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
             
             Item item = await client.GetItemAsync(itemId);
             if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
             
-            await client.RemoveWishlistedItemAsync(customer, item);
+            await client.RemoveWishlistItemAsync(customer, item);
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {

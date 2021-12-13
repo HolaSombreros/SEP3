@@ -15,9 +15,9 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Order> CreateOrderAsync(Order order) {
             OrderMessage req = new OrderMessage() {
                 Type = "purchase", 
-                Order = order
+                Orders = new List<Order>() {order}
             };
-            return ((OrderMessage) client.Send(req)).Order;
+            return ((OrderMessage) client.Send(req)).Orders[0];
         }
 
         public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
@@ -33,11 +33,13 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Order> GetOrderAsync(int orderId) {
             OrderMessage req = new OrderMessage() {
                 Type = "get",
-                Order = new Order() {
-                    Id = orderId
+                Orders = new List<Order>() {
+                    new() {
+                        Id = orderId
+                    }
                 }
             };
-            return ((OrderMessage) client.Send(req)).Order;
+            return ((OrderMessage) client.Send(req)).Orders[0];
         }
         
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
@@ -52,7 +54,7 @@ namespace SEP3WebAPI.Mediator {
         public async Task UpdateOrderItemsAsync(Order order) {
             OrderMessage req = new OrderMessage() {
                 Type = "returnItems",
-                Order = order
+                Orders = new List<Order>() {order}
             };
             client.Send(req);
         }
@@ -60,9 +62,9 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Order> UpdateOrderAsync(Order order) {
             OrderMessage req = new OrderMessage() {
                 Type = "update",
-                Order = order
+                Orders = new List<Order>() {order}
             };
-            return ((OrderMessage) client.Send(req)).Order;
+            return ((OrderMessage) client.Send(req)).Orders[0];
         }
     }
 }

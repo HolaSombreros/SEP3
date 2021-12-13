@@ -4,7 +4,6 @@ using SEP3Library.Models;
 namespace SEP3WebAPI.Mediator.Messages {
     public class ItemMessage : Message {
         public int Index { get; set; }
-        public Item Item { get; set; }
         public Book Book { get; set; }
         public IList<Item> Items { get; set; }
         public IList<Category> Categories { get; set; }
@@ -14,7 +13,6 @@ namespace SEP3WebAPI.Mediator.Messages {
         public string PriceOrder { get; set; }
         public IList<Review> Reviews { get; set; }
         public string RatingOrder { get; set; }
-        public Review Review { get; set; }
         public double AverageRating { get; set; }
         public string DiscountOrder { get; set; }
         public string StatusOrder { get; set; }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +23,6 @@ namespace SEP3WebAPI.Data {
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
-            if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
             int[] itemIds = new int[orderModel.Items.Count];
             for (int i = 0; i < itemIds.Length; i++) {
                 itemIds[i] = orderModel.Items[i].Id;
@@ -47,15 +45,8 @@ namespace SEP3WebAPI.Data {
                     Notification notification = new Notification() {
                         Text = $"The Item {items[i].Name} is low on stock",
                         Status = "Unread",
-                        Time = new MyDateTime() {
-                            Year = DateTime.Now.Year,
-                            Month = DateTime.Now.Month,
-                            Day = DateTime.Now.Day,
-                            Hour = DateTime.Now.Hour,
-                            Minute = DateTime.Now.Minute,
-                            Second = DateTime.Now.Second
-                        }
-                    };
+                        Time = new MyDateTime(new DateTime())
+                        };
                     foreach (Customer customer in await customerClient.GetAdminsAsync()) {
                         await customerClient.SendNotificationAsync(customer, notification);
                     }
@@ -72,14 +63,7 @@ namespace SEP3WebAPI.Data {
                     City = orderModel.City,
                     ZipCode = orderModel.ZipCode
                 },
-                DateTime = new MyDateTime() {
-                    Year = DateTime.Now.Year,
-                    Month = DateTime.Now.Month,
-                    Day = DateTime.Now.Day,
-                    Hour = DateTime.Now.Hour,
-                    Minute = DateTime.Now.Minute,
-                    Second = DateTime.Now.Second
-                },
+                DateTime = new MyDateTime(new DateTime()), 
                 Items = orderModel.Items,
                 OrderStatus = OrderStatus.Pending,
                 CustomerId = orderModel.CustomerId
@@ -107,8 +91,9 @@ namespace SEP3WebAPI.Data {
         
         
         public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
-            if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
-            if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
+            if (orderModel == null) 
+                throw new InvalidDataException("Please specify an order of the proper format");
+            
             Order order = new Order() {
                 FirstName = orderModel.FirstName,
                 LastName = orderModel.LastName,
@@ -123,6 +108,7 @@ namespace SEP3WebAPI.Data {
                 CustomerId = orderModel.CustomerId,
                 Id = orderModel.OrderId
             };
+            
             return await orderClient.UpdateOrderAsync(order);
         }
     }

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -12,7 +11,5 @@ namespace SEP3WebAPI.Data {
         Task<Order> UpdateOrderAsync(UpdateOrderModel order);
         Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index);
         Task UpdateOrderItemsAsync(Order order);
-        
-        
     }
 }
