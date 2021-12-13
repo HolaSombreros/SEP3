@@ -21,7 +21,10 @@ public class AddressDAOService implements AddressDAO {
     public Address create(String street, String number, int zipcode, String city) {
         try {
             if(!isCity(city,zipcode)) {
-                databaseHelper.executeUpdate("INSERT INTO city (zip_code,city) VALUES (?,?)", zipcode, city);
+                if(!isZipcode(zipcode))
+                    databaseHelper.executeUpdate("INSERT INTO city (zip_code,city) VALUES (?,?)", zipcode, city);
+                else
+                    throw new IllegalArgumentException("City and zipcode do not match");
             }
             if(!isAddress(street,number,zipcode)) {
                 List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO address (street, number, zip_code) " +
@@ -30,7 +33,8 @@ public class AddressDAOService implements AddressDAO {
             }
             return read(street, number, zipcode, city);
 
-        } catch (SQLException e) {
+        }
+        catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -47,16 +51,17 @@ public class AddressDAOService implements AddressDAO {
     }
 
     public boolean isAddress(String street, String number, int zipcode){
-        try{
+        try {
             return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM address WHERE zip_code = ? AND street = ? AND number = ?", zipcode, street, number).next();
-        }catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @Override
     public Address read(String street, String number, int zipcode) {
-        try{
+        try {
             return databaseHelper.mapObject(new AddressMapper(),"SELECT * FROM address JOIN city USING(zip_code) WHERE street = ? AND number = ? AND zip_code = ?;", street,number, zipcode);
         }
         catch (SQLException e) {
@@ -65,17 +70,28 @@ public class AddressDAOService implements AddressDAO {
     }
 
     private boolean isCity(String city, int zipcode){
-        try{
+        try  {
+            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM city WHERE zip_code = ? AND city = ?", zipcode, city).next();
+        }
+        catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    private boolean isZipcode(int zipcode) {
+        try {
             return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM city WHERE zip_code = ?", zipcode).next();
-        }catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     private Address read(String street, String number, int zipcode, String city){
-        try{
+        try {
             return databaseHelper.mapObject(new AddressMapper(),"SELECT * FROM address JOIN city USING (zip_code) WHERE zip_code = ? AND street = ? AND number = ? AND city = ?",zipcode, street, number, city );
-        }catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
