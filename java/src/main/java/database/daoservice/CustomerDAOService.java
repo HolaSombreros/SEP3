@@ -113,10 +113,6 @@ public class CustomerDAOService implements CustomerDAO {
         }
     }
 
-    @Override public void delete(Customer customer) {
-
-    }
-
     private boolean isEmail(String email){
         try{
             return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM customer WHERE email = ?", email).next();

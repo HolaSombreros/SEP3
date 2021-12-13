@@ -14,6 +14,4 @@ public interface BookDAO {
     Book read(int id);
     Book read(String ISBN);
     Book update(Book book);
-    void delete(Book book);
-    List<Book> readAll();
 }

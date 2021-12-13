@@ -37,8 +37,8 @@ public class OrderCommand implements Command {
     }
 
     private void purchase() {
-        Order order = request.getOrder();
-        reply.setOrder(databaseManager.getOrderDAOService()
+        Order order = request.getOrders().get(0);
+        reply.getOrders().add(0,databaseManager.getOrderDAOService()
             .create(order.getItems(), order.getAddress(), order.getDateTime(), order.getOrderStatus(), order.getFirstName(), order.getLastName(), order.getEmail(), order.getCustomerId()));
     }
 
@@ -47,11 +47,11 @@ public class OrderCommand implements Command {
     }
 
     private void get() {
-        reply.setOrder(databaseManager.getOrderDAOService().read(request.getOrder().getId()));
+        reply.getOrders().add(0,databaseManager.getOrderDAOService().read(request.getOrders().get(0).getId()));
     }
 
     private void update(){
-        reply.setOrder(databaseManager.getOrderDAOService().update(request.getOrder()));
+        reply.getOrders().add(0,databaseManager.getOrderDAOService().update(request.getOrders().get(0)));
     }
     
     private void getAllOrdersByCustomer(){
@@ -59,6 +59,6 @@ public class OrderCommand implements Command {
     }
 
     private void returnItems() {
-        databaseManager.getOrderDAOService().returnItems(request.getOrder());
+        databaseManager.getOrderDAOService().returnItems(request.getOrders().get(0));
     }
 }

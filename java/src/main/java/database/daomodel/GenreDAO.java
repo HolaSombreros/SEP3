@@ -10,7 +10,6 @@ public interface GenreDAO {
     Genre read(String genreName);
     Genre update(Genre genre);
     void updateBookGenre(Genre genre, int itemId);
-    void delete(Genre genre);
     List<Genre> getGenresOfBook(int itemId);
     List<Genre> getAllGenres();
 }

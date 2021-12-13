@@ -82,9 +82,5 @@ public class AuthorDAOService implements AuthorDAO {
         }
     }
 
-    @Override
-    public void delete(Author author) {
-
-    }
 }
 
