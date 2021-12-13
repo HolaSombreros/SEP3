@@ -69,10 +69,9 @@
     private async Task PerformAddItemToCart(Item item) {
         Item added = orderService.ShoppingCart.Add(item);
         
-        if (added.Quantity == 1) {
+        if (added.Quantity == 1) 
             await itemService.AddToShoppingCartAsync(added, customerId);
-        } else {
+        else 
             await itemService.UpdateShoppingCartAsync(added, added.Id, customerId);
-        }
     }
 }
