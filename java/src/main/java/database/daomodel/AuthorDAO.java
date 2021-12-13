@@ -10,7 +10,6 @@ public interface AuthorDAO {
     void updateBookAuthor(Author author, int itemId);
     Author update(Author author);
     List<Author> readAllAuthorsOfBook(int itemId);
-    void delete(Author author);
 
 
 }

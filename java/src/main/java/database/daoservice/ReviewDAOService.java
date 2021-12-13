@@ -39,7 +39,6 @@ public class ReviewDAOService implements ReviewDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -50,7 +49,6 @@ public class ReviewDAOService implements ReviewDAO {
             return databaseHelper.mapObject(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE customer_id = ? AND item_id =?", customer_id, item_id);
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -58,10 +56,9 @@ public class ReviewDAOService implements ReviewDAO {
     @Override
     public List<Review> readByItem(int item_id, int index) {
         try {
-            return databaseHelper.mapList(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE item_id =? ORDER BY customer_id DESC LIMIT 3 OFFSET 3 * ? ", item_id, index);
+            return databaseHelper.mapList(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE item_id = ? ORDER BY customer_id DESC LIMIT 3 OFFSET 3 * ? ", item_id, index);
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -75,7 +72,6 @@ public class ReviewDAOService implements ReviewDAO {
             return read(review.getCustomer().getId(), review.getItemId());
         }
         catch (SQLException e){
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -86,7 +82,6 @@ public class ReviewDAOService implements ReviewDAO {
             databaseHelper.executeUpdate("DELETE FROM review WHERE item_id = ? AND customer_id = ?;", review.getItemId(), review.getCustomer().getId());
         }
         catch(SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -101,7 +96,6 @@ public class ReviewDAOService implements ReviewDAO {
             return 0;
 
         }catch(SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }

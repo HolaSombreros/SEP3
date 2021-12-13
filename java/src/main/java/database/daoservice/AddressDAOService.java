@@ -44,9 +44,7 @@ public class AddressDAOService implements AddressDAO {
         try {
             return databaseHelper.mapObject(new AddressMapper(),"SELECT * FROM address JOIN city USING(zip_code) WHERE address_id = ?;", id);
         } catch (SQLException e) {
-//            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
-            //return null;
         }
     }
 

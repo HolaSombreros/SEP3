@@ -128,26 +128,6 @@ public class BookDAOService implements BookDAO {
         }
     }
 
-    @Override
-    public void delete(Book book) {
-
-    }
-
-    @Override
-    public List<Book> readAll() {
-        try {
-            List<Book> books = databaseHelper.mapList(new BookMapper(), "SELECT *, item.name AS item_name, category.name AS category_name FROM book JOIN item USING (item_id) JOIN category USING(category_id);");
-            for(Book book: books) {
-                book.setGenre(genreDAOService.getGenresOfBook(book.getId()));
-                book.setAuthors(authorDAOService.readAllAuthorsOfBook(book.getId()));
-            }
-            return books;
-        }
-        catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
     private Book readByISBN(String ISBN){
         try {
             Book book = databaseHelper.mapObject(new BookMapper(),"SELECT *, item.name AS item_name, category.name AS category_name FROM book JOIN item USING (item_id) JOIN category USING(category_id) WHERE ISBN = ?;", ISBN);

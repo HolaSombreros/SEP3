@@ -191,7 +191,7 @@ public class ItemDAOService implements ItemDAO {
             throw new IllegalStateException(e.getMessage());
         }
     }
-    
+
 
 
     @Override public void addToShoppingCart(Item item, int customerId) {

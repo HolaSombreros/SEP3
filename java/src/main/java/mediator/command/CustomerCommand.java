@@ -37,28 +37,27 @@ public class CustomerCommand implements Command {
             return reply;
         }
         catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     private void getCustomer() {
-        reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getId()));
+        reply.getCustomers().add(0,databaseManager.getCustomerDAOService().read(request.getCustomers().get(0).getId()));
     }
 
     private void login() {
-        reply.setCustomer(databaseManager.getCustomerDAOService().read(request.getCustomer().getEmail()));
+        reply.getCustomers().add(0,databaseManager.getCustomerDAOService().read(request.getCustomers().get(0).getEmail()));
     }
 
     private void register() {
-        Customer customer = request.getCustomer();
-        reply.setCustomer(databaseManager.getCustomerDAOService()
+        Customer customer = request.getCustomers().get(0);
+        reply.getCustomers().add(0,databaseManager.getCustomerDAOService()
             .create(customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(), customer.getRole(), customer.getAddress(),
                 customer.getPhoneNumber()));
     }
 
     private void updateCustomer() {
-        reply.setCustomer(databaseManager.getCustomerDAOService().update(request.getCustomer()));
+        reply.getCustomers().add(0,databaseManager.getCustomerDAOService().update(request.getCustomers().get(0)));
     }
 
     private void getCustomersByIndex() {
@@ -66,15 +65,15 @@ public class CustomerCommand implements Command {
     }
 
     private void updateRole() {
-        reply.setCustomer(databaseManager.getCustomerDAOService().updateRole(request.getCustomer()));
+        reply.getCustomers().add(0,databaseManager.getCustomerDAOService().updateRole(request.getCustomers().get(0)));
     }
 
     private void getNotifications() {
-        reply.setNotifications(databaseManager.getNotificationDAOService().readAll(request.getCustomer().getId(), request.getIndex()));
+        reply.setNotifications(databaseManager.getNotificationDAOService().readAll(request.getCustomers().get(0).getId(), request.getIndex()));
     }
 
     private void getNotification() {
-        reply.setNotification(databaseManager.getNotificationDAOService().read(request.getNotification().getId(), request.getCustomer().getId()));
+        reply.getNotifications().add(0,databaseManager.getNotificationDAOService().read(request.getNotifications().get(0).getId(), request.getCustomers().get(0).getId()));
     }
 
     private void getAdmins() {
@@ -82,12 +81,12 @@ public class CustomerCommand implements Command {
     }
 
     private void sendNotification() {
-        reply.setNotification(databaseManager.getNotificationDAOService()
-            .create(request.getCustomer().getId(), request.getNotification().getText(), request.getNotification().getTime(), request.getNotification().getStatus()));
+        reply.getNotifications().add(0,databaseManager.getNotificationDAOService()
+            .create(request.getCustomers().get(0).getId(), request.getNotifications().get(0).getText(), request.getNotifications().get(0).getTime(), request.getNotifications().get(0).getStatus()));
     }
 
     private void updateSeenNotification() {
-        reply.setNotification(databaseManager.getNotificationDAOService().update(request.getCustomer().getId(), request.getNotification()));
+        reply.getNotifications().add(0, databaseManager.getNotificationDAOService().update(request.getCustomers().get(0).getId(), request.getNotifications().get(0)));
     }
 
     private void getCustomerWithWishlistItem() {

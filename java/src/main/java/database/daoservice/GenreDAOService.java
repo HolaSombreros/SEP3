@@ -72,11 +72,6 @@ public class GenreDAOService implements GenreDAO {
     }
 
     @Override
-    public void delete(Genre genre) {
-
-    }
-
-    @Override
     public List<Genre> getGenresOfBook(int itemId) {
         try {
             return databaseHelper.mapList(new GenreMapper(), "SELECT * FROM book_genre JOIN genre USING (genre_id) WHERE item_id = ?", itemId);
@@ -91,14 +86,6 @@ public class GenreDAOService implements GenreDAO {
             return databaseHelper.mapList(new GenreMapper(), "SELECT * FROM genre");
         }
         catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    private boolean isGenre(String genre) {
-        try {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM genre WHERE name = ?", genre).next();
-        } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
