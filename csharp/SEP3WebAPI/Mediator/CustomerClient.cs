@@ -15,30 +15,34 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Customer> GetCustomerAsync(string email, string password) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "login",
-                Customer = new Customer() {
-                    Email = email,
-                    Password = password
+                Customers = new List<Customer>() {
+                    new() {
+                        Email = email,
+                        Password = password
+                    }
                 }
             };
-            return ((CustomerMessage) client.Send(req)).Customer;
+            return ((CustomerMessage) client.Send(req)).Customers[0];
         }
         
         public async Task<Customer> GetCustomerAsync(int customerId) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "getCustomer",
-                Customer = new Customer() {
-                    Id = customerId
+                Customers = new List<Customer>() {
+                    new() {
+                        Id = customerId
+                    }
                 }
             };
-            return ((CustomerMessage) client.Send(req)).Customer;
+            return ((CustomerMessage) client.Send(req)).Customers[0];
         }
 
         public async Task<Customer> AddCustomerAsync(Customer customer) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "register",
-                Customer = customer
+                Customers = new List<Customer>(){customer}
             };
-            return ((CustomerMessage)client.Send(req)).Customer;
+            return ((CustomerMessage)client.Send(req)).Customers[0];
         }
 
         public async Task<Customer> UpdateCustomerAsync(Customer customer) {
@@ -46,16 +50,16 @@ namespace SEP3WebAPI.Mediator {
             if (customer.Role != null) {
                  req = new CustomerMessage() {
                     Type = "updateRole",
-                    Customer = customer
+                    Customers = new List<Customer>(){customer}
                 };
             }
             else {
                  req = new CustomerMessage() {
                     Type = "updateCustomer",
-                    Customer = customer
+                    Customers = new List<Customer>(){customer}
                 };
             }
-            return ((CustomerMessage) client.Send(req)).Customer;
+            return ((CustomerMessage) client.Send(req)).Customers[0];
         }
 
         public async Task<IList<Customer>> GetCustomerWithWishlistItemAsync(int itemId) {
@@ -70,8 +74,10 @@ namespace SEP3WebAPI.Mediator {
             CustomerMessage req = new CustomerMessage() {
                 Type = "getNotifications",
                 Index = index,
-                Customer = new Customer() {
+                Customers = new List<Customer>() {
+                    new() {
                     Id = customerId
+                    }
                 }
             };
             return ((CustomerMessage) client.Send(req)).Notifications;
@@ -87,19 +93,21 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Notification> GetSpecificNotificationAsync(Customer customer, int notificationId) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "getNotification",
-                Customer = customer,
-                Notification = new Notification() {
-                    Id = notificationId
+                Customers = new List<Customer>(){customer},
+                Notifications = new List<Notification>() {
+                    new () {
+                        Id = notificationId
+                    }
                 }
             };
-            return ((CustomerMessage) client.Send(req)).Notification;
+            return ((CustomerMessage) client.Send(req)).Notifications[0];
         }
 
         public async Task SendNotificationAsync(Customer customer, Notification notification) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "sendNotification",
-                Customer = customer,
-                Notification = notification
+                Customers = new List<Customer>(){customer},
+                Notifications = new List<Notification>() {notification}
             };
             client.Send(req);
         }
@@ -107,10 +115,10 @@ namespace SEP3WebAPI.Mediator {
         public async Task<Notification> UpdateSeenNotificationAsync(Customer customer, Notification notification) {
             CustomerMessage req = new CustomerMessage() {
                 Type = "updateSeenNotification",
-                Customer = customer,
-                Notification = notification
+                Customers = new List<Customer>(){customer},
+                Notifications = new List<Notification>() {notification}
             };
-            return ((CustomerMessage) client.Send(req)).Notification;
+            return ((CustomerMessage) client.Send(req)).Notifications[0];
         }
 
         public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {

@@ -43,11 +43,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Customer> customers = await service.GetCustomersByIndexAsync(index);
                 return Ok(customers);
-            } 
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }

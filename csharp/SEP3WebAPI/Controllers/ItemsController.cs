@@ -24,8 +24,7 @@ namespace SEP3WebAPI.Controllers {
                 return await service.GetAverageReviewAsync(id);
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -38,11 +37,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Item> items = await service.GetItemsAsync(index, category, priceOrder, ratingOrder, discountOrder, statusOrder, search);
                 return Ok(items);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -54,11 +51,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item item = await service.GetItemAsync(id);
                 return Ok(item);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -73,8 +68,7 @@ namespace SEP3WebAPI.Controllers {
                     return NotFound($"No item found with id {id}");
                 IList<Review> reviews = await service.GetItemReviewsAsync(index, item);
                 return Ok(reviews);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -87,8 +81,7 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Review review = await service.GetReviewAsync(customerId, id);
                 return Ok(review!=null);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -100,11 +93,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Review created = await service.AddReviewAsync(review);
                 return Created($"/{created.ItemId}/{created.Customer.Id}", created);
-            }
-            catch (InvalidDataException e) {
+            } catch (InvalidDataException e) {
                 return Conflict(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -120,8 +111,7 @@ namespace SEP3WebAPI.Controllers {
                 if (updated == null)
                     throw new Exception($"The review of the item {id} does not exist");
                 return Ok(updated);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
@@ -137,8 +127,7 @@ namespace SEP3WebAPI.Controllers {
                     throw new Exception("The review does not exist");
                 await service.RemoveReviewAsync(id, customerId);
                 return Ok();
-            }
-            catch (InvalidDataException e) {
+            } catch (InvalidDataException e) {
                  return Conflict(e.Message);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
@@ -151,11 +140,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item item = await service.GetBookAsync(id);
                 return Ok(item);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -167,11 +154,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Category> categories = await service.GetCategoriesAsync();
                 return Ok(categories);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -183,11 +168,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Genre> genres = await service.GetGenresAsync();
                 return Ok(genres);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -201,11 +184,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Category created = await service.AddCategoryAsync(category);
                 return Created($"/{created.Id}", created);
-            }
-            catch (InvalidDataException e) {
+            } catch (InvalidDataException e) {
                 return Conflict(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -215,11 +196,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item item = await service.CreateItemAsync(itemModel);
                 return Created($"/{item.Id}", item);
-            }
-            catch (InvalidDataException e) {
+            } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -231,11 +210,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Book book = await service.CreateBookAsync(itemModel);
                 return Created($"/{book.Id}", book);
-            }
-            catch (InvalidDataException e) {
+            } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
@@ -247,11 +224,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item updated = await service.UpdateItemAsync(id, item);
                 return Ok(updated);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -262,11 +237,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item updated = await service.UpdateBookAsync(id, item);
                 return Ok(updated);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -277,11 +250,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item item = await service.AddToWishlistAsync(customerId, itemId);
                 return Ok(item);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -290,19 +261,17 @@ namespace SEP3WebAPI.Controllers {
         [Route("{customerId:int}/wishlist/{itemId:int}")]
         public async Task<ActionResult> RemoveWishlistedItemAsync([FromRoute] int customerId, [FromRoute] int itemId) {
             try {
-                await service.RemoveWishlistedItemAsync(customerId, itemId);
+                await service.RemoveWishlistItemAsync(customerId, itemId);
                 return Ok();
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
 
         [HttpPut]
-        [Route("{customerId:int}/shoppingbasket")]
+        [Route("{customerId:int}/shoppingBasket")]
         public async Task<ActionResult<Item>> AddShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
@@ -311,32 +280,28 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Item item1 = await service.AddToShoppingCartAsync(item, customerId);
                 return Ok(item1);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
 
         [HttpGet]
-        [Route("{customerId:int}/shoppingbasket")]
+        [Route("{customerId:int}/shoppingBasket")]
         public async Task<ActionResult> GetShoppingCartAsync([FromRoute] int customerId) {
             try {
                 IList<Item> shoppingCart = await service.GetShoppingCartAsync(customerId);
                 return Ok(shoppingCart);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
 
         [HttpPut]
-        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        [Route("{customerId:int}/shoppingBasket/{itemId:int}")]
         public async Task<ActionResult<Item>> EditShoppingCartAsync([FromBody] Item item, [FromRoute] int customerId,
             [FromRoute] int itemId) {
             if (!ModelState.IsValid) {
@@ -345,27 +310,23 @@ namespace SEP3WebAPI.Controllers {
 
             try {
                 Item item1 = await service.UpdateShoppingCartAsync(item, itemId, customerId);
-                return Ok(item);
-            }
-            catch (NullReferenceException e) {
+                return Ok(item1);
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
 
         [HttpDelete]
-        [Route("{customerId:int}/shoppingbasket/{itemId:int}")]
+        [Route("{customerId:int}/shoppingBasket/{itemId:int}")]
         public async Task<ActionResult> RemoveFromShoppingCartAsync([FromRoute] int itemId, [FromRoute] int customerId) {
             try {
                 await service.RemoveFromShoppingCartAsync(itemId, customerId);
                 return Ok();
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -376,11 +337,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 await service.DeleteCategoryAsync(categoryId);
                 return Ok();
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -391,11 +350,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Item> wishlist = await service.GetCustomerWishlistAsync(customerId);
                 return Ok(wishlist);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }

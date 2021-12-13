@@ -1,3 +1,5 @@
+using System;
+
 namespace SEP3Library.Models {
     public class MyDateTime {
         public int Year { get; set; }
@@ -6,7 +8,18 @@ namespace SEP3Library.Models {
         public int Hour { get; set; }
         public int Minute { get; set; }
         public int Second { get; set; }
-       
+
+        public MyDateTime() {}
+        
+        public MyDateTime(DateTime dateTime) {
+            Year = DateTime.Now.Year;
+            Month = DateTime.Now.Month;
+            Day = DateTime.Now.Day;
+            Hour = DateTime.Now.Hour;
+            Minute = DateTime.Now.Minute;
+            Second = DateTime.Now.Second;
+        }
+        
         public string DateToString(){
             return $"{Day}/{Month}/{Year}";
         }

@@ -35,12 +35,10 @@ namespace SEP3WebAPI.Mediator {
                         result = Encoding.ASCII.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
                         client.Receive(result);
-                    }
-                    catch (ConnectionAbortedException e) {
+                    } catch (ConnectionAbortedException e) {
                         Console.WriteLine(e.Message);
                         Disconnect();
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }
                 }

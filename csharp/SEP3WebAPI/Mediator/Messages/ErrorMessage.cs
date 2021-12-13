@@ -3,7 +3,6 @@
         public string Message { get; set; }
 
         public ErrorMessage() : base("error") {
-            
         }
     }
 }

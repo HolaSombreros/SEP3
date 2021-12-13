@@ -59,8 +59,7 @@ namespace SEP3WebAPI.Mediator {
 
         public Message Send(object req) {
             string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             byte[] data = Encoding.ASCII.GetBytes(json + "\n");
             networkStream.Write(data, 0, data.Length);
             Waiting();
