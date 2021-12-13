@@ -25,7 +25,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -40,7 +39,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -54,7 +52,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -69,7 +66,6 @@ namespace SEP3WebAPI.Controllers {
                 IList<Review> reviews = await service.GetItemReviewsAsync(index, item);
                 return Ok(reviews);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -82,7 +78,6 @@ namespace SEP3WebAPI.Controllers {
                 Review review = await service.GetReviewAsync(customerId, id);
                 return Ok(review!=null);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -143,7 +138,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -157,7 +151,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -171,7 +164,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -199,7 +191,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -213,7 +204,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }

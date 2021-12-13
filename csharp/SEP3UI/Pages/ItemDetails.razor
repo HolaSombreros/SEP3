@@ -156,19 +156,39 @@ else {
                                                 <label for="one">
                                                     <i class="oi oi-star"></i>
                                                 </label>
-                                                <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                                                @if (review.Rating >= 2) {
+                                                    <input type="radio" name="test" id="two" checked @onclick="@(() => AddRating(2))"/>
+                                                }
+                                                else {
+                                                    <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                                                }
                                                 <label for="two">
                                                     <i class="oi oi-star"></i>
                                                 </label>
-                                                <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                                                @if (review.Rating >= 3) {
+                                                    <input type="radio" name="test" id="three" checked @onclick="@(() => AddRating(3))"/>
+                                                }
+                                                else {
+                                                    <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                                                }
                                                 <label for="three">
                                                     <i class="oi oi-star"></i>
                                                 </label>
-                                                <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                                                @if (review.Rating >= 4) {
+                                                    <input type="radio" name="test" id="four" checked @onclick="@(() => AddRating(4))"/>
+                                                }
+                                                else {
+                                                    <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                                                }
                                                 <label for="four">
                                                     <i class="oi oi-star"></i>
                                                 </label>
-                                                <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                                                @if (review.Rating == 5) {
+                                                    <input type="radio" name="test" id="five"  checked @onclick="@(() => AddRating(5))"/>
+                                                }
+                                                else {
+                                                    <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                                                }
                                                 <label for="five">
                                                     <i class="oi oi-star"></i>
                                                 </label>
