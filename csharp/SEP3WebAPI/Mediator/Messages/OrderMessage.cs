@@ -8,5 +8,9 @@ namespace SEP3WebAPI.Mediator.Messages {
         public IList<Order> Orders { get; set; }
         public int CustomerId { get; set; }
         public string Status { get; set; }
+
+        public OrderMessage() : base("order") {
+            
+        }
     }
 }

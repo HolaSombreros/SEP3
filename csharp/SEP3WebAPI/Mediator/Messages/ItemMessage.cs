@@ -18,5 +18,8 @@ namespace SEP3WebAPI.Mediator.Messages {
         public double AverageRating { get; set; }
         public string DiscountOrder { get; set; }
         public string StatusOrder { get; set; }
+
+        public ItemMessage() : base("item") {
+        }
     }
 }

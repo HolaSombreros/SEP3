@@ -10,5 +10,9 @@ namespace SEP3WebAPI.Mediator.Messages {
         public IList<Notification> Notifications { get; set; }
         public int Index { get; set; }
         public int ItemId { get; set; }
+
+        public CustomerMessage() : base("customer") {
+            
+        }
     }
 }
