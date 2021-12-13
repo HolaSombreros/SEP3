@@ -12,6 +12,5 @@ namespace SEP3UI.Data {
         Task<IList<Notification>> GetNotificationsAsync(int customerId, int index);
         Task<Notification> UpdateSeenNotificationAsync(int customerId, Notification notification);
         Task<IList<Customer>> GetCustomersByIndexAsync(int index);
-        Task<IList<Order>> GetOrdersByCustomer(int customerId, int index);
     }
 }

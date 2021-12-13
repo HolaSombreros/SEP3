@@ -6,13 +6,11 @@ namespace SEP3UI.Data {
 
         public static List<Action> Actions = new();
         
-        public static void AddAction(Action action)
-        {
+        public static void AddAction(Action action) {
             Actions.Add(action);
         }
 
-        public static void Invoke()
-        {
+        public static void Invoke() {
             Actions.ForEach(a => a.Invoke());
         }
     }

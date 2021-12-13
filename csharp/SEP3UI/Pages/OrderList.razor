@@ -106,7 +106,7 @@
             orders = await orderService.GetOrdersAsync(orderIndex, filterId, filterStatus);
         }
         else {
-            orders = await customerService.GetOrdersByCustomer(customer.Id, orderIndex);
+            orders = await orderService.GetOrdersByCustomer(customer.Id, orderIndex);
         }
         orderIndex = 0;
         hidden = "";

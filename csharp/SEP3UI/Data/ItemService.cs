@@ -14,12 +14,10 @@ namespace SEP3UI.Data {
 
         public async Task<double> GetAverageRating(int itemId) {
             return await restService.GetAsync<double>($"Items/{itemId}/rating");
-
         }
 
         public async Task<IList<Item>> GetItemsAsync(int index, string category, string priceOrder, string ratingOrder, string discountOrder, string statusOrder, string search) {
-            IList<Item> items = await restService.GetAsync<IList<Item>>($"items?index={index}&category={category}&priceOrder={priceOrder}&ratingOrder={ratingOrder}&discountOrder={discountOrder}&statusOrder={statusOrder}&search={search}");
-            return items;
+            return await restService.GetAsync<IList<Item>>($"items?index={index}&category={category}&priceOrder={priceOrder}&ratingOrder={ratingOrder}&discountOrder={discountOrder}&statusOrder={statusOrder}&search={search}");
         }
         
         public async Task<Item> GetItemAsync(int id) {
@@ -49,7 +47,6 @@ namespace SEP3UI.Data {
         public async Task<Item> AddItemAsync(ItemModel itemModel) {
             return await restService.PostAsync<ItemModel, Item>(itemModel, "items");
         }
-        
 
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             return await restService.PutAsync<ItemModel,Item>(item, $"items/{id}");
@@ -81,13 +78,11 @@ namespace SEP3UI.Data {
         }
         
         public async Task<Item> AddToWishlistAsync(int customerId, Item item) {
-            Item item1 = await restService.PutAsync<Item, Item>(item,$"items/{customerId}/wishlist/{item.Id}");
-            return item;
+            return await restService.PutAsync<Item, Item>(item,$"items/{customerId}/wishlist/{item.Id}");
         }
 
         public async Task<IList<Item>> GetCustomerWishlistAsync(int customerId) {
-            IList<Item> wishlist = await restService.GetAsync<List<Item>>($"items/{customerId}/wishlist");
-            return wishlist;
+            return await restService.GetAsync<List<Item>>($"items/{customerId}/wishlist");
         }
 
         public async Task RemoveWishlistedItem(int customerId, int itemId) {
@@ -95,8 +90,7 @@ namespace SEP3UI.Data {
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
-            Item added = await restService.PutAsync<Item, Item>(item, $"items/{customerId}/shoppingbasket");
-            return added;
+            return await restService.PutAsync<Item, Item>(item, $"items/{customerId}/shoppingbasket");
         }
 
         public async Task<IList<Item>> GetShoppingCartAsync(int customerId) {
@@ -104,8 +98,7 @@ namespace SEP3UI.Data {
         }
 
         public async Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId) {
-            Item updated = await restService.PutAsync<Item, Item>(item, $"items/{customerId}/shoppingbasket/{itemId}");
-            return updated;
+            return await restService.PutAsync<Item, Item>(item, $"items/{customerId}/shoppingbasket/{itemId}");
         }
 
         public async Task RemoveFromShoppingCartAsync(int itemId, int customerId) {
