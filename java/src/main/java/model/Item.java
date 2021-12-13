@@ -17,7 +17,7 @@ public class Item {
     private String filePath;
     private List<Review> reviews;
 
-    public Item(int id, String name, String description, BigDecimal price, Category category, int quantity, String filePath) {
+    public Item(int id, String name, String description, BigDecimal price, int discount, Category category, int quantity, String filePath) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -25,7 +25,7 @@ public class Item {
         this.category = category;
         this.quantity = quantity;
         this.status = ItemStatus.INSTOCK;
-        this.discount = 0;
+        this.discount = discount;
         this.filePath = filePath;
         this.reviews = new ArrayList<>();
     }

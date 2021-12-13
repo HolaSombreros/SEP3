@@ -16,7 +16,8 @@ form {
     transition: 0.2s all;
     cursor: text;
 }
-input[type=text], input[type=number], textarea {
+
+input[type=text], input[type=number], textarea{
     width: 100%;
     border: 0;
     outline: 0;
