@@ -20,6 +20,7 @@ namespace SEP3WebAPI.Mediator {
             tcpClient = new TcpClient("127.0.0.1", port);
             networkStream = tcpClient.GetStream();
             ClientReceiver clientReceiver = new ClientReceiver(this, networkStream);
+            clientReceiver.Run();
             lock1 = new object();
         }
 

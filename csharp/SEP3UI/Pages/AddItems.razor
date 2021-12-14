@@ -331,7 +331,8 @@
                         throw new Exception("Please input a genre or author");
                     }
                     else {
-                        if (uploadedFile != null) bookModel.FilePath = "Images/" + uploadedFile.Name;
+                        if (uploadedFile != null) 
+                            bookModel.FilePath = "Images/" + uploadedFile.Name;
                         await itemService.UpdateBookAsync(Id, bookModel);
                         errorMessage = "Successful item edited";
                     }

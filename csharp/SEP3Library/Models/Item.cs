@@ -23,7 +23,7 @@ namespace SEP3Library.Models {
         [Range(0, 100)]
         public int Discount { get; set; }
         
-        [Range(0, Int32.MaxValue)]
+        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
         
         [JsonConverter(typeof(JsonStringEnumConverter))]

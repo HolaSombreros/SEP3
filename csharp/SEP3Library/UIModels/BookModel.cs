@@ -17,14 +17,14 @@ namespace SEP3Library.UIModels {
         public string Description { get; set; }
         
         [Required(ErrorMessage = "Please enter a price")]
-        [Range(1,Double.PositiveInfinity)]
+        [Range(1, double.PositiveInfinity)]
         public decimal Price { get; set; }
         
         [Range(0, 100)]
         public int Discount { get; set; }
 
         [Required(ErrorMessage = "Please enter a quantity")]
-        [Range(0,Int32.MaxValue)]
+        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
         
         [Required(ErrorMessage = "Please select a status")]

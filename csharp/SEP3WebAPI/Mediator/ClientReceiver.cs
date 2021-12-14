@@ -15,10 +15,9 @@ namespace SEP3WebAPI.Mediator {
             this.client = client;
             stream = networkStream;
             running = true;
-            Run();
         }
 
-        private void Run() {
+        public void Run() {
             thread = new Thread(() => {
                 while (running) {
                     try {
