@@ -48,12 +48,6 @@
     width: 120px;
 }
 
-.retroshd {
-    color: #2c2c2c;
-    letter-spacing: .05em;
-    text-shadow: 2px 2px 0px #d5d5d5, 4px 4px 0px rgba(0, 0, 0, 0.2);
-}
-
 
 @media(max-width:767px) {
     .card {
@@ -70,4 +64,8 @@
         border-top-right-radius: unset;
         border-bottom-left-radius: 1rem
     }
+}
+
+a:hover {
+    cursor: pointer;
 }
