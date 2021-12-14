@@ -25,7 +25,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -40,7 +39,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -54,7 +52,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -69,7 +66,6 @@ namespace SEP3WebAPI.Controllers {
                 IList<Review> reviews = await service.GetItemReviewsAsync(index, item);
                 return Ok(reviews);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -82,7 +78,6 @@ namespace SEP3WebAPI.Controllers {
                 Review review = await service.GetReviewAsync(customerId, id);
                 return Ok(review!=null);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -90,6 +85,10 @@ namespace SEP3WebAPI.Controllers {
         [Route("{id:int}/reviews")]
         public async Task<ActionResult<Review>> AddReviewAsync([FromRoute] int id, [FromBody] Review review) {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (review.Rating == 0 && (review.Comment == null || review.Comment.Length < 0)) {
+                return BadRequest("Please input either a rating or a comment");
+            }
+            
             try {
                 Review created = await service.AddReviewAsync(review);
                 return Created($"/{created.ItemId}/{created.Customer.Id}", created);
@@ -99,17 +98,16 @@ namespace SEP3WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
-
-
+        
         [HttpPut]
         [Route("{id:int}/reviews")]
         public async Task<ActionResult<Review>> UpdateReviewAsync([FromRoute] int id, [FromBody] Review review) {
             try {
                 if (!ModelState.IsValid)
-                    throw new InvalidDataException("Please specify a review of proper format");
+                    return BadRequest("Please specify a review of proper format");
                 Review updated = await service.UpdateReviewAsync(review);
                 if (updated == null)
-                    throw new Exception($"The review of the item {id} does not exist");
+                    return NotFound($"The review of the item {id} does not exist");
                 return Ok(updated);
             } catch (NullReferenceException e) {
                 return NotFound(e);
@@ -124,7 +122,7 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Review review = await service.GetReviewAsync(customerId, id);
                 if (review == null)
-                    throw new Exception("The review does not exist");
+                    return NotFound("The review does not exist");
                 await service.RemoveReviewAsync(id, customerId);
                 return Ok();
             } catch (InvalidDataException e) {
@@ -143,7 +141,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -157,7 +154,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -171,7 +167,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -199,7 +194,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -213,7 +207,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (InvalidDataException e) {
                 return BadRequest(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
