@@ -11,8 +11,7 @@
 
 @if (item == null) {
     <h2>Loading</h2>
-}
-else {
+} else {
     <div class="text-center mb-3">
         <h2>Item details</h2>
     </div>
@@ -31,8 +30,7 @@ else {
                         <div class="text-right mr-5">
                             @if (favorite) {
                                 <i class="favorite oi oi-heart" @onclick="PerformUnfavoriteAsync"></i>
-                            }
-                            else {
+                            } else {
                                 <i class="non-favorite oi oi-heart" @onclick="PerformFavoriteAsync"></i>
                             }
                         </div>
@@ -97,8 +95,7 @@ else {
                         </label>
                         @if (item.Quantity == 0) {
                             <span class="text-danger"> Out of stock</span>
-                        }
-                        else {
+                        } else {
                             <span class="text-success"> In stock</span>
                         }
                     </div>
@@ -123,21 +120,21 @@ else {
         <h2 class="mb-1">All Ratings and Reviews</h2>
     </div>
     @foreach (Review review in reviews) {
-        <div class="bg-white rounded shadow-sm p-4 mb-4">
-            <div class="pt-4 pb-4">
-                <div>
-                    <div>
-                        <div>
+        <div class="bg-white rounded shadow-sm p-4 mb-4 restaurant-detailed-ratings-and-reviews">
+            <div class="reviews-members pt-4 pb-4">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="reviews-members-header">
                             <h6 class="mb-1">
-                                <p class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</p>
+                                <a class="text-black" href="#">@review.Customer.FirstName @review.Customer.LastName</a>
                             </h6>
                             <p class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</p>
                             @if (customerId == review.Customer.Id) {
-                                <a class="close" @onclick="() => RemoveReview(review)">&#10005;</a>
-                                <a class="close mr-3 oi oi-pencil" @onclick="() => ChangeToEdit()"/>
+                                <a class="close" @onclick="(() => RemoveReview(review))">&#10005;</a>
+                                <a class="close mr-3 oi oi-pencil " @onclick="() => ChangeToEdit()"/>
                                 @if (review.Comment != null && !review.Comment.Equals("")) {
                                     <div class="form-group">
-                                        <h5>Your comment</h5>
+                                        <p>Your comment</p>
                                         <div>@review.Comment</div>
                                     </div>
                                 }
@@ -150,7 +147,7 @@ else {
                                                 <textarea class="form-control" @bind="@review.Comment"></textarea>
                                             </div>
                                             <ValidationMessage For="@(() => review.Comment)"/>
-                                            <h6 class="mb-2">Your rating: </h6>
+                                            <p class="mb-2">Your rating: </p>
                                             <div class="rating">
                                                 <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
                                                 <label for="one">
@@ -199,17 +196,17 @@ else {
                                         </div>
                                     </EditForm>
                                 }
-                            }
-                            else {
-                                <div>
+                            } else {
+                                <div class="reviews-members-body">
                                     <p>@review.Comment</p>
                                 </div>
                             }
                             <span class="star-rating float-right"></span>
+
                         </div>
                         @if (!isEditing) {
                             @if (review.Rating != 0) {
-                                <div>
+                                <div class="">
                                     @for (int i = 0; i < review.Rating; i++) {
                                         <i class="icons oi oi-star" style="color: darkred" id="star1"></i>
                                     }
@@ -225,21 +222,20 @@ else {
         </div>
     }
     <div class="text-center">
-        <button class="btn btn-round btn-dark" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
+        <button class="btn btn-md btn-dark order-button" style="@loadMore" @onclick="LoadMoreAsync">Load more</button>
     </div>
-    <div class="@show mt-3">
+    <div class="@show">
         <AuthorizeView>
-            <EditForm Model="review" Context="addReview">
+            <EditForm Model="review" Context="addReview" OnValidSubmit="AddReview">
                 <DataAnnotationsValidator/>
                 <div class=" rounded shadow-sm p-4 mb-5 container">
-                    <form>
                         <div class="form-group">
                             <h5 class="mb-4">Leave a comment</h5>
-                            <h6>Your Comment</h6>
-                            <textarea class="form-control" @bind="@review.Comment"></textarea>
+                            <label>Your Comment</label>
+                            <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
                         </div>
                         <ValidationMessage For="@(() => review.Comment)"/>
-                        <h6 class="mb-2">Rate the item</h6>
+                        <p class="mb-2">Rate the item</p>
                         <div class="rating">
                             <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
                             <label for="one">
@@ -262,11 +258,9 @@ else {
                                 <i class="oi oi-star"></i>
                             </label>
                         </div>
-                        <br/>
-                        <div class="mt-3 text-center">
-                            <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Review</button>
+                        <div class="form-group text-center">
+                            <button class="btn btn-round btn-dark">Submit Comment</button>
                         </div>
-                    </form>
                 </div>
             </EditForm>
         </AuthorizeView>
@@ -281,38 +275,38 @@ else {
 
     [Parameter]
     public int Id { get; set; }
-    private int index { get; set; }
+
+    private int Index { get; set; }
     private int customerId;
+    private Item item;
+    private Book book;
     private bool isDisabled;
     private bool favorite = true;
-    private bool isEditing;
+    private IList<Review> reviews;
+    private Review review;
     private string errorMessage;
     private string loadMore = "";
     private string comment = "";
     private string show = "";
+    private bool isEditing;
     private string rating;
-    private Item item;
-    private Book book;
-    private Review review;
-    private IList<Review> reviews;
 
     protected override async Task OnInitializedAsync() {
         isEditing = false;
         review = new Review();
         review.Rating = 0;
-        index = 0;
+        Index = 0;
         item = await itemService.GetItemAsync(Id);
-        reviews = await itemService.GetItemReviewsAsync(index, item);
+        reviews = await itemService.GetItemReviewsAsync(Index, item);
 
-        if (item.Category.Name.Equals("Book")) 
+        if (item.Category.Name.Equals("Book")) {
             book = await itemService.GetBookAsync(Id);
-        
-        await GetAverageRatingAsync();
+        }
+        await GetAverageReviewAsync();
         SetDisabledState();
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             customerId = -1;
         }
 
@@ -327,34 +321,38 @@ else {
         }
         FilterCustomerReview();
     }
-    
-    private async Task GetAverageRatingAsync() {
-        double r = await itemService.GetAverageRating(item.Id);
-        r = Math.Round(r, 2, MidpointRounding.ToEven);
-        rating = r.ToString();
-    }
 
     private async Task LoadMoreAsync() {
-        index++;
-        IList<Review> newList = await itemService.GetItemReviewsAsync(index, item);
+        Index++;
+        IList<Review> newList = await itemService.GetItemReviewsAsync(Index, item);
         if (newList.Count == 0) {
             loadMore = "display: none";
-            index--;
-        }
-        else {
+            Index--;
+        } else {
             foreach (Review r in newList.ToList()) {
                 reviews.Add(r);
             }
         }
         FilterCustomerReview();
     }
-    
+
+    private void SetDisabledState() {
+        if (item.Quantity < 1) {
+            item.Status = ItemStatus.OutOfStock;
+            isDisabled = true;
+        }
+    }
+
     private async Task AddToShoppingCart(Item itemToAdd) {
         Item i = orderService.ShoppingCart.Add(itemToAdd);
         if (customerId != -1)
             await itemService.AddToShoppingCartAsync(i, customerId);
     }
-    
+
+    private void View(int id, string categoryName) {
+        navigationManager.NavigateTo($"EditItem/{id}/{categoryName}");
+    }
+
     private async Task PerformUnfavoriteAsync() {
         favorite = false;
         await itemService.RemoveWishlistedItem(customerId, item.Id);
@@ -367,7 +365,11 @@ else {
 
     private async Task AddReview() {
         try {
-            review.DateTime = new MyDateTime(new DateTime());
+            review.DateTime = new MyDateTime() {
+                Day = DateTime.Now.Day,
+                Month = DateTime.Now.Month,
+                Year = DateTime.Now.Year
+            };
             Customer customer = await customerService.GetCustomerAsync(customerId);
             review.Customer = new Customer() {
                 Id = customer.Id,
@@ -381,8 +383,7 @@ else {
             };
             review.ItemId = Id;
             await itemService.AddReviewAsync(review);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             errorMessage = e.Message;
         }
     }
@@ -391,15 +392,18 @@ else {
         try {
             await itemService.RemoveReviewAsync(r.ItemId, r.Customer.Id);
             reviews.Remove(r);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             errorMessage = e.Message;
         }
     }
 
     private async Task EditReview(Review r) {
         try {
-            r.DateTime = new MyDateTime(new DateTime());
+            r.DateTime = new MyDateTime() {
+                Day = DateTime.Now.Day,
+                Month = DateTime.Now.Month,
+                Year = DateTime.Now.Year
+            };
             Customer customer = await customerService.GetCustomerAsync(customerId);
             r.Customer = new Customer() {
                 Id = customer.Id,
@@ -412,19 +416,18 @@ else {
                 PhoneNumber = customer.PhoneNumber
             };
             if (review.Rating > 0) {
-                 r.Rating = review.Rating;
+                r.Rating = review.Rating;
             }
             await itemService.UpdateReviewAsync(r);
             isEditing = false;
             errorMessage = "Review is successfully edited";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             errorMessage = e.Message;
         }
     }
 
     private bool ChangeToEdit() {
-        return isEditing = !isEditing;
+        return isEditing = isEditing ? false : true;
     }
 
     /*
@@ -447,16 +450,11 @@ else {
     private void AddRating(int i) {
         review.Rating = i;
     }
-    
-    private void SetDisabledState() {
-        if (item.Quantity < 1) {
-            item.Status = ItemStatus.OutOfStock;
-            isDisabled = true;
-        }
-    }
-    
-    private void View(int id, string categoryName) {
-        navigationManager.NavigateTo($"EditItem/{id}/{categoryName}");
+
+    private async Task GetAverageReviewAsync() {
+        double r = await itemService.GetAverageRating(item.Id);
+        r = Math.Round(r, 2, MidpointRounding.ToEven);
+        rating = r.ToString();
     }
 
 }
