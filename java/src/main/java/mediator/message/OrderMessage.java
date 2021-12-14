@@ -2,6 +2,7 @@ package mediator.message;
 
 import model.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderMessage extends Message {
@@ -12,6 +13,7 @@ public class OrderMessage extends Message {
 
     public OrderMessage(String service, String type) {
         super(service, type);
+        orders = new ArrayList<>();
     }
 
     public int getIndex() {

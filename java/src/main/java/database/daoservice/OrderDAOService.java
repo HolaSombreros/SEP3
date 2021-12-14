@@ -53,6 +53,7 @@ public class OrderDAOService implements OrderDAO {
             return order;
         }
         catch (SQLException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }

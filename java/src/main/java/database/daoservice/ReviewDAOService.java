@@ -66,7 +66,6 @@ public class ReviewDAOService implements ReviewDAO {
     @Override
     public Review update(Review review) {
         try {
-            System.out.println(review.getRating());
             databaseHelper.executeUpdate("UPDATE review SET rating = ?, comment = ?, date_time = ? WHERE customer_id =? AND item_id = ?",review.getRating(),review.getComment(),
                     LocalDate.of(review.getDateTime().getYear(), review.getDateTime().getMonth(), review.getDateTime().getDay()),review.getCustomer().getId(), review.getItemId());
             return read(review.getCustomer().getId(), review.getItemId());

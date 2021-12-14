@@ -47,7 +47,7 @@ public class OrderCommand implements Command {
     }
 
     private void get() {
-        reply.getOrders().add(0,databaseManager.getOrderDAOService().read(request.getOrders().get(0).getId()));
+            reply.getOrders().add(0, databaseManager.getOrderDAOService().read(request.getOrders().get(0).getId()));
     }
 
     private void update(){
