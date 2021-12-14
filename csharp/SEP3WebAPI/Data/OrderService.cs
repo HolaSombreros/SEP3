@@ -19,7 +19,11 @@ namespace SEP3WebAPI.Data {
             this.customerClient = customerClient;
         }
 
-        
+        /**
+         * The method checks if there are enough items for completing the order
+         * The method calls also SendNotificationAsync to the administrators that a specific item's quantity dropped to 50 meaning low on stock
+         * The method creates a new order based on order model
+         */
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
@@ -89,7 +93,9 @@ namespace SEP3WebAPI.Data {
            await orderClient.UpdateOrderItemsAsync(order);
         }
         
-        
+        /**
+         * The method creates a new order based on order model
+         */
         public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
             if (orderModel == null) 
                 throw new InvalidDataException("Please specify an order of the proper format");

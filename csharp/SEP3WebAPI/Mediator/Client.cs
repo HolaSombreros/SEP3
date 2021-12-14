@@ -24,6 +24,11 @@ namespace SEP3WebAPI.Mediator {
             lock1 = new object();
         }
 
+        /**
+         * The method is synchronized with a lock
+         * First the message is serialized in a basic message and then to a specific one based on the service in a switch
+         * The method also notifies the waiting thread 
+         */
         public void Receive(string result) {
             lock (lock1) {
                 reply = JsonSerializer.Deserialize<Message>(result,
@@ -48,6 +53,10 @@ namespace SEP3WebAPI.Mediator {
             }
         }
 
+        /**
+         * The method is synchronized with a lock
+         * The thread waits until it is notified and releases the lock
+         */
         private void Waiting() {
             lock (lock1) {
                 waiting = true;
@@ -58,6 +67,10 @@ namespace SEP3WebAPI.Mediator {
             }
         }
 
+        /**
+         * The method Serialize the request coming from the server and waits for the reply
+         * An additional "/n" is added at the end in order to be compatible with java
+         */
         public Message Send(object req) {
             string json = JsonSerializer.Serialize(req, new JsonSerializerOptions() {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
