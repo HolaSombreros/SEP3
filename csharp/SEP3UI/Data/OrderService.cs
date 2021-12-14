@@ -35,7 +35,7 @@ namespace SEP3UI.Data {
             return await restService.PutAsync<ReturnItemsModel, Order>(model, $"orders/{model.OrderId}");
         }
         
-        public async Task<IList<Order>> GetOrdersByCustomer(int customerId, int index) {
+        public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
             return await restService.GetAsync<IList<Order>>($"orders/{customerId}/order?index={index}");
         }
     }

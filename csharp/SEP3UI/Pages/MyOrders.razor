@@ -1,44 +1,15 @@
-﻿@page "/OrderList"
-@using SEP3UI.Data
+﻿@page "/MyOrders"
 @using SEP3Library.Models
-@using SEP3UI.Authentication
-@attribute [Authorize(Policy = Policies.IsAdmin)]
+@using SEP3UI.Data
+@using System.Security.Claims
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navigationManager
 
+
 <div class="container-fluid px-4 text-center">
-    <h2 class="mt-3 mb-3">Orders</h2>
-                <div class="row mb-3">
-                <div class="row text-left col-xl-4 col-md-6 align-items-center">
-                        <div class = "col-5">
-                            Filter by User Id: 
-                        </div>
-                        <div class="col-5"> 
-                            <input class="form-control" type="number" style="width: 150px" @oninput="@((arg) => SetIdFilter(arg))"/>
-                        </div>
-                   
-                </div>
-            </div>
-            <div class="my-2 row">
-                <div class="row col-xl-4 col-md-6 text-left align-items-center">
-                    <div class="col-5">
-                        Filter by status:
-                    </div>
-                    <div class="col-5"> 
-                        <select class="form-control d-inline" style="width: 150px" @onchange="@((arg) => SetStatusFilter(arg))">
-                            <option>Any</option>
-                            @foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus))) {
-                                <option>@status.ToString()</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="mb-3 text-left">
-                <button class="btn btn-dark" @onclick="FilterAsync">Filter</button>
-            </div>
+    <h2 class="mt-3 mb-3">MyOrders</h2>
     @if (orders == null || !orders.Any()) {
         <h2 class="mt-3 mb-3">No items to display</h2>
     }
@@ -50,7 +21,6 @@
                     <th scope="col">Order ID</th>
                     <th scope="col">Items</th>
                     <th scope="col">Total</th>
-                    <th scope="col">Customer ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
                     <th scope="col">Address</th>
@@ -64,7 +34,6 @@
                         <td>@order.Id</td>
                         <td>@GetAmount(order)</td>
                         <td>@order.Total</td>
-                        <td>@(order.CustomerId == 0 ? "Not Registered" : order.CustomerId)</td>
                         <td>@order.FirstName @order.LastName</td>
                         <td>@order.Email</td>
                         <td>@order.Address.ToString()</td>
@@ -81,24 +50,25 @@
     </div>
 </div>
 
-
 @code {
     private IList<Order> orders;
     private int orderIndex;
     private string hidden;
+    private Customer customer;
     private string filterStatus = "Any";
     private int filterId;
 
     protected override async Task OnInitializedAsync() {
         NavBarEvent.Invoke();
-        orders = await orderService.GetOrdersAsync(orderIndex, filterId, filterStatus);
+        customer = await customerService.GetCustomerAsync(int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id")));
+        orders = await orderService.GetOrdersByCustomerAsync(customer.Id, orderIndex);
         orderIndex = 0;
         hidden = "";
     }
 
     private async Task LoadMoreAsync() {
         orderIndex++;
-        IList<Order> newList = await orderService.GetOrdersAsync(orderIndex, filterId, filterStatus);
+        IList<Order> newList = await orderService.GetOrdersByCustomerAsync(customer.Id,orderIndex);
         if (newList.Count == 0) {
             hidden = "display: none";
             orderIndex--;
@@ -118,24 +88,5 @@
 
     private void View(int orderId) {
         navigationManager.NavigateTo($"/orders/{orderId}");
-    }
-
-    private void SetIdFilter(ChangeEventArgs args) {
-        try {
-            if (args.Value != null)
-                filterId = Convert.ToInt32(args.Value.ToString());
-        } catch (Exception e) {
-            filterId = 0;
-        }
-    }
-
-    private void SetStatusFilter(ChangeEventArgs args) {
-        if (args.Value != null)
-            filterStatus = args.Value.ToString();
-    }
-
-    private async Task FilterAsync() {
-        orderIndex = 0;
-        orders = await orderService.GetOrdersAsync(orderIndex, filterId, filterStatus);
     }
 }
