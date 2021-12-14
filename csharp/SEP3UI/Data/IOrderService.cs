@@ -12,7 +12,7 @@ namespace SEP3UI.Data {
         Task<Order> GetOrderAsync(int orderId);
         Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel);
         Task<Order> ReturnItemsAsync(ReturnItemsModel model);
-        Task<IList<Order>> GetOrdersByCustomer(int customerId, int index);
+        Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index);
 
         
     }
