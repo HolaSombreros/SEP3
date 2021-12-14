@@ -28,6 +28,26 @@ public class BookDAOService implements BookDAO {
         genreDAOService = new GenreDAOService(url, username, password);
     }
 
+    /**
+     * Creates a new book with the values passed as arguments if it does not exist in the database
+     * Checks if the authors are in the database and adds them if they are not
+     * Adds the genres if they are not stored in the database
+     * returns the Book object
+     *
+     * @param name
+     * @param description
+     * @param price
+     * @param discount
+     * @param category
+     * @param quantity
+     * @param imgFilePath
+     * @param ISBN
+     * @param authors
+     * @param language
+     * @param genre
+     * @param publicationDate
+     * @return
+     */
     @Override
     public Book create(String name, String description, BigDecimal price, int discount,Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
         try {
