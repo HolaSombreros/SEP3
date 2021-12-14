@@ -39,7 +39,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }
@@ -68,7 +67,6 @@ namespace SEP3WebAPI.Controllers {
             } catch (NullReferenceException e) {
                 return NotFound(e.Message);
             } catch (Exception e) {
-                Console.WriteLine(e.Message);
                 return StatusCode(500, e.Message);
             }
         }

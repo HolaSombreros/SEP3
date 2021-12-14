@@ -22,7 +22,7 @@ public class ItemDAOService implements ItemDAO {
     }
 
     @Override
-    public Item create(String name, String description, BigDecimal price, Category category, int quantity, String imgFilepath){
+    public Item create(String name, String description, BigDecimal price, int discount, Category category, int quantity, String imgFilepath){
         try {
             List<Integer> categoryKeys = null;
             List<Integer> keys= null;
@@ -30,12 +30,12 @@ public class ItemDAOService implements ItemDAO {
             if(existing== null) {
                 categoryKeys = databaseHelper.executeUpdateWithKeys("INSERT INTO category (name) VALUES (?)", category.getName());
                 keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category_id, discount, quantity, status, image_filepath) VALUES (?,?,?,?,?,?,?::item_status,?)",
-                        name, description,price,categoryKeys.get(0),0,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
+                        name, description,price,categoryKeys.get(0),discount,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
 
             }
             else{
                keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category_id, discount, quantity, status, image_filepath) VALUES (?,?,?,?,?,?,?::item_status,?)",
-                        name, description,price,existing.getId(),0,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
+                        name, description,price,existing.getId(),discount,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
             }
             return read(keys.get(0));
 

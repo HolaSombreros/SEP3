@@ -58,6 +58,7 @@ public class ItemCommand implements Command {
             return reply;
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }
@@ -102,7 +103,7 @@ public class ItemCommand implements Command {
 
     private void addItem() {
          reply.getItems().add(0,databaseManager.getItemDAOService().create(request.getItems().get(0).getName(),request.getItems().get(0).getDescription(),
-                request.getItems().get(0).getPrice(),request.getItems().get(0).getCategory(), request.getItems().get(0).getQuantity(),request.getItems().get(0).getImageName()));
+                request.getItems().get(0).getPrice(),request.getItems().get(0).getDiscount(),request.getItems().get(0).getCategory(), request.getItems().get(0).getQuantity(),request.getItems().get(0).getImageName()));
     }
 
     private void updateItem(){
@@ -110,7 +111,7 @@ public class ItemCommand implements Command {
     }
 
     private void addBook(){
-        reply.setBook(databaseManager.getBookDAOService().create(request.getBook().getName(), request.getBook().getDescription(),request.getBook().getPrice(),request.getBook().getCategory(),
+        reply.setBook(databaseManager.getBookDAOService().create(request.getBook().getName(), request.getBook().getDescription(),request.getBook().getPrice(),request.getItems().get(0).getDiscount(),request.getBook().getCategory(),
                 request.getBook().getQuantity(),request.getBook().getImageName(),request.getBook().getISBN(), request.getBook().getAuthors(),request.getBook().getLanguage(),request.getBook().getGenre(),
                 LocalDate.of(request.getBook().getPublicationDate().getYear(), request.getBook().getPublicationDate().getMonth(),request.getBook().getPublicationDate().getDay())));
     }
@@ -163,7 +164,7 @@ public class ItemCommand implements Command {
 
     private void addReview() {
         Review review = request.getReviews().get(0);
-        reply.getReviews().add(databaseManager.getReviewDAOService().create(review.getCustomer().getId(), review.getItemId(),review.getRating(),
+        reply.getReviews().add(0,databaseManager.getReviewDAOService().create(review.getCustomer().getId(), review.getItemId(),review.getRating(),
                 review.getComment(), LocalDate.of(review.getDateTime().getYear(), review.getDateTime().getMonth(), review.getDateTime().getDay())));
     }
 

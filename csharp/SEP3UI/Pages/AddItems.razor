@@ -53,8 +53,8 @@
                                 <label for="controlFile">Upload an image:</label>
                                 <InputFile id="controlFile" OnChange="@((args) => SetInputFile(args))"/>
                             </div>
-                            <div class="mt-3 inputs">
-                                <input @bind-value="itemModel.Price" type="number" data-mdb-showcounter="true" id="price"/>
+                            <div class="mt-3 inputs">   
+                                <InputNumber @bind-Value="itemModel.Price" data-mdb-showcounter="true" id="price"/>
                                 <label class="label-customised" for="price">Price:</label>
                             </div>
                             <ValidationMessage For="@(() => itemModel.Price)"/>
@@ -113,7 +113,7 @@
                                 <InputFile id="controlFile" OnChange="@((args) => SetInputFile(args))"/>
                             </div>
                             <div class="mt-3 inputs">
-                                <input @bind-value="bookModel.Price" type="number" data-mdb-showcounter="true" id="price"/>
+                                <InputNumber @bind-Value="bookModel.Price" step=".01" data-mdb-showcounter="true" id="price"/>
                                 <label class="label-customised" for="price">Price:</label>
                             </div>
                             <ValidationMessage For="@(() => bookModel.Price)"/>
@@ -356,6 +356,7 @@
                 }
                 else {
                     if (uploadedFile != null) itemModel.FilePath = "Images/" + uploadedFile.Name;
+                    Console.WriteLine(itemModel.Discount);
                     await itemService.AddItemAsync(itemModel);
                     errorMessage = "Successful item added";
                 }
