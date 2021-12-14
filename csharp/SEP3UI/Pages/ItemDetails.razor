@@ -155,8 +155,7 @@
                                                 </label>
                                                 @if (review.Rating >= 2) {
                                                     <input type="radio" name="test" id="two" checked @onclick="@(() => AddRating(2))"/>
-                                                }
-                                                else {
+                                                } else {
                                                     <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
                                                 }
                                                 <label for="two">
@@ -164,8 +163,7 @@
                                                 </label>
                                                 @if (review.Rating >= 3) {
                                                     <input type="radio" name="test" id="three" checked @onclick="@(() => AddRating(3))"/>
-                                                }
-                                                else {
+                                                } else {
                                                     <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
                                                 }
                                                 <label for="three">
@@ -173,17 +171,15 @@
                                                 </label>
                                                 @if (review.Rating >= 4) {
                                                     <input type="radio" name="test" id="four" checked @onclick="@(() => AddRating(4))"/>
-                                                }
-                                                else {
+                                                } else {
                                                     <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
                                                 }
                                                 <label for="four">
                                                     <i class="oi oi-star"></i>
                                                 </label>
                                                 @if (review.Rating == 5) {
-                                                    <input type="radio" name="test" id="five"  checked @onclick="@(() => AddRating(5))"/>
-                                                }
-                                                else {
+                                                    <input type="radio" name="test" id="five" checked @onclick="@(() => AddRating(5))"/>
+                                                } else {
                                                     <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
                                                 }
                                                 <label for="five">
@@ -229,38 +225,38 @@
             <EditForm Model="review" Context="addReview" OnValidSubmit="AddReview">
                 <DataAnnotationsValidator/>
                 <div class=" rounded shadow-sm p-4 mb-5 container">
-                        <div class="form-group">
-                            <h5 class="mb-4">Leave a comment</h5>
-                            <label>Your Comment</label>
-                            <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
-                        </div>
-                        <ValidationMessage For="@(() => review.Comment)"/>
-                        <p class="mb-2">Rate the item</p>
-                        <div class="rating">
-                            <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
-                            <label for="one">
-                                <i class="oi oi-star"></i>
-                            </label>
-                            <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
-                            <label for="two">
-                                <i class="oi oi-star"></i>
-                            </label>
-                            <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
-                            <label for="three">
-                                <i class="oi oi-star"></i>
-                            </label>
-                            <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
-                            <label for="four">
-                                <i class="oi oi-star"></i>
-                            </label>
-                            <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
-                            <label for="five">
-                                <i class="oi oi-star"></i>
-                            </label>
-                        </div>
-                        <div class="form-group text-center">
-                            <button class="btn btn-round btn-dark">Submit Comment</button>
-                        </div>
+                    <div class="form-group">
+                        <h5 class="mb-4">Leave a comment</h5>
+                        <label>Your Comment</label>
+                        <textarea class="form-control" @bind="@review.Comment" maxlength="3000"></textarea>
+                    </div>
+                    <ValidationMessage For="@(() => review.Comment)"/>
+                    <p class="mb-2">Rate the item</p>
+                    <div class="rating">
+                        <input type="radio" name="test" id="one" checked @onclick="@(() => AddRating(1))"/>
+                        <label for="one">
+                            <i class="oi oi-star"></i>
+                        </label>
+                        <input type="radio" name="test" id="two" @onclick="@(() => AddRating(2))"/>
+                        <label for="two">
+                            <i class="oi oi-star"></i>
+                        </label>
+                        <input type="radio" name="test" id="three" @onclick="@(() => AddRating(3))"/>
+                        <label for="three">
+                            <i class="oi oi-star"></i>
+                        </label>
+                        <input type="radio" name="test" id="four" @onclick="@(() => AddRating(4))"/>
+                        <label for="four">
+                            <i class="oi oi-star"></i>
+                        </label>
+                        <input type="radio" name="test" id="five" @onclick="@(() => AddRating(5))"/>
+                        <label for="five">
+                            <i class="oi oi-star"></i>
+                        </label>
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-round btn-dark">Submit Comment</button>
+                    </div>
                 </div>
             </EditForm>
         </AuthorizeView>
