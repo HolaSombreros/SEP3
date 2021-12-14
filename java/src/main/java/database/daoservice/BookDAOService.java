@@ -29,7 +29,7 @@ public class BookDAOService implements BookDAO {
     }
 
     @Override
-    public Book create(String name, String description, BigDecimal price, Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
+    public Book create(String name, String description, BigDecimal price, int discount,Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
         try {
             for(Author author: authors){
                 Author a = authorDAOService.create(author.getFirstName(), author.getLastName());
@@ -38,7 +38,7 @@ public class BookDAOService implements BookDAO {
             for(Genre g: genre)
                 genreDAOService.create(g.getName());
             if(!isBook(ISBN)) {
-                Item item = itemDAOService.create(name,description,price,category,quantity,imgFilePath);
+                Item item = itemDAOService.create(name,description,price,discount,category,quantity,imgFilePath);
                 databaseHelper.executeUpdate("INSERT INTO book (ISBN, item_id, language, publication_date) VALUES (?,?,?,?)",
                         ISBN, item.getId(), language, publicationDate);
                 List<Genre> existing = new ArrayList<>();

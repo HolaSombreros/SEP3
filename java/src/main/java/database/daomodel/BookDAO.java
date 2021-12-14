@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface BookDAO {
-    Book create(String name, String description, BigDecimal price, Category category, int quantity,
+    Book create(String name, String description, BigDecimal price, int discount, Category category, int quantity,
                 String imgFilePath, String ISBN, List<Author> authors, String language,
                 List<Genre> genre, LocalDate publicationDate);
     Book read(String ISBN, int id);
