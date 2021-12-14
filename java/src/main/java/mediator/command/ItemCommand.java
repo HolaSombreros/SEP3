@@ -59,6 +59,7 @@ public class ItemCommand implements Command {
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
             throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }
@@ -111,7 +112,7 @@ public class ItemCommand implements Command {
     }
 
     private void addBook(){
-        reply.setBook(databaseManager.getBookDAOService().create(request.getBook().getName(), request.getBook().getDescription(),request.getBook().getPrice(),request.getItems().get(0).getDiscount(),request.getBook().getCategory(),
+        reply.setBook(databaseManager.getBookDAOService().create(request.getBook().getName(), request.getBook().getDescription(),request.getBook().getPrice(),request.getBook().getDiscount(), request.getBook().getCategory(),
                 request.getBook().getQuantity(),request.getBook().getImageName(),request.getBook().getISBN(), request.getBook().getAuthors(),request.getBook().getLanguage(),request.getBook().getGenre(),
                 LocalDate.of(request.getBook().getPublicationDate().getYear(), request.getBook().getPublicationDate().getMonth(),request.getBook().getPublicationDate().getDay())));
     }

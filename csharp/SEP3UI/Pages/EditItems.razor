@@ -1,0 +1,44 @@
+﻿@page "/EditItems/{Id:int}/{CategoryName}"
+@using SEP3UI.Authentication
+
+@using SEP3UI.Data
+@using Microsoft.AspNetCore.Hosting
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@inject IItemService itemService
+@inject IWebHostEnvironment Environment
+@inject NavigationManager nav
+
+
+    <div class="mt-3">
+        <div class="text-center">
+            <h2>Edit Items</h2>
+        </div>
+        @if (Id != 0) {
+            @switch (CategoryName) {
+                case "Book":
+                    <BookComponent Id="Id"/>
+                    break;
+                default:
+                    <ItemComponent Id="Id"/>
+                    break;
+            }
+        }
+    </div>
+    <div class="text-center">
+        @errorMessage
+    </div>
+    
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public string CategoryName { get; set; }
+    private string errorMessage;
+    
+    protected override async Task OnInitializedAsync() {
+       
+    }
+    
+}

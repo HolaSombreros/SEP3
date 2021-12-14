@@ -7,46 +7,46 @@ form {
     width: 100%;
     line-height: 44px;
 }
-.label-customised {
-    position: relative;
-    top: -30px;
-    left: 0;
-    width: 100%;
-    color: #483D8B;
-    transition: 0.2s all;
-    cursor: text;
-}
+/*.label-customised {*/
+/*    position: relative;*/
+/*    top: -30px;*/
+/*    left: 0;*/
+/*    width: 100%;*/
+/*    color: #483D8B;*/
+/*    transition: 0.2s all;*/
+/*    cursor: text;*/
+/*}*/
 
-input[type=text], input[type=number], textarea{
-    width: 100%;
-    border: 0;
-    outline: 0;
-    padding: 0.5rem 0;
-    border-bottom: 2px solid #483D8B;
-    box-shadow: none;
-    color: #111;
-}
-input[type=text]:invalid, input[type=number]:invalid, textarea:invalid {
-    outline: 0;
-}
-input[type=text]:focus,
-input[type=text]:valid,
-input[type=number]:focus, 
-input[type=number]:valid,
-textarea:invalid,
-textarea:focus {
-    border-color: #483D8B;
-}
-input[type=text]:focus~label,
-input[type=text]:valid~label,
-input[type=number]:focus~label,
-input[type=number]:valid~label,
-textarea:valid~label,
-textarea:focus~label{
-    font-size: 14px;
-    top: -50px;
-    color: #483D8B;
-}
+/*input[type=text], input[type=number], textarea{*/
+/*    width: 100%;*/
+/*    border: 0;*/
+/*    outline: 0;*/
+/*    padding: 0.5rem 0;*/
+/*    border-bottom: 2px solid #483D8B;*/
+/*    box-shadow: none;*/
+/*    color: #111;*/
+/*}*/
+/*input[type=text]:invalid, input[type=number]:invalid, textarea:invalid {*/
+/*    outline: 0;*/
+/*}*/
+/*input[type=text]:focus,*/
+/*input[type=text]:valid,*/
+/*input[type=number]:focus,*/
+/*input[type=number]:valid,*/
+/*textarea:invalid,*/
+/*textarea:focus {*/
+/*    border-color: #483D8B;*/
+/*}*/
+/*input[type=text]:focus~label,*/
+/*input[type=text]:valid~label,*/
+/*input[type=number]:focus~label,*/
+/*input[type=number]:valid~label,*/
+/*textarea:valid~label,*/
+/*textarea:focus~label{*/
+/*    font-size: 14px;*/
+/*    top: -50px;*/
+/*    color: #483D8B;*/
+/*}*/
 
 #exampleFormControlFile, #inlineCheckbox{
     border-bottom: none;
@@ -113,13 +113,5 @@ button {
 button:hover{
     cursor: pointer;
 }
-#price {
-    width: 100%;
-    border: 0;
-    outline: 0;
-    padding: 0.5rem 0;
-    border-bottom: 2px solid #483D8B;
-    box-shadow: none;
-    color: #111;
-}
+
 

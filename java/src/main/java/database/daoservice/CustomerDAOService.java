@@ -92,9 +92,9 @@ public class CustomerDAOService implements CustomerDAO {
 
             customer.setAddress(address);
             databaseHelper.executeUpdate("UPDATE customer SET first_name = ?, last_name = ?, email = ?,"
-                            + " password = ?, role = ?::user_role, phone_number = ?, address_id = ? WHERE customer_id = ?;",
+                            + " password = ?, phone_number = ?, address_id = ? WHERE customer_id = ?;",
                     customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
-                    customer.getRole(), customer.getPhoneNumber(), customer.getAddress().getId(), customer.getId());
+                    customer.getPhoneNumber(), customer.getAddress().getId(), customer.getId());
 
             return customer;
         } catch (SQLException e) {
