@@ -79,6 +79,19 @@ public class ItemDAOService implements ItemDAO {
     }
 
 
+    /**
+     * Executes a specific query and returns a list of items based on the filtering needed
+     * The filtering is done based on the fields passed as arguments
+     * All values except for the required one will be null, index is exempt from this constraint
+     * @param index - always 0 or a higher value
+     * @param category
+     * @param priceOrder
+     * @param ratingOrder
+     * @param discountOrder
+     * @param statusOrder
+     * @param search
+     * @return
+     */
     @Override
     public List<Item> readByIndex(int index, String category, String priceOrder, String ratingOrder, String discountOrder, String statusOrder, String search) {
         try{

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3WebAPI.Mediator.Messages;
@@ -39,7 +40,8 @@ namespace SEP3WebAPI.Mediator {
                     }
                 }
             };
-            return ((OrderMessage) client.Send(req)).Orders[0];
+            Order message = ((OrderMessage) client.Send(req)).Orders[0];
+            return message;
         }
         
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {

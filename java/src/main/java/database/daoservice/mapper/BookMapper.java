@@ -9,6 +9,12 @@ import java.sql.SQLException;
 
 
 public class BookMapper implements DataMapper<Book> {
+    /**
+     * Maps and returns a book object based on the values provided by the result set passed as an argument
+     * @param resultSet
+     * @return
+     * @throws SQLException
+     */
     @Override
     public Book map(ResultSet resultSet) throws SQLException {
         return new Book(resultSet.getInt("item_id"),resultSet.getString("item_name"),resultSet.getString("description"),

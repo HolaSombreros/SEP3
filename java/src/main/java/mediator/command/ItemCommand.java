@@ -49,16 +49,20 @@ public class ItemCommand implements Command {
         methods.put("getAverageRating", this::getAverageRating);
     }
 
+    /**
+     * Executes the request based on the type attribute, calls the method tied to the type attribute
+     * Returns the reply that was modified by the called method
+     * @param request
+     * @return
+     */
     @Override public Message execute(Message request) {
         try {
             this.request = (ItemMessage) request;
             reply = new ItemMessage(request.getService(), request.getType());
             methods.get(request.getType()).run();
-
             return reply;
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
             throw new IllegalArgumentException("The request could not be fulfilled");
         }
     }
