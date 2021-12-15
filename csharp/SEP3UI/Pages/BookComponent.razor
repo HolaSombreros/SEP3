@@ -200,7 +200,7 @@
         }
     }
 
-    private async Task UploadFile() {
+    private async Task UploadFileAsync() {
         long maxFileSize = 5000000;
 
         var path = Path.Combine(Environment.ContentRootPath, @"wwwroot\Images", uploadedFile.Name);
@@ -219,14 +219,14 @@
                 await itemService.AddBookAsync(bookModel);
                 errorMessage = "Book successfully added";
                 if (uploadedFile != null) {
-                    await UploadFile();
+                    await UploadFileAsync();
                 }
                 bookModel = new BookModel() {
                     Category = Category
                 };
             }
             else {
-                await EditBook();
+                await EditBookAsync();
             }
         }
         catch (Exception e) {
@@ -235,7 +235,7 @@
         }
     }
 
-    private async Task EditBook() {
+    private async Task EditBookAsync() {
         if (bookModel != null && bookModel.Category.Name.Equals("Book")) {
             bookModel.Genre = selectedGenres;
             if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1) {

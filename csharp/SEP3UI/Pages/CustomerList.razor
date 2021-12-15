@@ -31,7 +31,7 @@
                         <td>@customer.FirstName @customer.LastName</td>
                         <td>@customer.Email</td>
                         <td>
-                            <i class="oi oi-flag" style="@SetFlags(customer.Role)" @onclick="@(() => ChangeCustomerRole(customer))"/>
+                            <i class="oi oi-flag" style="@SetFlags(customer.Role)" @onclick="@(() => ChangeCustomerRoleAsync(customer))"/>
                         </td>
                         @if (customer.PhoneNumber == null) {
                             <td>No phone available</td>
@@ -86,7 +86,7 @@
          return role.Equals("Administrator") ? "color:red" : "color:grey";
     }
 
-    private async Task ChangeCustomerRole(Customer customer) {
+    private async Task ChangeCustomerRoleAsync(Customer customer) {
         errorMessage = "";
         if (customer.Id != adminId) {
             customer.Role = customer.Role.Equals("Administrator") ? "Customer" : "Administrator";

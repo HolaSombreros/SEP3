@@ -179,7 +179,7 @@
                 </EditForm>
             </div>
             <div class="col-lg-9 col-md-12">
-                <EditForm Model="returnItemsModel" OnValidSubmit="ReturnItems">
+                <EditForm Model="returnItemsModel" OnValidSubmit="ReturnItemsAsync">
                     <h4 class="mb-3 mt-5 mt-md-0 text-center">Items ordered</h4>
                     <table class="table">
                         <thead class="thead-light">
@@ -242,7 +242,7 @@
                 <AuthorizeView>
                 @if (order.OrderStatus == OrderStatus.Pending && !isDisabled) {
                     <div class="text-center">
-                        <button class="btn btn-md btn-dark order-button" @onclick="CancelOrder">Cancel Order</button>
+                        <button class="btn btn-md btn-dark order-button" @onclick="CancelOrderAsync">Cancel Order</button>
                     </div>
                 }
                 </AuthorizeView>
@@ -304,7 +304,7 @@
         }
     }
 
-    private async Task ReturnItems() {
+    private async Task ReturnItemsAsync() {
         try {
             if (returnItemsModel.Items.All(i => i.Quantity < 1 )) {
                 throw new Exception("Please specify the items you want to return");
@@ -323,7 +323,7 @@
         }
     }
 
-    private async Task CancelOrder() {
+    private async Task CancelOrderAsync() {
         try {
             orderModel.OrderStatus = OrderStatus.Cancelled;
             order = await orderService.UpdateOrderAsync(orderModel);
