@@ -2,6 +2,7 @@
 @using SEP3Library.Models
 @using SEP3Library.UIModels
 @using SEP3UI.Data
+@using System.Security.Claims
 @inject IOrderService orderService
 @inject ICustomerService customerService
 @inject AuthenticationStateProvider authStateProvider
@@ -115,14 +116,14 @@
                                     <span class="oi oi-map-marker"></span>
                                 </div>
                             </div>
-                            <InputText class="form-control" @bind-Value="orderModel.Street"/>
+                            <InputText class="form-control" @bind-Value="@orderModel.Street"/>
                         </div>
                         <ValidationMessage For="@(() => orderModel.Street)"/>
                     </div>
 
                     <div class="form-group mb-3">
                         <label>
-                            <strong>Street number</strong>
+                            <strong>House number</strong>
                         </label>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -169,7 +170,9 @@
                         @if (order.OrderStatus == OrderStatus.Pending) {
                             <div class="form-group text-center mb-3">
                                 <span class="d-block">@errorMessage</span>
-                                <button type="submit" class="btn btn-primary mt-3">Update Order</button>
+                                @if (!isDisabled) {
+                                    <button type="submit" class="btn btn-primary mt-3">Update Order</button>
+                                }
                             </div>
                         }
                     </AuthorizeView>
@@ -237,7 +240,7 @@
                     </AuthorizeView>
                 </EditForm>
                 <AuthorizeView>
-                @if (order.OrderStatus == OrderStatus.Pending) {
+                @if (order.OrderStatus == OrderStatus.Pending && !isDisabled) {
                     <div class="text-center">
                         <button class="btn btn-md btn-dark order-button" @onclick="CancelOrder">Cancel Order</button>
                     </div>
@@ -258,6 +261,7 @@
     private ReturnItemsModel returnItemsModel;
     private string errorMessage;
     private string displayMessage;
+    private bool isDisabled;
 
     protected override async Task OnInitializedAsync() {
         order = await orderService.GetOrderAsync(Id);
@@ -271,9 +275,7 @@
                 Quantity = 0,
             });
         }
-        
         totalPrice = Math.Round(order.Items.Sum(i => i.PriceIncludingDiscount * i.Quantity) + orderService.ShoppingCart.ShippingPrice, 2, MidpointRounding.ToEven);
-        
         orderModel = new UpdateOrderModel() {
             Email = order.Email,
             FirstName = order.FirstName,
@@ -286,6 +288,10 @@
             CustomerId = order.CustomerId,
             OrderStatus = order.OrderStatus
         };
+        int customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
+        if (order.CustomerId != customerId) {
+            isDisabled = true;
+        }
     }
 
     private async Task UpdateOrderAsync() {
@@ -320,11 +326,12 @@
     private async Task CancelOrder() {
         try {
             orderModel.OrderStatus = OrderStatus.Cancelled;
-            order = await orderService.GetOrderAsync(Id);
+            order = await orderService.UpdateOrderAsync(orderModel);
             displayMessage = "The order has been cancelled";
         }
         catch (Exception e) {
             displayMessage = e.Message;
         }
     }
+    
 }

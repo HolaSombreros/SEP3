@@ -70,7 +70,7 @@
                                 <NavLink class="nav-link dropdown-item text-center text-md-left" href="/wishlist" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-list" aria-hidden="true"></span> My Wishlist
                                 </NavLink>
-                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/MyOrders" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-list-rich" aria-hidden="true"></span> My Orders
                                 </NavLink>
                                 <NavLink class="nav-link dropdown-item text-center text-md-left" href="/account" @onclick="CollapseDropdownMenus">
@@ -97,7 +97,7 @@
                             <NavLink class="nav-link dropdown-item text-center text-md-left" href="/AddItems" @onclick="CollapseDropdownMenus">
                                 <span class="oi oi-plus" aria-hidden="true"></span> Add New Item
                             </NavLink>
-                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList"  @onclick="CollapseDropdownMenus">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
                             </NavLink>
                             <NavLink class="nav-link dropdown-item text-center text-md-left" href="/CustomerList" @onclick="CollapseDropdownMenus">
@@ -134,6 +134,7 @@
     private bool collapseAccountDropdownMenu = true;
     private bool collapseAdminDropdownMenu = true;
     private bool collapseNotificationDropdownMenu = true;
+    private static bool isAdmin = true;
 
     private int notificationIndex;
     private IList<Notification> notifications;

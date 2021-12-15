@@ -13,7 +13,7 @@ namespace SEP3Library.UIModels {
         
         [Required(ErrorMessage = "Please enter a description")]
         [MaxLength(500, ErrorMessage = "The description cannot exceed 500 characters")]
-        [MinLength(25,ErrorMessage = "The description has to be longer than 25")]
+        [MinLength(5,ErrorMessage = "The description has to be longer than 5 character")]
         public string Description { get; set; }
         
         [Required(ErrorMessage = "Please enter a price")]
@@ -37,9 +37,9 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please enter an isbn")]
         [MaxLength(20, ErrorMessage = "The first name cannot exceed 20 characters")]
         public string Isbn { get; set; }
-        
+
         [Required(ErrorMessage = "Please enter at least an author")]
-        public List<Author> Authors {get;set;}
+        public List<Author> Authors { get; set; } = new();
 
         [Required(ErrorMessage = "Please enter a publication date for the author")]
         public DateTime PublicationDate { get; set; }
@@ -47,9 +47,9 @@ namespace SEP3Library.UIModels {
         [Required(ErrorMessage = "Please enter a language")]
         [MaxLength(20, ErrorMessage = "The first name cannot exceed 20 characters")]
         public string Language { get; set; }
-        
+
         [Required(ErrorMessage = "Please enter at least a genre")]
-        public List<Genre> Genre { get; set; }
+        public List<Genre> Genre { get; set; } = new();
 
         public string FilePath { get; set; }
     }

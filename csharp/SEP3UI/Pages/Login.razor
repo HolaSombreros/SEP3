@@ -10,20 +10,19 @@
 @inject IOrderService orderService;
 @inject AuthenticationStateProvider authenticationStateProvider
 
-
 <!-- main box -->
-<div class="container">
+<div class="container mt-3">
     <div class="card">
         <div class="row align-items-center">
             <!-- logo box -->
             <div class="col-4">
-                <img src="Images/Under Covers.png" class="img-fluid"alt="Under Covers Logo"/>
+                <img src="Images/Under Covers.png" class="img-fluid" alt="Under Covers Logo"/>
             </div>
 
             <!-- field box -->
             <div class="col">
                 <div class="form-group d-flex justify-content-center">
-                    <h2 class="retroshd">Welcome Back</h2>
+                    <h2>Welcome Back</h2>
                 </div>
                 <!-- email box -->
                 <EditForm Model="@customerModel" OnValidSubmit="@LoginAsync">
@@ -33,7 +32,6 @@
                             <label class="col-md-4 control-label">Email</label>
                             <div class="col-md-4 input-group">
                                 <div class="input-group">
-                                    <span class="input-group-addon"></span>
                                     <InputText @bind-Value="@customerModel.Email" placeholder="E-mail" class="form-control"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.Email)"/>
@@ -44,7 +42,6 @@
                             <label class="col-md-4 control-label">Password</label>
                             <div class="col-md-4">
                                 <div class="input-group">
-                                    <span class="input-group-addon"></span>
                                     <InputText @bind-Value="@customerModel.Password" type="password" placeholder="Password" class="form-control"/>
                                 </div>
                                 <ValidationMessage For="@(() => customerModel.Password)"/>
@@ -60,7 +57,6 @@
                     Don't have an account? <a class="pl-2 text-primary" rel="tag" @onclick="GoToRegister" style="cursor: pointer">Register now!</a>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
