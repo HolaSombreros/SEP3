@@ -302,10 +302,12 @@
 
     private void AddGenreClicked() {
         if (!(genreName == null || genreName.Equals("") || genreName.Trim().Equals(""))) {
-            bookModel.Genre.Add(new Genre() {
+            Genre genre = new Genre() {
                 Name = genreName
-            });
-            genreName = null;
+            };
+            genres.Add(genre);
+            bookModel.Genre.Add(genre);
+                genreName = null;
         }
     }
 
