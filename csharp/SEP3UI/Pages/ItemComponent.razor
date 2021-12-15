@@ -97,7 +97,7 @@
                 await itemService.AddItemAsync(itemModel);
                 errorMessage = "Item successfully added";
                 if (uploadedFile != null) {
-                    await UploadFile();
+                    await UploadFileAsync();
                 }
                 itemModel = new ItemModel() {
                     Category = Category
@@ -132,7 +132,7 @@
         }
     }
 
-    private async Task UploadFile() {
+    private async Task UploadFileAsync() {
         long maxFileSize = 5000000;
 
         var path = Path.Combine(Environment.ContentRootPath, @"wwwroot\Images", uploadedFile.Name);

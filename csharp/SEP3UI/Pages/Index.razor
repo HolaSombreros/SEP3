@@ -164,7 +164,7 @@
         searchItem = null;
         items = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, null, null, searchItem);
         foreach (var item in items) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
         filteredItems = items;
         categories = await itemService.GetCategoriesAsync();
@@ -187,7 +187,7 @@
             itemIndex--;
         }
         foreach (Item item in newList) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
             filteredItems.Add(item);
         }
     }
@@ -209,7 +209,7 @@
     private async Task SearchButtonPressedAsync() {
         filteredItems = await itemService.GetItemsAsync(itemIndex,null,null,null, null, null, searchItem);
         foreach (var item in filteredItems) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
     }
 
@@ -217,7 +217,7 @@
         this.category = category.Name;
         filteredItems = await itemService.GetItemsAsync(itemIndex, this.category, null, null, null, null, null);
         foreach (var item in filteredItems) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
         hidden = "";
         itemIndex = 0;
@@ -230,7 +230,7 @@
         searchItem = null;
         filteredItems = await itemService.GetItemsAsync(itemIndex, category, priceOrder, ratingOrder, null, null, searchItem);
         foreach (var item in filteredItems) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
     }
 
@@ -239,7 +239,7 @@
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsAsync(itemIndex, null, priceOrder, null, null, null, null);
         foreach (var item in filteredItems) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
         hidden = "";
         itemIndex = 0;
@@ -250,7 +250,7 @@
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsAsync(itemIndex, null, priceOrder, null, null, null, null);
         foreach (var item in filteredItems) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
         hidden = "";
         itemIndex = 0;
@@ -261,7 +261,7 @@
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, ratingOrder, null, null, null);
         foreach (var item in filteredItems) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
         hidden = "";
         itemIndex = 0;
@@ -272,7 +272,7 @@
         CollapseDropdownMenu();
         filteredItems = await itemService.GetItemsAsync(itemIndex, null, null, ratingOrder, null, null, null);
         foreach (var item in filteredItems) {
-            await GetAverageReview(item);
+            await GetAverageReviewAsync(item);
         }
         hidden = "";
         itemIndex = 0;
@@ -305,7 +305,7 @@
         collapseSDropdownMenu = true;
     }
 
-    private async Task GetAverageReview(Item item ) {
+    private async Task GetAverageReviewAsync(Item item ) {
         item.AverageRating =  await itemService.GetAverageRating(item.Id);
         item.AverageRating = Math.Round(item.AverageRating, 2, MidpointRounding.ToEven);
     }
