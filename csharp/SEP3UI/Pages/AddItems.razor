@@ -11,15 +11,15 @@
 
 @if (categories != null) {
     <div class="mt-3">
+        <h2 class="text-center">Add Items</h2>
         <div class="text-center">
-            <h2>Add Items</h2>
+            <select class="my-3" @onchange="@((args) => SetSelectedCategory(args))">
+                <option selected hidden>Select a category</option>
+                @foreach (Category category in categories) {
+                    <option value="@category.Name">@category.Name</option>
+                }
+            </select>
         </div>
-        <select class="form-select" aria-label="Category" @onchange="@((args) => SetSelectedCategory(args))">
-            <option selected hidden>Select a category</option>
-            @foreach (Category category in categories) {
-                <option value="@category.Name">@category.Name</option>
-            }
-        </select>
         @if (selectedCategory != null) {
             @switch (selectedCategory.Name) {
                 case "Book":
@@ -34,7 +34,6 @@
     <div class="text-center">
         @errorMessage
     </div>
-   
 }
 
 @code {
@@ -54,8 +53,5 @@
     private void SetSelectedCategory(ChangeEventArgs args) {
         string catName = args.Value.ToString();
         selectedCategory = categories.FirstOrDefault(c => c.Name.Equals(catName));
-        
     }
-
 }
-
