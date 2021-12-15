@@ -102,6 +102,14 @@
                         <label id="problematic-label">Date:</label>
                         <InputDate @bind-Value="bookModel.PublicationDate"/>
                     </div>
+                    
+                    <div class="mt-1">
+                        <label class="label-customised" for="genreName">Genre :</label>
+                        <input @bind-value="genreName" class="form-control" type="text" id="genreName"/>
+                    </div>
+
+                    <i @onclick="() => AddGenreClicked()" class="btn btn-outline-primary mt-3">Add genre</i>
+
                     <div class="mt-3">
                         <select class="form-select" aria-label="Genre" @onchange="@((args) => SetSelectedGenre(args))">
                             <option selected hidden>Select a genre</option>
@@ -168,6 +176,10 @@
     [Required(ErrorMessage = "Please enter a last name for the author")]
     [MaxLength(50, ErrorMessage = "The first name cannot exceed 50 characters")]
     private string authorLastName { get; set; }
+
+    [MaxLength(50, ErrorMessage = "Please enter a genre name with max 50 characters")]
+    [Required(ErrorMessage = "Please enter a name for the genre")]
+    private string genreName { get; set; }
 
     protected override async Task OnInitializedAsync() {
         genres = await itemService.GetGenresAsync();
@@ -288,5 +300,13 @@
         bookModel.Genre.Remove(genre);
     }
 
+    private void AddGenreClicked() {
+        if (!(genreName == null || genreName.Equals("") || genreName.Trim().Equals(""))) {
+            bookModel.Genre.Add(new Genre() {
+                Name = genreName
+            });
+            genreName = null;
+        }
+    }
 
 }
