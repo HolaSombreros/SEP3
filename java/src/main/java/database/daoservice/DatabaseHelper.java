@@ -72,6 +72,7 @@ public class DatabaseHelper<T> {
         return statement.executeQuery();
     }
 
+
     public ResultSet executeQuery(String query, Object... parameters) throws SQLException{
         try(Connection connection = getConnection()){
             PreparedStatement statement = preparedStatement(connection,query,parameters);

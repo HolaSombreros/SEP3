@@ -21,11 +21,7 @@ public class CustomerDAOService implements CustomerDAO {
 
     @Override public Customer create(String firstName, String lastName, String email, String password, String role, Address address, String phoneNumber) {
         try {
-            Address address1;
-            if(!addressDAOService.isAddress(address.getStreet(), address.getNumber(), address.getZipCode()))
-                address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
-            else
-                address1 = addressDAOService.read(address.getStreet(), address.getNumber(), address.getZipCode());
+            Address address1 =addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
             if(isEmail(email)){
                 throw new IllegalArgumentException("This email is already registered");
             }
