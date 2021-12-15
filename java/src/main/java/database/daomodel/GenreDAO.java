@@ -12,4 +12,5 @@ public interface GenreDAO {
     void updateBookGenre(Genre genre, int itemId);
     List<Genre> getGenresOfBook(int itemId);
     List<Genre> getAllGenres();
+    void deleteBookGenre(int itemId);
 }

@@ -50,7 +50,7 @@ public class AddressDAOService implements AddressDAO {
 
     public boolean isAddress(String street, String number, int zipcode){
         try {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM address WHERE zip_code = ? AND street = ? AND number = ?", zipcode, street, number).next();
+            return databaseHelper.executeQuery( "SELECT * FROM address WHERE zip_code = ? AND street = ? AND number = ?", zipcode, street, number).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -69,7 +69,7 @@ public class AddressDAOService implements AddressDAO {
 
     private boolean isCity(String city, int zipcode){
         try  {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM city WHERE zip_code = ? AND city = ?", zipcode, city).next();
+            return databaseHelper.executeQuery( "SELECT * FROM city WHERE zip_code = ? AND city = ?", zipcode, city).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -78,7 +78,7 @@ public class AddressDAOService implements AddressDAO {
 
     private boolean isZipcode(int zipcode) {
         try {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM city WHERE zip_code = ?", zipcode).next();
+            return databaseHelper.executeQuery( "SELECT * FROM city WHERE zip_code = ?", zipcode).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());

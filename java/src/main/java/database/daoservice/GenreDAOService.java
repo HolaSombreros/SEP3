@@ -92,7 +92,16 @@ public class GenreDAOService implements GenreDAO {
 
     private boolean isGenreInBookGenre(int genreId, int itemId){
         try {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM book_genre WHERE genre_id = ? AND item_id = ?", genreId, itemId).next();
+            return databaseHelper.executeQuery("SELECT * FROM book_genre WHERE genre_id = ? AND item_id = ?", genreId, itemId).next();
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteBookGenre(int itemId) {
+        try {
+            databaseHelper.executeUpdate("DELETE FROM book_genre WHERE item_id = ?", itemId);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

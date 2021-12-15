@@ -115,7 +115,7 @@ public class CustomerDAOService implements CustomerDAO {
 
     private boolean isEmail(String email){
         try{
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM customer WHERE email = ?", email).next();
+            return databaseHelper.executeQuery( "SELECT * FROM customer WHERE email = ?", email).next();
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

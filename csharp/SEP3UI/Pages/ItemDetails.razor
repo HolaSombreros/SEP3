@@ -39,7 +39,7 @@ else {
                     <div>@item.Name</div>
                 </h2>
                 <div class="text-break">
-                    <strong>About:</strong> 
+                    <strong>About:</strong>
                     @item.Description
                 </div>
                 <div class="mt-2">
@@ -48,11 +48,16 @@ else {
                 </div>
                 @if (item.Category.Name.Equals("Book") && book != null) {
                     <div class="mt-2">
-                        <strong>Author: </strong>
+                        <div class="d-flex">
+                            <strong class="mr-2">Author: </strong>
+                             <div class="d-inline-block">
                         @foreach (Author author in book.Authors) {
-                            @author.FirstName
-                            @author.LastName
-                        }
+                           
+                                <span>@author.FirstName <span class="ml-1">@author.LastName</span></span>
+                                <br/>
+                            
+                        }</div>
+                        </div>
                     </div>
                     <div class="mt-2">
                         <strong>Publication Date: </strong>@book.PublicationDate.DateToString()
@@ -62,10 +67,15 @@ else {
                         @book.Language
                     </div>
                     <div class="mt-2">
-                        <strong>Genre: </strong>
-                        @foreach (Genre g in book.Genre) {
+                        <div class="d-flex">
+                            <strong class="mr-2">Genre: </strong>
+                             <div class="d-inline-block">
+                             @foreach (Genre g in book.Genre) {
                             @g.Name
+                            <br/>
                         }
+                             </div>
+                    </div>
                     </div>
                 }
                 <div class="mt-2">
@@ -435,5 +445,7 @@ else {
     private void View(int id, string categoryName) {
         navigationManager.NavigateTo($"EditItems/{id}/{categoryName}");
     }
+
+}
 
 }
