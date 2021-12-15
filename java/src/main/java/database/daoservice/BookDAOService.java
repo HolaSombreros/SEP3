@@ -126,7 +126,7 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book update(Book book) {
         try {
-
+            genreDAOService.deleteBookGenre(book.getId());
             for(Genre g : book.getGenre()) {
                 genreDAOService.update(g);
                 if(!isInBookGenre(book.getId(), g.getId()))
@@ -139,11 +139,14 @@ public class BookDAOService implements BookDAO {
             databaseHelper.executeUpdate("UPDATE book SET language = ?, publication_date = ? WHERE isbn = ?",
                     book.getLanguage(), Date.valueOf(book.getPublicationDate().getLocalDate()),
                     book.getISBN());
+            authorDAOService.deleteBookAuthor(book.getId());
             for(Author author: book.getAuthors()){
-                authorDAOService.update(author);
+                Author a = authorDAOService.update(author);
+                authorDAOService.updateBookAuthor(a, book.getId());
             }
             return read(book.getISBN(), book.getId());
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -161,7 +164,7 @@ public class BookDAOService implements BookDAO {
 
     private boolean isBook(String ISBN){
         try{
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM book WHERE isbn = ?", ISBN).next();
+            return databaseHelper.executeQuery("SELECT * FROM book WHERE isbn = ?", ISBN).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -171,7 +174,7 @@ public class BookDAOService implements BookDAO {
 
     private boolean isInBookGenre(int item_id, int genre_id) {
         try {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(),"SELECT * FROM book_genre WHERE item_id = ? AND genre_id = ?", item_id, genre_id).next();
+            return databaseHelper.executeQuery("SELECT * FROM book_genre WHERE item_id = ? AND genre_id = ?", item_id, genre_id).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());

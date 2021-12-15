@@ -1,0 +1,143 @@
+﻿@using SEP3UI.Authentication
+@using SEP3Library.Models
+@using SEP3Library.UIModels
+@using SEP3UI.Data
+@using System.ComponentModel.DataAnnotations
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@inject IItemService itemService
+@inject IWebHostEnvironment Environment
+@inject NavigationManager nav
+
+<EditForm Model="@itemModel" OnValidSubmit="AddItemAsync">
+    <DataAnnotationsValidator/>
+    <div class="container">
+        <div class="row">
+            <div class="offset-md-2 col-md-4 col-sm-12">
+                <img class="img-thumbnail rounded w-50" src="@itemModel.FilePath" alt="Image to be uploaded..."/>
+                <div class="form-group my-3">
+                    <label>Upload an image...</label>
+                    <InputFile class="form-control-file" OnChange="@((args) => SetInputFile(args))"/>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="itemModel.Name" maxlength="100"/>
+                    <ValidationMessage For="@(() => itemModel.Name)"/>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Description</label>
+                    <InputTextArea class="form-control" @bind-Value="itemModel.Description" maxlength="500" rows="5"/>
+                    <ValidationMessage For="@(() => itemModel.Description)"/>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <div class="form-group mb-3">
+                    <label>Price</label>
+                    <InputNumber class="form-control" @bind-Value="itemModel.Price" data-mdb-showcounter="true"/>
+                    <ValidationMessage For="@(() => itemModel.Price)"/>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Quantity</label>
+                    <InputNumber class="form-control" @bind-Value="itemModel.Quantity" data-mdb-showcounter="true"/>
+                    <ValidationMessage For="@(() => itemModel.Quantity)"/>
+                </div>
+                <div class="form-group mb-3">
+                    <label>Discount</label>
+                    <InputNumber class="form-control" @bind-Value="itemModel.Discount" data-mdb-showcounter="true"/>
+                    <ValidationMessage For="@(() => itemModel.Discount)"/>
+                </div>
+            </div>
+        </div>
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <div>@errorMessage</div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public Category? Category { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private IList<Category> categories;
+    private string? selectedCategory;
+    private IBrowserFile uploadedFile;
+
+    private ItemModel itemModel = new ItemModel();
+    private Item item;
+
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync() {
+        if (Id != 0) {
+            item = await itemService.GetItemAsync(Id);
+            itemModel.Name = item.Name;
+            itemModel.Description = item.Description;
+            itemModel.Category = item.Category;
+            itemModel.Discount = item.Discount;
+            itemModel.Price = item.Price;
+            itemModel.Status = item.Status;
+            itemModel.Quantity = item.Quantity;
+            itemModel.FilePath = item.FilePath;
+        } else {
+            itemModel.Category = Category;
+        }
+    }
+
+    private async Task AddItemAsync() {
+        try {
+            if (Id == 0) {
+                if (uploadedFile != null)
+                    itemModel.FilePath = "Images/" + uploadedFile.Name;
+                await itemService.AddItemAsync(itemModel);
+                errorMessage = "Item successfully added";
+                if (uploadedFile != null) {
+                    await UploadFile();
+                }
+                itemModel = new ItemModel() {
+                    Category = Category
+                };
+            } else {
+                await EditItemAsync();
+            }
+        } catch (Exception e) {
+            errorMessage = e.Message;
+        }
+    }
+
+    private async Task EditItemAsync() {
+        if (uploadedFile != null)
+            itemModel.FilePath = "Images/" + uploadedFile.Name;
+        await itemService.UpdateItemAsync(Id, itemModel);
+        errorMessage = "Item successfully edited";
+    }
+
+    private void SetInputFile(InputFileChangeEventArgs args) {
+        errorMessage = "";
+        IList<string> fileTypes = new List<string>() {
+            "jpg",
+            "jpeg",
+            "png"
+        };
+        if (!fileTypes.Any(ft => ft.Equals(args.File.ContentType.Split("/")[1]))) {
+            errorMessage = "You can only upload jpg, jpeg and png files";
+            uploadedFile = null;
+        } else {
+            uploadedFile = args.File;
+        }
+    }
+
+    private async Task UploadFile() {
+        long maxFileSize = 5000000;
+
+        var path = Path.Combine(Environment.ContentRootPath, @"wwwroot\Images", uploadedFile.Name);
+        await using FileStream fs = new(path, FileMode.Create);
+        await uploadedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+    }
+
+}

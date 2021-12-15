@@ -55,6 +55,7 @@ public class ClientHandler implements Runnable {
                 running = false;
             }
             catch (Exception e) {
+                System.out.println(e.getMessage());
                 ErrorMessage errorRequest = new ErrorMessage("error", "error");
                 errorRequest.setMessage(e.getMessage());
                 sendReply(errorRequest);

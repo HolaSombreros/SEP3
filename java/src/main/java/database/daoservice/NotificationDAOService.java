@@ -63,7 +63,7 @@ public class NotificationDAOService implements NotificationDAO {
 
     @Override public boolean isNotification(String text, MyDateTime time) {
         try {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(),"SELECT * FROM notification WHERE message = ? AND date_time = ?", text, time.getLocalDateTime()).next();
+            return databaseHelper.executeQuery("SELECT * FROM notification WHERE message = ? AND date_time = ?", text, time.getLocalDateTime()).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());

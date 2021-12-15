@@ -21,11 +21,7 @@ public class CustomerDAOService implements CustomerDAO {
 
     @Override public Customer create(String firstName, String lastName, String email, String password, String role, Address address, String phoneNumber) {
         try {
-            Address address1;
-            if(!addressDAOService.isAddress(address.getStreet(), address.getNumber(), address.getZipCode()))
-                address1 = addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
-            else
-                address1 = addressDAOService.read(address.getStreet(), address.getNumber(), address.getZipCode());
+            Address address1 =addressDAOService.create(address.getStreet(), address.getNumber(), address.getZipCode(), address.getCity());
             if(isEmail(email)){
                 throw new IllegalArgumentException("This email is already registered");
             }
@@ -92,9 +88,9 @@ public class CustomerDAOService implements CustomerDAO {
 
             customer.setAddress(address);
             databaseHelper.executeUpdate("UPDATE customer SET first_name = ?, last_name = ?, email = ?,"
-                            + " password = ?, role = ?::user_role, phone_number = ?, address_id = ? WHERE customer_id = ?;",
+                            + " password = ?, phone_number = ?, address_id = ? WHERE customer_id = ?;",
                     customer.getFirstName(), customer.getLastName(), customer.getEmail(), customer.getPassword(),
-                    customer.getRole(), customer.getPhoneNumber(), customer.getAddress().getId(), customer.getId());
+                    customer.getPhoneNumber(), customer.getAddress().getId(), customer.getId());
 
             return customer;
         } catch (SQLException e) {
@@ -115,7 +111,7 @@ public class CustomerDAOService implements CustomerDAO {
 
     private boolean isEmail(String email){
         try{
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM customer WHERE email = ?", email).next();
+            return databaseHelper.executeQuery( "SELECT * FROM customer WHERE email = ?", email).next();
         }catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

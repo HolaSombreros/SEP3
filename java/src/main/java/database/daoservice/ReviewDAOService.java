@@ -88,7 +88,7 @@ public class ReviewDAOService implements ReviewDAO {
     @Override
     public double getAverageRatingForItem(int itemId) {
         try{
-            ResultSet resultSet = databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT COALESCE(AVG(rating),0) AS avg_rating FROM review WHERE item_id = ?",itemId);
+            ResultSet resultSet = databaseHelper.executeQuery("SELECT COALESCE(AVG(rating),0) AS avg_rating FROM review WHERE item_id = ?",itemId);
             if(resultSet.next()){
                 return resultSet.getDouble("avg_rating");
             }

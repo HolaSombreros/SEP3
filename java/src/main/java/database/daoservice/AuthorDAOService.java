@@ -3,6 +3,8 @@ package database.daoservice;
 import database.daomodel.AuthorDAO;
 import database.daoservice.mapper.AuthorMapper;
 import model.Author;
+
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -15,16 +17,14 @@ public class AuthorDAOService implements AuthorDAO {
 
     @Override
     public Author create(String firsName, String lastName) {
-        try{
-            Author author = read(firsName,lastName);
-            if(author == null){
-                List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO author(first_name, last_name) VALUES (?,?);",firsName,lastName);
+        try {
+            Author author = read(firsName, lastName);
+            if (author == null) {
+                List<Integer> keys = databaseHelper.executeUpdateWithKeys("INSERT INTO author(first_name, last_name) VALUES (?,?);", firsName, lastName);
                 return read(keys.get(0));
-            }
-            else return author;
+            } else return author;
 
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -33,8 +33,7 @@ public class AuthorDAOService implements AuthorDAO {
     public Author read(int id) {
         try {
             return databaseHelper.mapObject(new AuthorMapper(), "SELECT * FROM author WHERE author_id = ?;", id);
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -43,18 +42,16 @@ public class AuthorDAOService implements AuthorDAO {
     public Author read(String firstName, String lastName) {
         try {
             return databaseHelper.mapObject(new AuthorMapper(), "SELECT * FROM author WHERE first_name = ? AND last_name = ?;", firstName, lastName);
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @Override
     public void updateBookAuthor(Author author, int itemId) {
-        try{
-            databaseHelper.executeUpdateWithKeys("INSERT INTO book_author VALUES (?,?)", itemId,author.getId());
-        }
-        catch (SQLException e){
+        try {
+            databaseHelper.executeUpdateWithKeys("INSERT INTO book_author VALUES (?,?)", itemId, author.getId());
+        } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -65,7 +62,7 @@ public class AuthorDAOService implements AuthorDAO {
             if (read(author.getId()) == null)
                 return create(author.getFirstName(), author.getLastName());
             else {
-                databaseHelper.executeUpdate("UPDATE author SET first_name = ?, last_name = ?", author.getFirstName(), author.getLastName());
+                databaseHelper.executeUpdate("UPDATE author SET first_name = ?, last_name = ? WHERE author_id = ?", author.getFirstName(), author.getLastName(), author.getId());
                 return read(author.getId());
             }
         } catch (SQLException e) {
@@ -75,12 +72,20 @@ public class AuthorDAOService implements AuthorDAO {
 
     @Override
     public List<Author> readAllAuthorsOfBook(int itemId) {
-        try{
-            return databaseHelper.mapList(new AuthorMapper(),"SELECT * FROM author JOIN book_author USING (author_id) WHERE item_id = ?",itemId);
-        }catch (SQLException e){
+        try {
+            return databaseHelper.mapList(new AuthorMapper(), "SELECT * FROM author JOIN book_author USING (author_id) WHERE item_id = ?", itemId);
+        } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
+    @Override
+    public void deleteBookAuthor(int itemId) {
+        try{
+            databaseHelper.executeUpdate("DELETE FROM book_author WHERE item_id = ?", itemId);
+        }catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 }
 

@@ -1,0 +1,17 @@
+﻿button {
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    color: #333;
+    background: #fff;
+    margin-bottom: 10px;
+    box-shadow: 0 3px 20px 0 #0000003b;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+.oi-trash:hover {
+    cursor: pointer;
+}
