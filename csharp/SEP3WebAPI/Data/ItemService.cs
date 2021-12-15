@@ -44,6 +44,10 @@ namespace SEP3WebAPI.Data {
             else throw new InvalidDataException("The category cannot be removed as long as there are items with the specific category");
         }
 
+        /**
+         * The method creates a new item based on item model
+         * The method calls also SendNotificationAsync to the customers that have the specific item in the wishlist if the item changes its status to "In Stock"
+         */
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             if (item == null) throw new InvalidDataException("Please provide an item of the proper format");
             Item toUpdate = await client.GetItemAsync(id);
@@ -73,6 +77,10 @@ namespace SEP3WebAPI.Data {
             return await client.UpdateItemAsync(toUpdate);
         }
 
+        /**
+         * The method creates a new book based on book model
+         * The method calls also SendNotificationAsync to the customers that have the specific book in the wishlist if the book changes its status to "In Stock"
+         */
         public async Task<Book> UpdateBookAsync(int id, BookModel book) {
             if (book == null) throw new InvalidDataException("Please provide an item of the proper format");
             Book toUpdate = await client.GetBookAsync(id);
@@ -144,6 +152,9 @@ namespace SEP3WebAPI.Data {
             return await client.AddItemAsync(i);
         }
 
+        /**
+         * The method creates a new book based on book model
+         */
         public async Task<Book> CreateBookAsync(BookModel itemModel) {
             if (itemModel == null) throw new InvalidDataException("Please specify a book of the proper format!");
             Book book = await client.GetBookBySpecificationsAsync(itemModel.Isbn);

@@ -252,7 +252,7 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpDelete]
         [Route("{customerId:int}/wishlist/{itemId:int}")]
-        public async Task<ActionResult> RemoveWishlistedItemAsync([FromRoute] int customerId, [FromRoute] int itemId) {
+        public async Task<ActionResult> RemoveWishlistItemAsync([FromRoute] int customerId, [FromRoute] int itemId) {
             try {
                 await service.RemoveWishlistItemAsync(customerId, itemId);
                 return Ok();

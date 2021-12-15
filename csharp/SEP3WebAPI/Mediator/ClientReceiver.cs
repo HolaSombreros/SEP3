@@ -15,20 +15,23 @@ namespace SEP3WebAPI.Mediator {
             this.client = client;
             stream = networkStream;
             running = true;
-            Run();
         }
 
-        private void Run() {
+        /**
+         * The method runs a thread that will run in a while and read messages from the server
+         * First the method handle the amount of data that will be sent and set the lenght and then it will handle the message
+         * The extra "/n" is replaced with an empty string
+         * The message is sent back to the client
+         */
+        public void Run() {
             thread = new Thread(() => {
                 while (running) {
                     try {
-                        // Handle amount of data that will be sent
                         byte[] response = new byte[16];
                         int bytesRead = stream.Read(response, 0, response.Length);
                         string result = Encoding.ASCII.GetString(response, 0, bytesRead);
                         result = result.Replace("\n", "");
                         
-                        // Handle the actual data
                         response = new byte[int.Parse(result) + 2];
                         bytesRead = stream.Read(response, 0, response.Length);
                         

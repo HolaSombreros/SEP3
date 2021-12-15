@@ -9,8 +9,8 @@ using SEP3WebAPI.Mediator;
 namespace SEP3WebAPI.Data {
     public class CustomerService : ICustomerService {
         private ICustomerClient customerClient;
-
-        public CustomerService( ICustomerClient customerClient) {
+        
+        public CustomerService(ICustomerClient customerClient) {
             this.customerClient = customerClient;
         }
         
@@ -45,6 +45,9 @@ namespace SEP3WebAPI.Data {
             return customer;
         }
 
+        /**
+         * The method creates a new customer based on customer model 
+         */
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
             if (customer == null) 
                 throw new InvalidDataException("Please provide a customer of the proper format");
@@ -67,6 +70,9 @@ namespace SEP3WebAPI.Data {
             return await customerClient.AddCustomerAsync(c);
         }
 
+        /**
+         * The method creates a new customer based on customer model 
+         */
         public async Task<Customer> UpdateCustomerAsync(int customerId, UpdateCustomerModel customer) {
             Customer updated = await customerClient.GetCustomerAsync(customerId);
             if (updated == null) throw new NullReferenceException($"No such customer found with id: {customerId}");

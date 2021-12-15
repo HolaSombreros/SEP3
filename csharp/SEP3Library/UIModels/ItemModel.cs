@@ -24,7 +24,7 @@ namespace SEP3Library.UIModels {
         public int Discount { get; set; }
 
         [Required(ErrorMessage = "Please enter a quantity")]
-        [Range(0,Int32.MaxValue)]
+        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
 
         [Required(ErrorMessage = "Please select a status")]
