@@ -16,6 +16,7 @@ public class CustomerMessage extends Message {
     public CustomerMessage(String service, String type) {
         super(service, type);
         customers = new ArrayList<>();
+        notifications = new ArrayList<>();
     }
 
     public int getIndex() {
