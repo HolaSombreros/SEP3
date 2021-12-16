@@ -30,10 +30,11 @@
                 </thead>
                 <tbody>
                 @foreach (Order order in orders) {
+                    decimal totalPrice = Math.Round(order.Items.Sum(i => i.Price * i.Quantity) + orderService.ShoppingCart.ShippingPrice, 2, MidpointRounding.ToEven);
                     <tr @onclick="@(() => View(order.Id))" class="family-row">
                         <td>@order.Id</td>
                         <td>@GetAmount(order)</td>
-                        <td>@order.Total</td>
+                        <td>@totalPrice</td>
                         <td>@order.FirstName @order.LastName</td>
                         <td>@order.Email</td>
                         <td>@order.Address.ToString()</td>
