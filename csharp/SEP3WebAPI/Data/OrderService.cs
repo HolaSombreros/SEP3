@@ -101,7 +101,17 @@ namespace SEP3WebAPI.Data {
 
      
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
-            return await orderClient.GetOrdersByCustomerAsync(customerId, index);
+            IList<Order> orders = await orderClient.GetOrdersByCustomerAsync(customerId, index);
+            foreach (Order order in orders) {
+                if (order.OrderStatus == OrderStatus.Pending) {
+                    DateTime orderDate = new DateTime(order.DateTime.Year, order.DateTime.Month, order.DateTime.Day);
+                    if (DateTime.Now.Subtract(orderDate).CompareTo(new TimeSpan(3, 0, 0, 0)) > 0) {
+                        order.OrderStatus = OrderStatus.Finished;
+                        await orderClient.UpdateOrderAsync(order);
+                    }
+                }
+            }
+            return orders;
         }
 
         public async Task UpdateOrderItemsAsync(Order order) {
