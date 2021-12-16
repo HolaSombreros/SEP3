@@ -8,7 +8,7 @@ using SEP3Library.UIModels;
 namespace SEP3UI.Data {
     public class OrderService : IOrderService {
         private readonly IRestService restService;
-        public ShoppingCart ShoppingCart { get; init; }
+        public ShoppingCart ShoppingCart { get; }
 
         public OrderService(IRestService restService) {
             this.restService = restService;

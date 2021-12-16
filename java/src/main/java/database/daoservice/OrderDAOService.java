@@ -7,6 +7,7 @@ import model.*;
 import model.enums.ItemStatus;
 import model.enums.OrderStatus;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -29,8 +30,10 @@ public class OrderDAOService implements OrderDAO {
                 dateTime.getLocalDateTime(), status.toString(), firstName, lastName, email, customerId == 0 ? null : customerId);
 
             for (Item item : items) {
+                BigDecimal discount = BigDecimal.valueOf((double) (100 - item.getDiscount()) / 100);
                 databaseHelper.executeUpdate("INSERT INTO purchase_item (purchase_id, item_id, quantity, price) VALUES (?,?,?,?);", keys.get(0), item.getId(), item.getQuantity(),
-                    item.getPrice());
+                        item.getPrice().multiply(discount));
+
                 Item item1 = itemDAOService.read(item.getId());
                 item1.setQuantity(item1.getQuantity() - item.getQuantity());
                 if (item1.getQuantity() == 0)

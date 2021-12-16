@@ -102,7 +102,7 @@ else {
                     <strong>Rating:</strong> @rating
                 </div>
                 <div class="mt-2">
-                    <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCart(item))">Add to Shopping Cart</button>
+                    <button class="btn btn-round btn-dark" disabled="@isDisabled" @onclick="(() => AddToShoppingCartAsync(item))">Add to Shopping Cart</button>
                     <AuthorizeView Policy="@Policies.IsAdmin">
                         <button class="btn btn-round btn-dark" @onclick="(() => View(item.Id, item.Category.Name))">
                             Edit Item
@@ -123,7 +123,7 @@ else {
                 </h5>
                 <i class="text-gray">@review.DateTime.Day/@review.DateTime.Month/@review.DateTime.Year</i>
                 @if (customerId == review.Customer.Id) {
-                    <a class="close" @onclick="() => RemoveReview(review.ItemId)">&#10005;</a>
+                    <a class="close" @onclick="() => RemoveReviewAsync(review.ItemId)">&#10005;</a>
                     <a class="close mr-3 oi oi-pencil" @onclick="() => ChangeToEdit()"/>
                     @if (review.Comment != null && !review.Comment.Equals("")) {
                         <div class="form-group">
@@ -132,7 +132,7 @@ else {
                         </div>
                     }
                     if (isEditing) {
-                        <EditForm Model="review" Context="EditYourOwnReview" OnValidSubmit="EditReview">
+                        <EditForm Model="review" Context="EditYourOwnReview" OnValidSubmit="EditReviewAsync">
                             <DataAnnotationsValidator/>
                             <form>
                                 <div class="form-group">
@@ -250,7 +250,7 @@ else {
                     </div>
                     <br/>
                     <div class="mt-3 text-center">
-                        <button class="btn btn-round btn-dark" @onclick="AddReview"> Submit Review</button>
+                        <button class="btn btn-round btn-dark" @onclick="AddReviewAsync"> Submit Review</button>
                     </div>
                 </div>
             </EditForm>
@@ -335,7 +335,7 @@ else {
         FilterCustomerReview();
     }
 
-    private async Task AddToShoppingCart(Item itemToAdd) {
+    private async Task AddToShoppingCartAsync(Item itemToAdd) {
         Item i = orderService.ShoppingCart.Add(itemToAdd);
         if (customerId != -1)
             await itemService.AddToShoppingCartAsync(i, customerId);
@@ -351,7 +351,7 @@ else {
         await itemService.AddToWishlistAsync(customerId, item);
     }
 
-    private async Task AddReview() {
+    private async Task AddReviewAsync() {
         try {
             review.DateTime = new MyDateTime(new DateTime());
             Customer customer = await customerService.GetCustomerAsync(customerId);
@@ -375,7 +375,7 @@ else {
         }
     }
 
-    private async Task RemoveReview(int id) {
+    private async Task RemoveReviewAsync(int id) {
         try {
             Review r = reviews.First(r => r.ItemId == id);
             await itemService.RemoveReviewAsync(r.ItemId, r.Customer.Id);
@@ -387,7 +387,7 @@ else {
         }
     }
 
-    private async Task EditReview() {
+    private async Task EditReviewAsync() {
         try {
             review.DateTime = new MyDateTime(new DateTime());
             Customer customer = await customerService.GetCustomerAsync(customerId);
@@ -431,8 +431,8 @@ else {
         }
     }
 
-    private void AddRating(int i) {
-        review.Rating = i;
+    private void AddRating(int r) {
+        review.Rating = r;
     }
 
     private void SetDisabledState() {

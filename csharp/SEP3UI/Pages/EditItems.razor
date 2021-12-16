@@ -11,7 +11,7 @@
 <div class="text-center my-3">
     <h2>Edit Items</h2>
 </div>
-@switch (CategoryName) {
+@switch (@CategoryName) {
     case "Book":
         <BookComponent Id="Id"/>
         break;
@@ -31,4 +31,8 @@
     public string CategoryName { get; set; }
     
     private string errorMessage;
+
+    protected override async Task OnInitializedAsync() {
+        NavBarEvent.Invoke();
+    }
 }

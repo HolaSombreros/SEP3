@@ -48,6 +48,7 @@
         catch (SQLException e) {
             errorMessage = e.Message;
         }
+        NavBarEvent.Invoke();
     }
 
     private void SetSelectedCategory(ChangeEventArgs args) {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -39,7 +38,5 @@ namespace SEP3UI.Data {
         public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
             return await restService.GetAsync<IList<Notification>>($"customers/{customerId}/notifications?index={index}");
         }
-
-       
     }
 }
