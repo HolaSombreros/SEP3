@@ -1,0 +1,45 @@
+﻿.footer_bar {
+    width: 100%;
+    height: 56px;
+    bottom: 0;
+    z-index: 2
+}
+
+.footer_bar_contact {
+    display: inline-block
+}
+
+.footer_bar_contact_item {
+    font-size: 16px;
+    line-height: 56px;
+    margin-right: 40px
+}
+
+.footer_bar_contact_item a {
+    color: #fce9f1;
+    -webkit-transition: all 200ms ease;
+    -moz-transition: all 200ms ease;
+    -ms-transition: all 200ms ease;
+    -o-transition: all 200ms ease;
+    transition: all 200ms ease
+}
+
+.footer_bar_contact_item a:hover {
+    color: #8a8a8a
+}
+
+.footer_bar_icon {
+    display: inline-block;
+    margin-right: 14px;
+}
+
+span, img {
+    color:#fce9f1;
+}
+
+#bottom_bar {
+    overflow: visible;
+    display: inline-block;
+    width: 100%;
+    z-index:2;
+}
