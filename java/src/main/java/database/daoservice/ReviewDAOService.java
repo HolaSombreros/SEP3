@@ -39,7 +39,6 @@ public class ReviewDAOService implements ReviewDAO {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -50,7 +49,6 @@ public class ReviewDAOService implements ReviewDAO {
             return databaseHelper.mapObject(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE customer_id = ? AND item_id =?", customer_id, item_id);
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -58,10 +56,9 @@ public class ReviewDAOService implements ReviewDAO {
     @Override
     public List<Review> readByItem(int item_id, int index) {
         try {
-            return databaseHelper.mapList(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE item_id =? ORDER BY customer_id DESC LIMIT 3 OFFSET 3 * ? ", item_id, index);
+            return databaseHelper.mapList(new ReviewMapper(),"SELECT * FROM review JOIN customer USING(customer_id) JOIN item USING(item_id) WHERE item_id = ? ORDER BY customer_id DESC LIMIT 3 OFFSET 3 * ? ", item_id, index);
         }
         catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -69,13 +66,11 @@ public class ReviewDAOService implements ReviewDAO {
     @Override
     public Review update(Review review) {
         try {
-            System.out.println(review.getRating());
             databaseHelper.executeUpdate("UPDATE review SET rating = ?, comment = ?, date_time = ? WHERE customer_id =? AND item_id = ?",review.getRating(),review.getComment(),
                     LocalDate.of(review.getDateTime().getYear(), review.getDateTime().getMonth(), review.getDateTime().getDay()),review.getCustomer().getId(), review.getItemId());
             return read(review.getCustomer().getId(), review.getItemId());
         }
         catch (SQLException e){
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -86,7 +81,6 @@ public class ReviewDAOService implements ReviewDAO {
             databaseHelper.executeUpdate("DELETE FROM review WHERE item_id = ? AND customer_id = ?;", review.getItemId(), review.getCustomer().getId());
         }
         catch(SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -94,14 +88,13 @@ public class ReviewDAOService implements ReviewDAO {
     @Override
     public double getAverageRatingForItem(int itemId) {
         try{
-            ResultSet resultSet = databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT COALESCE(AVG(rating),0) AS avg_rating FROM review WHERE item_id = ?",itemId);
+            ResultSet resultSet = databaseHelper.executeQuery("SELECT COALESCE(AVG(rating),0) AS avg_rating FROM review WHERE item_id = ?",itemId);
             if(resultSet.next()){
                 return resultSet.getDouble("avg_rating");
             }
             return 0;
 
         }catch(SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }

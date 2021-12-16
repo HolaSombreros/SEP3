@@ -3,7 +3,6 @@
 @using SEP3Library.UIModels
 @using SEP3UI.Data
 @using System.Security.Claims
-@using System.Threading
 @using SEP3Library.Models
 @inject NavigationManager NavigationManager
 @inject IOrderService orderService
@@ -12,17 +11,15 @@
 @inject ICustomerService customerService
 
 <EditForm Model="@orderModel" OnValidSubmit="@HandleValidSubmitAsync">
-    <div class="container">
-        <fieldset>
-            <legend class="d-flex justify-content-center m-3">
+    <div class="container mt-3">
+            <div class="text-center">
                 <h2>Payout Form</h2>
-            </legend>
+            </div>
             <DataAnnotationsValidator/>
-            <div class="form-group d-flex justify-content-center">
+            <div class="form-group d-flex justify-content-center mt-3">
                 <label class="col-md-4 control-label">First name</label>
                 <div class="col-md-4 input-group">
                     <div class="input-group">
-                        <span class="input-group-addon"></span>
                         <InputText @bind-Value="orderModel.FirstName" placeholder="First name" class="form-control"/>
                     </div>
                     <ValidationMessage For="@(()=> orderModel.FirstName)"/>
@@ -32,8 +29,7 @@
                 <label class="col-md-4 control-label">Last name</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-addon"></span>
-                        <InputText @bind-Value="orderModel.LastName" name="last_name" placeholder="Last name" class="form-control" type="text"></InputText>
+                        <InputText @bind-Value="orderModel.LastName" name="last_name" placeholder="Last name" class="form-control" type="text"/>
                     </div>
                      <ValidationMessage For="@(()=> orderModel.LastName)"/>
                 </div>
@@ -42,7 +38,6 @@
                 <label class="col-md-4 control-label">E-Mail</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-addon"></span>
                         <InputText @bind-Value="orderModel.Email" name="email" placeholder="E-Mail" class="form-control" type="text"/>
                     </div>
                      <ValidationMessage For="@(()=> orderModel.Email)"/>
@@ -52,7 +47,6 @@
                 <label class="col-md-4 control-label">Street</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-addon"></span>
                         <InputText @bind-Value="orderModel.Street" name="email" placeholder="Street" class="form-control" type="text"/>
                     </div>
                      <ValidationMessage For="@(()=> orderModel.Street)"/>
@@ -62,8 +56,6 @@
                 <label class="col-md-4 control-label">Number</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-addon">
-                        </span>
                         <InputText @bind-Value="orderModel.Number" name="number" placeholder="Number" class="form-control" type="text"/>
                     </div>
                      <ValidationMessage For="@(()=> orderModel.Number)"/>
@@ -73,19 +65,15 @@
                 <label class="col-md-4 control-label">Zip code</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-addon">
-                        </span>
                         <InputNumber @bind-Value="orderModel.ZipCode" name="zipcode" placeholder="Zip code" class="form-control" type="text"/>
                     </div>
                     <ValidationMessage For="@(()=> orderModel.ZipCode)"/>
                 </div>
             </div>
              <div class="form-group d-flex justify-content-center">
-
-                <label class="col-md-4 control-label">City</label>
+                 <label class="col-md-4 control-label">City</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <span class="input-group-addon"></span>
                         <InputText @bind-Value="orderModel.City" name="email" placeholder="City" class="form-control" type="text"/>
                     </div>
                     <ValidationMessage For="@(()=> orderModel.City)"/>
@@ -93,14 +81,13 @@
             </div>
             <div class="form-group d-flex justify-content-center">
                 <label class="col-md-4 control-label"></label>
-                <div class="col-md-4"><br>
-                    <button class="btn btn-primary">SUBMIT</button>
+                <div class="col-md-4 mt-3">
+                    <button class="btn btn-primary">Submit</button>
                 </div>
             </div>
-            <div class="card d-flex align-items-center text-danger">
+            <div class="text-danger text-center">
                 <div>@errorMessage</div>
             </div>
-        </fieldset>
     </div>
 </EditForm>
 
@@ -109,6 +96,9 @@
     private string errorMessage;
     private int customerId;
 
+    /**
+     * For customer, it gets their information and automatically displays it in the fields
+     */
     protected override async Task OnInitializedAsync() {
         try {
             customerId = int.Parse((await authStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue("Id"));
@@ -120,12 +110,16 @@
             orderModel.Number = customer.Address.Number;
             orderModel.ZipCode = customer.Address.ZipCode;
             orderModel.Street = customer.Address.Street;
-        } catch (Exception e) {
+        } 
+        catch (Exception e) {
             customerId = -1;
         }
         orderModel.Items = orderService.ShoppingCart.Items;
     }
     
+    /**
+     * Creates an order if the information is valid and removes the items from the shopping cart
+     */
     private async Task HandleValidSubmitAsync() {
         try {
             if (customerId != -1) {
@@ -135,7 +129,6 @@
             }
             Order order =  await orderService.CreateOrderAsync(orderModel);
             orderService.ShoppingCart.Clear();
-            errorMessage = "Successful purchase!";
             NavigationManager.NavigateTo($"/orders/{order.Id}");
         }
         catch (Exception e) {

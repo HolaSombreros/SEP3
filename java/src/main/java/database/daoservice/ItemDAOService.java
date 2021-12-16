@@ -22,7 +22,7 @@ public class ItemDAOService implements ItemDAO {
     }
 
     @Override
-    public Item create(String name, String description, BigDecimal price, Category category, int quantity, String imgFilepath){
+    public Item create(String name, String description, BigDecimal price, int discount, Category category, int quantity, String imgFilepath){
         try {
             List<Integer> categoryKeys = null;
             List<Integer> keys= null;
@@ -30,12 +30,12 @@ public class ItemDAOService implements ItemDAO {
             if(existing== null) {
                 categoryKeys = databaseHelper.executeUpdateWithKeys("INSERT INTO category (name) VALUES (?)", category.getName());
                 keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category_id, discount, quantity, status, image_filepath) VALUES (?,?,?,?,?,?,?::item_status,?)",
-                        name, description,price,categoryKeys.get(0),0,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
+                        name, description,price,categoryKeys.get(0),discount,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
 
             }
             else{
                keys = databaseHelper.executeUpdateWithKeys("INSERT INTO item (name, description, price, category_id, discount, quantity, status, image_filepath) VALUES (?,?,?,?,?,?,?::item_status,?)",
-                        name, description,price,existing.getId(),0,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
+                        name, description,price,existing.getId(),discount,quantity, ItemStatus.INSTOCK.toString(), imgFilepath);
             }
             return read(keys.get(0));
 
@@ -79,6 +79,19 @@ public class ItemDAOService implements ItemDAO {
     }
 
 
+    /**
+     * Executes a specific query and returns a list of items based on the filtering needed
+     * The filtering is done based on the fields passed as arguments
+     * All values except for the required one will be null, index is exempt from this constraint
+     * @param index - always 0 or a higher value
+     * @param category
+     * @param priceOrder
+     * @param ratingOrder
+     * @param discountOrder
+     * @param statusOrder
+     * @param search
+     * @return
+     */
     @Override
     public List<Item> readByIndex(int index, String category, String priceOrder, String ratingOrder, String discountOrder, String statusOrder, String search) {
         try{
@@ -192,17 +205,6 @@ public class ItemDAOService implements ItemDAO {
         }
     }
 
-
-    @Override
-    public List<Item> readByItemName(String itemName, int index) {
-        try{
-            return databaseHelper.mapList(new ItemMapper(),"SELECT *, category.name AS category_name, item.name AS item_name FROM item JOIN category USING(category_id) WHERE lower(item.name) ~ lower(?) ORDER BY item_id DESC LIMIT 21 OFFSET 21 * ?",itemName, index);
-        }
-        catch (SQLException e){
-            return null;
-//            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
 
 
     @Override public void addToShoppingCart(Item item, int customerId) {

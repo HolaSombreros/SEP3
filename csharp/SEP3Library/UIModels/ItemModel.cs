@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using System.Text.Json.Serialization;
 using SEP3Library.Models;
 
@@ -15,7 +13,7 @@ namespace SEP3Library.UIModels {
         
         [Required(ErrorMessage = "Please enter a description")]
         [MaxLength(500, ErrorMessage = "The description cannot exceed 500 characters")]
-        [MinLength(10,ErrorMessage = "The description has to be longer than 10 characters")]
+        [MinLength(5,ErrorMessage = "The description has to be longer than 5 characters")]
         public string Description { get; set; }
         
         [Required(ErrorMessage = "Please enter a price")]
@@ -26,12 +24,12 @@ namespace SEP3Library.UIModels {
         public int Discount { get; set; }
 
         [Required(ErrorMessage = "Please enter a quantity")]
-        [Range(0,Int32.MaxValue)]
+        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
-        
+
         [Required(ErrorMessage = "Please select a status")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public ItemStatus Status { get; set; }
+        public ItemStatus Status { get; set; } = ItemStatus.InStock;
         
         [Required(ErrorMessage = "Please select a category")]
         public Category Category { get; set; }

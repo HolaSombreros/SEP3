@@ -3,134 +3,126 @@
 @using SEP3UI.Data
 @inject NavigationManager navigationManager
 @inject ICustomerService customerService
-<div class="container">
-<div class="card" style="max-width:100% !important ">
-    <div class="row border-top border-bottom align-items-center">
-        <!-- field box -->
-        <div class="col-lg-8">
-            <div class="form-group d-flex justify-content-center">
-                <h2 class="retroshd">Become an Under Covers supporter</h2>
-            </div>
-            <EditForm Model="@customerModel" OnValidSubmit="@RegisterAsync">
-                <DataAnnotationsValidator/>
-                <fieldset>
-                    <div class="form-group d-flex justify-content-center pt-3">
-                        <label class="col-md-4 control-label">First Name</label>
-                        <div class="col-md-4 input-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.FirstName" placeholder="FirstName" class="form-control"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.FirstName)"/>
-                        </div>
-                    </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Last Name</label>
-                        <div class="col-md-4 input-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.LastName" placeholder="LastName" class="form-control"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.LastName)"/>
-                        </div>
-                    </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Email</label>
-                        <div class="col-md-4 input-group">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.Email" name="email" placeholder="E-mail" class="form-control"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.Email)"/>
-                        </div>
-                    </div>
-                    <!-- password box -->
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Password</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.Password" name="password" placeholder="Password" class="form-control" type="password"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.Password)"/>
-                        </div>
-                    </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Confirm Password</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.ConfirmPassword" name="ConfirmPassword" placeholder="Confirm Password" class="form-control" type="password"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.ConfirmPassword)"/>
-                        </div>
-                    </div>
-                    <!-- float to right -->
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Street Name</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.Street" name="streetName" placeholder="Street" class="form-control" type="text"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.Street)"/>
-                        </div>
-                    </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Street Number</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.Number" name="number" placeholder="Number" class="form-control" type="text"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.Number)"/>
-                        </div>
-                    </div>
-
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Zip Code</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputNumber @bind-Value="customerModel.ZipCode" name="zipcode" placeholder="Zipcode" class="form-control" type="text"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.ZipCode)"/>
-                        </div>
-                    </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">City</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.City" name="city" placeholder="City" class="form-control" type="text"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.City)"/>
-                        </div>
-                    </div>
-                    <div class="form-group d-flex justify-content-center">
-                        <label class="col-md-4 control-label">Phone</label>
-                        <div class="col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"></span>
-                                <InputText @bind-Value="customerModel.PhoneNumber" name="phoneNumber" placeholder="PhoneNumber" class="form-control" type="text"/>
-                            </div>
-                            <ValidationMessage For="@(() => customerModel.PhoneNumber)"/>
-                        </div>
-                    </div>
-                </fieldset>
-                <div class="form-group d-flex justify-content-center">
-                    <button class="btn btn-primary">Register</button>
-                </div>
-                <div class="card d-flex" style="color:red">@errorMessage</div>
-            </EditForm>
-            <!-- register link -->
-        </div>
-         <!-- logo box -->
-        <div class="col-lg-4">
-            <img src="Images/Under Covers.png" class="img-fluid" alt="Under Covers Logo" style="height: 100%; width: 100%"/>
-        </div>
+<div class="container mt-3">
+    <div class="form-group text-center">
+        <h2>Become an Under Covers supporter</h2>
     </div>
-</div>
+    <div class="card" style="max-width:100% !important ">
+        <EditForm Model="@customerModel" OnValidSubmit="@RegisterAsync">
+            <div class="row align-items-center">
+                <!-- field box -->
+                <div class="col-lg-8 col-md-12">
+                    <DataAnnotationsValidator/>
+                    <fieldset>
+                        <div class="form-group d-flex justify-content-center pt-3">
+                            <label class="col-md-4 control-label">First Name</label>
+                            <div class="col-md-4 input-group">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.FirstName" placeholder="FirstName" class="form-control"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.FirstName)"/>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Last Name</label>
+                            <div class="col-md-4 input-group">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.LastName" placeholder="LastName" class="form-control"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.LastName)"/>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Email</label>
+                            <div class="col-md-4 input-group">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.Email" name="email" placeholder="E-mail" class="form-control"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.Email)"/>
+                            </div>
+                        </div>
+                        <!-- password box -->
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Password</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.Password" name="password" placeholder="Password" class="form-control" type="password"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.Password)"/>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Confirm Password</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.ConfirmPassword" name="ConfirmPassword" placeholder="Confirm Password" class="form-control" type="password"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.ConfirmPassword)"/>
+                            </div>
+                        </div>
+                        <!-- float to right -->
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Street Name</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.Street" name="streetName" placeholder="Street" class="form-control" type="text"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.Street)"/>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Street Number</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.Number" name="number" placeholder="Number" class="form-control" type="text"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.Number)"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Zip Code</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <InputNumber @bind-Value="customerModel.ZipCode" name="zipcode" placeholder="Zipcode" class="form-control" type="text"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.ZipCode)"/>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">City</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.City" name="city" placeholder="City" class="form-control" type="text"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.City)"/>
+                            </div>
+                        </div>
+                        <div class="form-group d-flex justify-content-center">
+                            <label class="col-md-4 control-label">Phone</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <InputText @bind-Value="customerModel.PhoneNumber" name="phoneNumber" placeholder="PhoneNumber" class="form-control" type="text"/>
+                                </div>
+                                <ValidationMessage For="@(() => customerModel.PhoneNumber)"/>
+                            </div>
+                        </div>
+                    </fieldset>
+
+
+                </div>
+                <!-- register link -->
+                <!-- logo box -->
+                <div class="col-lg-4">
+                    <img src="Images/Under Covers.png" class="img-fluid" alt="Under Covers Logo" style="height: 100%; width: 100%"/>
+                </div>
+            </div>
+            <div class="form-group d-flex justify-content-center">
+                <button class="btn btn-primary">Register</button>
+            </div>
+        </EditForm>
+        <div class="text-center" style="color:red">@errorMessage</div>
+    </div>
 </div>
 
 @code {
@@ -147,4 +139,5 @@
             errorMessage = e.Message;
         }
     }
+
 }

@@ -30,7 +30,6 @@ public class FAQCommand implements Command {
             methods.get(request.getType()).run();
             return reply;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -41,17 +40,17 @@ public class FAQCommand implements Command {
     }
 
     private void get() {
-        FAQ faq = databaseManager.getFAQDAOService().read(request.getId());
-        reply.setFAQ(faq);
+        FAQ faq = databaseManager.getFAQDAOService().read(request.getFaqs().get(0).getId());
+        reply.getFaqs().add(0,faq);
     }
 
     private void add() {
-        FAQ faq = request.getFAQ();
+        FAQ faq = request.getFaqs().get(0);
         FAQ created = databaseManager.getFAQDAOService().add(faq.getCategory(), faq.getQuestion(), faq.getAnswer(), faq.getCreatorId());
-        reply.setFAQ(created);
+        reply.getFaqs().add(0,created);
     }
 
     private void delete() {
-        databaseManager.getFAQDAOService().delete(request.getId());
+        databaseManager.getFAQDAOService().delete(request.getFaqs().get(0).getId());
     }
 }

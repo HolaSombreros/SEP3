@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -10,13 +10,11 @@ using SEP3WebAPI.Mediator;
 namespace SEP3WebAPI.Data {
     public class CustomerService : ICustomerService {
         private ICustomerClient customerClient;
-        private IItemClient itemClient;
-        public CustomerService(IItemClient itemClient, ICustomerClient customerClient) {
-            this.itemClient = itemClient;
+        
+        public CustomerService(ICustomerClient customerClient) {
             this.customerClient = customerClient;
         }
-
-
+        
         public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
             Customer customer = await customerClient.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
@@ -36,19 +34,25 @@ namespace SEP3WebAPI.Data {
         }
 
          public async Task<Customer> GetCustomerAsync(string email, string password) {
-            Customer customer = await customerClient.GetCustomerAsync(email, password);
+             Customer customer = await customerClient.GetCustomerAsync(email, password);
+            
             return customer;
         }
 
         public async Task<Customer> GetCustomerAsync(int customerId) {
             Customer customer = await customerClient.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
+           
             return customer;
         }
 
+        /**
+         * The method creates a new customer based on customer model 
+         */
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
-            if (customer == null) throw new InvalidDataException("Please provide a customer of the proper format");
-            if (!new EmailAddressAttribute().IsValid(customer.Email)) throw new InvalidDataException("Please enter a valid email address");
+            if (customer == null) 
+                throw new InvalidDataException("Please provide a customer of the proper format");
+            
             Customer c = new Customer() {
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
@@ -63,9 +67,16 @@ namespace SEP3WebAPI.Data {
                 Password = customer.Password,
                 Role = customer.Role 
             };
+
+            if (!(await customerClient.GetAdminsAsync()).Any())
+                c.Role = "Administrator";
+            
             return await customerClient.AddCustomerAsync(c);
         }
 
+        /**
+         * The method creates a new customer based on customer model 
+         */
         public async Task<Customer> UpdateCustomerAsync(int customerId, UpdateCustomerModel customer) {
             Customer updated = await customerClient.GetCustomerAsync(customerId);
             if (updated == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
@@ -89,6 +100,5 @@ namespace SEP3WebAPI.Data {
         public async Task<IList<Customer>> GetCustomersByIndexAsync(int index) {
             return await customerClient.GetCustomersByIndexAsync(index);
         }
-        
     }
 }

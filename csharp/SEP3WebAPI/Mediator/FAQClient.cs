@@ -15,34 +15,38 @@ namespace SEP3WebAPI.Mediator {
         public async Task<IList<FAQ>> GetFrequentlyAskedQuestionsAsync() {
             Message req = new FAQMessage() {
                 Type = "getAll",
-                Service = "faq"
             };
-            return ((FAQMessage) client.Send(req)).FAQs;
+            return ((FAQMessage) client.Send(req)).Faqs;
         }
         
         public async Task<FAQ> GetFrequentlyAskedQuestionAsync(int id) {
             Message req = new FAQMessage() {
                 Type = "get",
-                Service = "faq",
-                Id = id
+                Faqs = new List<FAQ> {
+                    new() {
+                    Id = id
+                    }
+                }
             };
-            return ((FAQMessage) client.Send(req)).FAQ;
+            return ((FAQMessage) client.Send(req)).Faqs[0];
         }
         
         public async Task<FAQ> AddFrequentlyAskedQuestionAsync(FAQ faq) {
             Message req = new FAQMessage() {
                 Type = "add",
-                Service = "faq",
-                FAQ = faq
+                Faqs = new List<FAQ> {faq}
             };
-            return ((FAQMessage) client.Send(req)).FAQ;
+            return ((FAQMessage) client.Send(req)).Faqs[0];
         }
         
         public async Task DeleteFrequentlyAskedQuestionAsync(int id) {
             Message req = new FAQMessage() {
                 Type = "delete",
-                Service = "faq",
-                Id = id
+                Faqs = new List<FAQ> {
+                    new() {
+                        Id = id
+                    }
+                }
             };
             client.Send(req);
         }

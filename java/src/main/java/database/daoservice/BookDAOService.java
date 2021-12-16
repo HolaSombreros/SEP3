@@ -28,8 +28,28 @@ public class BookDAOService implements BookDAO {
         genreDAOService = new GenreDAOService(url, username, password);
     }
 
+    /**
+     * Creates a new book with the values passed as arguments if it does not exist in the database
+     * Checks if the authors are in the database and adds them if they are not
+     * Adds the genres if they are not stored in the database
+     * returns the Book object
+     *
+     * @param name
+     * @param description
+     * @param price
+     * @param discount
+     * @param category
+     * @param quantity
+     * @param imgFilePath
+     * @param ISBN
+     * @param authors
+     * @param language
+     * @param genre
+     * @param publicationDate
+     * @return
+     */
     @Override
-    public Book create(String name, String description, BigDecimal price, Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
+    public Book create(String name, String description, BigDecimal price, int discount,Category category, int quantity, String imgFilePath, String ISBN, List<Author> authors, String language, List<Genre> genre, LocalDate publicationDate) {
         try {
             for(Author author: authors){
                 Author a = authorDAOService.create(author.getFirstName(), author.getLastName());
@@ -38,7 +58,7 @@ public class BookDAOService implements BookDAO {
             for(Genre g: genre)
                 genreDAOService.create(g.getName());
             if(!isBook(ISBN)) {
-                Item item = itemDAOService.create(name,description,price,category,quantity,imgFilePath);
+                Item item = itemDAOService.create(name,description,price,discount,category,quantity,imgFilePath);
                 databaseHelper.executeUpdate("INSERT INTO book (ISBN, item_id, language, publication_date) VALUES (?,?,?,?)",
                         ISBN, item.getId(), language, publicationDate);
                 List<Genre> existing = new ArrayList<>();
@@ -106,7 +126,7 @@ public class BookDAOService implements BookDAO {
     @Override
     public Book update(Book book) {
         try {
-
+            genreDAOService.deleteBookGenre(book.getId());
             for(Genre g : book.getGenre()) {
                 genreDAOService.update(g);
                 if(!isInBookGenre(book.getId(), g.getId()))
@@ -119,31 +139,14 @@ public class BookDAOService implements BookDAO {
             databaseHelper.executeUpdate("UPDATE book SET language = ?, publication_date = ? WHERE isbn = ?",
                     book.getLanguage(), Date.valueOf(book.getPublicationDate().getLocalDate()),
                     book.getISBN());
+            authorDAOService.deleteBookAuthor(book.getId());
             for(Author author: book.getAuthors()){
-                authorDAOService.update(author);
+                Author a = authorDAOService.update(author);
+                authorDAOService.updateBookAuthor(a, book.getId());
             }
             return read(book.getISBN(), book.getId());
         } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @Override
-    public void delete(Book book) {
-
-    }
-
-    @Override
-    public List<Book> readAll() {
-        try {
-            List<Book> books = databaseHelper.mapList(new BookMapper(), "SELECT *, item.name AS item_name, category.name AS category_name FROM book JOIN item USING (item_id) JOIN category USING(category_id);");
-            for(Book book: books) {
-                book.setGenre(genreDAOService.getGenresOfBook(book.getId()));
-                book.setAuthors(authorDAOService.readAllAuthorsOfBook(book.getId()));
-            }
-            return books;
-        }
-        catch (SQLException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -161,7 +164,7 @@ public class BookDAOService implements BookDAO {
 
     private boolean isBook(String ISBN){
         try{
-            return databaseHelper.executeQuery(databaseHelper.getConnection(), "SELECT * FROM book WHERE isbn = ?", ISBN).next();
+            return databaseHelper.executeQuery("SELECT * FROM book WHERE isbn = ?", ISBN).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -171,7 +174,7 @@ public class BookDAOService implements BookDAO {
 
     private boolean isInBookGenre(int item_id, int genre_id) {
         try {
-            return databaseHelper.executeQuery(databaseHelper.getConnection(),"SELECT * FROM book_genre WHERE item_id = ? AND genre_id = ?", item_id, genre_id).next();
+            return databaseHelper.executeQuery("SELECT * FROM book_genre WHERE item_id = ? AND genre_id = ?", item_id, genre_id).next();
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());

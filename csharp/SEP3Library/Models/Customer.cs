@@ -5,17 +5,11 @@ namespace SEP3Library.Models {
     public class Customer {
         public int Id { get; set; }
 
-        [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "Please enter an email address")]
-        public string Email {
-            get => email;
-            set {
-                if (!new EmailAddressAttribute().IsValid(value)) throw new InvalidDataException("Please enter a valid email address");
-                email = value;
-            }
-        }
-        private string email;
-        
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
         [DataType(DataType.Password)]
         public string Password { get; set; }
         

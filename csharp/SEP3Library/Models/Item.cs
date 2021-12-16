@@ -10,20 +10,16 @@ namespace SEP3Library.Models {
         public string Description { get; set; }
 
         [JsonIgnore]
-        public decimal PriceIncludingDiscount => Math.Round(price * ((decimal) (100 - Discount) / 100), 2, MidpointRounding.ToEven);
+        public decimal PriceIncludingDiscount => Math.Round(Price * ((decimal) (100 - Discount) / 100), 2, MidpointRounding.ToEven);
 
-        public decimal Price {
-            get => price;
-            set => price = value;
-        }
-        private decimal price;
+        public decimal Price { get; set; }
         
         public Category Category { get; set; }
         
         [Range(0, 100)]
         public int Discount { get; set; }
         
-        [Range(0, Int32.MaxValue)]
+        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
         
         [JsonConverter(typeof(JsonStringEnumConverter))]

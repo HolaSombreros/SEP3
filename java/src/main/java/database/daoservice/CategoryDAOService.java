@@ -27,8 +27,7 @@ public class CategoryDAOService implements CategoryDAO {
 
     @Override public Category read(int categoryId) {
         try {
-            Category category = databaseHelper.mapObject(new CategoryMapper(), "SELECT * FROM category WHERE category_id = ?;", categoryId);
-            return category;
+            return databaseHelper.mapObject(new CategoryMapper(), "SELECT * FROM category WHERE category_id = ?;", categoryId);
         } catch (SQLException e) {
             throw new IllegalStateException(e.getMessage());
         }
@@ -37,8 +36,7 @@ public class CategoryDAOService implements CategoryDAO {
     @Override
     public Category read(String categoryName) {
         try{
-            Category category = databaseHelper.mapObject(new CategoryMapper(), "SELECT * FROM category WHERE lower(name) = lower(?)", categoryName);
-            return category;
+            return databaseHelper.mapObject(new CategoryMapper(), "SELECT * FROM category WHERE lower(name) = lower(?)", categoryName);
         }
         catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());

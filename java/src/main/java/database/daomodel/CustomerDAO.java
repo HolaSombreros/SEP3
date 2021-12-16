@@ -14,6 +14,5 @@ public interface CustomerDAO {
     List<Customer> customerWithWishlistItem(int itemId);
     Customer update(Customer customer);
     Customer updateRole(Customer customer);
-    void delete(Customer customer);
 
 }

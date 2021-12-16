@@ -9,14 +9,12 @@ public class ItemMessage extends Message {
     private List<Item> items;
     private List<Category> categories;
     private List<Genre> genres;
-    private Item item;
     private Book book;
     private Customer customer;
     private int[] itemsIds;
     private String priceOrder;
     private List<Review> reviews;
     private String ratingOrder;
-    private Review review;
     private double averageRating;
     private String discountOrder;
     private String statusOrder;
@@ -35,14 +33,6 @@ public class ItemMessage extends Message {
 
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
-    }
-
-    public Review getReview() {
-        return review;
-    }
-
-    public void setReview(Review review) {
-        this.review = review;
     }
 
     public List<Genre> getGenres() {
@@ -83,14 +73,6 @@ public class ItemMessage extends Message {
 
     public void setItems(List<Item> items) {
         this.items = items;
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
     }
 
     public Book getBook() {

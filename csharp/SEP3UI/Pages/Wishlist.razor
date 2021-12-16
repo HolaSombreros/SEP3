@@ -24,8 +24,7 @@
                     <div class="col-md-8 col-sm-12">
                         <ul class="list-unstyled list-inline">
                             <li class="mb-2">
-                                <i class="oi oi-heart mr-3" @onclick="@(() => PerformUnfavoriteAsync(item))"/>
-                                <a href="">[@item.Category.Name]</a>
+                                <i class="oi oi-heart mr-3" @onclick="@(() => PerformUnfavoriteAsync(item))"/> @item.Category.Name
                             </li>
                             <li class="mb-2">@item.Description</li>
                             <li>Price: <span class="text-info" style="font-size: 1.5em;">@item.PriceIncludingDiscount DKK</span>
@@ -69,10 +68,9 @@
     private async Task PerformAddItemToCart(Item item) {
         Item added = orderService.ShoppingCart.Add(item);
         
-        if (added.Quantity == 1) {
+        if (added.Quantity == 1) 
             await itemService.AddToShoppingCartAsync(added, customerId);
-        } else {
+        else 
             await itemService.UpdateShoppingCartAsync(added, added.Id, customerId);
-        }
     }
 }

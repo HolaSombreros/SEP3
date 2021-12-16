@@ -20,7 +20,6 @@ namespace SEP3UI.Data {
             T obj = JsonSerializer.Deserialize<T>(responseContent, new JsonSerializerOptions() {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             });
-            
             return obj;
         }
         

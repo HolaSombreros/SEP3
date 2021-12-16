@@ -8,11 +8,10 @@ import java.util.List;
 
 public class CustomerMessage extends Message {
     private int index;
-    private Customer customer;
-    private List<Customer> customers;
-    private Notification notification;
-    private List<Notification> notifications;
     private int itemId;
+    private List<Customer> customers;
+    private List<Notification> notifications;
+
 
     public CustomerMessage(String service, String type) {
         super(service, type);
@@ -35,28 +34,12 @@ public class CustomerMessage extends Message {
         this.customers = customers;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public List<Notification> getNotifications() {
         return notifications;
     }
 
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
-    }
-
-    public Notification getNotification() {
-        return notification;
-    }
-
-    public void setNotification(Notification notification) {
-        this.notification = notification;
     }
 
     public int getItemId() {

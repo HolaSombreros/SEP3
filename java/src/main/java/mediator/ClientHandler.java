@@ -55,6 +55,7 @@ public class ClientHandler implements Runnable {
                 running = false;
             }
             catch (Exception e) {
+                System.out.println(e.getMessage());
                 ErrorMessage errorRequest = new ErrorMessage("error", "error");
                 errorRequest.setMessage(e.getMessage());
                 sendReply(errorRequest);
@@ -62,6 +63,10 @@ public class ClientHandler implements Runnable {
         }
     }
 
+
+    /**
+     * Deserializes the reply from the client and creates a new ItemCommand object
+     */
     private void itemServiceRun() {
         reply = gson.fromJson(received, ItemMessage.class);
         command = new ItemCommand(databaseManager);
@@ -82,11 +87,15 @@ public class ClientHandler implements Runnable {
         command = new FAQCommand(databaseManager);
     }
 
+
+    /**
+     * converts the reply to a json
+     * notifies the client of the length of the json and then sends the json to the client
+     * @param reply
+     */
     private void sendReply(Message reply) {
         String replyGson = gson.toJson(reply);
         out.println(replyGson.length());
-//        System.out.println(">>>>> " + replyGson.length());
         out.println(replyGson);
-//        System.out.println(replyGson);
     }
 }

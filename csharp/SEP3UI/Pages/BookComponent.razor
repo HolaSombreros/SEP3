@@ -1,0 +1,295 @@
+﻿@using SEP3Library.Models
+@using SEP3Library.UIModels
+@using System.ComponentModel.DataAnnotations
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using SEP3UI.Authentication
+@using SEP3UI.Data
+@attribute [Authorize(Policy = Policies.IsAdmin)]
+@inject IItemService itemService
+@inject IWebHostEnvironment Environment
+@inject NavigationManager nav
+
+@if (bookModel.Authors != null) {
+    <EditForm Model="@bookModel" OnValidSubmit="AddBookAsync">
+        <DataAnnotationsValidator/>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <img class="img-thumbnail rounded w-50" src="@bookModel.FilePath" alt="Image to be uploaded..."/>
+                    <div class="form-group my-3">
+                        <label>Upload an image...</label>
+                        <InputFile class="form-control-file" OnChange="@((args) => SetInputFile(args))"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Name</label>
+                        <InputText class="form-control" @bind-Value="bookModel.Name" maxlength="100"/>
+                        <ValidationMessage For="@(() => bookModel.Name)"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Description</label>
+                        <InputTextArea class="form-control" @bind-Value="bookModel.Description" maxlength="500" rows="5"/>
+                        <ValidationMessage For="@(() => bookModel.Description)"/>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label>Price</label>
+                        <InputNumber class="form-control" @bind-Value="bookModel.Price" data-mdb-showcounter="true"/>
+                        <ValidationMessage For="@(() => bookModel.Price)"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Quantity</label>
+                        <InputNumber class="form-control" @bind-Value="bookModel.Quantity" data-mdb-showcounter="true"/>
+                        <ValidationMessage For="@(() => bookModel.Quantity)"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Discount</label>
+                        <InputNumber class="form-control" @bind-Value="bookModel.Discount" data-mdb-showcounter="true"/>
+                        <ValidationMessage For="@(() => bookModel.Discount)"/>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label>ISBN</label>
+                        <InputText class="form-control" @bind-Value="bookModel.Isbn" data-mdb-showcounter="true"/>
+                        <ValidationMessage For="@(() => bookModel.Isbn)"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Author's first name</label>
+                        <InputText class="form-control" @bind-Value="authorFirstName" data-mdb-showcounter="true"/>
+                        <ValidationMessage For="@(() => authorFirstName)"/>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Author's last name</label>
+                        <InputText class="form-control" @bind-Value="authorLastName" data-mdb-showcounter="true"/>
+                        <ValidationMessage For="@(() => authorLastName)"/>
+                    </div>
+                    <i @onclick="AddAuthorsClicked" class="btn btn-outline-primary mb-3">Add author</i>
+                    <table class="table table-striped mt-3">
+                        <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (Author author in bookModel.Authors) {
+                            <tr class="family-row">
+                                <td>@author.FirstName</td>
+                                <td>@author.LastName</td>
+                                <td>
+                                    <i @onclick="@(() => RemoveAuthorClicked(author))" class="oi oi-trash" style="color:red"></i>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="form-group mb-3">
+                        <label>Book language</label>
+                        <InputText class="form-control" @bind-Value="bookModel.Language" data-mdb-showcounter="true"/>
+                        <ValidationMessage For="@(() => bookModel.Language)"/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label>Publication date</label>
+                        <InputDate class="form-control" @bind-Value="bookModel.PublicationDate"/>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Book genre</label>
+                        <InputText class="form-control" @bind-Value="genreName"/>
+                        <ValidationMessage For="@(() => genreName)"/>
+                    </div>
+                    <i @onclick="AddGenreClicked" class="btn btn-outline-primary mb-3">Add genre</i>
+                    <div class="text-center mb-3">
+                        <select @onchange="@((args) => SetSelectedGenre(args))">
+                            <option selected hidden>Select a genre</option>
+                            @foreach (Genre g in genres) {
+                                <option value="@g.Name">@g.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Remove</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (Genre g in selectedGenres) {
+                            <tr>
+                                <td>@g.Name</td>
+                                <td>
+                                    <i @onclick="@(() => RemoveGenreClicked(g))" class="oi oi-trash" style="color:red"></i>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-primary">Submit</button>
+                <span class="text-danger">@errorMessage</span>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public Category? Category { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    private IList<Genre> genres = new List<Genre>();
+    private string? selectedGenreName;
+    private string? selectedCategory;
+    private List<Genre> selectedGenres = new();
+    private BookModel bookModel = new BookModel();
+    private Book book;
+    private string errorMessage;
+    private IBrowserFile uploadedFile;
+
+    private string authorFirstName;
+    private string authorLastName;
+    private string genreName;
+
+    protected override async Task OnInitializedAsync() {
+        genres = await itemService.GetGenresAsync();
+        bookModel.Category = Category;
+        if (Id != 0) {
+            book = await itemService.GetBookAsync(Id);
+            bookModel.Name = book.Name;
+            bookModel.Description = book.Description;
+            bookModel.Category = book.Category;
+            bookModel.Discount = book.Discount;
+            bookModel.Price = book.Price;
+            bookModel.Status = book.Status;
+            bookModel.Quantity = book.Quantity;
+            bookModel.Isbn = book.Isbn;
+            bookModel.Authors = book.Authors;
+            bookModel.Genre = book.Genre;
+            bookModel.Language = book.Language;
+            bookModel.FilePath = book.FilePath;
+            bookModel.PublicationDate = new DateTime(book.PublicationDate.Year, book.PublicationDate.Month, book.PublicationDate.Day, book.PublicationDate.Hour,
+                book.PublicationDate.Minute, book.PublicationDate.Second);
+            
+            foreach (Genre g in book.Genre)
+                selectedGenres.Add(g);
+        }
+    }
+
+    private void SetInputFile(InputFileChangeEventArgs args) {
+        errorMessage = "";
+        IList<string> fileTypes = new List<string>() {
+            "jpg",
+            "jpeg",
+            "png"
+        };
+        if (!fileTypes.Any(ft => ft.Equals(args.File.ContentType.Split("/")[1]))) {
+            errorMessage = "You can only upload jpg, jpeg and png files";
+            uploadedFile = null;
+        }
+        else {
+            uploadedFile = args.File;
+        }
+    }
+
+    private async Task UploadFileAsync() {
+        long maxFileSize = 5000000;
+
+        var path = Path.Combine(Environment.ContentRootPath, @"wwwroot\Images", uploadedFile.Name);
+        await using FileStream fs = new(path, FileMode.Create);
+        await uploadedFile.OpenReadStream(maxFileSize).CopyToAsync(fs);
+    }
+
+    private async Task AddBookAsync() {
+        try {
+            if (Id == 0) {
+                bookModel.Genre = selectedGenres;
+                if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1)
+                    throw new Exception("Please input a genre or author");
+                if (uploadedFile != null) bookModel.FilePath = "Images/" + uploadedFile.Name;
+                if (bookModel.FilePath == null) throw new Exception("Please upload an item image");
+                await itemService.AddBookAsync(bookModel);
+                errorMessage = "Book successfully added";
+                if (uploadedFile != null) {
+                    await UploadFileAsync();
+                }
+                bookModel = new BookModel() {
+                    Category = Category
+                };
+            }
+            else {
+                await EditBookAsync();
+            }
+        }
+        catch (Exception e) {
+            errorMessage = e.Message;
+            uploadedFile = null;
+        }
+    }
+
+    private async Task EditBookAsync() {
+        if (bookModel != null && bookModel.Category.Name.Equals("Book")) {
+            bookModel.Genre = selectedGenres;
+            if (bookModel.Genre.Count < 1 || bookModel.Authors.Count < 1) {
+                throw new Exception("Please input a genre or author");
+            }
+            if (uploadedFile != null) bookModel.FilePath = "Images/" + uploadedFile.Name;
+            if (bookModel.FilePath == null) throw new Exception("Please upload an item image");
+            await itemService.UpdateBookAsync(Id, bookModel);
+            errorMessage = "Book successfully edited";
+        }
+    }
+
+    private void SetSelectedGenre(ChangeEventArgs args) {
+        selectedGenreName = args.Value.ToString();
+        Genre g = new Genre() {
+            Name = selectedGenreName
+        };
+        Genre found = selectedGenres.FirstOrDefault(i => i.Name.ToLower().Equals(g.Name.ToLower()));
+        if (found == null)
+            selectedGenres.Add(g);
+        bookModel.Genre = selectedGenres;
+        selectedGenreName = null;
+    }
+
+    private void AddAuthorsClicked() {
+        if (!((authorFirstName == null || authorLastName == null) || (authorFirstName.Equals("") || authorFirstName.Trim().Equals(""))
+              && authorLastName.Equals("") || authorLastName.Trim().Equals(""))) {
+            Author author = new Author() {
+                FirstName = authorFirstName,
+                LastName = authorLastName
+            };
+            bookModel.Authors.Add(author);
+            authorFirstName = null;
+            authorLastName = null;
+        }
+    }
+
+    private void RemoveAuthorClicked(Author author) {
+        bookModel.Authors.Remove(author);
+    }
+
+    private void RemoveGenreClicked(Genre genre) {
+        selectedGenres.Remove(genre);
+        bookModel.Genre.Remove(genre);
+    }
+
+    private void AddGenreClicked() {
+        if (!(genreName == null || genreName.Equals("") || genreName.Trim().Equals(""))) {
+            Genre genre = new Genre() {
+                Name = genreName
+            };
+            selectedGenres.Add(genre);
+            genres.Add(genre);
+            genreName = null;
+        }
+    }
+}

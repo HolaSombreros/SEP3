@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,11 +21,14 @@ namespace SEP3WebAPI.Data {
             this.customerClient = customerClient;
         }
 
-        
+        /**
+         * The method checks if there are enough items for completing the order
+         * The method calls also SendNotificationAsync to the administrators that a specific item's quantity dropped to 50 meaning low on stock
+         * The method creates a new order based on order model
+         */
         public async Task<Order> CreateOrderAsync(OrderModel orderModel) {
             if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
             if (orderModel.Items == null || orderModel.Items.Count < 1) throw new InvalidDataException("Your order must contain at least 1 item");
-            if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
             int[] itemIds = new int[orderModel.Items.Count];
             for (int i = 0; i < itemIds.Length; i++) {
                 itemIds[i] = orderModel.Items[i].Id;
@@ -47,15 +51,8 @@ namespace SEP3WebAPI.Data {
                     Notification notification = new Notification() {
                         Text = $"The Item {items[i].Name} is low on stock",
                         Status = "Unread",
-                        Time = new MyDateTime() {
-                            Year = DateTime.Now.Year,
-                            Month = DateTime.Now.Month,
-                            Day = DateTime.Now.Day,
-                            Hour = DateTime.Now.Hour,
-                            Minute = DateTime.Now.Minute,
-                            Second = DateTime.Now.Second
-                        }
-                    };
+                        Time = new MyDateTime(new DateTime())
+                        };
                     foreach (Customer customer in await customerClient.GetAdminsAsync()) {
                         await customerClient.SendNotificationAsync(customer, notification);
                     }
@@ -72,14 +69,7 @@ namespace SEP3WebAPI.Data {
                     City = orderModel.City,
                     ZipCode = orderModel.ZipCode
                 },
-                DateTime = new MyDateTime() {
-                    Year = DateTime.Now.Year,
-                    Month = DateTime.Now.Month,
-                    Day = DateTime.Now.Day,
-                    Hour = DateTime.Now.Hour,
-                    Minute = DateTime.Now.Minute,
-                    Second = DateTime.Now.Second
-                },
+                DateTime = new MyDateTime(new DateTime()), 
                 Items = orderModel.Items,
                 OrderStatus = OrderStatus.Pending,
                 CustomerId = orderModel.CustomerId
@@ -88,27 +78,55 @@ namespace SEP3WebAPI.Data {
             return await orderClient.CreateOrderAsync(order);
         }
 
+        /**
+         * The pending orders created 3 days ago are set to finished
+         */
         public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
-            return await orderClient.GetOrdersAsync(index, id, status);
+            IList<Order> orders = await orderClient.GetOrdersAsync(index, id, status);
+            foreach (Order order in orders) {
+                if (order.OrderStatus == OrderStatus.Pending) {
+                    DateTime orderDate = new DateTime(order.DateTime.Year, order.DateTime.Month, order.DateTime.Day);
+                    if (DateTime.Now.Subtract(orderDate).CompareTo(new TimeSpan(3, 0, 0, 0)) > 0) {
+                        order.OrderStatus = OrderStatus.Finished;
+                        await orderClient.UpdateOrderAsync(order);
+                    }
+                }
+            }
+            return orders;
         }
 
         public async Task<Order> GetOrderAsync(int orderId) {
             return await orderClient.GetOrderAsync(orderId);
         }
 
-     
+        /**
+         * The pending orders created 3 days ago are set to finished
+         */
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
-            return await orderClient.GetOrdersByCustomerAsync(customerId, index);
+            IList<Order> orders = await orderClient.GetOrdersByCustomerAsync(customerId, index);
+            foreach (Order order in orders) {
+                if (order.OrderStatus == OrderStatus.Pending) {
+                    DateTime orderDate = new DateTime(order.DateTime.Year, order.DateTime.Month, order.DateTime.Day);
+                    if (DateTime.Now.Subtract(orderDate).CompareTo(new TimeSpan(3, 0, 0, 0)) > 0) {
+                        order.OrderStatus = OrderStatus.Finished;
+                        await orderClient.UpdateOrderAsync(order);
+                    }
+                }
+            }
+            return orders;
         }
 
         public async Task UpdateOrderItemsAsync(Order order) {
            await orderClient.UpdateOrderItemsAsync(order);
         }
         
-        
+        /**
+         * The method creates a new order based on order model
+         */
         public async Task<Order> UpdateOrderAsync(UpdateOrderModel orderModel) {
-            if (orderModel == null) throw new InvalidDataException("Please specify an order of the proper format");
-            if (!new EmailAddressAttribute().IsValid(orderModel.Email)) throw new InvalidDataException("Please enter a valid email address");
+            if (orderModel == null) 
+                throw new InvalidDataException("Please specify an order of the proper format");
+            
             Order order = new Order() {
                 FirstName = orderModel.FirstName,
                 LastName = orderModel.LastName,
@@ -123,6 +141,7 @@ namespace SEP3WebAPI.Data {
                 CustomerId = orderModel.CustomerId,
                 Id = orderModel.OrderId
             };
+            
             return await orderClient.UpdateOrderAsync(order);
         }
     }

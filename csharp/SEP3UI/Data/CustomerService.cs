@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -13,23 +12,19 @@ namespace SEP3UI.Data {
         }
         
         public async Task<Customer> GetCustomerAsync(string email, string password) {
-            Customer customer = await restService.GetAsync<Customer>($"customers?email={email}&password={password}");
-            return customer;
+            return await restService.GetAsync<Customer>($"customers?email={email}&password={password}");
         }
 
         public async Task<Customer> GetCustomerAsync(int customerId) {
-            Customer customer = await restService.GetAsync<Customer>($"customers/{customerId}");
-            return customer;
+            return await restService.GetAsync<Customer>($"customers/{customerId}");
         }
 
         public async Task<Customer> AddCustomerAsync(CustomerModel customer) {
-            Customer added = await restService.PostAsync<CustomerModel, Customer>(customer, "customers");
-            return added;
+            return await restService.PostAsync<CustomerModel, Customer>(customer, "customers");
         }
 
         public async Task<Customer> UpdateCustomerAsync(int customerId, UpdateCustomerModel customer) {
-            Customer updated = await restService.PutAsync<UpdateCustomerModel, Customer>(customer, $"customers/{customerId}");
-            return updated;
+            return await restService.PutAsync<UpdateCustomerModel, Customer>(customer, $"customers/{customerId}");
         }
 
         public async Task<Notification> UpdateSeenNotificationAsync(int customerId, Notification notification) {
@@ -42,10 +37,6 @@ namespace SEP3UI.Data {
 
         public async Task<IList<Notification>> GetNotificationsAsync(int customerId, int index) {
             return await restService.GetAsync<IList<Notification>>($"customers/{customerId}/notifications?index={index}");
-        }
-
-        public async Task<IList<Order>> GetOrdersByCustomer(int customerId, int index) {
-            return await restService.GetAsync<IList<Order>>($"Customers/{customerId}/order?index={index}");
         }
     }
 }

@@ -2,17 +2,18 @@ package mediator.message;
 
 import model.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderMessage extends Message {
     private int index;
-    private Order order;
     private List<Order> orders;
     private int customerId;
     private String status;
 
     public OrderMessage(String service, String type) {
         super(service, type);
+        orders = new ArrayList<>();
     }
 
     public int getIndex() {
@@ -31,13 +32,6 @@ public class OrderMessage extends Message {
         this.orders = orders;
     }
 
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
     public int getCustomerId() {
         return customerId;
     }

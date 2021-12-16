@@ -20,7 +20,7 @@ namespace SEP3WebAPI.Controllers {
 
         [HttpPost]
         // Endpoint = /orders
-        public async Task<ActionResult> CreateOrderAsync([FromBody] OrderModel orderModel) {
+        public async Task<ActionResult<Order>> CreateOrderAsync([FromBody] OrderModel orderModel) {
             try {
                 Order newOrder = await service.CreateOrderAsync(orderModel);
                 return Created($"/{newOrder.Id}", newOrder);
@@ -36,12 +36,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 IList<Order> orders = await service.GetOrdersAsync(index, id, status);
                 return Ok(orders);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.Message);
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -67,12 +64,9 @@ namespace SEP3WebAPI.Controllers {
             try {
                 Order order = await service.UpdateOrderAsync(updateOrderModel);
                 return Ok(order);
-            }
-            catch (NullReferenceException e) {
+            } catch (NullReferenceException e) {
                 return NotFound(e.Message);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.Message);
+            } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }
         }
@@ -104,6 +98,19 @@ namespace SEP3WebAPI.Controllers {
 
                 await service.UpdateOrderItemsAsync(order);
                 return Ok(order);
+            } catch (Exception e) {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
+        [HttpGet]
+        [Route("{customerId:int}/order")]
+        public async Task<ActionResult<IList<Order>>> GetAllOrdersByCustomer([FromRoute] int customerId, [FromQuery] int index) {
+            try {
+                IList<Order> orders = await service.GetOrdersByCustomerAsync(customerId, index);
+                return Ok(orders);
+            } catch (NullReferenceException e) {
+                return NotFound(e.Message);
             } catch (Exception e) {
                 return StatusCode(500, e.Message);
             }

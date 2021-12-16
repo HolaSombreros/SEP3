@@ -30,7 +30,6 @@ namespace SEP3WebAPI.Controllers {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
-            
             try {
                 FAQ created = await service.AddFrequentlyAskedQuestionAsync(faq);
                 return Created($"/{created.Id}", created);

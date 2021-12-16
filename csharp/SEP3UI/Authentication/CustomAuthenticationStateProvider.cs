@@ -29,7 +29,8 @@ namespace SEP3UI.Authentication {
                     cached = JsonSerializer.Deserialize<Customer>(json);
                     identity = SetupClaims(cached);
                 }
-            } else {
+            } 
+            else {
                 identity = SetupClaims(cached);
             }
 

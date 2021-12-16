@@ -24,12 +24,11 @@ namespace SEP3WebAPI.Data {
         Task<Review> UpdateReviewAsync(Review review);
         Task<double> GetAverageReviewAsync(int itemId);
         Task<Item> AddToWishlistAsync(int customerId, int itemId);
-        Task RemoveWishlistedItemAsync(int customerId, int itemId);
+        Task RemoveWishlistItemAsync(int customerId, int itemId);
         Task<Item> AddToShoppingCartAsync(Item item, int customerId);
         Task<IList<Item>> GetShoppingCartAsync(int customerId);
         Task<Item> UpdateShoppingCartAsync(Item item, int itemId, int customerId);
         Task RemoveFromShoppingCartAsync(int itemId, int customerId);
         Task<IList<Item>> GetCustomerWishlistAsync(int customerId);
-
     }
 }

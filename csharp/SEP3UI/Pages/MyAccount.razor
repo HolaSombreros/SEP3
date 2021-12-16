@@ -10,7 +10,7 @@
 @if (oldCustomer == null) {
     <em>Loading...</em>
 } else {
-    <div class=" mt-3 offset-md-3 col-md-6 col-sm-12">
+    <div class="mt-3 offset-md-3 col-md-6 col-sm-12">
         <h2>Personal details</h2>
         <hr/>
         <EditForm Model="@updatedCustomer" OnValidSubmit="UpdateAccountBtnClickedAsync">
@@ -66,7 +66,7 @@
             </div>
             
             <div class="mt-5">
-                <h4>Account security</h4>
+                <h2>Account security</h2>
                 <hr/>
                 <div class="form-group mb-3">
                     <label><strong>Old password</strong></label>
@@ -106,7 +106,7 @@
             </div>
             
             <div class="mt-5">
-                <h4>Address</h4>
+                <h2>Address</h2>
                 <hr/>
                 <div class="form-group mb-3">
                     <label><strong>Street name</strong></label>
@@ -186,7 +186,7 @@
             Number = oldCustomer.Address.Number,
             ZipCode = oldCustomer.Address.ZipCode,
             City = oldCustomer.Address.City,
-            PhoneNumber = oldCustomer.PhoneNumber
+            PhoneNumber = oldCustomer.PhoneNumber,
         };
     }
 
@@ -211,7 +211,7 @@
                 Number = updatedCustomer.Number,
                 ZipCode = updatedCustomer.ZipCode,
                 City = updatedCustomer.City,
-                PhoneNumber = updatedCustomer.PhoneNumber
+                PhoneNumber = updatedCustomer.PhoneNumber,
             };
         } catch (Exception e) {
             resultMessage = e.Message;

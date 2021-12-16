@@ -29,7 +29,7 @@
             </li>
             <AuthorizeView>
                 <NotAuthorized>
-                    <button class="btn btn-info" @onclick="NavigateToLogin">Login</button>
+                    <button class="btn btn-info" @onclick="@NavigateToLogin">Login</button>
                 </NotAuthorized>
                 <Authorized>
                     <li class="nav-item dropdown">
@@ -70,13 +70,13 @@
                                 <NavLink class="nav-link dropdown-item text-center text-md-left" href="/wishlist" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-list" aria-hidden="true"></span> My Wishlist
                                 </NavLink>
-                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/MyOrders" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-list-rich" aria-hidden="true"></span> My Orders
                                 </NavLink>
                                 <NavLink class="nav-link dropdown-item text-center text-md-left" href="/account" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-person" aria-hidden="true"></span> My Account
                                 </NavLink>
-                                <NavLink class="nav-link dropdown-item text-center text-md-left" @onclick="NavigateToLogout">
+                                <NavLink class="nav-link dropdown-item text-center text-md-left" href="/logout" @onclick="CollapseDropdownMenus">
                                     <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
                                 </NavLink>
                             </div>
@@ -97,7 +97,7 @@
                             <NavLink class="nav-link dropdown-item text-center text-md-left" href="/AddItems" @onclick="CollapseDropdownMenus">
                                 <span class="oi oi-plus" aria-hidden="true"></span> Add New Item
                             </NavLink>
-                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList" @onclick="CollapseDropdownMenus">
+                            <NavLink class="nav-link dropdown-item text-center text-md-left" href="/OrderList"  @onclick="CollapseDropdownMenus">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Orders
                             </NavLink>
                             <NavLink class="nav-link dropdown-item text-center text-md-left" href="/CustomerList" @onclick="CollapseDropdownMenus">
@@ -110,31 +110,15 @@
         </ul>
     </div>
 </nav>
-@* <div class="hello"> *@
-@* <div class="top_bar" id="bottom_bar"> *@
-@*     <div class="container"> *@
-@*         <div class="row"> *@
-@*             <div class="col d-flex flex-row"> *@
-@*                 <div class="top_bar_contact_item"> *@
-@*                     <div class="top_bar_icon"><img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1560918577/phone.png" alt=""></div>+91 9823 132 111 *@
-@*                 </div> *@
-@*                 <div class="top_bar_contact_item"> *@
-@*                     <div class="top_bar_icon"> *@
-@*                         <img src="https://res.cloudinary.com/dxfq3iotg/image/upload/v1560918597/mail.png" alt=""> *@
-@*                     </div><a href="mailme@undercovers.com">mailme@undercovers.com</a> *@
-@*                 </div> *@
-@*             </div> *@
-@*         </div> *@
-@*     </div> *@
-@* </div> *@
-@* </div> *@
 
 @code {
     private bool collapseNavMenu = true;
     private bool collapseAccountDropdownMenu = true;
     private bool collapseAdminDropdownMenu = true;
     private bool collapseNotificationDropdownMenu = true;
+    private static bool isAdmin = true;
 
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
     private int notificationIndex;
     private IList<Notification> notifications;
     private string hiddenClass = "";
@@ -176,7 +160,7 @@
         }
     }
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    
 
     private void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
@@ -220,10 +204,5 @@
 
     private void NavigateToLogin() {
         nav.NavigateTo("/login");
-    }
-
-    private void NavigateToLogout() {
-        CollapseDropdownMenus();
-        nav.NavigateTo("/logout");
     }
 }

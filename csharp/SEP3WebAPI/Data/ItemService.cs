@@ -44,6 +44,10 @@ namespace SEP3WebAPI.Data {
             else throw new InvalidDataException("The category cannot be removed as long as there are items with the specific category");
         }
 
+        /**
+         * The method creates a new item based on item model
+         * The method calls also SendNotificationAsync to the customers that have the specific item in the wishlist if the item changes its status to "In Stock"
+         */
         public async Task<Item> UpdateItemAsync(int id, ItemModel item) {
             if (item == null) throw new InvalidDataException("Please provide an item of the proper format");
             Item toUpdate = await client.GetItemAsync(id);
@@ -53,14 +57,30 @@ namespace SEP3WebAPI.Data {
             toUpdate.Category = item.Category;
             toUpdate.Price = item.Price;
             toUpdate.Quantity = item.Quantity;
-            toUpdate.Status = item.Status;
+            toUpdate.Status = item.Quantity != 0 ? ItemStatus.InStock : ItemStatus.OutOfStock;
             toUpdate.Discount = item.Discount;
             toUpdate.FilePath = item.FilePath;
             
-            await client.UpdateItemAsync(toUpdate);
-            return toUpdate;
+            if ((await client.GetItemAsync(id)).Status.Equals(ItemStatus.OutOfStock) &&
+                toUpdate.Status.Equals(ItemStatus.InStock)) {
+                Notification notification = new Notification() {
+                    Text = $"The item {item.Name} in your wishlist is back on stock",
+                    Status = "Unread",
+                    Time = new MyDateTime(new DateTime())
+                };
+                IList<Customer> customers = await customerClient.GetCustomerWithWishlistItemAsync(id);
+                foreach (Customer customer in customers) {
+                    await customerClient.SendNotificationAsync(customer, notification);
+                }
+            }
+
+            return await client.UpdateItemAsync(toUpdate);
         }
 
+        /**
+         * The method creates a new book based on book model
+         * The method calls also SendNotificationAsync to the customers that have the specific book in the wishlist if the book changes its status to "In Stock"
+         */
         public async Task<Book> UpdateBookAsync(int id, BookModel book) {
             if (book == null) throw new InvalidDataException("Please provide an item of the proper format");
             Book toUpdate = await client.GetBookAsync(id);
@@ -70,7 +90,7 @@ namespace SEP3WebAPI.Data {
             toUpdate.Category = book.Category;
             toUpdate.Price = book.Price;
             toUpdate.Quantity = book.Quantity;
-            toUpdate.Status = book.Status;
+            toUpdate.Status = book.Quantity != 0 ? ItemStatus.InStock : ItemStatus.OutOfStock;
             toUpdate.Discount = book.Discount;
             toUpdate.FilePath = book.FilePath;
             toUpdate.Authors = book.Authors;
@@ -85,8 +105,20 @@ namespace SEP3WebAPI.Data {
                 Minute = book.PublicationDate.Minute,
                 Second = book.PublicationDate.Second
             };
-            await client.UpdateBookAsync(toUpdate);
-            return toUpdate;
+            if ((await client.GetItemAsync(id)).Status.Equals(ItemStatus.OutOfStock) &&
+                toUpdate.Status.Equals(ItemStatus.InStock)) {
+                Notification notification = new Notification() {
+                    Text = $"The book {book.Name} in your wishlist is back on stock",
+                    Status = "Unread",
+                    Time = new MyDateTime(new DateTime())
+                };
+                IList<Customer> customers = await customerClient.GetCustomerWithWishlistItemAsync(id);
+                foreach (Customer customer in customers) {
+                    await customerClient.SendNotificationAsync(customer, notification);
+                }
+            }
+
+            return await client.UpdateBookAsync(toUpdate);
         }
 
        
@@ -120,6 +152,9 @@ namespace SEP3WebAPI.Data {
             return await client.AddItemAsync(i);
         }
 
+        /**
+         * The method creates a new book based on book model
+         */
         public async Task<Book> CreateBookAsync(BookModel itemModel) {
             if (itemModel == null) throw new InvalidDataException("Please specify a book of the proper format!");
             Book book = await client.GetBookBySpecificationsAsync(itemModel.Isbn);
@@ -184,14 +219,14 @@ namespace SEP3WebAPI.Data {
             return await client.AddToWishlist(customerId, itemId);
         }
 
-        public async Task RemoveWishlistedItemAsync(int customerId, int itemId) {
+        public async Task RemoveWishlistItemAsync(int customerId, int itemId) {
             Customer customer = await customerClient.GetCustomerAsync(customerId);
             if (customer == null) throw new NullReferenceException($"No such customer found with id: {customerId}");
             
             Item item = await client.GetItemAsync(itemId);
             if (item == null) throw new NullReferenceException($"No such item found with id: {itemId}");
             
-            await client.RemoveWishlistedItemAsync(customer, item);
+            await client.RemoveWishlistItemAsync(customer, item);
         }
 
         public async Task<Item> AddToShoppingCartAsync(Item item, int customerId) {
