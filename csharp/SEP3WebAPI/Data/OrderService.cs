@@ -99,7 +99,9 @@ namespace SEP3WebAPI.Data {
             return await orderClient.GetOrderAsync(orderId);
         }
 
-     
+        /**
+         * The pending orders created 3 days ago are set to finished
+         */
         public async Task<IList<Order>> GetOrdersByCustomerAsync(int customerId, int index) {
             IList<Order> orders = await orderClient.GetOrdersByCustomerAsync(customerId, index);
             foreach (Order order in orders) {
