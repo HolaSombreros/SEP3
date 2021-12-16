@@ -316,7 +316,17 @@
                 }
             }
 
-            order = await orderService.ReturnItemsAsync(returnItemsModel);
+            await orderService.ReturnItemsAsync(returnItemsModel);
+
+            for (int i = 0; i < returnItemsModel.Items.Count; i++) {
+                int amount = returnItemsModel.Items[i].Quantity;
+                if (amount > 0) {
+                    order.Items[i].Quantity -= amount;
+                }
+                returnItemsModel.Items[i].Quantity = 0;
+            }
+            
+            totalPrice = Math.Round(order.Items.Sum(i => i.Price * i.Quantity) + orderService.ShoppingCart.ShippingPrice, 2, MidpointRounding.ToEven);
             displayMessage = "Items successfully returned!";
         } catch (Exception e) {
             displayMessage = e.Message;
