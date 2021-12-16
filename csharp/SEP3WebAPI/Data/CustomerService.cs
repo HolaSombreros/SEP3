@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using SEP3Library.Models;
 using SEP3Library.UIModels;
@@ -66,6 +67,9 @@ namespace SEP3WebAPI.Data {
                 Password = customer.Password,
                 Role = customer.Role 
             };
+
+            if (!(await customerClient.GetAdminsAsync()).Any())
+                c.Role = "Administrator";
             
             return await customerClient.AddCustomerAsync(c);
         }
