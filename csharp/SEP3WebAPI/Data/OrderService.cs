@@ -84,12 +84,9 @@ namespace SEP3WebAPI.Data {
         public async Task<IList<Order>> GetOrdersAsync(int index, int id, string status) {
             IList<Order> orders = await orderClient.GetOrdersAsync(index, id, status);
             foreach (Order order in orders) {
-                Console.WriteLine("a");
                 if (order.OrderStatus == OrderStatus.Pending) {
-                    Console.WriteLine("pending");
                     DateTime orderDate = new DateTime(order.DateTime.Year, order.DateTime.Month, order.DateTime.Day);
                     if (DateTime.Now.Subtract(orderDate).CompareTo(new TimeSpan(3, 0, 0, 0)) > 0) {
-                        Console.WriteLine("finished");
                         order.OrderStatus = OrderStatus.Finished;
                         await orderClient.UpdateOrderAsync(order);
                     }
